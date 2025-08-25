@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ücretsiz Kaydol</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f172a;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      position: relative;
+    }
+
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1497366754035-f200968a6e72') center/cover no-repeat;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 6s infinite ease-in-out;
+      filter: blur(1px);
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-80px) translateX(40px); opacity: 0; }
+    }
+
+    .cursor-glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+      opacity: 0.7;
+    }
+
+    .container {
+      position: relative;
+      z-index: 3;
+      width: 440px;
+      max-width: 90%;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(14px);
+      border-radius: 28px;
+      padding: 45px;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      text-align: center;
+      transform: translateY(0);
+      animation: slideUp 0.9s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 
+        0 10px 25px rgba(16, 185, 129, 0.4),
+        0 0 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .logo svg {
+      width: 38px;
+      height: 38px;
+      fill: white;
+    }
+
+    h1 {
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, #d1fae5, #bfdbfe, #c7d2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    p.subtitle {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      margin-bottom: 32px;
+      font-weight: 400;
+    }
+
+    .input-group {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 14px;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 15px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      color: white;
+      font-size: 15px;
+      backdrop-filter: blur(6px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #60a5fa;
+      box-shadow: 
+        0 0 0 2px rgba(99, 102, 241, 0.2),
+        0 0 0 4px rgba(59, 130, 246, 0.4);
+    }
+
+    .options {
+      display: flex;
+      justify-content: center;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 24px;
+    }
+
+    .options a {
+      color: #93c5fd;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+
+    .options a:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 
+        0 10px 25px rgba(16, 185, 129, 0.5),
+        0 0 15px rgba(16, 185, 129, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 15px 30px rgba(16, 185, 129, 0.6),
+        0 0 20px rgba(16, 185, 129, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 
+        0 8px 20px rgba(16, 185, 129, 0.5),
+        0 0 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .footer {
+      margin-top: 28px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .footer a {
+      color: #93c5fd;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  <div class="particles" id="particles"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <div class="container">
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1>Ücretsiz Kaydol</h1>
+    <p class="subtitle">Hemen başlayın, tüm özellikler sizi bekliyor</p>
+
+    <form>
+      <div class="input-group">
+        <label>Ad Soyad</label>
+        <input type="text" placeholder="Ahmet Yılmaz" />
+      </div>
+      <div class="input-group">
+        <label>E-posta</label>
+        <input type="email" placeholder="ornek@firma.com" />
+      </div>
+      <div class="input-group">
+        <label>Şifre</label>
+        <input type="password" placeholder="••••••••••" />
+      </div>
+      <div class="input-group">
+        <label>Şifre Tekrar</label>
+        <input type="password" placeholder="••••••••••" />
+      </div>
+
+      <div class="options">
+        <a href="login.html">Giriş Yap</a>
+      </div>
+
+      <button>Kayıt Ol</button>
+    </form>
+
+    <div class="footer">
+      Kayıt ol butonuna basarak <a href="#">Kullanım Şartları</a> ve <a href="#">Gizlilik Politikası</a>'nı kabul ediyorum.
+    </div>
+  </div>
+
+  <script>
+    const cursorGlow = document.getElementById("cursorGlow");
+    document.addEventListener("mousemove", (e) => {
+      cursorGlow.style.left = e.clientX + "px";
+      cursorGlow.style.top = e.clientY + "px";
+    });
+
+    const particles = document.getElementById("particles");
+    const colors = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b"];
+    for (let i = 0; i < 25; i++) {
+      const particle = document.createElement("div");
+      particle.classList.add("particle");
+      const size = Math.random() * 6 + 3;
+      particle.style.width = size + "px";
+      particle.style.height = size + "px";
+      particle.style.left = Math.random() * 100 + "vw";
+      particle.style.top = Math.random() * 100 + "vh";
+      particle.style.opacity = Math.random() * 0.5 + 0.3;
+      particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      particle.style.animationDelay = Math.random() * 5 + "s";
+      particles.appendChild(particle);
+    }
+  </script>
+</body>
+</html>

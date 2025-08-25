@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Yönetim Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .gradient-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .gradient-winter {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+        
+        .gradient-snow {
+            background: linear-gradient(135deg, #ddd6fe 0%, #8b5cf6 100%);
+        }
+        
+        .sidebar-item {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .sidebar-item:hover::before {
+            left: 100%;
+        }
+        
+        .metric-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .data-table {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+        }
+        
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        
+        .alert-critical { border-left: 4px solid #ef4444; }
+        .alert-warning { border-left: 4px solid #f59e0b; }
+        .alert-info { border-left: 4px solid #3b82f6; }
+        .alert-success { border-left: 4px solid #10b981; }
+        
+        .terminal {
+            background: #1a1a1a;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+        }
+        
+        .heatmap-cell {
+            transition: all 0.3s ease;
+        }
+        
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+        
+        .floating-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .pulse-dot {
+            animation: pulse-dot 2s infinite;
+        }
+        
+        @keyframes snowfall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: rgba(255, 255, 255, 0.8);
+            user-select: none;
+            pointer-events: none;
+            animation: snowfall linear infinite;
+        }
+        
+        .weather-widget {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+        }
+        
+        .role-badge-admin { background: linear-gradient(45deg, #ff6b6b, #ee5a24); }
+        .role-badge-manager { background: linear-gradient(45deg, #4834d4, #686de0); }
+        .role-badge-user { background: linear-gradient(45deg, #00d2d3, #54a0ff); }
+        
+        .network-node {
+            transition: all 0.3s ease;
+        }
+        
+        .network-node:hover {
+            transform: scale(1.2);
+            filter: brightness(1.2);
+        }
+        
+        .ski-lift-animation {
+            animation: ski-lift 10s linear infinite;
+        }
+        
+        @keyframes ski-lift {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(300px); }
+        }
+        
+        .pist-status-excellent { background: linear-gradient(45deg, #00b894, #00cec9); }
+        .pist-status-good { background: linear-gradient(45deg, #fdcb6e, #e17055); }
+        .pist-status-poor { background: linear-gradient(45deg, #fd79a8, #e84393); }
+        .pist-status-closed { background: linear-gradient(45deg, #636e72, #2d3436); }
+        
+        .revenue-chart {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .notification-badge {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen">
+    <!-- Snowfall Effect -->
+    <div id="snowfall-container"></div>
+
+    <!-- Advanced Sidebar -->
+    <div class="fixed inset-y-0 left-0 w-72 glass-effect shadow-2xl z-50 border-r border-white/10 lg:translate-x-0 -translate-x-full transition-transform duration-300 flex flex-col" id="sidebar">
+        <!-- Logo & Company -->
+        <div class="flex items-center justify-center h-20 gradient-primary">
+            <div class="text-center">
+                <h1 class="text-white text-xl font-bold">EJDER3200</h1>
+                <p class="text-white/80 text-xs">Kayak Merkezleri A.Ş</p>
+                <div class="flex items-center justify-center mt-1">
+                    <i class="fas fa-skiing text-white/60 text-xs mr-1"></i>
+                    <span class="text-white/60 text-xs">Premium Resort Management</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Profile -->
+        <div class="p-4 border-b border-white/10">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <div class="w-12 h-12 gradient-primary rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold">CTO</span>
+                    </div>
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white pulse-dot"></div>
+                </div>
+                <div>
+                    <p class="text-gray-800 font-semibold">Mehmet Kar</p>
+                    <p class="text-gray-600 text-sm">Genel Müdür</p>
+                    <div class="flex items-center mt-1">
+                        <div class="role-badge-admin text-white text-xs px-2 py-1 rounded-full">Yönetici</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Module Buttons - Centered under user info -->
+            <div class="flex items-center justify-center space-x-3 mt-4">
+                <!-- AI Assistant & Calendar -->
+                <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full w-10 h-10 cursor-pointer hover:scale-105 transition-transform flex items-center justify-center" title="AI Asistan & Ajanda" onclick="handleAIAssistant()">
+                    <i class="fas fa-robot text-white text-sm"></i>
+                </div>
+                
+                <!-- Idea Pool -->
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full w-10 h-10 cursor-pointer hover:scale-105 transition-transform flex items-center justify-center" title="Fikir Havuzu" onclick="handleIdeaPool()">
+                    <i class="fas fa-lightbulb text-white text-sm"></i>
+                </div>
+                
+                <!-- Projects -->
+                <div class="bg-gradient-to-r from-orange-500 to-red-500 rounded-full w-10 h-10 cursor-pointer hover:scale-105 transition-transform flex items-center justify-center" title="Projeler" onclick="handleProjects()">
+                    <i class="fas fa-project-diagram text-white text-sm"></i>
+                </div>
+            </div>
+        </div>
+        
+
+
+        <!-- Advanced Navigation -->
+        <nav class="mt-4 px-4 overflow-y-auto flex-1">
+            <div class="space-y-1">
+                <div class="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">TEMEL MODÜLLER</div>
+                
+                <!-- Yönetici Paneli -->
+                <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 bg-blue-50 text-blue-700 shadow-lg" onclick="showDashboard()">
+                    <i class="fas fa-chart-line mr-3 text-lg"></i>
+                    <div>
+                        <div class="font-semibold">Yönetici Paneli</div>
+                        <div class="text-xs opacity-70">Gerçek Zamanlı Analitik</div>
+                    </div>
+                </a>
+                
+                <!-- Departmanlar -->
+                <div class="mt-6">
+                    <button class="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gray-100" onclick="toggleDepartments()">
+                        <div class="flex items-center">
+                            <i class="fas fa-building mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Departmanlar</div>
+                                <div class="text-xs opacity-70">Kurumsal Modüller</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down transition-transform duration-300" id="departmentsChevron"></i>
+                    </button>
+                    
+                    <div class="ml-4 mt-2 space-y-1 hidden" id="departmentsList">
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-600 hover:text-white">
+                            <i class="fas fa-code mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Yazılım Birimi</div>
+                                <div class="text-xs opacity-70">Geliştirme & Test</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:text-white">
+                            <i class="fas fa-server mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Bilgi İşlem</div>
+                                <div class="text-xs opacity-70">IT Altyapı & Destek</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 hover:text-white">
+                            <i class="fas fa-dollar-sign mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Finansal Yönetim</div>
+                                <div class="text-xs opacity-70">Bütçe & Muhasebe</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-600 hover:text-white">
+                            <i class="fas fa-bullhorn mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Satış Pazarlama</div>
+                                <div class="text-xs opacity-70">CRM & Kampanyalar</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-600 hover:text-white">
+                            <i class="fas fa-truck mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Tedarik Zinciri</div>
+                                <div class="text-xs opacity-70">Lojistik & Stok</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-600 hover:text-white">
+                            <i class="fas fa-users mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">İnsan Kaynakları</div>
+                                <div class="text-xs opacity-70">Personel & Bordro</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-teal-500 hover:to-green-600 hover:text-white">
+                            <i class="fas fa-gamepad mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Rekreasyon</div>
+                                <div class="text-xs opacity-70">Etkinlik Yönetimi</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Sosyal Tesisler -->
+                <div class="mt-6">
+                    <button class="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gray-100" onclick="toggleSocialFacilities()">
+                        <div class="flex items-center">
+                            <i class="fas fa-building mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Sosyal Tesisler</div>
+                                <div class="text-xs opacity-70">Konaklama & F&B</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down transition-transform duration-300" id="socialFacilitiesChevron"></i>
+                    </button>
+                    
+                    <div class="ml-4 mt-2 space-y-1 hidden" id="socialFacilitiesList">
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-600 hover:text-white">
+                            <i class="fas fa-bed mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Konaklama</div>
+                                <div class="text-xs opacity-70">Otel & Rezervasyon</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-600 hover:text-white">
+                            <i class="fas fa-utensils mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Restoran & Kafeler</div>
+                                <div class="text-xs opacity-70">F&B Yönetimi</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-600 hover:text-white">
+                            <i class="fas fa-ticket-alt mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Bilet Satış</div>
+                                <div class="text-xs opacity-70">Online & Gişe</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Teknik Ofis -->
+                <div class="mt-6">
+                    <button class="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gray-100" onclick="toggleTechnicalOffice()">
+                        <div class="flex items-center">
+                            <i class="fas fa-cogs mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Teknik Ofis</div>
+                                <div class="text-xs opacity-70">Altyapı & Sistemler</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down transition-transform duration-300" id="technicalOfficeChevron"></i>
+                    </button>
+                    
+                    <div class="ml-4 mt-2 space-y-1 hidden" id="technicalOfficeList">
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-600 hover:text-white">
+                            <i class="fas fa-skiing mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Pist Yönetimi</div>
+                                <div class="text-xs opacity-70">Kar & Güvenlik</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-600 hover:text-white">
+                            <i class="fas fa-cable-car mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Teleferik Sistemi</div>
+                                <div class="text-xs opacity-70">Kabin & Motor</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-yellow-500 hover:to-orange-600 hover:text-white">
+                            <i class="fas fa-bolt mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Enerji Sistemleri</div>
+                                <div class="text-xs opacity-70">Elektrik & Jeneratör</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-gray-500 hover:to-slate-600 hover:text-white">
+                            <i class="fas fa-tools mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Makina Sistemleri</div>
+                                <div class="text-xs opacity-70">Kar Makinası & Bakım</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-600 hover:text-white">
+                            <i class="fas fa-thermometer-half mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">HVAC Sistemleri</div>
+                                <div class="text-xs opacity-70">Isıtma & Havalandırma</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-600 hover:text-white">
+                            <i class="fas fa-hammer mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Yapı İnşaat</div>
+                                <div class="text-xs opacity-70">Bina & Altyapı</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+
+                
+
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="lg:ml-72 min-h-screen transition-all duration-300">
+        <!-- Advanced Header -->
+        <header class="glass-effect shadow-xl border-b border-white/10">
+            <div class="flex items-center justify-between px-4 lg:px-8 py-4">
+                <div class="flex items-center space-x-6">
+                    <!-- Mobile Menu Button -->
+                    <button class="lg:hidden p-2 text-gray-600 hover:text-gray-800" onclick="toggleSidebar()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Yönetici Paneli</h2>
+                    </div>
+                    
+
+                </div>
+                
+                <div class="flex items-center space-x-2 lg:space-x-4">
+                    
+                    <!-- Weather Widget -->
+                    <div class="weather-widget rounded-xl p-2 lg:p-3 cursor-pointer hover:scale-105 transition-transform">
+                        <div class="flex items-center space-x-2 lg:space-x-3">
+                            <div class="text-center">
+                                <div class="text-white font-bold text-sm lg:text-lg">-8°C</div>
+                                <div class="text-white/80 text-xs hidden lg:block">Kar Yağışlı</div>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-snowflake text-white text-lg lg:text-2xl"></i>
+                                <div class="text-white/80 text-xs hidden lg:block">45cm kar</div>
+                            </div>
+                            <div class="text-white/80 text-xs hidden xl:block">
+                                <div>Rüzgar: 15km/h</div>
+                                <div>Görüş: 2km</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Emergency Alert -->
+                    <div class="relative">
+                        <button class="relative p-3 text-red-600 hover:text-red-800 transition-colors bg-red-50 rounded-xl border border-red-200">
+                            <i class="fas fa-exclamation-triangle text-lg"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold notification-badge">!</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button class="relative p-3 text-gray-600 hover:text-gray-800 transition-colors bg-white/80 rounded-xl">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold">12</span>
+                        </button>
+                    </div>
+                    
+                    <!-- System Menu -->
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl transition-colors" onclick="toggleSystemMenu()">
+                            <i class="fas fa-cogs text-gray-600"></i>
+                            <span class="text-gray-700 font-medium text-sm">Sistem Menüsü</span>
+                            <i class="fas fa-chevron-down text-gray-500 text-xs transition-transform" id="systemMenuChevron"></i>
+                        </button>
+                        
+                        <div class="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 hidden" id="systemMenuDropdown">
+                            <div class="p-4">
+                                <h3 class="text-lg font-bold text-gray-800 mb-4">Sistem Yönetimi</h3>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <!-- Identity Management -->
+                                    <div class="bg-gradient-to-r from-gray-500 to-gray-700 rounded-xl p-3 cursor-pointer hover:scale-105 transition-transform text-center" title="Kimlik Yönetimi - Rol Tabanlı Erişim">
+                                        <i class="fas fa-users-cog text-white text-xl mb-2"></i>
+                                        <div class="text-white text-xs font-medium">Kimlik Yönetimi</div>
+                                    </div>
+                                    
+                                    <!-- Security Center -->
+                                    <div class="bg-gradient-to-r from-red-500 to-red-700 rounded-xl p-3 cursor-pointer hover:scale-105 transition-transform text-center" title="Güvenlik Merkezi - Tehdit Tespiti">
+                                        <i class="fas fa-shield-alt text-white text-xl mb-2"></i>
+                                        <div class="text-white text-xs font-medium">Güvenlik Merkezi</div>
+                                    </div>
+                                    
+                                    <!-- Infrastructure Management -->
+                                    <div class="bg-gradient-to-r from-slate-500 to-slate-700 rounded-xl p-3 cursor-pointer hover:scale-105 transition-transform text-center" title="Altyapı Yönetimi - Bulut & Yerinde">
+                                        <i class="fas fa-network-wired text-white text-xl mb-2"></i>
+                                        <div class="text-white text-xs font-medium">Altyapı Yönetimi</div>
+                                    </div>
+                                    
+                                    <!-- Database Management -->
+                                    <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-3 cursor-pointer hover:scale-105 transition-transform text-center" title="Veritabanı Yönetimi">
+                                        <i class="fas fa-database text-white text-xl mb-2"></i>
+                                        <div class="text-white text-xs font-medium">Veritabanı Yönetimi</div>
+                                    </div>
+                                    
+                                    <!-- Backup & Recovery -->
+                                    <div class="bg-gradient-to-r from-green-600 to-green-800 rounded-xl p-3 cursor-pointer hover:scale-105 transition-transform text-center" title="Yedekleme & Kurtarma">
+                                        <i class="fas fa-hdd text-white text-xl mb-2"></i>
+                                        <div class="text-white text-xs font-medium">Yedekleme & Kurtarma</div>
+                                    </div>
+                                    
+                                    <!-- System Monitoring -->
+                                    <div class="bg-gradient-to-r from-purple-600 to-purple-800 rounded-xl p-3 cursor-pointer hover:scale-105 transition-transform text-center" title="Sistem İzleme">
+                                        <i class="fas fa-chart-line text-white text-xl mb-2"></i>
+                                        <div class="text-white text-xs font-medium">Sistem İzleme</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="p-4 lg:p-8" id="mainContent">
+            
+            <!-- Dashboard Content -->
+            <div id="dashboardContent">
+            <!-- Executive KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 lg:gap-6 mb-6 lg:mb-8">
+                <!-- Revenue Metrics -->
+                <div class="metric-card rounded-2xl p-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="gradient-success w-12 h-12 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-dollar-sign text-white text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-gray-800">₺24.7M</div>
+                            <div class="text-sm text-gray-600">Aylık Gelir</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-arrow-up text-green-500"></i>
+                            <span class="text-green-600 font-semibold">+%18.2</span>
+                        </div>
+                        <div class="text-xs text-gray-500">geçen aya göre</div>
+                    </div>
+                    <div class="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div class="h-full gradient-success rounded-full" style="width: 78%"></div>
+                    </div>
+                </div>
+
+                <!-- Daily Visitors -->
+                <div class="metric-card rounded-2xl p-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="gradient-winter w-12 h-12 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-skiing text-white text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-gray-800">3,247</div>
+                            <div class="text-sm text-gray-600">Günlük Ziyaretçi</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-arrow-up text-blue-500"></i>
+                            <span class="text-blue-600 font-semibold">+%25.8</span>
+                        </div>
+                        <div class="text-xs text-gray-500">dün ile karşılaştırma</div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-snowflake text-blue-500 text-xs"></i>
+                            <span class="text-xs text-gray-600">Mükemmel kar koşulları</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lift Capacity -->
+                <div class="metric-card rounded-2xl p-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-gradient-to-r from-purple-500 to-pink-500 w-12 h-12 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-cable-car text-white text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-gray-800">%87</div>
+                            <div class="text-sm text-gray-600">Teleferik Kapasitesi</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-green-600 font-semibold">8/9 Aktif</span>
+                        </div>
+                        <div class="text-xs text-gray-500">1 bakımda</div>
+                    </div>
+                    <div class="mt-4 relative overflow-hidden">
+                        <div class="ski-lift-animation text-purple-500">
+                            <i class="fas fa-cable-car"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weather Conditions -->
+                <div class="metric-card rounded-2xl p-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="gradient-snow w-12 h-12 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-snowflake text-white text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-gray-800">-8°C</div>
+                            <div class="text-sm text-gray-600">Hava Durumu</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-cloud-snow text-blue-500"></i>
+                            <span class="text-blue-600 font-semibold">Kar Yağışlı</span>
+                        </div>
+                        <div class="text-xs text-gray-500">45cm kar</div>
+                    </div>
+                    <div class="mt-4 flex justify-between text-xs text-gray-600">
+                        <span>Rüzgar: 15km/h</span>
+                        <span>Görüş: 2km</span>
+                    </div>
+                </div>
+
+                <!-- Safety Score -->
+                <div class="metric-card rounded-2xl p-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-gradient-to-r from-red-500 to-orange-500 w-12 h-12 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-white text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-gray-800">A+</div>
+                            <div class="text-sm text-gray-600">Güvenlik Puanı</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-user-shield text-green-500"></i>
+                            <span class="text-green-600 font-semibold">24/7 Aktif</span>
+                        </div>
+                        <div class="text-xs text-gray-500">Kurtarma ekipleri</div>
+                    </div>
+                    <div class="mt-4 flex space-x-1">
+                        <div class="flex-1 h-2 bg-green-500 rounded-full"></div>
+                        <div class="flex-1 h-2 bg-green-500 rounded-full"></div>
+                        <div class="flex-1 h-2 bg-green-500 rounded-full"></div>
+                        <div class="flex-1 h-2 bg-green-500 rounded-full"></div>
+                        <div class="flex-1 h-2 bg-green-500 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 mb-6 lg:mb-8">
+                <!-- Revenue Chart -->
+                <div class="glass-effect rounded-2xl p-6 shadow-xl">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800">Gelir Analitikleri</h3>
+                            <p class="text-gray-600">Departman bazlı performans</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-medium">Günlük</button>
+                            <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Haftalık</button>
+                            <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Aylık</button>
+                        </div>
+                    </div>
+                    <div class="h-80">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Performance Chart -->
+                <div class="glass-effect rounded-2xl p-6 shadow-xl">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800">Sistem Performansı</h3>
+                            <p class="text-gray-600">Gerçek zamanlı metrikler</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-medium">İşlemci</button>
+                            <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Bellek</button>
+                            <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Ağ</button>
+                        </div>
+                    </div>
+                    <div class="h-80">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- İnteraktif Özellikler Paneli -->
+            <div class="bg-white rounded-3xl p-8 shadow-2xl mb-8 border border-gray-100">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h3 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">İnteraktif Kontrol Paneli</h3>
+                        <p class="text-gray-500 mt-2">Gerçek zamanlı sistem kontrolü ve etkileşimli özellikler</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2 bg-gray-50 px-4 py-2 rounded-full">
+                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="text-sm text-gray-600">Tüm Sistemler Aktif</span>
+                        </div>
+                        <button onclick="refreshAllSystems()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+                            <i class="fas fa-sync-alt mr-2"></i>Yenile
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- İnteraktif Kontrol Kartları -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    
+                    <!-- Teleferik Kontrol -->
+                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white cursor-pointer hover:scale-105 transition-all duration-300 shadow-xl" onclick="toggleLiftControl()">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-cable-car text-3xl"></i>
+                                <div>
+                                    <h4 class="text-xl font-bold">Teleferik Kontrol</h4>
+                                    <p class="text-sm opacity-90">8/9 Hat Aktif</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold">%87</div>
+                                <div class="text-xs opacity-75">Kapasite</div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>Hat 1-6:</span>
+                                <span class="text-green-300">✓ Aktif</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Hat 7-8:</span>
+                                <span class="text-green-300">✓ Aktif</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Hat 9:</span>
+                                <span class="text-red-300">⚠ Bakımda</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-white/20 rounded-full h-2">
+                            <div class="bg-white rounded-full h-2" style="width: 87%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Kar Makinası Kontrol -->
+                    <div class="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl p-6 text-white cursor-pointer hover:scale-105 transition-all duration-300 shadow-xl" onclick="toggleSnowMachines()">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-snowflake text-3xl animate-spin"></i>
+                                <div>
+                                    <h4 class="text-xl font-bold">Kar Makinaları</h4>
+                                    <p class="text-sm opacity-90">12/15 Aktif</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold">%80</div>
+                                <div class="text-xs opacity-75">Verimlilik</div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>Ejder Pisti:</span>
+                                <span class="text-green-300">✓ 4 Aktif</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Kaplan Pisti:</span>
+                                <span class="text-green-300">✓ 5 Aktif</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Başlangıç:</span>
+                                <span class="text-green-300">✓ 3 Aktif</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-white/20 rounded-full h-2">
+                            <div class="bg-white rounded-full h-2" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Güvenlik Sistemi -->
+                    <div class="bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl p-6 text-white cursor-pointer hover:scale-105 transition-all duration-300 shadow-xl" onclick="toggleSecuritySystem()">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-shield-alt text-3xl"></i>
+                                <div>
+                                    <h4 class="text-xl font-bold">Güvenlik Sistemi</h4>
+                                    <p class="text-sm opacity-90">Tüm Alanlar Güvenli</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold">A+</div>
+                                <div class="text-xs opacity-75">Güvenlik</div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>Kameralar:</span>
+                                <span class="text-green-300">✓ 24 Aktif</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Kurtarma Ekibi:</span>
+                                <span class="text-green-300">✓ 8 Kişi</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Tıbbi Ekip:</span>
+                                <span class="text-green-300">✓ 3 Kişi</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-white/20 rounded-full h-2">
+                            <div class="bg-green-400 rounded-full h-2" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hava Durumu İstasyonu -->
+                    <div class="bg-gradient-to-br from-teal-500 to-green-600 rounded-2xl p-6 text-white cursor-pointer hover:scale-105 transition-all duration-300 shadow-xl" onclick="toggleWeatherStation()">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-cloud-snow text-3xl"></i>
+                                <div>
+                                    <h4 class="text-xl font-bold">Hava İstasyonu</h4>
+                                    <p class="text-sm opacity-90">Gerçek Zamanlı</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold">-8°C</div>
+                                <div class="text-xs opacity-75">Sıcaklık</div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>Rüzgar:</span>
+                                <span class="text-blue-300">15 km/h</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Nem:</span>
+                                <span class="text-blue-300">%85</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Görüş:</span>
+                                <span class="text-blue-300">2 km</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center space-x-2">
+                            <i class="fas fa-snowflake animate-pulse"></i>
+                            <span class="text-sm">Yoğun kar yağışı</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Enerji Yönetimi -->
+                    <div class="bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl p-6 text-white cursor-pointer hover:scale-105 transition-all duration-300 shadow-xl" onclick="toggleEnergyManagement()">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-bolt text-3xl animate-pulse"></i>
+                                <div>
+                                    <h4 class="text-xl font-bold">Enerji Yönetimi</h4>
+                                    <p class="text-sm opacity-90">Optimum Verimlilik</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold">%92</div>
+                                <div class="text-xs opacity-75">Verimlilik</div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>Ana Şebeke:</span>
+                                <span class="text-green-300">✓ Aktif</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Jeneratör:</span>
+                                <span class="text-yellow-300">⚡ Standby</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Tüketim:</span>
+                                <span class="text-blue-300">2.4 MW</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-white/20 rounded-full h-2">
+                            <div class="bg-green-400 rounded-full h-2" style="width: 92%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bilet Sistemi -->
+                    <div class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl p-6 text-white cursor-pointer hover:scale-105 transition-all duration-300 shadow-xl" onclick="toggleTicketSystem()">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-ticket-alt text-3xl"></i>
+                                <div>
+                                    <h4 class="text-xl font-bold">Bilet Sistemi</h4>
+                                    <p class="text-sm opacity-90">Online & Gişe</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold">3,247</div>
+                                <div class="text-xs opacity-75">Günlük Satış</div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>Online:</span>
+                                <span class="text-green-300">2,156 bilet</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Gişe:</span>
+                                <span class="text-blue-300">1,091 bilet</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Gelir:</span>
+                                <span class="text-yellow-300">₺487,650</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-white/20 rounded-full h-2">
+                            <div class="bg-green-400 rounded-full h-2" style="width: 78%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hızlı Eylem Butonları -->
+                <div class="bg-gray-50 rounded-2xl p-6">
+                    <h4 class="text-xl font-bold text-gray-800 mb-4">Hızlı Eylemler</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <button onclick="emergencyStop()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 shadow-lg">
+                            <i class="fas fa-stop-circle mb-2 text-xl block"></i>
+                            <span class="text-sm">Acil Durdur</span>
+                        </button>
+                        
+                        <button onclick="startSnowMaking()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 shadow-lg">
+                            <i class="fas fa-snowflake mb-2 text-xl block"></i>
+                            <span class="text-sm">Kar Yapımı</span>
+                        </button>
+                        
+                        <button onclick="callSecurity()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 shadow-lg">
+                            <i class="fas fa-shield-alt mb-2 text-xl block"></i>
+                            <span class="text-sm">Güvenlik Çağır</span>
+                        </button>
+                        
+                        <button onclick="weatherAlert()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 shadow-lg">
+                            <i class="fas fa-cloud-rain mb-2 text-xl block"></i>
+                            <span class="text-sm">Hava Uyarısı</span>
+                        </button>
+                        
+                        <button onclick="maintenanceMode()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 shadow-lg">
+                            <i class="fas fa-tools mb-2 text-xl block"></i>
+                            <span class="text-sm">Bakım Modu</span>
+                        </button>
+                        
+                        <button onclick="systemReport()" class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 shadow-lg">
+                            <i class="fas fa-chart-bar mb-2 text-xl block"></i>
+                            <span class="text-sm">Sistem Raporu</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Gerçek Zamanlı Durum Tablosu -->
+                <div class="mt-8 bg-gray-900 rounded-2xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-xl font-bold">Gerçek Zamanlı Sistem Durumu</h4>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="text-sm text-green-400">Canlı Veri</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Sistem Metrikleri -->
+                        <div class="space-y-3">
+                            <h5 class="text-lg font-semibold text-blue-400">Sistem Metrikleri</h5>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>CPU Kullanımı:</span>
+                                    <span class="text-green-400" id="cpuUsage">%23</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Bellek Kullanımı:</span>
+                                    <span class="text-yellow-400" id="memoryUsage">%67</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Ağ Trafiği:</span>
+                                    <span class="text-blue-400" id="networkTraffic">2.4 Mbps</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Aktif Bağlantı:</span>
+                                    <span class="text-green-400" id="activeConnections">1,247</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Operasyonel Durum -->
+                        <div class="space-y-3">
+                            <h5 class="text-lg font-semibold text-green-400">Operasyonel Durum</h5>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>Teleferik Yolcu:</span>
+                                    <span class="text-blue-400" id="liftPassengers">2,847</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Pist Ziyaretçi:</span>
+                                    <span class="text-green-400" id="pistVisitors">3,247</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Kar Kalınlığı Ort:</span>
+                                    <span class="text-cyan-400" id="avgSnowDepth">38cm</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Güvenlik Olayı:</span>
+                                    <span class="text-red-400" id="securityIncidents">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Finansal Durum -->
+                        <div class="space-y-3">
+                            <h5 class="text-lg font-semibold text-yellow-400">Finansal Durum</h5>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>Günlük Gelir:</span>
+                                    <span class="text-green-400" id="dailyRevenue">₺487,650</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Bilet Satış:</span>
+                                    <span class="text-blue-400" id="ticketSales">3,247</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>F&B Gelir:</span>
+                                    <span class="text-purple-400" id="fbRevenue">₺89,340</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Ekipman Kiralama:</span>
+                                    <span class="text-orange-400" id="equipmentRental">₺34,120</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status & Alerts -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
+                <!-- System Health -->
+                <div class="glass-effect rounded-2xl p-6 shadow-xl">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Sistem Sağlığı</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl border border-green-200">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 bg-green-500 rounded-full pulse-dot"></div>
+                                <div>
+                                    <div class="font-semibold text-gray-800">API Gateway</div>
+                                    <div class="text-sm text-gray-600">Yanıt süresi: 45ms</div>
+                                </div>
+                            </div>
+                            <div class="text-green-600 font-bold">%100</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl border border-green-200">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 bg-green-500 rounded-full pulse-dot"></div>
+                                <div>
+                                    <div class="font-semibold text-gray-800">Bilet Sistemi</div>
+                                    <div class="text-sm text-gray-600">İşlem süresi: 1.2s</div>
+                                </div>
+                            </div>
+                            <div class="text-green-600 font-bold">%99.8</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full pulse-dot"></div>
+                                <div>
+                                    <div class="font-semibold text-gray-800">Teleferik Kontrol</div>
+                                    <div class="text-sm text-gray-600">Bağlantı: Yavaş</div>
+                                </div>
+                            </div>
+                            <div class="text-yellow-600 font-bold">%94</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Critical Alerts -->
+                <div class="glass-effect rounded-2xl p-6 shadow-xl">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">Kritik Uyarılar</h3>
+                        <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">4 Aktif</span>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="alert-critical bg-red-50 p-4 rounded-xl">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-exclamation-triangle text-red-500 mt-1"></i>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-red-800">Teleferik #3 Arızası</div>
+                                    <div class="text-sm text-red-600">Motor sıcaklığı kritik seviyede</div>
+                                    <div class="text-xs text-red-500 mt-1">1 dakika önce</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-warning bg-yellow-50 p-4 rounded-xl">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-snowflake text-yellow-500 mt-1"></i>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-yellow-800">Kar Kalınlığı Azalıyor</div>
+                                    <div class="text-sm text-yellow-600">Başlangıç pistinde 25cm altına düştü</div>
+                                    <div class="text-xs text-yellow-500 mt-1">15 dakika önce</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-warning bg-orange-50 p-4 rounded-xl">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-wind text-orange-500 mt-1"></i>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-orange-800">Yüksek Rüzgar Hızı</div>
+                                    <div class="text-sm text-orange-600">35 km/h - Teleferik durdurulabilir</div>
+                                    <div class="text-xs text-orange-500 mt-1">5 dakika önce</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terminal -->
+                <div class="glass-effect rounded-2xl p-6 shadow-xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-gray-800">Resort Control Terminal</h3>
+                        <div class="flex space-x-2">
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="terminal rounded-xl p-4 h-64 overflow-y-auto text-sm">
+                        <div class="mb-2">$ lift-control status --all</div>
+                        <div class="text-green-400 mb-2">● Lift System Status - EJDER3200 Resort</div>
+                        <div class="mb-2">   Lift-01: OPERATIONAL (Capacity: 87%)</div>
+                        <div class="mb-2">   Lift-02: OPERATIONAL (Capacity: 92%)</div>
+                        <div class="text-red-400 mb-2">   Lift-03: MAINTENANCE (Motor temp: CRITICAL)</div>
+                        <div class="mb-2">$ snow-depth-monitor --pists</div>
+                        <div class="text-blue-400 mb-1">PIST NAME        DEPTH    STATUS</div>
+                        <div class="mb-1">Ejder            45cm     EXCELLENT</div>
+                        <div class="mb-1">Kaplan           38cm     GOOD</div>
+                        <div class="text-yellow-400 mb-1">Başlangıç        25cm     MARGINAL</div>
+                        <div class="text-red-400 mb-2">Kartal           --       CLOSED</div>
+                        <div class="mb-2">$ weather-station --current</div>
+                        <div class="text-cyan-400">Temperature: -8°C | Wind: 35km/h | Visibility: 2km</div>
+                        <div class="text-cyan-400">Snow forecast: Heavy snow next 6 hours ❄️</div>
+                        <div class="mt-2">$ <span class="animate-pulse">_</span></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Widgets -->
+    <div class="floating-widget hidden lg:block">
+        <div class="flex flex-col items-center space-y-3">
+            <!-- Sub buttons (initially hidden) -->
+            <div id="floatingSubButtons" class="flex flex-col space-y-2 opacity-0 transform translate-y-4 transition-all duration-300 pointer-events-none">
+                <!-- Emergency Button -->
+                <button class="w-12 h-12 bg-gradient-to-r from-red-500 to-red-700 rounded-full shadow-xl flex items-center justify-center text-white hover:scale-110 transition-transform" title="Acil Durum" onclick="handleEmergency()">
+                    <i class="fas fa-exclamation-triangle text-sm"></i>
+                </button>
+                
+                <!-- Weather Alert -->
+                <button class="w-12 h-12 gradient-winter rounded-full shadow-xl flex items-center justify-center text-white hover:scale-110 transition-transform" title="Hava Durumu" onclick="handleWeather()">
+                    <i class="fas fa-snowflake text-sm"></i>
+                </button>
+                
+                <!-- AI Assistant -->
+                <button class="w-12 h-12 gradient-primary rounded-full shadow-xl flex items-center justify-center text-white hover:scale-110 transition-transform" title="AI Asistan" onclick="handleAI()">
+                    <i class="fas fa-robot text-sm"></i>
+                </button>
+            </div>
+            
+            <!-- Main toggle button -->
+            <button id="floatingMainButton" class="w-14 h-14 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full shadow-2xl flex items-center justify-center text-white hover:scale-110 transition-all duration-300" title="Hızlı Erişim" onclick="toggleFloatingMenu()">
+                <i class="fas fa-plus text-xl transition-transform duration-300" id="floatingIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Departments Toggle
+        function toggleDepartments() {
+            const departmentsList = document.getElementById('departmentsList');
+            const chevron = document.getElementById('departmentsChevron');
+            
+            departmentsList.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // Social Facilities Toggle
+        function toggleSocialFacilities() {
+            const socialFacilitiesList = document.getElementById('socialFacilitiesList');
+            const chevron = document.getElementById('socialFacilitiesChevron');
+            
+            socialFacilitiesList.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // Technical Office Toggle
+        function toggleTechnicalOffice() {
+            const technicalOfficeList = document.getElementById('technicalOfficeList');
+            const chevron = document.getElementById('technicalOfficeChevron');
+            
+            technicalOfficeList.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // System Menu Toggle
+        function toggleSystemMenu() {
+            const systemMenuDropdown = document.getElementById('systemMenuDropdown');
+            const chevron = document.getElementById('systemMenuChevron');
+            
+            systemMenuDropdown.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const systemMenuDropdown = document.getElementById('systemMenuDropdown');
+            const systemMenuButton = event.target.closest('button[onclick="toggleSystemMenu()"]');
+            const menuButton = event.target.closest('button');
+            
+            // Close system menu when clicking outside
+            if (!systemMenuDropdown.contains(event.target) && !systemMenuButton) {
+                systemMenuDropdown.classList.add('hidden');
+                document.getElementById('systemMenuChevron').classList.remove('rotate-180');
+            }
+            
+            // Close sidebar when clicking outside on mobile
+            if (!sidebar.contains(event.target) && !menuButton?.onclick?.toString().includes('toggleSidebar')) {
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            }
+        });
+
+        // Snowfall Effect
+        function createSnowfall() {
+            const container = document.getElementById('snowfall-container');
+            const snowflakes = ['❄', '❅', '❆'];
+            
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const snowflake = document.createElement('div');
+                    snowflake.className = 'snowflake';
+                    snowflake.innerHTML = snowflakes[Math.floor(Math.random() * snowflakes.length)];
+                    snowflake.style.left = Math.random() * 100 + 'vw';
+                    snowflake.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    snowflake.style.opacity = Math.random();
+                    snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                    
+                    container.appendChild(snowflake);
+                    
+                    setTimeout(() => {
+                        snowflake.remove();
+                    }, 5000);
+                }
+            }, 300);
+        }
+        
+        createSnowfall();
+
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Bilet Satış', 'Teleferik', 'Konaklama', 'Restoran', 'Ekipman Kiralama', 'Kayak Okulu'],
+                datasets: [{
+                    label: 'Günlük Gelir (₺)',
+                    data: [125000, 89000, 156000, 67000, 34000, 45000],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(6, 182, 212, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(245, 158, 11, 1)',
+                        'rgba(239, 68, 68, 1)',
+                        'rgba(139, 92, 246, 1)',
+                        'rgba(6, 182, 212, 1)'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₺' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Performance Chart
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                datasets: [{
+                    label: 'Sistem Yükü (%)',
+                    data: [45, 52, 68, 74, 82, 69, 58],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Teleferik Kapasitesi (%)',
+                    data: [38, 42, 85, 92, 87, 79, 48],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Ziyaretçi Yoğunluğu',
+                    data: [125, 145, 289, 334, 367, 298, 156],
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+
+        // Real-time data updates
+        setInterval(() => {
+            const datasets = performanceChart.data.datasets;
+            datasets.forEach(dataset => {
+                dataset.data = dataset.data.map(() => Math.floor(Math.random() * 100));
+            });
+            performanceChart.update('none');
+            
+            // Update revenue chart
+            revenueChart.data.datasets[0].data = revenueChart.data.datasets[0].data.map(value => 
+                value + (Math.random() - 0.5) * 10000
+            );
+            revenueChart.update('none');
+        }, 5000);
+
+        // Enhanced sidebar navigation
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                document.querySelectorAll('.sidebar-item').forEach(i => {
+                    i.classList.remove('bg-blue-50', 'text-blue-700');
+                    i.classList.add('text-gray-700');
+                });
+                
+                this.classList.add('bg-blue-50', 'text-blue-700');
+                this.classList.remove('text-gray-700');
+                
+                const headerTitle = document.querySelector('header h2');
+                const itemText = this.querySelector('div div').textContent;
+                headerTitle.textContent = itemText;
+            });
+        });
+
+        // Interactive features
+        document.querySelector('.fa-exclamation-triangle').parentElement.addEventListener('click', function() {
+            alert('🚨 ACİL DURUM SİSTEMİ\n\nTeleferik #3 motor arızası tespit edildi!\nTeknik ekip yolda.\n\nKurtarma ekipleri: 7/24 Hazır\nTıbbi müdahale: 3 dakika\nAcil durumda 112\'yi arayın!');
+        });
+
+        document.querySelector('.weather-widget').addEventListener('click', function() {
+            alert('🌨️ Detaylı Hava Durumu Raporu\n\n🌡️ Sıcaklık: -8°C (Hissedilen: -15°C)\n❄️ Kar Yağışı: Yoğun (5cm/saat)\n💨 Rüzgar: 35 km/h KB yönünde\n👁️ Görüş Mesafesi: 2 km\n📊 Nem Oranı: %85\n🎿 Kayak Koşulları: İyi-Mükemmel');
+        });
+
+        // Module functionality
+        function handleAIAssistant() {
+            alert('🤖 AI Asistan & Ajanda Modülü\n\n• Akıllı yönetim sistemi\n• Gerçek zamanlı analiz\n• Ajanda planlama\n• Otomatik öneriler\n• Performans takibi\n\nYakında aktif olacak!');
+        }
+
+        function handleIdeaPool() {
+            showIdeaPool();
+        }
+        
+        function showIdeaPool() {
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <div class="max-w-7xl mx-auto">
+                    <!-- Header -->
+                    <div class="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-700 rounded-3xl p-8 mb-8 text-white relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black/10"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h1 class="text-4xl font-bold mb-2">💡 Fikir Havuzu</h1>
+                                    <p class="text-xl opacity-90">İnovasyon ve yaratıcılık merkezi - Birlikte daha iyisini yapalım!</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-3xl font-bold">127</div>
+                                    <div class="text-sm opacity-80">Aktif Fikir</div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center">
+                                    <div class="text-2xl font-bold">47</div>
+                                    <div class="text-sm opacity-80">Bu Ay Eklenen</div>
+                                </div>
+                                <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center">
+                                    <div class="text-2xl font-bold">23</div>
+                                    <div class="text-sm opacity-80">Uygulanıyor</div>
+                                </div>
+                                <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center">
+                                    <div class="text-2xl font-bold">89</div>
+                                    <div class="text-sm opacity-80">Katılımcı</div>
+                                </div>
+                                <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center">
+                                    <div class="text-2xl font-bold">₺2.3M</div>
+                                    <div class="text-sm opacity-80">Tasarruf Sağlandı</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating elements -->
+                        <div class="absolute top-4 right-4 text-6xl opacity-20">💡</div>
+                        <div class="absolute bottom-4 left-4 text-4xl opacity-20">🚀</div>
+                    </div>
+                    
+                    <!-- Action Bar -->
+                    <div class="flex flex-col lg:flex-row items-center justify-between bg-white rounded-2xl p-6 mb-8 shadow-lg">
+                        <div class="flex items-center space-x-4 mb-4 lg:mb-0">
+                            <button onclick="showAddIdeaModal()" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+                                <i class="fas fa-plus mr-2"></i>Yeni Fikir Ekle
+                            </button>
+                            <button onclick="showMyIdeas()" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+                                <i class="fas fa-user mr-2"></i>Fikirlerim
+                            </button>
+                            <button onclick="showImplementedIdeas()" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+                                <i class="fas fa-check-circle mr-2"></i>Uygulananlar
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="relative">
+                                <input type="text" placeholder="Fikir ara..." class="pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                            <select class="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option>Tüm Kategoriler</option>
+                                <option>Teknoloji</option>
+                                <option>Operasyon</option>
+                                <option>Müşteri Deneyimi</option>
+                                <option>Çevre</option>
+                                <option>Güvenlik</option>
+                            </select>
+                            <select class="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option>En Popüler</option>
+                                <option>En Yeni</option>
+                                <option>En Çok Oylanan</option>
+                                <option>Uygulanabilir</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Ideas Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" id="ideasGrid">
+                        <!-- Idea cards will be populated here -->
+                    </div>
+                    
+                    <!-- Load More Button -->
+                    <div class="text-center mt-8">
+                        <button onclick="loadMoreIdeas()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-8 py-3 rounded-xl font-medium transition-all duration-300">
+                            <i class="fas fa-chevron-down mr-2"></i>Daha Fazla Göster
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Add Idea Modal -->
+                <div id="addIdeaModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                    <div class="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">💡 Yeni Fikir Ekle</h2>
+                            <button onclick="closeAddIdeaModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <form onsubmit="submitIdea(event)" class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Fikir Başlığı</label>
+                                <input type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Fikrinizi özetleyen başlık...">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
+                                <select required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Kategori seçin...</option>
+                                    <option value="teknoloji">🔧 Teknoloji & İnovasyon</option>
+                                    <option value="operasyon">⚙️ Operasyonel İyileştirme</option>
+                                    <option value="musteri">👥 Müşteri Deneyimi</option>
+                                    <option value="cevre">🌱 Çevre & Sürdürülebilirlik</option>
+                                    <option value="guvenlik">🛡️ Güvenlik & Emniyet</option>
+                                    <option value="finans">💰 Maliyet Optimizasyonu</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Detaylı Açıklama</label>
+                                <textarea required rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Fikrinizi detaylı olarak açıklayın..."></textarea>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Tahmini Maliyet</label>
+                                    <select class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <option value="dusuk">💚 Düşük (0-10K ₺)</option>
+                                        <option value="orta">💛 Orta (10K-100K ₺)</option>
+                                        <option value="yuksek">🧡 Yüksek (100K+ ₺)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Uygulama Süresi</label>
+                                    <select class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <option value="kisa">⚡ Kısa Vadeli (1-3 ay)</option>
+                                        <option value="orta">⏳ Orta Vadeli (3-12 ay)</option>
+                                        <option value="uzun">📅 Uzun Vadeli (1+ yıl)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Beklenen Fayda</label>
+                                <textarea rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Bu fikrin uygulanması durumunda beklenen faydalar..."></textarea>
+                            </div>
+                            
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700">Anonim olarak paylaş</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700">Acil öncelik</span>
+                                </label>
+                            </div>
+                            
+                            <div class="flex space-x-4 pt-4">
+                                <button type="submit" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300">
+                                    <i class="fas fa-paper-plane mr-2"></i>Fikri Gönder
+                                </button>
+                                <button type="button" onclick="closeAddIdeaModal()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300">
+                                    İptal
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            // Load initial ideas
+            loadIdeas();
+        }
+
+        function handleProjects() {
+            alert('📋 Proje Yönetimi Sistemi\n\n🔄 Devam Eden Projeler:\n• Teleferik Modernizasyonu (%75 tamamlandı)\n• Yeni Pist İnşaatı (%45 tamamlandı)\n• Otel Renovasyonu (%60 tamamlandı)\n• Güvenlik Sistemi Yenileme (%90 tamamlandı)\n\n💰 Toplam Proje Bütçesi: ₺12.5M\n📊 Genel İlerleme: %68');
+        }
+
+        // Floating menu toggle
+        let floatingMenuOpen = false;
+        
+        function toggleFloatingMenu() {
+            const subButtons = document.getElementById('floatingSubButtons');
+            const icon = document.getElementById('floatingIcon');
+            
+            floatingMenuOpen = !floatingMenuOpen;
+            
+            if (floatingMenuOpen) {
+                subButtons.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+                subButtons.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+                icon.classList.add('rotate-45');
+            } else {
+                subButtons.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+                subButtons.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+                icon.classList.remove('rotate-45');
+            }
+        }
+        
+        function handleEmergency() {
+            alert('🚨 ACİL DURUM SİSTEMİ\n\n• Kurtarma Ekipleri: 7/24 Hazır\n• Tıbbi Müdahale: 3 dakika\n• İtfaiye: Yerinde\n• Güvenlik: Tüm pistlerde\n\nAcil durumda 112\'yi arayın!');
+            toggleFloatingMenu();
+        }
+        
+        function handleWeather() {
+            alert('🌨️ HAVA DURUMU UYARISI\n\n❄️ Yoğun kar yağışı devam ediyor\n🌡️ Sıcaklık: -8°C\n💨 Rüzgar: 35 km/h\n⚠️ Görüş mesafesi düşük\n\nPistlerde dikkatli olun!');
+            toggleFloatingMenu();
+        }
+        
+        function handleAI() {
+            alert('🤖 EJDER3200 AI Asistanı\n\nMerhaba! Size nasıl yardımcı olabilirim?\n\n• Pist durumu analizi\n• Teleferik optimizasyonu\n• Ziyaretçi akış tahmini\n• Gelir analizi\n• Güvenlik raporları\n• Hava durumu entegrasyonu');
+            toggleFloatingMenu();
+        }
+
+        // İnteraktif Kontrol Fonksiyonları
+        
+        // Sistem Yenileme
+        function refreshAllSystems() {
+            const button = event.target;
+            const icon = button.querySelector('i');
+            
+            icon.classList.add('animate-spin');
+            button.disabled = true;
+            button.classList.add('opacity-50');
+            
+            // Simüle edilmiş yenileme
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                button.disabled = false;
+                button.classList.remove('opacity-50');
+                
+                // Rastgele veri güncellemeleri
+                updateRealTimeData();
+                
+                // Başarı mesajı
+                showNotification('✅ Tüm sistemler başarıyla yenilendi!', 'success');
+            }, 2000);
+        }
+        
+        // Teleferik Kontrol
+        function toggleLiftControl() {
+            showSystemDialog('🚡 Teleferik Kontrol Sistemi', 
+                'Teleferik hatlarını kontrol edebilirsiniz:\n\n' +
+                '• Hat 1-6: ✅ Aktif (Normal işletim)\n' +
+                '• Hat 7-8: ✅ Aktif (Yoğun kullanım)\n' +
+                '• Hat 9: ⚠️ Bakımda (Motor arızası)\n\n' +
+                'Toplam Kapasite: %87\n' +
+                'Günlük Yolcu: 2,847 kişi\n' +
+                'Ortalama Bekleme: 3 dakika\n\n' +
+                '🔧 Bakım Durumu:\n' +
+                '• Rutin bakım: Pazartesi 06:00\n' +
+                '• Acil müdahale: 24/7 hazır\n' +
+                '• Yedek parça: Stokta mevcut'
+            );
+        }
+        
+        // Kar Makinası Kontrol
+        function toggleSnowMachines() {
+            showSystemDialog('❄️ Kar Makinası Kontrol Sistemi',
+                'Kar yapım sistemlerinin durumu:\n\n' +
+                '🎿 Pist Bazlı Durum:\n' +
+                '• Ejder Pisti: 4/4 aktif (45cm kar)\n' +
+                '• Kaplan Pisti: 5/5 aktif (38cm kar)\n' +
+                '• Başlangıç Pisti: 3/4 aktif (30cm kar)\n' +
+                '• Kartal Pisti: 0/3 aktif (bakımda)\n\n' +
+                '⚡ Enerji Tüketimi: 1.2 MW\n' +
+                '🌡️ Optimum Sıcaklık: -8°C\n' +
+                '💧 Su Tüketimi: 450 L/dk\n\n' +
+                '📊 Verimlilik: %80 (Mükemmel)'
+            );
+        }
+        
+        // Güvenlik Sistemi
+        function toggleSecuritySystem() {
+            showSystemDialog('🛡️ Güvenlik Sistemi Kontrol Paneli',
+                'Güvenlik sistemlerinin durumu:\n\n' +
+                '📹 Kamera Sistemi:\n' +
+                '• 24 kamera aktif (4K çözünürlük)\n' +
+                '• Gece görüş: Aktif\n' +
+                '• Hareket algılama: Aktif\n' +
+                '• Kayıt süresi: 30 gün\n\n' +
+                '👥 Personel Durumu:\n' +
+                '• Kurtarma ekibi: 8 kişi (tüm pistlerde)\n' +
+                '• Tıbbi ekip: 3 kişi (ambulans hazır)\n' +
+                '• Güvenlik: 12 kişi (7/24 nöbet)\n\n' +
+                '🚨 Acil Durum Protokolü: Hazır\n' +
+                '📞 İletişim: Telsiz + GSM'
+            );
+        }
+        
+        // Hava Durumu İstasyonu
+        function toggleWeatherStation() {
+            showSystemDialog('🌨️ Hava Durumu İzleme İstasyonu',
+                'Meteoroloji verilerinin detayları:\n\n' +
+                '🌡️ Sıcaklık Verileri:\n' +
+                '• Mevcut: -8°C\n' +
+                '• Hissedilen: -15°C\n' +
+                '• Min/Max: -12°C / -5°C\n\n' +
+                '💨 Rüzgar Analizi:\n' +
+                '• Hız: 15 km/h (güvenli)\n' +
+                '• Yön: Kuzey-Batı\n' +
+                '• Maksimum: 35 km/h\n\n' +
+                '❄️ Kar Durumu:\n' +
+                '• Yoğunluk: Orta-Yoğun\n' +
+                '• Birikim: 5cm/saat\n' +
+                '• Görüş: 2km (kabul edilebilir)\n\n' +
+                '📈 6 Saatlik Tahmin: Kar devam edecek'
+            );
+        }
+        
+        // Enerji Yönetimi
+        function toggleEnergyManagement() {
+            showSystemDialog('⚡ Enerji Yönetimi Sistemi',
+                'Enerji sistemlerinin durumu:\n\n' +
+                '🔌 Ana Şebeke:\n' +
+                '• Durum: Aktif ve kararlı\n' +
+                '• Voltaj: 380V (normal)\n' +
+                '• Frekans: 50Hz (stabil)\n' +
+                '• Güç faktörü: 0.95\n\n' +
+                '🔋 Yedek Sistemler:\n' +
+                '• Jeneratör 1: Standby (500kW)\n' +
+                '• Jeneratör 2: Standby (750kW)\n' +
+                '• UPS: %100 şarjlı (30dk yedek)\n\n' +
+                '📊 Tüketim Analizi:\n' +
+                '• Teleferikler: 1.2 MW (%50)\n' +
+                '• Kar makinaları: 0.8 MW (%33)\n' +
+                '• Tesisler: 0.4 MW (%17)\n\n' +
+                '💡 Verimlilik: %92 (Optimum)'
+            );
+        }
+        
+        // Bilet Sistemi
+        function toggleTicketSystem() {
+            showSystemDialog('🎫 Bilet Satış Sistemi',
+                'Bilet sisteminin güncel durumu:\n\n' +
+                '💳 Satış Kanalları:\n' +
+                '• Online: 2,156 bilet (%66)\n' +
+                '• Gişe: 1,091 bilet (%34)\n' +
+                '• Mobil app: 847 bilet (%26)\n\n' +
+                '💰 Gelir Analizi:\n' +
+                '• Günlük toplam: ₺487,650\n' +
+                '• Ortalama bilet: ₺150\n' +
+                '• Sezonluk: ₺89,340\n' +
+                '• Grup indirimi: ₺34,120\n\n' +
+                '📈 Performans:\n' +
+                '• İşlem süresi: 1.2 saniye\n' +
+                '• Başarı oranı: %99.8\n' +
+                '• Müşteri memnuniyeti: 4.7/5\n\n' +
+                '🎯 Hedef: 4,000 bilet/gün'
+            );
+        }
+        
+        // Hızlı Eylem Fonksiyonları
+        function emergencyStop() {
+            if (confirm('⚠️ ACİL DURDURMA\n\nTüm teleferik hatları durdurulacak!\nBu işlem geri alınamaz.\n\nDevam etmek istiyor musunuz?')) {
+                showNotification('🚨 ACİL DURDURMA AKTİF! Tüm sistemler güvenli şekilde durduruldu.', 'error');
+                // Simüle edilmiş acil durdurma efekti
+                document.body.style.filter = 'hue-rotate(0deg) brightness(0.7)';
+                setTimeout(() => {
+                    document.body.style.filter = '';
+                    showNotification('✅ Sistemler normale döndürüldü.', 'success');
+                }, 5000);
+            }
+        }
+        
+        function startSnowMaking() {
+            showNotification('❄️ Kar yapım sistemi başlatılıyor...', 'info');
+            setTimeout(() => {
+                showNotification('✅ 12 kar makinası aktif! Kar yapımı başladı.', 'success');
+            }, 2000);
+        }
+        
+        function callSecurity() {
+            showNotification('🚨 Güvenlik ekipleri bilgilendirildi! Müdahale süresi: 2 dakika', 'warning');
+        }
+        
+        function weatherAlert() {
+            showNotification('🌨️ Hava durumu uyarısı gönderildi! Tüm ziyaretçiler bilgilendirildi.', 'info');
+        }
+        
+        function maintenanceMode() {
+            if (confirm('🔧 BAKIM MODU\n\nSeçili sistemler bakım moduna alınacak.\nBu sürede hizmet veremeyecekler.\n\nDevam edilsin mi?')) {
+                showNotification('🔧 Bakım modu aktif! Sistemler güvenli şekilde kapatılıyor.', 'warning');
+            }
+        }
+        
+        function systemReport() {
+            showSystemDialog('📊 Sistem Raporu - Özet',
+                '📈 GÜNLÜK PERFORMANS RAPORU\n\n' +
+                '🎿 Operasyonel Veriler:\n' +
+                '• Toplam ziyaretçi: 3,247 kişi\n' +
+                '• Teleferik kullanımı: 2,847 yolcu\n' +
+                '• Ortalama pist süresi: 12 dakika\n' +
+                '• Güvenlik olayı: 0 (Mükemmel)\n\n' +
+                '💰 Finansal Durum:\n' +
+                '• Günlük gelir: ₺487,650\n' +
+                '• Hedef karşılama: %108\n' +
+                '• Maliyet optimizasyonu: %15\n\n' +
+                '⚡ Sistem Sağlığı:\n' +
+                '• Uptime: %99.8\n' +
+                '• Performans: Mükemmel\n' +
+                '• Enerji verimliliği: %92\n\n' +
+                '🎯 Öneriler:\n' +
+                '• Teleferik Hat 9 bakımı tamamlansın\n' +
+                '• Kar makinası kapasitesi artırılabilir\n' +
+                '• Ziyaretçi memnuniyeti %97 (Hedef: %95)'
+            );
+        }
+        
+        // Yardımcı Fonksiyonlar
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+            
+            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-4 rounded-xl shadow-2xl z-50 transform translate-x-full transition-transform duration-300`;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <div class="text-lg">
+                        ${type === 'success' ? '✅' : type === 'error' ? '🚨' : type === 'warning' ? '⚠️' : 'ℹ️'}
+                    </div>
+                    <div class="font-medium">${message}</div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animasyon
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Otomatik kaldırma
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 4000);
+        }
+        
+        function showSystemDialog(title, content) {
+            alert(`${title}\n\n${content}`);
+        }
+        
+        // Gerçek zamanlı veri güncelleme
+        function updateRealTimeData() {
+            // CPU kullanımı
+            const cpuElement = document.getElementById('cpuUsage');
+            if (cpuElement) {
+                const newCpu = Math.floor(Math.random() * 30) + 15;
+                cpuElement.textContent = `%${newCpu}`;
+                cpuElement.className = newCpu > 80 ? 'text-red-400' : newCpu > 60 ? 'text-yellow-400' : 'text-green-400';
+            }
+            
+            // Bellek kullanımı
+            const memoryElement = document.getElementById('memoryUsage');
+            if (memoryElement) {
+                const newMemory = Math.floor(Math.random() * 20) + 60;
+                memoryElement.textContent = `%${newMemory}`;
+                memoryElement.className = newMemory > 85 ? 'text-red-400' : newMemory > 70 ? 'text-yellow-400' : 'text-green-400';
+            }
+            
+            // Ağ trafiği
+            const networkElement = document.getElementById('networkTraffic');
+            if (networkElement) {
+                const newNetwork = (Math.random() * 3 + 1).toFixed(1);
+                networkElement.textContent = `${newNetwork} Mbps`;
+            }
+            
+            // Aktif bağlantılar
+            const connectionsElement = document.getElementById('activeConnections');
+            if (connectionsElement) {
+                const newConnections = Math.floor(Math.random() * 500) + 1000;
+                connectionsElement.textContent = newConnections.toLocaleString();
+            }
+            
+            // Teleferik yolcuları
+            const liftElement = document.getElementById('liftPassengers');
+            if (liftElement) {
+                const newPassengers = Math.floor(Math.random() * 200) + 2700;
+                liftElement.textContent = newPassengers.toLocaleString();
+            }
+            
+            // Pist ziyaretçileri
+            const visitorsElement = document.getElementById('pistVisitors');
+            if (visitorsElement) {
+                const newVisitors = Math.floor(Math.random() * 300) + 3000;
+                visitorsElement.textContent = newVisitors.toLocaleString();
+            }
+            
+            // Günlük gelir
+            const revenueElement = document.getElementById('dailyRevenue');
+            if (revenueElement) {
+                const newRevenue = Math.floor(Math.random() * 50000) + 450000;
+                revenueElement.textContent = `₺${newRevenue.toLocaleString()}`;
+            }
+        }
+        
+        // Otomatik veri güncelleme
+        setInterval(updateRealTimeData, 5000);
+        
+        // Fikir Havuzu Fonksiyonları
+        let currentIdeas = [];
+        let displayedIdeasCount = 0;
+        
+        function loadIdeas() {
+            // Örnek fikir verileri
+            currentIdeas = [
+                {
+                    id: 1,
+                    title: "Gece Kayağı Etkinlikleri",
+                    description: "Pist aydınlatması ile gece kayağı imkanı sunarak sezon süresini uzatmak ve farklı bir deneyim yaşatmak.",
+                    category: "musteri",
+                    author: "Ahmet Yılmaz",
+                    date: "2024-01-15",
+                    votes: 47,
+                    comments: 12,
+                    status: "review",
+                    cost: "yuksek",
+                    timeline: "orta",
+                    tags: ["gece", "aydınlatma", "etkinlik"],
+                    priority: "high"
+                },
+                {
+                    id: 2,
+                    title: "Mobil Uygulama ile Pist Rezervasyonu",
+                    description: "Kayakçıların mobil uygulama üzerinden pist durumunu görebilmesi ve rezervasyon yapabilmesi.",
+                    category: "teknoloji",
+                    author: "Zeynep Kaya",
+                    date: "2024-01-12",
+                    votes: 32,
+                    comments: 8,
+                    status: "development",
+                    cost: "orta",
+                    timeline: "kisa",
+                    tags: ["mobil", "rezervasyon", "teknoloji"],
+                    priority: "medium"
+                },
+                {
+                    id: 3,
+                    title: "Drone ile Kar Kalınlığı Ölçümü",
+                    description: "Drone teknolojisi kullanarak pistlerdeki kar kalınlığını otomatik olarak ölçmek ve raporlamak.",
+                    category: "teknoloji",
+                    author: "Mehmet Demir",
+                    date: "2024-01-10",
+                    votes: 28,
+                    comments: 15,
+                    status: "review",
+                    cost: "orta",
+                    timeline: "orta",
+                    tags: ["drone", "ölçüm", "otomasyon"],
+                    priority: "medium"
+                },
+                {
+                    id: 4,
+                    title: "VR Kayak Simülatörü Eğitim Merkezi",
+                    description: "Sanal gerçeklik teknolojisi ile güvenli ortamda kayak eğitimi verebilecek bir merkez kurulması.",
+                    category: "teknoloji",
+                    author: "Ayşe Özkan",
+                    date: "2024-01-08",
+                    votes: 25,
+                    comments: 6,
+                    status: "planning",
+                    cost: "yuksek",
+                    timeline: "uzun",
+                    tags: ["VR", "eğitim", "simülatör"],
+                    priority: "low"
+                },
+                {
+                    id: 5,
+                    title: "Çevre Dostu Kar Yapma Sistemi",
+                    description: "Daha az enerji tüketen ve çevre dostu kar yapma makinalarının kullanılması.",
+                    category: "cevre",
+                    author: "Emre Şahin",
+                    date: "2024-01-05",
+                    votes: 19,
+                    comments: 9,
+                    status: "review",
+                    cost: "yuksek",
+                    timeline: "uzun",
+                    tags: ["çevre", "enerji", "sürdürülebilir"],
+                    priority: "medium"
+                },
+                {
+                    id: 6,
+                    title: "Akıllı Kart Sistemi",
+                    description: "Tek kart ile teleferik, restoran ve tüm tesislerde ödeme yapabilme imkanı.",
+                    category: "teknoloji",
+                    author: "Fatma Yıldız",
+                    date: "2024-01-03",
+                    votes: 41,
+                    comments: 18,
+                    status: "implemented",
+                    cost: "orta",
+                    timeline: "kisa",
+                    tags: ["ödeme", "kart", "entegrasyon"],
+                    priority: "high"
+                },
+                {
+                    id: 7,
+                    title: "Kayak Ekipmanı Temizlik İstasyonu",
+                    description: "Hijyen için kayak ekipmanlarının temizlenebileceği otomatik istasyonlar.",
+                    category: "guvenlik",
+                    author: "Ali Çelik",
+                    date: "2024-01-01",
+                    votes: 23,
+                    comments: 4,
+                    status: "review",
+                    cost: "dusuk",
+                    timeline: "kisa",
+                    tags: ["hijyen", "temizlik", "ekipman"],
+                    priority: "medium"
+                },
+                {
+                    id: 8,
+                    title: "Çocuk Oyun Alanı Genişletme",
+                    description: "Aileler için çocuk oyun alanının genişletilmesi ve yeni aktiviteler eklenmesi.",
+                    category: "musteri",
+                    author: "Selin Arslan",
+                    date: "2023-12-28",
+                    votes: 35,
+                    comments: 11,
+                    status: "planning",
+                    cost: "orta",
+                    timeline: "orta",
+                    tags: ["çocuk", "aile", "oyun"],
+                    priority: "medium"
+                },
+                {
+                    id: 9,
+                    title: "Enerji Tasarrufu LED Aydınlatma",
+                    description: "Tüm tesislerde LED aydınlatmaya geçiş ile enerji tasarrufu sağlanması.",
+                    category: "cevre",
+                    author: "Hasan Kılıç",
+                    date: "2023-12-25",
+                    votes: 29,
+                    comments: 7,
+                    status: "development",
+                    cost: "orta",
+                    timeline: "kisa",
+                    tags: ["LED", "enerji", "tasarruf"],
+                    priority: "high"
+                }
+            ];
+            
+            displayedIdeasCount = 0;
+            renderIdeas(6); // İlk 6 fikri göster
+        }
+        
+        function renderIdeas(count) {
+            const grid = document.getElementById('ideasGrid');
+            if (!grid) return;
+            
+            const ideasToShow = currentIdeas.slice(displayedIdeasCount, displayedIdeasCount + count);
+            
+            ideasToShow.forEach(idea => {
+                const ideaCard = createIdeaCard(idea);
+                grid.appendChild(ideaCard);
+            });
+            
+            displayedIdeasCount += ideasToShow.length;
+        }
+        
+        function createIdeaCard(idea) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-200';
+            
+            const categoryColors = {
+                teknoloji: 'bg-blue-100 text-blue-800',
+                operasyon: 'bg-green-100 text-green-800',
+                musteri: 'bg-purple-100 text-purple-800',
+                cevre: 'bg-emerald-100 text-emerald-800',
+                guvenlik: 'bg-red-100 text-red-800',
+                finans: 'bg-yellow-100 text-yellow-800'
+            };
+            
+            const statusColors = {
+                review: 'bg-yellow-100 text-yellow-800',
+                development: 'bg-blue-100 text-blue-800',
+                planning: 'bg-purple-100 text-purple-800',
+                implemented: 'bg-green-100 text-green-800'
+            };
+            
+            const statusTexts = {
+                review: 'İnceleniyor',
+                development: 'Geliştiriliyor',
+                planning: 'Planlanıyor',
+                implemented: 'Uygulandı'
+            };
+            
+            const costIcons = {
+                dusuk: '💚',
+                orta: '💛',
+                yuksek: '🧡'
+            };
+            
+            const priorityColors = {
+                high: 'border-l-4 border-red-500',
+                medium: 'border-l-4 border-yellow-500',
+                low: 'border-l-4 border-green-500'
+            };
+            
+            card.innerHTML = `
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold ${categoryColors[idea.category] || 'bg-gray-100 text-gray-800'}">
+                            ${getCategoryIcon(idea.category)} ${getCategoryName(idea.category)}
+                        </span>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColors[idea.status]}">
+                            ${statusTexts[idea.status]}
+                        </span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <span class="text-lg">${costIcons[idea.cost]}</span>
+                        ${idea.priority === 'high' ? '<span class="text-red-500 text-sm">🔥</span>' : ''}
+                    </div>
+                </div>
+                
+                <div class="${priorityColors[idea.priority]} pl-4">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-blue-600 cursor-pointer" onclick="showIdeaDetail(${idea.id})">
+                        ${idea.title}
+                    </h3>
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                        ${idea.description}
+                    </p>
+                </div>
+                
+                <div class="flex flex-wrap gap-1 mb-4">
+                    ${idea.tags.map(tag => `<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">#${tag}</span>`).join('')}
+                </div>
+                
+                <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                    <div class="flex items-center space-x-4">
+                        <span class="flex items-center space-x-1">
+                            <i class="fas fa-user"></i>
+                            <span>${idea.author}</span>
+                        </span>
+                        <span class="flex items-center space-x-1">
+                            <i class="fas fa-calendar"></i>
+                            <span>${formatDate(idea.date)}</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="voteIdea(${idea.id}, 'up')" class="flex items-center space-x-1 text-green-600 hover:text-green-700 transition-colors">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span class="font-semibold">${idea.votes}</span>
+                        </button>
+                        <button onclick="showComments(${idea.id})" class="flex items-center space-x-1 text-blue-600 hover:text-blue-700 transition-colors">
+                            <i class="fas fa-comment"></i>
+                            <span>${idea.comments}</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="shareIdea(${idea.id})" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <i class="fas fa-share"></i>
+                        </button>
+                        <button onclick="bookmarkIdea(${idea.id})" class="text-gray-400 hover:text-yellow-500 transition-colors">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function getCategoryIcon(category) {
+            const icons = {
+                teknoloji: '🔧',
+                operasyon: '⚙️',
+                musteri: '👥',
+                cevre: '🌱',
+                guvenlik: '🛡️',
+                finans: '💰'
+            };
+            return icons[category] || '💡';
+        }
+        
+        function getCategoryName(category) {
+            const names = {
+                teknoloji: 'Teknoloji',
+                operasyon: 'Operasyon',
+                musteri: 'Müşteri',
+                cevre: 'Çevre',
+                guvenlik: 'Güvenlik',
+                finans: 'Finans'
+            };
+            return names[category] || 'Genel';
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('tr-TR');
+        }
+        
+        function loadMoreIdeas() {
+            renderIdeas(6);
+        }
+        
+        function showAddIdeaModal() {
+            document.getElementById('addIdeaModal').classList.remove('hidden');
+        }
+        
+        function closeAddIdeaModal() {
+            document.getElementById('addIdeaModal').classList.add('hidden');
+        }
+        
+        function submitIdea(event) {
+            event.preventDefault();
+            
+            // Form verilerini al
+            const formData = new FormData(event.target);
+            
+            // Başarı mesajı göster
+            showNotification('✅ Fikriniz başarıyla gönderildi! İnceleme sürecine alındı.', 'success');
+            
+            // Modal'ı kapat
+            closeAddIdeaModal();
+            
+            // Formu temizle
+            event.target.reset();
+        }
+        
+        function voteIdea(ideaId, type) {
+            const idea = currentIdeas.find(i => i.id === ideaId);
+            if (idea) {
+                if (type === 'up') {
+                    idea.votes++;
+                    showNotification(`👍 "${idea.title}" fikrine oy verdiniz!`, 'success');
+                }
+                // Kartı yeniden render et
+                refreshIdeaCard(ideaId);
+            }
+        }
+        
+        function refreshIdeaCard(ideaId) {
+            // Basit bir yenileme simülasyonu
+            const cards = document.querySelectorAll('#ideasGrid > div');
+            cards.forEach(card => {
+                const voteButton = card.querySelector('button[onclick*="voteIdea"]');
+                if (voteButton && voteButton.onclick.toString().includes(ideaId)) {
+                    const idea = currentIdeas.find(i => i.id === ideaId);
+                    const voteSpan = voteButton.querySelector('span');
+                    if (voteSpan && idea) {
+                        voteSpan.textContent = idea.votes;
+                        voteButton.classList.add('text-green-700');
+                    }
+                }
+            });
+        }
+        
+        function showComments(ideaId) {
+            const idea = currentIdeas.find(i => i.id === ideaId);
+            if (idea) {
+                alert(`💬 "${idea.title}" - Yorumlar\n\n🔹 "Harika bir fikir! Uygulanabilir." - Ayşe K.\n🔹 "Maliyet analizi yapılmalı." - Mehmet D.\n🔹 "Benzer projeler başarılı olmuş." - Zeynep Y.\n\n${idea.comments} yorum daha var...`);
+            }
+        }
+        
+        function shareIdea(ideaId) {
+            const idea = currentIdeas.find(i => i.id === ideaId);
+            if (idea) {
+                showNotification(`🔗 "${idea.title}" fikri paylaşıldı!`, 'info');
+            }
+        }
+        
+        function bookmarkIdea(ideaId) {
+            const idea = currentIdeas.find(i => i.id === ideaId);
+            if (idea) {
+                showNotification(`🔖 "${idea.title}" fikri favorilere eklendi!`, 'info');
+            }
+        }
+        
+        function showIdeaDetail(ideaId) {
+            const idea = currentIdeas.find(i => i.id === ideaId);
+            if (idea) {
+                alert(`💡 ${idea.title}\n\n📝 Detay:\n${idea.description}\n\n👤 Öneren: ${idea.author}\n📅 Tarih: ${formatDate(idea.date)}\n👍 Oy: ${idea.votes}\n💬 Yorum: ${idea.comments}\n\n🏷️ Etiketler: ${idea.tags.join(', ')}`);
+            }
+        }
+        
+        function showMyIdeas() {
+            alert('📋 Fikirlerim\n\n🔹 "Akıllı Kart Sistemi" - 41 oy (Uygulandı ✅)\n🔹 "Çocuk Oyun Alanı" - 35 oy (Planlanıyor 📋)\n🔹 "Enerji Tasarrufu" - 29 oy (Geliştiriliyor 🔄)\n\nToplam 3 fikir, 105 oy aldı!');
+        }
+        
+        function showImplementedIdeas() {
+            alert('✅ Uygulanan Fikirler\n\n🎯 Bu yıl uygulanan:\n• Akıllı Kart Sistemi (₺450K tasarruf)\n• LED Aydınlatma (₺280K tasarruf)\n• Online Rezervasyon (%30 verimlilik artışı)\n• Mobil Uygulama (4.8/5 kullanıcı puanı)\n\n💰 Toplam tasarruf: ₺2.3M\n📈 Verimlilik artışı: %45');
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97353be5455cb76c',t:'MTc1NTg5NTczNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+

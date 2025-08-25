@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Evrak Yönetim Sistemi - Enterprise DMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.95); }
+        .sidebar-gradient { background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%); }
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hover-lift { transition: all 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Top Navigation -->
+    <nav class="gradient-bg shadow-xl border-b border-indigo-300">
+        <div class="max-w-full px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white p-3 rounded-xl shadow-lg">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">Enterprise DMS</h1>
+                        <p class="text-indigo-100 text-sm">Kurumsal Belge Yönetim Sistemi</p>
+                    </div>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" placeholder="Belge, kişi, departman ara..." class="w-full pl-12 pr-4 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-indigo-100 focus:outline-none focus:ring-2 focus:ring-white/50">
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <button class="relative p-2 text-white hover:bg-white/20 rounded-lg transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM9 7H4l5-5v5z"></path>
+                        </svg>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </button>
+                    <button class="relative p-2 text-white hover:bg-white/20 rounded-lg transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
+                        </svg>
+                        <span class="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">7</span>
+                    </button>
+                    <div class="flex items-center space-x-3 bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2">
+                        <div class="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold">MK</span>
+                        </div>
+                        <div class="text-white">
+                            <p class="font-medium">Mehmet Kaya</p>
+                            <p class="text-xs text-indigo-100">İK Müdürü</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="sidebar-gradient w-80 min-h-screen shadow-2xl">
+            <div class="p-6">
+                <!-- Quick Actions -->
+                <div class="mb-8">
+                    <button onclick="openUploadModal()" class="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover-lift transition-all">
+                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Yeni Belge Yükle
+                    </button>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="space-y-2">
+                    <div class="text-indigo-200 text-xs font-semibold uppercase tracking-wider mb-3">Ana Menü</div>
+                    <a href="#" class="flex items-center space-x-3 text-white bg-white/20 backdrop-blur-sm px-4 py-3 rounded-xl font-medium">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 text-indigo-200 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span>Tüm Belgeler</span>
+                        <span class="ml-auto bg-indigo-500 text-white text-xs px-2 py-1 rounded-full">2,847</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 text-indigo-200 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Bekleyen Onaylar</span>
+                        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">23</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 text-indigo-200 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span>Paylaşılan Belgeler</span>
+                    </a>
+
+                    <div class="text-indigo-200 text-xs font-semibold uppercase tracking-wider mb-3 mt-6">Departmanlar</div>
+                    <a href="#" class="flex items-center space-x-3 text-indigo-200 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl transition-colors">
+                        <span class="w-3 h-3 bg-blue-400 rounded-full"></span>
+                        <span>İnsan Kaynakları</span>
+                        <span class="ml-auto text-xs">847</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 text-indigo-200 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl transition-colors">
+                        <span class="w-3 h-3 bg-green-400 rounded-full"></span>
+                        <span>Muhasebe & Finans</span>
+                        <span class="ml-auto text-xs">623</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 text-indigo-200 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl transition-colors">
+                        <span class="w-3 h-3 bg-purple-400 rounded-full"></span>
+                        <span>Hukuk & Uyum</span>
+                        <span class="ml-auto text-xs">234</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 text-indigo-200 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl transition-colors">
+                        <span class="w-3 h-3 bg-orange-400 rounded-full"></span>
+                        <span>Satış & Pazarlama</span>
+                        <span class="ml-auto text-xs">456</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 text-indigo-200 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl transition-colors">
+                        <span class="w-3 h-3 bg-red-400 rounded-full"></span>
+                        <span>Operasyon</span>
+                        <span class="ml-auto text-xs">687</span>
+                    </a>
+                </nav>
+
+                <!-- Storage Info -->
+                <div class="mt-8 bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-indigo-200 text-sm">Depolama</span>
+                        <span class="text-white text-sm font-medium">2.4 TB / 5 TB</span>
+                    </div>
+                    <div class="w-full bg-indigo-800 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full" style="width: 48%"></div>
+                    </div>
+                    <p class="text-indigo-200 text-xs mt-2">2.6 TB kalan alan</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Dashboard Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-medium">Toplam Belge</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-1">2,847</p>
+                            <p class="text-green-600 text-sm mt-1">↗ %12 artış</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-medium">Bu Ay Eklenen</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-1">189</p>
+                            <p class="text-green-600 text-sm mt-1">↗ %8 artış</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-medium">Bekleyen Onay</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-1">23</p>
+                            <p class="text-orange-600 text-sm mt-1">Acil: 5</p>
+                        </div>
+                        <div class="bg-orange-100 p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-medium">Aktif Kullanıcı</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-1">1,247</p>
+                            <p class="text-blue-600 text-sm mt-1">Online: 342</p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Recent Activity -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Document Activity Chart -->
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-gray-900">Belge Aktivitesi</h3>
+                        <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                            <option>Son 30 Gün</option>
+                            <option>Son 3 Ay</option>
+                            <option>Son 6 Ay</option>
+                        </select>
+                    </div>
+                    <div class="relative h-80 w-full">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Son Aktiviteler</h3>
+                    <div class="space-y-4" id="recentActivity">
+                        <!-- Activity items will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Management Section -->
+            <div class="bg-white rounded-2xl shadow-lg">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-2xl font-bold text-gray-900">Belge Yönetimi</h2>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">Filtrele</button>
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">Sırala</button>
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">Dışa Aktar</button>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                                    </svg>
+                                </button>
+                                <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Filters -->
+                <div class="p-6 bg-gray-50 border-b border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option>Tüm Departmanlar</option>
+                            <option>İnsan Kaynakları</option>
+                            <option>Muhasebe & Finans</option>
+                            <option>Hukuk & Uyum</option>
+                        </select>
+                        <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option>Tüm Dosya Türleri</option>
+                            <option>PDF</option>
+                            <option>Word</option>
+                            <option>Excel</option>
+                            <option>PowerPoint</option>
+                        </select>
+                        <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option>Tüm Durumlar</option>
+                            <option>Onaylandı</option>
+                            <option>Bekliyor</option>
+                            <option>Reddedildi</option>
+                        </select>
+                        <input type="date" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <!-- Document Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <input type="checkbox" class="rounded border-gray-300">
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Belge</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Departman</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Yükleyen</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Boyut</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="documentTable">
+                            <!-- Table rows will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="px-6 py-4 border-t border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-700">Sayfa başına:</span>
+                            <select class="px-2 py-1 border border-gray-300 rounded text-sm">
+                                <option>20</option>
+                                <option>50</option>
+                                <option>100</option>
+                            </select>
+                            <span class="text-sm text-gray-700">1-20 / 2,847 belge</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">Önceki</button>
+                            <button class="px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm">1</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">2</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">3</button>
+                            <span class="px-3 py-2 text-gray-500">...</span>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">143</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">Sonraki</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full mx-4 max-h-[95vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900">Yeni Belge Yükle</h3>
+                        <p class="text-sm text-gray-600 mt-1">Kurumsal belge yönetim sistemi - Güvenli yükleme</p>
+                    </div>
+                    <button onclick="closeUploadModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <!-- File Upload Section -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">📁 Dosya Seçimi</h4>
+                    
+                    <!-- Drag & Drop Area -->
+                    <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center mb-4 hover:border-indigo-400 transition-colors cursor-pointer">
+                        <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <p class="text-xl font-medium text-gray-900 mb-2">Dosyaları buraya sürükleyin</p>
+                        <p class="text-gray-600 mb-4">veya bilgisayarınızdan seçin</p>
+                        <input type="file" id="fileInput" class="hidden" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png">
+                        <button onclick="document.getElementById('fileInput').click()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            Dosya Seç
+                        </button>
+                    </div>
+
+                    <!-- File Restrictions -->
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+                        <div class="flex items-start space-x-3">
+                            <svg class="w-5 h-5 text-amber-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                            <div>
+                                <h5 class="font-medium text-amber-800 mb-2">Dosya Kısıtlamaları</h5>
+                                <ul class="text-sm text-amber-700 space-y-1">
+                                    <li>• <strong>Maksimum boyut:</strong> 100MB (tek dosya), 500MB (toplam)</li>
+                                    <li>• <strong>İzin verilen formatlar:</strong> PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, JPG, PNG</li>
+                                    <li>• <strong>Maksimum dosya sayısı:</strong> 10 adet</li>
+                                    <li>• <strong>Dosya adı:</strong> Türkçe karakter ve özel karakterler desteklenir</li>
+                                    <li>• <strong>Virüs taraması:</strong> Tüm dosyalar otomatik olarak taranır</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selected Files Display -->
+                    <div id="selectedFiles" class="hidden">
+                        <h5 class="font-medium text-gray-900 mb-3">Seçilen Dosyalar</h5>
+                        <div id="fileList" class="space-y-2"></div>
+                    </div>
+                </div>
+
+                <!-- Document Information -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">📋 Belge Bilgileri</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Belge Adı <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="documentName" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Belge adını girin" required>
+                            <p class="text-xs text-gray-500 mt-1">Minimum 5, maksimum 100 karakter</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Belge Türü <span class="text-red-500">*</span>
+                            </label>
+                            <select id="documentType" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                <option value="">Belge türünü seçin</option>
+                                <option value="contract">📄 Sözleşme</option>
+                                <option value="report">📊 Rapor</option>
+                                <option value="policy">📋 Politika/Prosedür</option>
+                                <option value="financial">💰 Mali Belge</option>
+                                <option value="hr">👥 İK Belgesi</option>
+                                <option value="legal">⚖️ Hukuki Belge</option>
+                                <option value="technical">🔧 Teknik Dokümantasyon</option>
+                                <option value="presentation">📽️ Sunum</option>
+                                <option value="form">📝 Form</option>
+                                <option value="note">📝 Not/Memo</option>
+                                <option value="other">📁 Diğer</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Departman <span class="text-red-500">*</span>
+                            </label>
+                            <select id="department" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                <option value="">Departman seçin</option>
+                                <option value="hr">👥 İnsan Kaynakları</option>
+                                <option value="finance">💰 Muhasebe & Finans</option>
+                                <option value="legal">⚖️ Hukuk & Uyum</option>
+                                <option value="sales">📈 Satış & Pazarlama</option>
+                                <option value="operations">🔧 Operasyon</option>
+                                <option value="it">💻 Bilgi İşlem</option>
+                                <option value="management">🏢 Üst Yönetim</option>
+                                <option value="quality">✅ Kalite Güvence</option>
+                                <option value="procurement">🛒 Satın Alma</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Alt Kategori
+                            </label>
+                            <select id="subCategory" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="">Alt kategori seçin</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project and Task Assignment -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">🎯 Proje ve Görev Ataması</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Proje Seçimi
+                            </label>
+                            <select id="projectAssignment" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" onchange="updateTaskList()">
+                                <option value="">Proje seçin (isteğe bağlı)</option>
+                                <option value="erp-implementation">🏗️ ERP Sistemi Kurulumu</option>
+                                <option value="digital-transformation">💻 Dijital Dönüşüm Projesi</option>
+                                <option value="office-relocation">🏢 Ofis Taşınma Projesi</option>
+                                <option value="iso-certification">📋 ISO 27001 Sertifikasyonu</option>
+                                <option value="product-launch">🚀 Yeni Ürün Lansmanı</option>
+                                <option value="cost-optimization">💰 Maliyet Optimizasyonu</option>
+                                <option value="employee-training">👨‍🎓 Çalışan Eğitim Programı</option>
+                                <option value="market-expansion">🌍 Pazar Genişleme</option>
+                                <option value="sustainability">🌱 Sürdürülebilirlik İnisiyatifi</option>
+                                <option value="security-upgrade">🔒 Güvenlik Altyapı Yenileme</option>
+                            </select>
+                            <div id="projectInfo" class="mt-2 text-xs text-gray-600 hidden">
+                                <!-- Project details will be shown here -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Görev/Alt Görev
+                            </label>
+                            <select id="taskAssignment" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="">Görev seçin</option>
+                                <optgroup label="🎯 Proje Bağımsız Görevler">
+                                    <option value="document-review">📋 Belge İnceleme ve Onay</option>
+                                    <option value="meeting-organization">🤝 Toplantı Organizasyonu</option>
+                                    <option value="training-preparation">👨‍🎓 Eğitim Hazırlığı</option>
+                                    <option value="report-creation">📊 Rapor Hazırlama</option>
+                                    <option value="policy-update">📝 Politika Güncelleme</option>
+                                    <option value="compliance-check">✅ Uyumluluk Kontrolü</option>
+                                    <option value="budget-planning">💰 Bütçe Planlama</option>
+                                    <option value="vendor-evaluation">🏢 Tedarikçi Değerlendirme</option>
+                                    <option value="employee-onboarding">👥 Personel İşe Alım</option>
+                                    <option value="performance-review">📈 Performans Değerlendirme</option>
+                                    <option value="audit-preparation">🔍 Denetim Hazırlığı</option>
+                                    <option value="contract-management">📄 Sözleşme Yönetimi</option>
+                                    <option value="risk-assessment">⚠️ Risk Değerlendirmesi</option>
+                                    <option value="quality-control">🎯 Kalite Kontrol</option>
+                                    <option value="customer-support">📞 Müşteri Destek</option>
+                                    <option value="maintenance-planning">🔧 Bakım Planlama</option>
+                                    <option value="inventory-management">📦 Envanter Yönetimi</option>
+                                    <option value="marketing-campaign">📢 Pazarlama Kampanyası</option>
+                                    <option value="data-analysis">📊 Veri Analizi</option>
+                                    <option value="system-maintenance">💻 Sistem Bakımı</option>
+                                </optgroup>
+                                <optgroup label="📁 Proje Bağlı Görevler" id="projectTasksGroup" style="display: none;">
+                                    <!-- Project tasks will be populated here -->
+                                </optgroup>
+                            </select>
+                            <div id="taskInfo" class="mt-2 text-xs text-gray-600 hidden">
+                                <!-- Task details will be shown here -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Belge Kategorisi
+                            </label>
+                            <select id="documentCategory" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="">Kategori seçin</option>
+                                <option value="planning">📋 Planlama Belgesi</option>
+                                <option value="progress">📈 İlerleme Raporu</option>
+                                <option value="meeting">🤝 Toplantı Tutanağı</option>
+                                <option value="specification">📝 Teknik Şartname</option>
+                                <option value="approval">✅ Onay Belgesi</option>
+                                <option value="budget">💰 Bütçe Belgesi</option>
+                                <option value="timeline">⏰ Zaman Çizelgesi</option>
+                                <option value="risk">⚠️ Risk Analizi</option>
+                                <option value="deliverable">📦 Teslimat Belgesi</option>
+                                <option value="evaluation">📊 Değerlendirme Raporu</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Belge Durumu
+                            </label>
+                            <select id="documentStatus" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="draft">📝 Taslak</option>
+                                <option value="review">👀 İnceleme Aşamasında</option>
+                                <option value="approved">✅ Onaylandı</option>
+                                <option value="final">🏁 Final</option>
+                                <option value="archived">📚 Arşivlendi</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team and Authority Assignment -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">👥 Ekip ve Yetki Ataması</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Sorumlu Kişi/Ekip Lideri
+                            </label>
+                            <select id="responsiblePerson" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="">Sorumlu kişi seçin</option>
+                                <option value="mehmet-kaya">👨‍💼 Mehmet Kaya - İK Müdürü</option>
+                                <option value="ayse-demir">👩‍💼 Ayşe Demir - Finans Müdürü</option>
+                                <option value="can-yilmaz">👨‍💻 Can Yılmaz - IT Müdürü</option>
+                                <option value="zeynep-ozkan">👩‍⚖️ Zeynep Özkan - Hukuk Müşaviri</option>
+                                <option value="murat-sahin">👨‍🔧 Murat Şahin - Operasyon Müdürü</option>
+                                <option value="elif-koc">👩‍📊 Elif Koç - Proje Yöneticisi</option>
+                                <option value="ahmet-arslan">👨‍🎯 Ahmet Arslan - Satış Müdürü</option>
+                                <option value="fatma-celik">👩‍🔬 Fatma Çelik - Kalite Müdürü</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Ekip Üyeleri
+                            </label>
+                            <div class="relative">
+                                <input type="text" id="teamMembers" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Ekip üyelerini seçin..." readonly onclick="toggleTeamSelector()">
+                                <button type="button" onclick="toggleTeamSelector()" class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <!-- Team Member Selector -->
+                            <div id="teamSelector" class="hidden mt-2 border border-gray-300 rounded-xl bg-white shadow-lg max-h-48 overflow-y-auto">
+                                <div class="p-3 space-y-2">
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" value="selin-yurt" class="team-checkbox rounded border-gray-300">
+                                        <span class="text-sm">👩‍💻 Selin Yurt - Yazılım Geliştirici</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" value="kemal-acar" class="team-checkbox rounded border-gray-300">
+                                        <span class="text-sm">👨‍📊 Kemal Acar - Veri Analisti</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" value="deniz-kaya" class="team-checkbox rounded border-gray-300">
+                                        <span class="text-sm">👩‍🎨 Deniz Kaya - UX Designer</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" value="burak-ozturk" class="team-checkbox rounded border-gray-300">
+                                        <span class="text-sm">👨‍🔧 Burak Öztürk - Sistem Yöneticisi</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" value="gamze-sen" class="team-checkbox rounded border-gray-300">
+                                        <span class="text-sm">👩‍📈 Gamze Şen - İş Analisti</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" value="emre-dag" class="team-checkbox rounded border-gray-300">
+                                        <span class="text-sm">👨‍🎯 Emre Dağ - Proje Koordinatörü</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Onay Mercii
+                            </label>
+                            <select id="approvalAuthority" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="">Onay mercii seçin</option>
+                                <option value="department-manager">👨‍💼 Departman Müdürü</option>
+                                <option value="general-manager">🏢 Genel Müdür</option>
+                                <option value="ceo">👑 CEO</option>
+                                <option value="board">🏛️ Yönetim Kurulu</option>
+                                <option value="legal-team">⚖️ Hukuk Ekibi</option>
+                                <option value="finance-team">💰 Finans Ekibi</option>
+                                <option value="compliance">📋 Uyumluluk Ekibi</option>
+                                <option value="auto-approve">🤖 Otomatik Onay</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Bilgilendirilecek Kişiler
+                            </label>
+                            <input type="text" id="notificationList" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="E-posta adreslerini virgülle ayırın">
+                            <p class="text-xs text-gray-500 mt-1">Belge yüklendiğinde bu kişiler bilgilendirilecek</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy and Security Settings -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">🔒 Gizlilik ve Güvenlik Ayarları</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Gizlilik Seviyesi <span class="text-red-500">*</span>
+                            </label>
+                            <select id="privacyLevel" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required onchange="updatePrivacyInfo()">
+                                <option value="">Gizlilik seviyesi seçin</option>
+                                <option value="public">🌍 Genel (Herkese Açık)</option>
+                                <option value="internal">🏢 Dahili (Şirket İçi)</option>
+                                <option value="confidential">🔒 Gizli (Yetkili Personel)</option>
+                                <option value="restricted">🚫 Kısıtlı (Üst Düzey Yönetim)</option>
+                                <option value="top-secret">⛔ Çok Gizli (C-Level)</option>
+                            </select>
+                            
+                            <div id="privacyInfo" class="mt-3 p-3 rounded-lg hidden">
+                                <!-- Privacy level info will be displayed here -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Erişim Kontrolü
+                            </label>
+                            <div class="space-y-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="requireApproval" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm text-gray-700">Yönetici onayı gerekli</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="trackAccess" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" checked>
+                                    <span class="ml-2 text-sm text-gray-700">Erişim kayıtlarını tut</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="preventDownload" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm text-gray-700">İndirmeyi engelle</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="watermark" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm text-gray-700">Filigran ekle</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Metadata -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">📝 Belge Detayları</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Açıklama</label>
+                            <textarea id="description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Belge hakkında detaylı açıklama yazın..."></textarea>
+                            <p class="text-xs text-gray-500 mt-1">Maksimum 500 karakter</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Geçerlilik Tarihi</label>
+                                <input type="date" id="expiryDate" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Öncelik Seviyesi</label>
+                                <select id="priority" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    <option value="low">🟢 Düşük</option>
+                                    <option value="normal" selected>🟡 Normal</option>
+                                    <option value="high">🟠 Yüksek</option>
+                                    <option value="urgent">🔴 Acil</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tags and Keywords -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">🏷️ Etiketler ve İndeksleme</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Etiketler</label>
+                            <input type="text" id="tags" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Etiketleri virgülle ayırın">
+                            <p class="text-xs text-gray-500 mt-1">Örnek: sözleşme, 2024, müşteri, önemli</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Anahtar Kelimeler</label>
+                            <input type="text" id="keywords" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Arama için anahtar kelimeler">
+                            <p class="text-xs text-gray-500 mt-1">Belgeyi bulmayı kolaylaştıracak kelimeler</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">İndeks Kategorisi</label>
+                            <select id="indexCategory" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="">İndeks kategorisi seçin</option>
+                                <option value="strategic">🎯 Stratejik Belgeler</option>
+                                <option value="operational">⚙️ Operasyonel Belgeler</option>
+                                <option value="compliance">📋 Uyumluluk Belgeleri</option>
+                                <option value="financial">💰 Mali Belgeler</option>
+                                <option value="hr">👥 İnsan Kaynakları</option>
+                                <option value="technical">🔧 Teknik Belgeler</option>
+                                <option value="legal">⚖️ Hukuki Belgeler</option>
+                                <option value="reference">📚 Referans Belgeler</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Belge Seri No</label>
+                            <input type="text" id="documentSerial" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Otomatik oluşturulacak" readonly>
+                            <p class="text-xs text-gray-500 mt-1">Sistem tarafından otomatik atanacak</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sharing and Notifications -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">📤 Paylaşım ve Bildirimler</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Paylaşılacak Kişiler</label>
+                            <input type="text" id="shareWith" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="E-posta adreslerini virgülle ayırın">
+                            <p class="text-xs text-gray-500 mt-1">Belge yüklendikten sonra bu kişiler bilgilendirilecek</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bildirim Ayarları</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="notifyUpload" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" checked>
+                                    <span class="ml-2 text-sm text-gray-700">Yükleme tamamlandığında bildir</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="notifyAccess" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm text-gray-700">Belgeye erişildiğinde bildir</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="notifyExpiry" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm text-gray-700">Geçerlilik süresi dolmadan önce bildir</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="border-t border-gray-200 pt-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <button type="button" onclick="saveDraft()" class="px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 font-medium transition-colors">
+                                💾 Taslak Kaydet
+                            </button>
+                            <button type="button" onclick="previewDocument()" class="px-6 py-3 border border-indigo-300 text-indigo-600 rounded-xl hover:bg-indigo-50 font-medium transition-colors">
+                                👁️ Önizleme
+                            </button>
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <button onclick="closeUploadModal()" class="px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 font-medium transition-colors">
+                                ❌ İptal
+                            </button>
+                            <button onclick="uploadDocument()" class="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-medium transition-all shadow-lg">
+                                🚀 Belgeyi Yükle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample enterprise data
+        const enterpriseDocuments = [
+            {
+                id: 1,
+                name: "2024 Yıllık Performans Raporu.pdf",
+                department: "İnsan Kaynakları",
+                uploader: "Ayşe Demir",
+                date: "2024-11-15",
+                size: "4.2 MB",
+                status: "Onaylandı",
+                type: "pdf",
+                priority: "normal",
+                project: "employee-training",
+                task: "performance-evaluation"
+            },
+            {
+                id: 2,
+                name: "Q4 Mali Tablolar.xlsx",
+                department: "Muhasebe & Finans",
+                uploader: "Mehmet Özkan",
+                date: "2024-11-14",
+                size: "2.8 MB",
+                status: "İnceleniyor",
+                type: "excel",
+                priority: "high",
+                project: "cost-optimization",
+                task: "budget-analysis"
+            },
+            {
+                id: 3,
+                name: "Veri Koruma Politikası v2.1.docx",
+                department: "Hukuk & Uyum",
+                uploader: "Zeynep Kaya",
+                date: "2024-11-13",
+                size: "1.5 MB",
+                status: "Bekliyor",
+                type: "word",
+                priority: "urgent",
+                project: "iso-certification",
+                task: "policy-update"
+            },
+            {
+                id: 4,
+                name: "Müşteri Memnuniyet Anketi.pdf",
+                department: "Satış & Pazarlama",
+                uploader: "Can Yılmaz",
+                date: "2024-11-12",
+                size: "3.1 MB",
+                status: "Onaylandı",
+                type: "pdf",
+                priority: "normal",
+                project: "market-expansion",
+                task: "customer-research"
+            },
+            {
+                id: 5,
+                name: "Operasyonel Süreç Rehberi.pptx",
+                department: "Operasyon",
+                uploader: "Elif Şahin",
+                date: "2024-11-11",
+                size: "5.7 MB",
+                status: "Reddedildi",
+                type: "powerpoint",
+                priority: "low",
+                project: "digital-transformation",
+                task: "process-documentation"
+            }
+        ];
+
+        const recentActivities = [
+            { user: "Ahmet K.", action: "yeni belge yükledi", time: "2 dk önce", type: "upload" },
+            { user: "Fatma S.", action: "belge onayladı", time: "5 dk önce", type: "approve" },
+            { user: "Murat D.", action: "belge paylaştı", time: "12 dk önce", type: "share" },
+            { user: "Selin Y.", action: "yorum ekledi", time: "18 dk önce", type: "comment" },
+            { user: "Kemal A.", action: "belge indirdi", time: "25 dk önce", type: "download" }
+        ];
+
+        // Project and task data
+        const projectData = {
+            'erp-implementation': {
+                name: 'ERP Sistemi Kurulumu',
+                description: 'Şirket genelinde ERP sistemi kurulumu ve entegrasyonu',
+                manager: 'Can Yılmaz',
+                deadline: '2024-12-31',
+                tasks: {
+                    'system-analysis': 'Sistem Analizi ve Gereksinim Belirleme',
+                    'vendor-selection': 'Tedarikçi Seçimi ve Değerlendirme',
+                    'implementation': 'Sistem Kurulumu ve Konfigürasyon',
+                    'testing': 'Test ve Kalite Kontrol',
+                    'training': 'Kullanıcı Eğitimi ve Dokümantasyon',
+                    'go-live': 'Canlıya Geçiş ve Destek'
+                }
+            },
+            'digital-transformation': {
+                name: 'Dijital Dönüşüm Projesi',
+                description: 'Şirketin dijital dönüşüm sürecinin yönetimi',
+                manager: 'Elif Koç',
+                deadline: '2025-06-30',
+                tasks: {
+                    'current-state': 'Mevcut Durum Analizi',
+                    'strategy-development': 'Dijital Strateji Geliştirme',
+                    'technology-selection': 'Teknoloji Seçimi ve Planlama',
+                    'process-redesign': 'Süreç Yeniden Tasarımı',
+                    'change-management': 'Değişim Yönetimi',
+                    'monitoring': 'İzleme ve Değerlendirme'
+                }
+            },
+            'office-relocation': {
+                name: 'Ofis Taşınma Projesi',
+                description: 'Yeni ofis binasına taşınma sürecinin koordinasyonu',
+                manager: 'Murat Şahin',
+                deadline: '2024-12-15',
+                tasks: {
+                    'location-selection': 'Lokasyon Seçimi ve Değerlendirme',
+                    'lease-negotiation': 'Kira Sözleşmesi Müzakereleri',
+                    'space-planning': 'Alan Planlama ve Tasarım',
+                    'infrastructure': 'Altyapı Kurulumu',
+                    'moving-logistics': 'Taşınma Lojistiği',
+                    'setup-testing': 'Kurulum ve Test İşlemleri'
+                }
+            },
+            'iso-certification': {
+                name: 'ISO 27001 Sertifikasyonu',
+                description: 'Bilgi güvenliği yönetim sistemi sertifikasyonu',
+                manager: 'Zeynep Özkan',
+                deadline: '2025-03-31',
+                tasks: {
+                    'gap-analysis': 'Mevcut Durum ve Boşluk Analizi',
+                    'policy-development': 'Politika ve Prosedür Geliştirme',
+                    'risk-assessment': 'Risk Değerlendirmesi',
+                    'implementation': 'Sistem Uygulama',
+                    'internal-audit': 'İç Denetim',
+                    'certification-audit': 'Sertifikasyon Denetimi'
+                }
+            },
+            'product-launch': {
+                name: 'Yeni Ürün Lansmanı',
+                description: 'Yeni ürün geliştirme ve pazar lansmanı',
+                manager: 'Ahmet Arslan',
+                deadline: '2024-12-20',
+                tasks: {
+                    'market-research': 'Pazar Araştırması',
+                    'product-development': 'Ürün Geliştirme',
+                    'marketing-strategy': 'Pazarlama Stratejisi',
+                    'production-planning': 'Üretim Planlama',
+                    'launch-campaign': 'Lansman Kampanyası',
+                    'post-launch': 'Lansman Sonrası Takip'
+                }
+            }
+        };
+
+        function getFileIcon(type) {
+            const icons = {
+                pdf: "📄",
+                word: "📝",
+                excel: "📊",
+                powerpoint: "📋",
+                image: "🖼️"
+            };
+            return icons[type] || "📄";
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                "Onaylandı": "bg-green-100 text-green-800",
+                "İnceleniyor": "bg-yellow-100 text-yellow-800",
+                "Bekliyor": "bg-orange-100 text-orange-800",
+                "Reddedildi": "bg-red-100 text-red-800"
+            };
+            return badges[status] || "bg-gray-100 text-gray-800";
+        }
+
+        function getPriorityIcon(priority) {
+            const icons = {
+                urgent: "🔴",
+                high: "🟡",
+                normal: "🟢",
+                low: "⚪"
+            };
+            return icons[priority] || "⚪";
+        }
+
+        function renderDocumentTable() {
+            const tableBody = document.getElementById('documentTable');
+            tableBody.innerHTML = enterpriseDocuments.map(doc => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <input type="checkbox" class="rounded border-gray-300">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl">${getFileIcon(doc.type)}</span>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">${doc.name}</div>
+                                <div class="text-sm text-gray-500">ID: ${doc.id.toString().padStart(6, '0')}</div>
+                                ${doc.project ? `<div class="text-xs text-blue-600">📋 ${projectData[doc.project]?.name || doc.project}</div>` : ''}
+                            </div>
+                            <span class="text-sm">${getPriorityIcon(doc.priority)}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="text-sm text-gray-900">${doc.department}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-xs font-medium">${doc.uploader.split(' ').map(n => n[0]).join('')}</span>
+                            </div>
+                            <span class="text-sm text-gray-900">${doc.uploader}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${new Date(doc.date).toLocaleDateString('tr-TR')}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${doc.size}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(doc.status)}">
+                            ${doc.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="text-indigo-600 hover:text-indigo-900 p-1 hover:bg-indigo-50 rounded" title="Görüntüle">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </button>
+                            <button class="text-green-600 hover:text-green-900 p-1 hover:bg-green-50 rounded" title="İndir">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </button>
+                            <button class="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded" title="Paylaş">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                </svg>
+                            </button>
+                            <button class="text-gray-600 hover:text-gray-900 p-1 hover:bg-gray-50 rounded" title="Daha fazla">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderRecentActivity() {
+            const activityContainer = document.getElementById('recentActivity');
+            activityContainer.innerHTML = recentActivities.map(activity => `
+                <div class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                    <div class="w-8 h-8 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full flex items-center justify-center">
+                        <span class="text-white text-xs font-medium">${activity.user.split(' ').map(n => n[0]).join('')}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-900">
+                            <span class="font-medium">${activity.user}</span> ${activity.action}
+                        </p>
+                        <p class="text-xs text-gray-500">${activity.time}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initializeChart() {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1 Kas', '5 Kas', '10 Kas', '15 Kas', '20 Kas', '25 Kas', '30 Kas'],
+                    datasets: [{
+                        label: 'Yüklenen Belgeler',
+                        data: [12, 19, 15, 25, 22, 30, 28],
+                        borderColor: 'rgb(99, 102, 241)',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }, {
+                        label: 'Onaylanan Belgeler',
+                        data: [8, 15, 12, 20, 18, 25, 24],
+                        borderColor: 'rgb(34, 197, 94)',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: 'white',
+                            bodyColor: 'white',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                color: '#6B7280'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                color: '#6B7280'
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            backgroundColor: 'white',
+                            borderWidth: 2,
+                            hoverBorderWidth: 3
+                        }
+                    }
+                }
+            });
+        }
+
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+            document.getElementById('uploadModal').classList.add('flex');
+            generateDocumentSerial();
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            document.getElementById('uploadModal').classList.remove('flex');
+        }
+
+        function generateDocumentSerial() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            const serial = `DOC-${year}${month}${day}-${random}`;
+            document.getElementById('documentSerial').value = serial;
+        }
+
+        // Privacy level information
+        const privacyLevels = {
+            public: {
+                color: 'bg-green-50 border-green-200',
+                icon: '🌍',
+                title: 'Genel Erişim',
+                description: 'Bu belge herkese açıktır. Şirket dışındaki kişiler de erişebilir.',
+                restrictions: ['Herkes görüntüleyebilir', 'Herkes indirebilir', 'Arama sonuçlarında görünür']
+            },
+            internal: {
+                color: 'bg-blue-50 border-blue-200',
+                icon: '🏢',
+                title: 'Şirket İçi',
+                description: 'Sadece şirket çalışanları erişebilir. Dış paydaşlar göremez.',
+                restrictions: ['Sadece çalışanlar erişebilir', 'VPN gerekli olabilir', 'Şirket ağında görünür']
+            },
+            confidential: {
+                color: 'bg-yellow-50 border-yellow-200',
+                icon: '🔒',
+                title: 'Gizli Belge',
+                description: 'Sadece yetkili personel erişebilir. Özel izin gereklidir.',
+                restrictions: ['Yetki seviyesi kontrolü', 'Erişim logları tutulur', 'İndirme kısıtlı']
+            },
+            restricted: {
+                color: 'bg-orange-50 border-orange-200',
+                icon: '🚫',
+                title: 'Kısıtlı Erişim',
+                description: 'Sadece üst düzey yönetim erişebilir. Çok hassas bilgiler içerir.',
+                restrictions: ['Sadece yöneticiler', 'İki faktörlü doğrulama', 'Filigran zorunlu']
+            },
+            'top-secret': {
+                color: 'bg-red-50 border-red-200',
+                icon: '⛔',
+                title: 'Çok Gizli',
+                description: 'En yüksek gizlilik seviyesi. Sadece C-Level yöneticiler erişebilir.',
+                restrictions: ['Sadece CEO/CTO/CFO', 'Özel güvenlik protokolü', 'İndirme yasak']
+            }
+        };
+
+        // Sub-categories based on document type
+        const subCategories = {
+            contract: ['Müşteri Sözleşmesi', 'Tedarikçi Sözleşmesi', 'İş Sözleşmesi', 'Gizlilik Anlaşması', 'Hizmet Sözleşmesi'],
+            report: ['Aylık Rapor', 'Yıllık Rapor', 'Proje Raporu', 'Analiz Raporu', 'Performans Raporu'],
+            policy: ['İK Politikası', 'Güvenlik Politikası', 'Kalite Politikası', 'Çevre Politikası', 'Etik Kurallar'],
+            financial: ['Fatura', 'Makbuz', 'Bütçe', 'Mali Tablo', 'Gider Raporu'],
+            hr: ['Özgeçmiş', 'Performans Değerlendirme', 'İzin Formu', 'Eğitim Belgesi', 'Disiplin Tutanağı'],
+            legal: ['Mahkeme Kararı', 'Hukuki Görüş', 'Patent Belgesi', 'Lisans Anlaşması', 'Uyumluluk Raporu'],
+            technical: ['Teknik Şartname', 'Kullanım Kılavuzu', 'API Dokümantasyonu', 'Sistem Mimarisi', 'Test Raporu'],
+            presentation: ['Satış Sunumu', 'Eğitim Sunumu', 'Proje Sunumu', 'Strateji Sunumu', 'Ürün Tanıtımı'],
+            form: ['Başvuru Formu', 'Değerlendirme Formu', 'Anket Formu', 'Talep Formu', 'Onay Formu'],
+            note: ['Toplantı Notu', 'Memo', 'Hatırlatma', 'Bilgi Notu', 'Karar Notu'],
+            other: ['Genel Belge', 'Arşiv Belgesi', 'Referans Dokümanı', 'Şablon', 'Diğer']
+        };
+
+        function updatePrivacyInfo() {
+            const select = document.getElementById('privacyLevel');
+            const infoDiv = document.getElementById('privacyInfo');
+            const level = select.value;
+
+            if (level && privacyLevels[level]) {
+                const info = privacyLevels[level];
+                infoDiv.className = `mt-3 p-3 rounded-lg border ${info.color}`;
+                infoDiv.innerHTML = `
+                    <div class="flex items-start space-x-2">
+                        <span class="text-lg">${info.icon}</span>
+                        <div>
+                            <h6 class="font-medium text-gray-900">${info.title}</h6>
+                            <p class="text-sm text-gray-700 mt-1">${info.description}</p>
+                            <ul class="text-xs text-gray-600 mt-2 space-y-1">
+                                ${info.restrictions.map(r => `<li>• ${r}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                infoDiv.classList.remove('hidden');
+            } else {
+                infoDiv.classList.add('hidden');
+            }
+        }
+
+        function updateSubCategories() {
+            const typeSelect = document.getElementById('documentType');
+            const subSelect = document.getElementById('subCategory');
+            const type = typeSelect.value;
+
+            subSelect.innerHTML = '<option value="">Alt kategori seçin</option>';
+
+            if (type && subCategories[type]) {
+                subCategories[type].forEach(sub => {
+                    const option = document.createElement('option');
+                    option.value = sub.toLowerCase().replace(/\s+/g, '-');
+                    option.textContent = sub;
+                    subSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Independent task descriptions
+        const independentTasks = {
+            'document-review': {
+                title: 'Belge İnceleme ve Onay',
+                description: 'Gelen belgelerin incelenmesi, değerlendirilmesi ve onay sürecinin yönetimi',
+                department: 'Tüm Departmanlar',
+                estimatedTime: '1-3 gün'
+            },
+            'meeting-organization': {
+                title: 'Toplantı Organizasyonu',
+                description: 'Toplantı planlama, katılımcı koordinasyonu ve toplantı yönetimi',
+                department: 'Tüm Departmanlar',
+                estimatedTime: '1-2 gün'
+            },
+            'training-preparation': {
+                title: 'Eğitim Hazırlığı',
+                description: 'Personel eğitim programlarının hazırlanması ve koordinasyonu',
+                department: 'İnsan Kaynakları',
+                estimatedTime: '1-2 hafta'
+            },
+            'report-creation': {
+                title: 'Rapor Hazırlama',
+                description: 'Departmansal ve kurumsal raporların hazırlanması',
+                department: 'Tüm Departmanlar',
+                estimatedTime: '3-5 gün'
+            },
+            'policy-update': {
+                title: 'Politika Güncelleme',
+                description: 'Şirket politikalarının gözden geçirilmesi ve güncellenmesi',
+                department: 'Hukuk & Uyum',
+                estimatedTime: '1-2 hafta'
+            },
+            'compliance-check': {
+                title: 'Uyumluluk Kontrolü',
+                description: 'Yasal ve düzenleyici gerekliliklere uyumun kontrolü',
+                department: 'Hukuk & Uyum',
+                estimatedTime: '2-3 gün'
+            },
+            'budget-planning': {
+                title: 'Bütçe Planlama',
+                description: 'Departmansal ve proje bütçelerinin planlanması',
+                department: 'Muhasebe & Finans',
+                estimatedTime: '1-2 hafta'
+            },
+            'vendor-evaluation': {
+                title: 'Tedarikçi Değerlendirme',
+                description: 'Tedarikçi performansının değerlendirilmesi ve yeni tedarikçi araştırması',
+                department: 'Satın Alma',
+                estimatedTime: '1 hafta'
+            },
+            'employee-onboarding': {
+                title: 'Personel İşe Alım',
+                description: 'Yeni personelin işe alım sürecinin yönetimi',
+                department: 'İnsan Kaynakları',
+                estimatedTime: '2-3 hafta'
+            },
+            'performance-review': {
+                title: 'Performans Değerlendirme',
+                description: 'Personel performans değerlendirmelerinin yapılması',
+                department: 'İnsan Kaynakları',
+                estimatedTime: '1-2 hafta'
+            }
+        };
+
+        function updateTaskList() {
+            const projectSelect = document.getElementById('projectAssignment');
+            const taskSelect = document.getElementById('taskAssignment');
+            const projectInfo = document.getElementById('projectInfo');
+            const taskInfo = document.getElementById('taskInfo');
+            const projectTasksGroup = document.getElementById('projectTasksGroup');
+            const project = projectSelect.value;
+
+            // Clear project tasks group
+            projectTasksGroup.innerHTML = '';
+            projectTasksGroup.style.display = 'none';
+
+            if (project && projectData[project]) {
+                const data = projectData[project];
+                
+                // Show project info
+                projectInfo.innerHTML = `
+                    <strong>Proje Yöneticisi:</strong> ${data.manager}<br>
+                    <strong>Bitiş Tarihi:</strong> ${data.deadline}<br>
+                    <strong>Açıklama:</strong> ${data.description}
+                `;
+                projectInfo.classList.remove('hidden');
+
+                // Show and populate project tasks group
+                projectTasksGroup.style.display = 'block';
+                Object.entries(data.tasks).forEach(([key, value]) => {
+                    const option = document.createElement('option');
+                    option.value = `project-${key}`;
+                    option.textContent = value;
+                    projectTasksGroup.appendChild(option);
+                });
+            } else {
+                projectInfo.classList.add('hidden');
+            }
+        }
+
+        function updateTaskInfo() {
+            const taskSelect = document.getElementById('taskAssignment');
+            const taskInfo = document.getElementById('taskInfo');
+            const selectedTask = taskSelect.value;
+
+            if (selectedTask && independentTasks[selectedTask]) {
+                const task = independentTasks[selectedTask];
+                taskInfo.innerHTML = `
+                    <strong>Görev:</strong> ${task.title}<br>
+                    <strong>Açıklama:</strong> ${task.description}<br>
+                    <strong>İlgili Departman:</strong> ${task.department}<br>
+                    <strong>Tahmini Süre:</strong> ${task.estimatedTime}
+                `;
+                taskInfo.classList.remove('hidden');
+            } else if (selectedTask && selectedTask.startsWith('project-')) {
+                // Handle project tasks
+                const projectSelect = document.getElementById('projectAssignment');
+                const project = projectSelect.value;
+                if (project && projectData[project]) {
+                    const taskKey = selectedTask.replace('project-', '');
+                    const taskName = projectData[project].tasks[taskKey];
+                    taskInfo.innerHTML = `
+                        <strong>Proje Görevi:</strong> ${taskName}<br>
+                        <strong>Proje:</strong> ${projectData[project].name}<br>
+                        <strong>Proje Yöneticisi:</strong> ${projectData[project].manager}
+                    `;
+                    taskInfo.classList.remove('hidden');
+                }
+            } else {
+                taskInfo.classList.add('hidden');
+            }
+        }
+
+        function toggleTeamSelector() {
+            const selector = document.getElementById('teamSelector');
+            selector.classList.toggle('hidden');
+        }
+
+        function updateTeamMembers() {
+            const checkboxes = document.querySelectorAll('.team-checkbox:checked');
+            const input = document.getElementById('teamMembers');
+            const selectedNames = Array.from(checkboxes).map(cb => {
+                const label = cb.parentElement.querySelector('span').textContent;
+                return label.split(' - ')[0].replace('👩‍💻 ', '').replace('👨‍📊 ', '').replace('👩‍🎨 ', '').replace('👨‍🔧 ', '').replace('👩‍📈 ', '').replace('👨‍🎯 ', '');
+            });
+            
+            input.value = selectedNames.join(', ');
+        }
+
+        function handleFileSelect(files) {
+            const fileList = document.getElementById('fileList');
+            const selectedFiles = document.getElementById('selectedFiles');
+            
+            fileList.innerHTML = '';
+            
+            if (files.length > 0) {
+                selectedFiles.classList.remove('hidden');
+                
+                Array.from(files).forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+                    
+                    const fileInfo = document.createElement('div');
+                    fileInfo.className = 'flex items-center space-x-3';
+                    
+                    const fileIcon = getFileTypeIcon(file.name);
+                    const fileName = file.name.length > 30 ? file.name.substring(0, 30) + '...' : file.name;
+                    const fileSize = formatFileSize(file.size);
+                    
+                    fileInfo.innerHTML = `
+                        <span class="text-2xl">${fileIcon}</span>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">${fileName}</p>
+                            <p class="text-xs text-gray-500">${fileSize}</p>
+                        </div>
+                    `;
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'text-red-500 hover:text-red-700 p-1';
+                    removeBtn.innerHTML = '🗑️';
+                    removeBtn.onclick = () => removeFile(index);
+                    
+                    fileItem.appendChild(fileInfo);
+                    fileItem.appendChild(removeBtn);
+                    fileList.appendChild(fileItem);
+                });
+            } else {
+                selectedFiles.classList.add('hidden');
+            }
+        }
+
+        function getFileTypeIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const icons = {
+                pdf: '📄', doc: '📝', docx: '📝', xls: '📊', xlsx: '📊',
+                ppt: '📋', pptx: '📋', txt: '📄', jpg: '🖼️', jpeg: '🖼️', png: '🖼️'
+            };
+            return icons[ext] || '📄';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function removeFile(index) {
+            console.log('Removing file at index:', index);
+        }
+
+        function saveDraft() {
+            alert('Taslak başarıyla kaydedildi! Daha sonra düzenleyebilirsiniz.');
+        }
+
+        function previewDocument() {
+            alert('Önizleme özelliği yakında eklenecek!');
+        }
+
+        function validateForm() {
+            const requiredFields = ['documentName', 'documentType', 'department', 'privacyLevel'];
+            let isValid = true;
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    field.classList.remove('border-red-500');
+                }
+            });
+            
+            return isValid;
+        }
+
+        function uploadDocument() {
+            if (!validateForm()) {
+                alert('Lütfen zorunlu alanları doldurun!');
+                return;
+            }
+            
+            // Collect form data for indexing
+            const formData = {
+                documentName: document.getElementById('documentName').value,
+                documentType: document.getElementById('documentType').value,
+                department: document.getElementById('department').value,
+                subCategory: document.getElementById('subCategory').value,
+                project: document.getElementById('projectAssignment').value,
+                task: document.getElementById('taskAssignment').value,
+                documentCategory: document.getElementById('documentCategory').value,
+                documentStatus: document.getElementById('documentStatus').value,
+                responsiblePerson: document.getElementById('responsiblePerson').value,
+                teamMembers: document.getElementById('teamMembers').value,
+                approvalAuthority: document.getElementById('approvalAuthority').value,
+                privacyLevel: document.getElementById('privacyLevel').value,
+                tags: document.getElementById('tags').value,
+                keywords: document.getElementById('keywords').value,
+                indexCategory: document.getElementById('indexCategory').value,
+                documentSerial: document.getElementById('documentSerial').value,
+                description: document.getElementById('description').value,
+                priority: document.getElementById('priority').value
+            };
+            
+            console.log('Document indexed with data:', formData);
+            
+            // Simulate upload process with progress
+            const modal = document.getElementById('uploadModal');
+            const uploadBtn = modal.querySelector('button[onclick="uploadDocument()"]');
+            
+            uploadBtn.innerHTML = '⏳ Yükleniyor ve İndeksleniyor...';
+            uploadBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert(`Belge başarıyla yüklendi ve sisteme indexlendi!\n\nSeri No: ${formData.documentSerial}\nProje: ${formData.project ? projectData[formData.project]?.name : 'Atanmadı'}\nSorumlu: ${formData.responsiblePerson || 'Atanmadı'}\n\nBelge onay sürecine gönderildi.`);
+                closeUploadModal();
+                uploadBtn.innerHTML = '🚀 Belgeyi Yükle';
+                uploadBtn.disabled = false;
+                
+                // Reset form
+                document.getElementById('uploadModal').querySelector('form')?.reset();
+            }, 3000);
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            renderDocumentTable();
+            renderRecentActivity();
+            initializeChart();
+            
+            // File input event listener
+            document.getElementById('fileInput').addEventListener('change', function(e) {
+                handleFileSelect(e.target.files);
+            });
+            
+            // Document type change listener
+            document.getElementById('documentType').addEventListener('change', updateSubCategories);
+            
+            // Task selection change listener
+            document.getElementById('taskAssignment').addEventListener('change', updateTaskInfo);
+            
+            // Team member checkbox listeners
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('team-checkbox')) {
+                    updateTeamMembers();
+                }
+            });
+            
+            // Close team selector when clicking outside
+            document.addEventListener('click', function(e) {
+                const selector = document.getElementById('teamSelector');
+                const input = document.getElementById('teamMembers');
+                if (!selector.contains(e.target) && e.target !== input) {
+                    selector.classList.add('hidden');
+                }
+            });
+            
+            // Drag and drop functionality
+            const dropZone = document.getElementById('dropZone');
+            
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropZone.classList.add('border-indigo-500', 'bg-indigo-50');
+            });
+            
+            dropZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('border-indigo-500', 'bg-indigo-50');
+            });
+            
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('border-indigo-500', 'bg-indigo-50');
+                handleFileSelect(e.dataTransfer.files);
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9717f020e1fb8b96',t:'MTc1NTU4ODU0Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejder3200</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            #main-content {
+                margin-left: 0 !important;
+            }
+
+            .mobile-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 35;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .mobile-overlay.show {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 0 1rem;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .top-bar .flex.items-center.space-x-2 {
+                display: none;
+            }
+
+            .dropdown-menu {
+                width: 280px;
+                right: 0;
+            }
+
+            #main-content {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .search-input {
+                width: 150px;
+            }
+
+            .top-bar h1 {
+                font-size: 1.125rem;
+            }
+
+            .top-bar p {
+                display: none;
+            }
+        }
+
+        /* Page Transition Animations */
+        .page-transition {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: calc(200px + 100%) 0; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6); }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.05); }
+        }
+
+        .sidebar {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-right: 1px solid #334155;
+            animation: slideInLeft 0.5s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-item {
+            border-radius: 12px;
+            margin: 3px 0;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .dropdown-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .submenu-item {
+            border-radius: 8px;
+            margin: 2px 0;
+        }
+
+        .submenu-item:hover {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+            color: #e2e8f0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .top-bar {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-bottom: 1px solid #334155;
+            backdrop-filter: blur(20px);
+        }
+
+        .search-input {
+            background: rgba(248, 250, 252, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            transform: scale(1.02);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+            transition: width 0.3s ease;
+            z-index: 9999;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: auto;
+            min-width: 300px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .toast.info {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .toast.warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        /* Loading Shimmer */
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200px 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Micro Interactions */
+        .icon-bounce:hover {
+            animation: bounce 0.6s;
+        }
+
+        .scale-on-hover {
+            transition: transform 0.2s ease;
+        }
+
+        .scale-on-hover:hover {
+            transform: scale(1.1);
+        }
+
+        .glow-on-hover {
+            transition: all 0.3s ease;
+        }
+
+        .glow-on-hover:hover {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .heartbeat-animation {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .rotate-on-hover {
+            transition: transform 0.3s ease;
+        }
+
+        .rotate-on-hover:hover {
+            transform: rotate(360deg);
+        }
+
+        .shake-on-hover:hover {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Notification Panel Styles */
+        .filter-btn.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .notification-item.unread {
+            border-left: 3px solid #3b82f6;
+        }
+
+        .notification-item.read {
+            opacity: 0.8;
+        }
+
+
+
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Progress Bar -->
+    <div id="progress-bar" class="progress-bar"></div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Top Bar -->
+    <div class="fixed top-0 left-0 right-0 h-20 top-bar z-50 flex items-center justify-between px-6">
+        <!-- Logo and Company Name -->
+        <div class="flex items-center space-x-4">
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+
+            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center scale-on-hover glow-on-hover">
+                <svg class="w-7 h-7 text-white icon-bounce" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.12 4L12 2L9.88 4L8 6.5L12 10.5L16 6.5L14.12 4ZM8.5 7.5L12 11.5L15.5 7.5L18 10L12 16L6 10L8.5 7.5ZM4 12L8 16L12 20L16 16L20 12L18 14L12 20L6 14L4 12Z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-white font-bold text-xl">Ejder3200</h1>
+                <p class="text-slate-300 text-sm">Kayak Merkezleri A.Ş</p>
+            </div>
+        </div>
+
+        <!-- Right Side Elements -->
+        <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="relative">
+                <input type="text" placeholder="Ara..." class="search-input w-80 pl-10 pr-4 py-2 rounded-lg focus:outline-none">
+                <i class="fas fa-search absolute left-3 top-3 text-slate-400 text-sm"></i>
+            </div>
+
+            <!-- İş Süreçleri İkonları -->
+            <div class="flex items-center space-x-2">
+                <a href="#" class="p-2 rounded-lg hover:bg-slate-700 transition-colors group scale-on-hover" title="İletişim Merkezi">
+                    <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center group-hover:from-orange-400 group-hover:to-red-400 transition-all duration-300 glow-on-hover shadow-lg">
+                        <i class="fas fa-comments w-4 h-4 text-white icon-bounce"></i>
+                    </div>
+                </a>
+                <a href="#" class="p-2 rounded-lg hover:bg-slate-700 transition-colors group scale-on-hover" title="Ajanda">
+                    <div class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center group-hover:from-emerald-400 group-hover:to-teal-500 transition-all duration-300 glow-on-hover shadow-lg">
+                        <i class="fas fa-calendar-alt w-4 h-4 text-white icon-bounce"></i>
+                    </div>
+                </a>
+                <a href="#" class="p-2 rounded-lg hover:bg-slate-700 transition-colors group scale-on-hover" title="Fikir Havuzu">
+                    <div class="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center group-hover:from-yellow-400 group-hover:to-orange-400 transition-all duration-300 glow-on-hover shadow-lg">
+                        <i class="fas fa-lightbulb w-4 h-4 text-white icon-bounce"></i>
+                    </div>
+                </a>
+                <a href="#" class="p-2 rounded-lg hover:bg-slate-700 transition-colors group scale-on-hover" title="Proje Yönetimi">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-300 glow-on-hover shadow-lg">
+                        <i class="fas fa-project-diagram w-4 h-4 text-white icon-bounce"></i>
+                    </div>
+                </a>
+                <a href="#" class="p-2 rounded-lg hover:bg-slate-700 transition-colors group scale-on-hover" title="Doküman Merkezi">
+                    <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center group-hover:from-purple-400 group-hover:to-indigo-500 transition-all duration-300 glow-on-hover shadow-lg">
+                        <i class="fas fa-folder-open w-4 h-4 text-white icon-bounce"></i>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Notifications -->
+            <div class="relative">
+                <button onclick="toggleDropdown('notifications')" class="relative p-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg scale-on-hover">
+                    <i class="fas fa-bell icon-bounce"></i>
+                    <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center heartbeat-animation font-bold shadow-lg">3</span>
+                </button>
+                <div id="notifications" class="dropdown-menu absolute right-0 mt-2 w-80">
+                    <div class="p-4 border-b border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-slate-900">Bildirimler</h3>
+                            <span class="text-sm text-slate-500">3 yeni</span>
+                        </div>
+                    </div>
+                    <div class="max-h-64 overflow-y-auto">
+                        <div class="p-4 hover:bg-slate-50 border-b border-slate-50 transition-colors">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center scale-on-hover">
+                                    <i class="fas fa-user-plus text-blue-600 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-slate-900 text-sm">Yeni kullanıcı kaydı</p>
+                                    <p class="text-slate-600 text-sm">Mehmet Demir sisteme kaydoldu</p>
+                                    <p class="text-slate-400 text-xs mt-1">2 dakika önce</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 border-t border-slate-100">
+                        <button class="w-full text-center text-blue-600 hover:text-blue-700 font-medium text-sm">Tümünü Görüntüle</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile -->
+            <div class="relative">
+                <button onclick="toggleDropdown('profile')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-700 scale-on-hover">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center glow-on-hover">
+                        <span class="text-white font-medium text-sm">AY</span>
+                    </div>
+                    <div class="text-left">
+                        <p class="font-medium text-white text-sm">Admin Yönetici</p>
+                        <p class="text-slate-300 text-xs">Süper Admin</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-slate-400 text-xs"></i>
+                </button>
+                <div id="profile" class="dropdown-menu absolute right-0 mt-2 w-56">
+                    <div class="p-4 border-b border-slate-100">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center scale-on-hover glow-on-hover">
+                                <span class="text-white font-medium">AY</span>
+                            </div>
+                            <div>
+                                <p class="font-medium text-slate-900">Admin Yönetici</p>
+                                <p class="text-slate-500 text-sm">admin@company.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg">
+                            <i class="fas fa-user w-4"></i>
+                            <span>Profil Ayarları</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg">
+                            <i class="fas fa-cog w-4"></i>
+                            <span>Hesap Ayarları</span>
+                        </a>
+                    </div>
+                    <div class="p-2 border-t border-slate-100">
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg">
+                            <i class="fas fa-sign-out-alt w-4"></i>
+                            <span>Çıkış Yap</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed left-0 top-20 w-72 sidebar z-40" style="height: calc(100vh - 80px);">
+        <!-- Navigation -->
+        <nav class="mt-6 px-4">
+            <div class="space-y-1">
+
+
+                <!-- Departmanlar -->
+                <div class="mt-4">
+                    <button onclick="toggleSubmenu('departmanlar-menu')" class="nav-item w-full flex items-center justify-between px-4 py-3 text-slate-300">
+                        <div class="flex items-center">
+                            <i class="fas fa-building w-5 h-5 text-slate-400 mr-3"></i>
+                            <span class="font-medium">Departmanlar</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-sm transition-transform duration-200" id="departmanlar-chevron" style="transform: rotate(180deg);"></i>
+                    </button>
+                    <div id="departmanlar-menu" class="ml-6 mt-1 space-y-1 overflow-hidden transition-all duration-300" style="max-height: 300px;">
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-user-tie w-4 mr-3"></i>İnsan Kaynakları
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-chart-pie w-4 mr-3"></i>Finansal Yönetim
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-bullhorn w-4 mr-3"></i>Satış Pazarlama
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-truck w-4 mr-3"></i>Tedarik Zinciri
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-gamepad w-4 mr-3"></i>Rekreasyon
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-code w-4 mr-3"></i>Yazılım Birimi
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-server w-4 mr-3"></i>Bilgi İşlem
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sosyal Tesisler -->
+                <div>
+                    <button onclick="toggleSubmenu('sosyal-menu')" class="nav-item w-full flex items-center justify-between px-4 py-3 text-slate-300">
+                        <div class="flex items-center">
+                            <i class="fas fa-home w-5 h-5 text-slate-400 mr-3"></i>
+                            <span class="font-medium">Sosyal Tesisler</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-sm transition-transform duration-200" id="sosyal-chevron"></i>
+                    </button>
+                    <div id="sosyal-menu" class="ml-6 mt-1 space-y-1 max-h-0 overflow-hidden transition-all duration-300">
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-bed w-4 mr-3"></i>Konaklama
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-utensils w-4 mr-3"></i>Restoran & Kafeler
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-ticket-alt w-4 mr-3"></i>Bilet Satış
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Teknik Ofis -->
+                <div>
+                    <button onclick="toggleSubmenu('teknik-menu')" class="nav-item w-full flex items-center justify-between px-4 py-3 text-slate-300">
+                        <div class="flex items-center">
+                            <i class="fas fa-tools w-5 h-5 text-slate-400 mr-3"></i>
+                            <span class="font-medium">Teknik Ofis</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-sm transition-transform duration-200" id="teknik-chevron"></i>
+                    </button>
+                    <div id="teknik-menu" class="ml-6 mt-1 space-y-1 max-h-0 overflow-hidden transition-all duration-300">
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-hammer w-4 mr-3"></i>Yapı İnşaat
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-bolt w-4 mr-3"></i>Enerji Sistemleri
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-cogs w-4 mr-3"></i>Makina Sistemleri
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-thermometer-half w-4 mr-3"></i>HVAC Sistemleri
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Raporlar & Analizler -->
+                <div>
+                    <button onclick="toggleSubmenu('raporlar-menu')" class="nav-item w-full flex items-center justify-between px-4 py-3 text-slate-300">
+                        <div class="flex items-center">
+                            <i class="fas fa-chart-bar w-5 h-5 text-slate-400 mr-3"></i>
+                            <span class="font-medium">Raporlar & Analizler</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-sm transition-transform duration-200" id="raporlar-chevron"></i>
+                    </button>
+                    <div id="raporlar-menu" class="ml-6 mt-1 space-y-1 max-h-0 overflow-hidden transition-all duration-300">
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-chart-line w-4 mr-3"></i>Satış Raporları
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-users w-4 mr-3"></i>Ziyaretçi Analizi
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-chart-pie w-4 mr-3"></i>Gelir Analizi
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-skiing w-4 mr-3"></i>Pist Kullanım Raporu
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-cloud-sun w-4 mr-3"></i>Hava Durumu Analizi
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-star w-4 mr-3"></i>Müşteri Memnuniyet
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-calendar-check w-4 mr-3"></i>Sezonluk Raporlar
+                        </a>
+                        <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400">
+                            <i class="fas fa-cogs w-4 mr-3"></i>Operasyonel Analiz
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-600">
+            <div class="flex items-center justify-between mb-3">
+                <!-- Sistem Durumu -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-slate-400 text-sm">Sistem Aktif</span>
+                </div>
+
+                <!-- Ayarlar İkonu -->
+                <button onclick="toggleDropdown('settings-menu')" class="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors scale-on-hover" title="Ayarlar">
+                    <i class="fas fa-cog text-lg"></i>
+                </button>
+
+                <!-- Ayarlar Dropdown -->
+                <div id="settings-menu" class="dropdown-menu absolute bottom-12 right-4 w-56">
+                    <div class="p-2 space-y-1">
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg text-sm">
+                            <i class="fas fa-palette w-4 text-blue-600"></i>
+                            <span>Tema Ayarları</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg text-sm">
+                            <i class="fas fa-bell w-4 text-green-600"></i>
+                            <span>Bildirim Ayarları</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg text-sm">
+                            <i class="fas fa-language w-4 text-purple-600"></i>
+                            <span>Dil Seçenekleri</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg text-sm">
+                            <i class="fas fa-shield-alt w-4 text-red-600"></i>
+                            <span>Güvenlik</span>
+                        </a>
+                        <div class="border-t border-slate-200 my-2"></div>
+                        <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg text-sm">
+                            <i class="fas fa-question-circle w-4 text-orange-600"></i>
+                            <span>Yardım & Destek</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-slate-500 text-xs text-center">© 2024 Ejder3200</p>
+        </div>
+    </div>
+
+
+
+    <!-- Main Content -->
+    <div id="main-content" class="ml-72 mt-20 page-transition">
+        <!-- Breadcrumb -->
+        <div class="px-6 py-3 bg-white border-b border-slate-200">
+            <nav class="flex items-center space-x-2 text-sm">
+                <a href="#" class="text-blue-600 hover:text-blue-700 ripple">Ana Sayfa</a>
+                <i class="fas fa-chevron-right text-slate-400 text-xs"></i>
+                <span class="text-slate-600">Dashboard</span>
+            </nav>
+            <p class="text-slate-500 text-xs mt-1">Sistem yönetim paneli ve genel bakış</p>
+        </div>
+
+        <!-- Page Content -->
+        <main class="p-6">
+            {% block content %}
+
+            {% endblock %}
+        </main>
+    </div>
+
+    <script>
+        function toggleSubmenu(menuId) {
+            const menu = document.getElementById(menuId);
+            const chevron = document.getElementById(menuId.replace('-menu', '-chevron'));
+
+            // Close all other menus first
+            const allMenus = ['departmanlar-menu', 'sosyal-menu', 'teknik-menu', 'raporlar-menu'];
+            allMenus.forEach(id => {
+                if (id !== menuId) {
+                    const otherMenu = document.getElementById(id);
+                    const otherChevron = document.getElementById(id.replace('-menu', '-chevron'));
+                    otherMenu.style.maxHeight = '0px';
+                    otherChevron.style.transform = 'rotate(0deg)';
+                }
+            });
+
+            // Toggle current menu
+            if (menu.style.maxHeight === '0px' || menu.style.maxHeight === '') {
+                menu.style.maxHeight = menu.scrollHeight + 'px';
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                menu.style.maxHeight = '0px';
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const allDropdowns = document.querySelectorAll('.dropdown-menu');
+
+            allDropdowns.forEach(d => {
+                if (d.id !== dropdownId) {
+                    d.classList.remove('show');
+                }
+            });
+
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdowns = document.querySelectorAll('.dropdown-menu');
+            dropdowns.forEach(dropdown => {
+                const button = dropdown.previousElementSibling;
+                if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        });
+
+        // Navigation active states
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.querySelector('.fas.fa-chevron-down')) {
+                    document.querySelectorAll('.nav-item').forEach(nav => {
+                        nav.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    showProgress();
+                }
+            });
+        });
+
+        // Progress Bar Functions
+        function showProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                progressBar.style.width = '0%';
+                setTimeout(() => progressBar.style.width = '30%', 100);
+                setTimeout(() => progressBar.style.width = '70%', 300);
+                setTimeout(() => progressBar.style.width = '100%', 500);
+                setTimeout(() => progressBar.style.width = '0%', 800);
+            }
+        }
+
+        // Toast Notification System
+        function showToast(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                        <i class="fas ${getToastIcon(type)} text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-900">${message}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-gray-600 scale-on-hover">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, duration);
+        }
+
+        function getToastIcon(type) {
+            const icons = {
+                success: 'fa-check-circle text-green-500',
+                error: 'fa-exclamation-circle text-red-500',
+                warning: 'fa-exclamation-triangle text-yellow-500',
+                info: 'fa-info-circle text-blue-500'
+            };
+            return icons[type] || icons.info;
+        }
+
+        // Notification Panel Functions
+        function filterNotifications(type) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            const notifications = document.querySelectorAll('.notification-item');
+
+            // Update active button
+            buttons.forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600', 'text-white');
+                btn.classList.add('text-slate-600');
+            });
+
+            event.target.classList.add('active', 'bg-blue-600', 'text-white');
+            event.target.classList.remove('text-slate-600');
+
+            // Filter notifications
+            notifications.forEach(notification => {
+                if (type === 'all' || notification.classList.contains(type)) {
+                    notification.style.display = 'block';
+                } else {
+                    notification.style.display = 'none';
+                }
+            });
+
+            showToast(`${type === 'all' ? 'Tüm' : type.charAt(0).toUpperCase() + type.slice(1)} bildirimler gösteriliyor`, 'info', 2000);
+        }
+
+        function markAsRead(element) {
+            const unreadDot = element.querySelector('.unread-dot');
+            if (unreadDot) {
+                unreadDot.remove();
+                element.classList.remove('unread');
+                element.classList.add('read');
+
+                // Update notification count
+                const bellCount = document.querySelector('.heartbeat-animation');
+                if (bellCount) {
+                    let count = parseInt(bellCount.textContent);
+                    if (count > 0) {
+                        bellCount.textContent = count - 1;
+                        if (count - 1 === 0) {
+                            bellCount.style.display = 'none';
+                        }
+                    }
+                }
+
+                showToast('Bildirim okundu olarak işaretlendi', 'success', 2000);
+            }
+        }
+
+        function markAllAsRead() {
+            const unreadNotifications = document.querySelectorAll('.notification-item.unread');
+            unreadNotifications.forEach(notification => {
+                const unreadDot = notification.querySelector('.unread-dot');
+                if (unreadDot) {
+                    unreadDot.remove();
+                    notification.classList.remove('unread');
+                    notification.classList.add('read');
+                }
+            });
+
+            // Reset notification count
+            const bellCount = document.querySelector('.heartbeat-animation');
+            if (bellCount) {
+                bellCount.textContent = '0';
+                bellCount.style.display = 'none';
+            }
+
+            showToast('Tüm bildirimler okundu olarak işaretlendi', 'success', 3000);
+        }
+
+        function refreshNotifications() {
+            const refreshBtn = event.target;
+            refreshBtn.classList.add('rotate-on-hover');
+            refreshBtn.style.transform = 'rotate(360deg)';
+
+            setTimeout(() => {
+                refreshBtn.style.transform = 'rotate(0deg)';
+                showToast('Bildirimler yenilendi', 'success', 2000);
+            }, 500);
+        }
+
+        function loadMoreNotifications() {
+            showProgress();
+            showToast('Daha fazla bildirim yükleniyor...', 'info', 2000);
+
+            setTimeout(() => {
+                showToast('Yeni bildirimler yüklendi', 'success', 2000);
+            }, 1000);
+        }
+
+        function createNotification() {
+            showToast('Yeni bildirim oluşturma paneli açılıyor...', 'info', 2000);
+        }
+
+        function exportNotifications() {
+            showProgress();
+            showToast('Bildirimler dışa aktarılıyor...', 'info', 2000);
+
+            setTimeout(() => {
+                showToast('Bildirimler başarıyla dışa aktarıldı', 'success', 3000);
+            }, 1500);
+        }
+
+        function notificationSettings() {
+            showToast('Bildirim ayarları açılıyor...', 'info', 2000);
+        }
+
+        // Page Load Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            showProgress();
+
+            // Auto refresh progress bar every minute
+            setInterval(() => {
+                showProgress();
+            }, 60000); // 60 seconds = 1 minute
+
+            // setTimeout(() => {
+            //     showToast('Dashboard başarıyla yüklendi! 🚀', 'success');
+            // }, 1000);
+        });
+
+        // Enhanced Hover Effects
+        document.querySelectorAll('.scale-on-hover').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+            });
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Mobile Menu Functions
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('show');
+        }
+
+        // Close mobile menu when clicking on menu items
+        document.querySelectorAll('.nav-item, .submenu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                if (window.innerWidth <= 1024) {
+                    toggleMobileMenu();
+                }
+            });
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('mobile-overlay');
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('show');
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9745659164cf3776',t:'MTc1NjA2NTIxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

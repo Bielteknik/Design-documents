@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Personel ve Ekip Yönetim Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .sidebar-item { transition: all 0.2s ease; }
+        .sidebar-item:hover { background-color: #f3f4f6; }
+        .sidebar-item.active { background-color: #3b82f6; color: white; }
+        .employee-card { transition: all 0.3s ease; }
+        .employee-card:hover { transform: scale(1.02); }
+        .status-active { background: linear-gradient(135deg, #10b981, #059669); }
+        .status-inactive { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .status-vacation { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-lg">
+            <div class="p-6 border-b">
+                <h1 class="text-xl font-bold text-gray-800">🏢 TechCorp</h1>
+                <p class="text-sm text-gray-600">İnsan Kaynakları Sistemi</p>
+            </div>
+            
+            <nav class="mt-6">
+                <div class="px-4 space-y-2">
+                    <button onclick="showSection('dashboard')" class="sidebar-item active w-full text-left px-4 py-3 rounded-lg flex items-center">
+                        <span class="mr-3">📊</span> Dashboard
+                    </button>
+                    <button onclick="showSection('employees')" class="sidebar-item w-full text-left px-4 py-3 rounded-lg flex items-center">
+                        <span class="mr-3">👥</span> Personel Yönetimi
+                    </button>
+                    <button onclick="showSection('departments')" class="sidebar-item w-full text-left px-4 py-3 rounded-lg flex items-center">
+                        <span class="mr-3">🏢</span> Departmanlar
+                    </button>
+                    <button onclick="showSection('teams')" class="sidebar-item w-full text-left px-4 py-3 rounded-lg flex items-center">
+                        <span class="mr-3">👨‍👩‍👧‍👦</span> Ekip Yönetimi
+                    </button>
+                    <button onclick="showSection('performance')" class="sidebar-item w-full text-left px-4 py-3 rounded-lg flex items-center">
+                        <span class="mr-3">📈</span> Performans
+                    </button>
+                    <button onclick="showSection('tasks')" class="sidebar-item w-full text-left px-4 py-3 rounded-lg flex items-center">
+                        <span class="mr-3">✅</span> Görev Yönetimi
+                    </button>
+                    <button onclick="showSection('reports')" class="sidebar-item w-full text-left px-4 py-3 rounded-lg flex items-center">
+                        <span class="mr-3">📋</span> Raporlar
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section p-8">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Dashboard</h2>
+                    <p class="text-gray-600">Genel sistem durumu ve istatistikler</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                        <div class="flex items-center">
+                            <div class="bg-blue-100 p-3 rounded-lg">
+                                <span class="text-2xl">👥</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-gray-600 text-sm">Toplam Personel</p>
+                                <p class="text-3xl font-bold text-gray-800">1,247</p>
+                                <p class="text-green-600 text-sm">↗️ +23 bu ay</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                        <div class="flex items-center">
+                            <div class="bg-green-100 p-3 rounded-lg">
+                                <span class="text-2xl">✅</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-gray-600 text-sm">Aktif Çalışan</p>
+                                <p class="text-3xl font-bold text-gray-800">1,189</p>
+                                <p class="text-gray-500 text-sm">%95.3 aktiflik</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                        <div class="flex items-center">
+                            <div class="bg-yellow-100 p-3 rounded-lg">
+                                <span class="text-2xl">🏖️</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-gray-600 text-sm">İzinli</p>
+                                <p class="text-3xl font-bold text-gray-800">58</p>
+                                <p class="text-gray-500 text-sm">%4.7 izin oranı</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                        <div class="flex items-center">
+                            <div class="bg-purple-100 p-3 rounded-lg">
+                                <span class="text-2xl">🏢</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-gray-600 text-sm">Departman</p>
+                                <p class="text-3xl font-bold text-gray-800">12</p>
+                                <p class="text-gray-500 text-sm">47 ekip</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-lg font-semibold mb-4">Departman Dağılımı</h3>
+                        <div class="relative h-80">
+                            <canvas id="departmentChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-lg font-semibold mb-4">Aylık Personel Trendi</h3>
+                        <div class="relative h-80">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="bg-white rounded-xl p-6 shadow-lg">
+                    <h3 class="text-lg font-semibold mb-4">Son Aktiviteler</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                            <span class="text-2xl mr-4">👤</span>
+                            <div>
+                                <p class="font-medium">Yeni personel eklendi</p>
+                                <p class="text-sm text-gray-600">Ahmet Yılmaz - Yazılım Geliştirici</p>
+                                <p class="text-xs text-gray-500">2 saat önce</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                            <span class="text-2xl mr-4">📊</span>
+                            <div>
+                                <p class="font-medium">Performans değerlendirmesi tamamlandı</p>
+                                <p class="text-sm text-gray-600">Q4 2023 değerlendirmeleri</p>
+                                <p class="text-xs text-gray-500">1 gün önce</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-yellow-50 rounded-lg">
+                            <span class="text-2xl mr-4">🏖️</span>
+                            <div>
+                                <p class="font-medium">İzin talebi onaylandı</p>
+                                <p class="text-sm text-gray-600">Ayşe Demir - 5 gün yıllık izin</p>
+                                <p class="text-xs text-gray-500">3 gün önce</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employees Section -->
+            <div id="employees" class="section hidden p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Personel Yönetimi</h2>
+                        <p class="text-gray-600">Tüm çalışanları görüntüle ve yönet</p>
+                    </div>
+                    <button onclick="openEmployeeModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors duration-200 shadow-lg">
+                        ➕ Yeni Personel
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white rounded-xl p-6 shadow-lg mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" id="employeeSearch" placeholder="🔍 Personel ara..." 
+                               class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <select id="departmentFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tüm Departmanlar</option>
+                            <option value="Yazılım">Yazılım Geliştirme</option>
+                            <option value="İK">İnsan Kaynakları</option>
+                            <option value="Pazarlama">Pazarlama</option>
+                            <option value="Satış">Satış</option>
+                        </select>
+                        <select id="statusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tüm Durumlar</option>
+                            <option value="active">Aktif</option>
+                            <option value="vacation">İzinli</option>
+                            <option value="inactive">Pasif</option>
+                        </select>
+                        <select id="positionFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tüm Pozisyonlar</option>
+                            <option value="manager">Yönetici</option>
+                            <option value="senior">Kıdemli</option>
+                            <option value="junior">Junior</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Employee Grid -->
+                <div id="employeeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Employee cards will be generated here -->
+                </div>
+            </div>
+
+            <!-- Departments Section -->
+            <div id="departments" class="section hidden p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Departman Yönetimi</h2>
+                        <p class="text-gray-600">Departmanları ve ekipleri organize edin</p>
+                    </div>
+                    <button onclick="openDepartmentModal()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-medium transition-colors duration-200 shadow-lg">
+                        ➕ Yeni Departman
+                    </button>
+                </div>
+
+                <div id="departmentGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Department cards will be generated here -->
+                </div>
+            </div>
+
+            <!-- Teams Section -->
+            <div id="teams" class="section hidden p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Ekip Yönetimi</h2>
+                        <p class="text-gray-600">Proje ekiplerini oluştur ve yönet</p>
+                    </div>
+                    <button onclick="openTeamModal()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-colors duration-200 shadow-lg">
+                        ➕ Yeni Ekip
+                    </button>
+                </div>
+
+                <div id="teamGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Team cards will be generated here -->
+                </div>
+            </div>
+
+            <!-- Performance Section -->
+            <div id="performance" class="section hidden p-8">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Performans Yönetimi</h2>
+                    <p class="text-gray-600">Çalışan performansını değerlendir ve takip et</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-lg font-semibold mb-4">Performans Dağılımı</h3>
+                        <div class="relative h-80">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-lg font-semibold mb-4">En İyi Performans Gösterenler</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-3">🥇</span>
+                                    <div>
+                                        <p class="font-medium">Mehmet Kaya</p>
+                                        <p class="text-sm text-gray-600">Yazılım Geliştirici</p>
+                                    </div>
+                                </div>
+                                <span class="bg-yellow-200 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">98/100</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-3">🥈</span>
+                                    <div>
+                                        <p class="font-medium">Ayşe Demir</p>
+                                        <p class="text-sm text-gray-600">Proje Yöneticisi</p>
+                                    </div>
+                                </div>
+                                <span class="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm font-medium">95/100</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-3">🥉</span>
+                                    <div>
+                                        <p class="font-medium">Can Arslan</p>
+                                        <p class="text-sm text-gray-600">UX Designer</p>
+                                    </div>
+                                </div>
+                                <span class="bg-orange-200 text-orange-800 px-3 py-1 rounded-full text-sm font-medium">92/100</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Section -->
+            <div id="tasks" class="section hidden p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Görev Yönetimi</h2>
+                        <p class="text-gray-600">Projeleri ve görevleri takip edin, atayın ve yönetin</p>
+                    </div>
+                    <button onclick="openTaskModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-colors duration-200 shadow-lg">
+                        ➕ Yeni Görev
+                    </button>
+                </div>
+
+                <!-- Task Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center">
+                            <div class="bg-blue-100 p-3 rounded-lg">
+                                <span class="text-2xl">📋</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-gray-600 text-sm">Toplam Görev</p>
+                                <p class="text-3xl font-bold text-gray-800" id="totalTasks">0</p>
+                                <p class="text-gray-500 text-sm">Aktif projeler</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center">
+                            <div class="bg-yellow-100 p-3 rounded-lg">
+                                <span class="text-2xl">⏳</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-gray-600 text-sm">Devam Eden</p>
+                                <p class="text-3xl font-bold text-gray-800" id="inProgressTasks">0</p>
+                                <p class="text-gray-500 text-sm">Çalışılıyor</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center">
+                            <div class="bg-green-100 p-3 rounded-lg">
+                                <span class="text-2xl">✅</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-gray-600 text-sm">Tamamlanan</p>
+                                <p class="text-3xl font-bold text-gray-800" id="completedTasks">0</p>
+                                <p class="text-gray-500 text-sm">Bu ay</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center">
+                            <div class="bg-red-100 p-3 rounded-lg">
+                                <span class="text-2xl">⚠️</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-gray-600 text-sm">Geciken</p>
+                                <p class="text-3xl font-bold text-gray-800" id="overdueTasks">0</p>
+                                <p class="text-gray-500 text-sm">Acil müdahale</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task Filters -->
+                <div class="bg-white rounded-xl p-6 shadow-lg mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <input type="text" id="taskSearch" placeholder="🔍 Görev ara..." 
+                               class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        <select id="taskStatusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Tüm Durumlar</option>
+                            <option value="todo">Yapılacak</option>
+                            <option value="in-progress">Devam Eden</option>
+                            <option value="review">İnceleme</option>
+                            <option value="completed">Tamamlandı</option>
+                            <option value="cancelled">İptal</option>
+                        </select>
+                        <select id="taskPriorityFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Tüm Öncelikler</option>
+                            <option value="low">Düşük</option>
+                            <option value="medium">Orta</option>
+                            <option value="high">Yüksek</option>
+                            <option value="urgent">Acil</option>
+                        </select>
+                        <select id="taskAssigneeFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Tüm Atananlar</option>
+                        </select>
+                        <select id="taskProjectFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Tüm Projeler</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Task Board -->
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Todo Column -->
+                    <div class="bg-gray-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-gray-800 flex items-center">
+                                <span class="w-3 h-3 bg-gray-400 rounded-full mr-2"></span>
+                                Yapılacak
+                            </h3>
+                            <span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-medium" id="todoCount">0</span>
+                        </div>
+                        <div id="todoTasks" class="space-y-3 min-h-[200px]">
+                            <!-- Todo tasks will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- In Progress Column -->
+                    <div class="bg-blue-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-gray-800 flex items-center">
+                                <span class="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
+                                Devam Eden
+                            </h3>
+                            <span class="bg-blue-200 text-blue-700 px-2 py-1 rounded-full text-xs font-medium" id="inProgressCount">0</span>
+                        </div>
+                        <div id="inProgressTasksBoard" class="space-y-3 min-h-[200px]">
+                            <!-- In progress tasks will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Review Column -->
+                    <div class="bg-yellow-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-gray-800 flex items-center">
+                                <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                                İnceleme
+                            </h3>
+                            <span class="bg-yellow-200 text-yellow-700 px-2 py-1 rounded-full text-xs font-medium" id="reviewCount">0</span>
+                        </div>
+                        <div id="reviewTasks" class="space-y-3 min-h-[200px]">
+                            <!-- Review tasks will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Completed Column -->
+                    <div class="bg-green-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-gray-800 flex items-center">
+                                <span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                                Tamamlandı
+                            </h3>
+                            <span class="bg-green-200 text-green-700 px-2 py-1 rounded-full text-xs font-medium" id="completedCount">0</span>
+                        </div>
+                        <div id="completedTasksBoard" class="space-y-3 min-h-[200px]">
+                            <!-- Completed tasks will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task List View -->
+                <div class="bg-white rounded-xl shadow-lg">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-gray-800">Detaylı Görev Listesi</h3>
+                            <div class="flex gap-2">
+                                <button onclick="toggleTaskView('board')" id="boardViewBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm">
+                                    📋 Kanban
+                                </button>
+                                <button onclick="toggleTaskView('list')" id="listViewBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm">
+                                    📝 Liste
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="taskListView" class="hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Görev</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Atanan</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Proje</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Öncelik</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bitiş</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="taskTableBody" class="bg-white divide-y divide-gray-200">
+                                    <!-- Task rows will be rendered here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div id="reports" class="section hidden p-8">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Raporlar</h2>
+                    <p class="text-gray-600">Detaylı analiz ve raporlar</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover cursor-pointer">
+                        <div class="text-center">
+                            <span class="text-4xl mb-4 block">📊</span>
+                            <h3 class="text-lg font-semibold mb-2">Personel Raporu</h3>
+                            <p class="text-gray-600 text-sm mb-4">Detaylı personel istatistikleri</p>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">Rapor Oluştur</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover cursor-pointer">
+                        <div class="text-center">
+                            <span class="text-4xl mb-4 block">📈</span>
+                            <h3 class="text-lg font-semibold mb-2">Performans Raporu</h3>
+                            <p class="text-gray-600 text-sm mb-4">Çalışan performans analizi</p>
+                            <button class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm">Rapor Oluştur</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover cursor-pointer">
+                        <div class="text-center">
+                            <span class="text-4xl mb-4 block">💰</span>
+                            <h3 class="text-lg font-semibold mb-2">Maaş Raporu</h3>
+                            <p class="text-gray-600 text-sm mb-4">Bordro ve maaş analizi</p>
+                            <button class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm">Rapor Oluştur</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Modal -->
+    <div id="employeeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-4xl w-full mx-4 shadow-2xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800" id="employeeModalTitle">Yeni Personel Ekle</h3>
+                <button onclick="closeEmployeeModal()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+            </div>
+            
+            <form id="employeeForm" class="space-y-6">
+                <!-- Kişisel Bilgiler -->
+                <div class="bg-gray-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">👤 Kişisel Bilgiler</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Ad *</label>
+                            <input type="text" id="employeeFirstName" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Soyad *</label>
+                            <input type="text" id="employeeLastName" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">TC Kimlik No *</label>
+                            <input type="text" id="employeeTC" required maxlength="11" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Doğum Tarihi</label>
+                            <input type="date" id="employeeBirthDate" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Cinsiyet</label>
+                            <select id="employeeGender" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Seçiniz</option>
+                                <option value="Erkek">Erkek</option>
+                                <option value="Kadın">Kadın</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Medeni Durum</label>
+                            <select id="employeeMaritalStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Seçiniz</option>
+                                <option value="Bekar">Bekar</option>
+                                <option value="Evli">Evli</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İletişim Bilgileri -->
+                <div class="bg-blue-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">📞 İletişim Bilgileri</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">E-posta *</label>
+                            <input type="email" id="employeeEmail" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Telefon *</label>
+                            <input type="tel" id="employeePhone" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Adres</label>
+                        <textarea id="employeeAddress" rows="3" 
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- İş Bilgileri -->
+                <div class="bg-green-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">💼 İş Bilgileri</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Departman *</label>
+                            <select id="employeeDepartment" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Departman Seçin</option>
+                                <option value="Yazılım">Yazılım Geliştirme</option>
+                                <option value="İK">İnsan Kaynakları</option>
+                                <option value="Pazarlama">Pazarlama</option>
+                                <option value="Satış">Satış</option>
+                                <option value="Finans">Finans</option>
+                                <option value="Operasyon">Operasyon</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Pozisyon *</label>
+                            <input type="text" id="employeePosition" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Seviye</label>
+                            <select id="employeeLevel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Seçiniz</option>
+                                <option value="Intern">Stajyer</option>
+                                <option value="Junior">Junior</option>
+                                <option value="Mid">Mid-Level</option>
+                                <option value="Senior">Senior</option>
+                                <option value="Lead">Team Lead</option>
+                                <option value="Manager">Manager</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">İşe Başlama Tarihi *</label>
+                            <input type="date" id="employeeStartDate" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Maaş (₺)</label>
+                            <input type="number" id="employeeSalary" min="0" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Çalışma Tipi</label>
+                            <select id="employeeWorkType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="Tam Zamanlı">Tam Zamanlı</option>
+                                <option value="Yarı Zamanlı">Yarı Zamanlı</option>
+                                <option value="Sözleşmeli">Sözleşmeli</option>
+                                <option value="Freelance">Freelance</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Eğitim ve Yetenekler -->
+                <div class="bg-purple-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">🎓 Eğitim ve Yetenekler</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Eğitim Durumu</label>
+                            <select id="employeeEducation" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Seçiniz</option>
+                                <option value="Lise">Lise</option>
+                                <option value="Ön Lisans">Ön Lisans</option>
+                                <option value="Lisans">Lisans</option>
+                                <option value="Yüksek Lisans">Yüksek Lisans</option>
+                                <option value="Doktora">Doktora</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Üniversite/Okul</label>
+                            <input type="text" id="employeeSchool" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Yetenekler (virgülle ayırın)</label>
+                        <input type="text" id="employeeSkills" placeholder="JavaScript, React, Node.js, Python..." 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <!-- Acil Durum İletişim -->
+                <div class="bg-red-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">🚨 Acil Durum İletişim</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">İletişim Kişisi</label>
+                            <input type="text" id="emergencyContactName" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Yakınlık Derecesi</label>
+                            <input type="text" id="emergencyContactRelation" placeholder="Anne, Baba, Eş..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
+                            <input type="tel" id="emergencyContactPhone" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors duration-200">
+                        💾 Kaydet
+                    </button>
+                    <button type="button" onclick="closeEmployeeModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-3 rounded-lg font-medium transition-colors duration-200">
+                        ❌ İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Department Modal -->
+    <div id="departmentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800" id="departmentModalTitle">Yeni Departman</h3>
+                <button onclick="closeDepartmentModal()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+            </div>
+            
+            <form id="departmentForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Departman Adı *</label>
+                    <input type="text" id="departmentName" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Açıklama</label>
+                    <textarea id="departmentDescription" rows="3" 
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Departman Yöneticisi</label>
+                        <select id="departmentManager" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="">Yönetici Seçin</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Yıllık Bütçe (₺)</label>
+                        <input type="number" id="departmentBudget" min="0" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Lokasyon</label>
+                        <input type="text" id="departmentLocation" placeholder="Bina, Kat..." 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Kuruluş Tarihi</label>
+                        <input type="date" id="departmentEstablished" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors duration-200">
+                        💾 Kaydet
+                    </button>
+                    <button type="button" onclick="closeDepartmentModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-3 rounded-lg font-medium transition-colors duration-200">
+                        ❌ İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-4xl w-full mx-4 shadow-2xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800" id="taskModalTitle">Yeni Görev Oluştur</h3>
+                <button onclick="closeTaskModal()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+            </div>
+            
+            <form id="taskForm" class="space-y-6">
+                <!-- Temel Bilgiler -->
+                <div class="bg-indigo-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">📋 Temel Bilgiler</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Görev Başlığı *</label>
+                            <input type="text" id="taskTitle" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Açıklama</label>
+                            <textarea id="taskDescription" rows="4" 
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Atama ve Proje -->
+                <div class="bg-blue-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">👥 Atama ve Proje</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Proje *</label>
+                            <select id="taskProject" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Proje Seçin</option>
+                                <option value="E-ticaret Platformu">E-ticaret Platformu</option>
+                                <option value="Mobil Uygulama">Mobil Uygulama</option>
+                                <option value="CRM Sistemi">CRM Sistemi</option>
+                                <option value="Web Sitesi Yenileme">Web Sitesi Yenileme</option>
+                                <option value="API Geliştirme">API Geliştirme</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Atanan Kişi *</label>
+                            <select id="taskAssignee" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Kişi Seçin</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Rapor Veren</label>
+                            <select id="taskReporter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Kişi Seçin</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Öncelik ve Durum -->
+                <div class="bg-yellow-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">⚡ Öncelik ve Durum</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Öncelik *</label>
+                            <select id="taskPriority" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="low">🟢 Düşük</option>
+                                <option value="medium" selected>🟡 Orta</option>
+                                <option value="high">🟠 Yüksek</option>
+                                <option value="urgent">🔴 Acil</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Durum</label>
+                            <select id="taskStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="todo" selected>📝 Yapılacak</option>
+                                <option value="in-progress">⏳ Devam Eden</option>
+                                <option value="review">👀 İnceleme</option>
+                                <option value="completed">✅ Tamamlandı</option>
+                                <option value="cancelled">❌ İptal</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                            <select id="taskCategory" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Kategori Seçin</option>
+                                <option value="development">💻 Geliştirme</option>
+                                <option value="design">🎨 Tasarım</option>
+                                <option value="testing">🧪 Test</option>
+                                <option value="documentation">📚 Dokümantasyon</option>
+                                <option value="meeting">🤝 Toplantı</option>
+                                <option value="research">🔍 Araştırma</option>
+                                <option value="bug">🐛 Hata Düzeltme</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tahmini Süre (saat)</label>
+                            <input type="number" id="taskEstimatedHours" min="0.5" step="0.5" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarihler -->
+                <div class="bg-green-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">📅 Tarihler</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Başlangıç Tarihi</label>
+                            <input type="date" id="taskStartDate" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bitiş Tarihi *</label>
+                            <input type="date" id="taskDueDate" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tamamlanma Tarihi</label>
+                            <input type="date" id="taskCompletedDate" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bağımlılıklar ve Etiketler -->
+                <div class="bg-purple-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">🔗 Bağımlılıklar ve Etiketler</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bağımlı Görevler</label>
+                            <select id="taskDependencies" multiple class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                <!-- Will be populated with existing tasks -->
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Ctrl/Cmd tuşu ile çoklu seçim yapabilirsiniz</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Etiketler</label>
+                            <input type="text" id="taskTags" placeholder="frontend, api, urgent..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            <p class="text-xs text-gray-500 mt-1">Virgülle ayırarak etiket ekleyin</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İlerleme ve Notlar -->
+                <div class="bg-gray-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">📊 İlerleme ve Notlar</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">İlerleme (%)</label>
+                            <input type="range" id="taskProgress" min="0" max="100" value="0" 
+                                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>0%</span>
+                                <span id="progressValue">0%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Harcanan Süre (saat)</label>
+                            <input type="number" id="taskSpentHours" min="0" step="0.5" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Notlar</label>
+                        <textarea id="taskNotes" rows="3" placeholder="Görevle ilgili notlar, güncellemeler..." 
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"></textarea>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium transition-colors duration-200">
+                        💾 Görev Kaydet
+                    </button>
+                    <button type="button" onclick="closeTaskModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-3 rounded-lg font-medium transition-colors duration-200">
+                        ❌ İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Team Modal -->
+    <div id="teamModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-3xl w-full mx-4 shadow-2xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800" id="teamModalTitle">Yeni Ekip Oluştur</h3>
+                <button onclick="closeTeamModal()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+            </div>
+            
+            <form id="teamForm" class="space-y-6">
+                <!-- Temel Bilgiler -->
+                <div class="bg-purple-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">👥 Temel Bilgiler</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Ekip Adı *</label>
+                            <input type="text" id="teamName" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Proje Adı</label>
+                            <input type="text" id="teamProject" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Açıklama</label>
+                        <textarea id="teamDescription" rows="3" 
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- Ekip Lideri ve Departman -->
+                <div class="bg-blue-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">👨‍💼 Yönetim</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Ekip Lideri *</label>
+                            <select id="teamLeader" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <option value="">Lider Seçin</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Departman</label>
+                            <select id="teamDepartment" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <option value="">Departman Seçin</option>
+                                <option value="Yazılım">Yazılım Geliştirme</option>
+                                <option value="İK">İnsan Kaynakları</option>
+                                <option value="Pazarlama">Pazarlama</option>
+                                <option value="Satış">Satış</option>
+                                <option value="Finans">Finans</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ekip Üyeleri -->
+                <div class="bg-green-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">👥 Ekip Üyeleri</h4>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Üye Ekle</label>
+                        <div class="flex gap-2">
+                            <select id="memberSelect" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <option value="">Personel Seçin</option>
+                            </select>
+                            <button type="button" onclick="addTeamMember()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                                ➕ Ekle
+                            </button>
+                        </div>
+                    </div>
+                    <div id="selectedMembers" class="space-y-2">
+                        <!-- Selected members will appear here -->
+                    </div>
+                </div>
+
+                <!-- Proje Detayları -->
+                <div class="bg-yellow-50 p-6 rounded-xl">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">📅 Proje Detayları</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Başlangıç Tarihi</label>
+                            <input type="date" id="teamStartDate" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bitiş Tarihi</label>
+                            <input type="date" id="teamEndDate" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Öncelik</label>
+                            <select id="teamPriority" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <option value="low">Düşük</option>
+                                <option value="medium" selected>Orta</option>
+                                <option value="high">Yüksek</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition-colors duration-200">
+                        💾 Ekip Oluştur
+                    </button>
+                    <button type="button" onclick="closeTeamModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-3 rounded-lg font-medium transition-colors duration-200">
+                        ❌ İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        let tasks = [
+            {
+                id: 1,
+                title: "Kullanıcı Giriş Sayfası Tasarımı",
+                description: "Yeni kullanıcı giriş sayfasının UI/UX tasarımını oluştur",
+                project: "E-ticaret Platformu",
+                assignee: "Ahmet Yılmaz",
+                reporter: "Mehmet Kaya",
+                priority: "high",
+                status: "in-progress",
+                category: "design",
+                startDate: "2024-01-15",
+                dueDate: "2024-01-25",
+                completedDate: null,
+                estimatedHours: 16,
+                spentHours: 8,
+                progress: 50,
+                tags: ["ui", "design", "frontend"],
+                dependencies: [],
+                notes: "Mobil responsive tasarım önemli",
+                createdAt: "2024-01-10"
+            },
+            {
+                id: 2,
+                title: "API Endpoint Geliştirme",
+                description: "Kullanıcı yönetimi için REST API endpoint'lerini geliştir",
+                project: "API Geliştirme",
+                assignee: "Mehmet Kaya",
+                reporter: "Ayşe Demir",
+                priority: "urgent",
+                status: "todo",
+                category: "development",
+                startDate: "2024-01-20",
+                dueDate: "2024-01-30",
+                completedDate: null,
+                estimatedHours: 24,
+                spentHours: 0,
+                progress: 0,
+                tags: ["api", "backend", "nodejs"],
+                dependencies: [],
+                notes: "Güvenlik testleri dahil edilmeli",
+                createdAt: "2024-01-12"
+            },
+            {
+                id: 3,
+                title: "Veritabanı Optimizasyonu",
+                description: "Mevcut sorguları optimize et ve indeksleri gözden geçir",
+                project: "CRM Sistemi",
+                assignee: "Fatma Özkan",
+                reporter: "Mehmet Kaya",
+                priority: "medium",
+                status: "review",
+                category: "development",
+                startDate: "2024-01-05",
+                dueDate: "2024-01-18",
+                completedDate: null,
+                estimatedHours: 12,
+                spentHours: 10,
+                progress: 85,
+                tags: ["database", "optimization", "performance"],
+                dependencies: [],
+                notes: "Test ortamında başarılı sonuçlar alındı",
+                createdAt: "2024-01-03"
+            },
+            {
+                id: 4,
+                title: "Mobil Uygulama Test Senaryoları",
+                description: "iOS ve Android için kapsamlı test senaryoları hazırla",
+                project: "Mobil Uygulama",
+                assignee: "Ayşe Demir",
+                reporter: "Fatma Özkan",
+                priority: "medium",
+                status: "completed",
+                category: "testing",
+                startDate: "2023-12-20",
+                dueDate: "2024-01-10",
+                completedDate: "2024-01-08",
+                estimatedHours: 20,
+                spentHours: 18,
+                progress: 100,
+                tags: ["mobile", "testing", "qa"],
+                dependencies: [],
+                notes: "Tüm test senaryoları başarıyla tamamlandı",
+                createdAt: "2023-12-18"
+            },
+            {
+                id: 5,
+                title: "Proje Dokümantasyonu",
+                description: "API dokümantasyonu ve kullanıcı kılavuzu hazırla",
+                project: "Web Sitesi Yenileme",
+                assignee: "Ahmet Yılmaz",
+                reporter: "Ayşe Demir",
+                priority: "low",
+                status: "todo",
+                category: "documentation",
+                startDate: "2024-01-25",
+                dueDate: "2024-02-05",
+                completedDate: null,
+                estimatedHours: 8,
+                spentHours: 0,
+                progress: 0,
+                tags: ["documentation", "api", "guide"],
+                dependencies: [2],
+                notes: "API geliştirme tamamlandıktan sonra başlanacak",
+                createdAt: "2024-01-14"
+            }
+        ];
+
+        let currentTaskView = 'board';
+
+        let employees = [
+            {
+                id: 1,
+                name: "Ahmet Yılmaz",
+                email: "ahmet@techcorp.com",
+                department: "Yazılım",
+                position: "Senior Developer",
+                phone: "+90 555 123 4567",
+                startDate: "2020-03-15",
+                status: "active",
+                performance: 95,
+                avatar: "👨‍💻"
+            },
+            {
+                id: 2,
+                name: "Ayşe Demir",
+                email: "ayse@techcorp.com",
+                department: "İK",
+                position: "İK Uzmanı",
+                phone: "+90 555 234 5678",
+                startDate: "2019-08-20",
+                status: "active",
+                performance: 88,
+                avatar: "👩‍💼"
+            },
+            {
+                id: 3,
+                name: "Mehmet Kaya",
+                email: "mehmet@techcorp.com",
+                department: "Yazılım",
+                position: "Team Lead",
+                phone: "+90 555 345 6789",
+                startDate: "2018-01-10",
+                status: "vacation",
+                performance: 92,
+                avatar: "👨‍💼"
+            },
+            {
+                id: 4,
+                name: "Fatma Özkan",
+                email: "fatma@techcorp.com",
+                department: "Pazarlama",
+                position: "Marketing Manager",
+                phone: "+90 555 456 7890",
+                startDate: "2021-06-01",
+                status: "active",
+                performance: 90,
+                avatar: "👩‍💻"
+            }
+        ];
+
+        let departments = [
+            {
+                id: 1,
+                name: "Yazılım Geliştirme",
+                manager: "Mehmet Kaya",
+                employeeCount: 45,
+                budget: "₺2,500,000",
+                description: "Web ve mobil uygulama geliştirme",
+                location: "A Blok 3. Kat",
+                established: "2018-01-15"
+            },
+            {
+                id: 2,
+                name: "İnsan Kaynakları",
+                manager: "Ayşe Demir",
+                employeeCount: 12,
+                budget: "₺800,000",
+                description: "Personel işleri ve organizasyon",
+                location: "B Blok 2. Kat",
+                established: "2017-06-01"
+            },
+            {
+                id: 3,
+                name: "Pazarlama",
+                manager: "Fatma Özkan",
+                employeeCount: 28,
+                budget: "₺1,200,000",
+                description: "Dijital pazarlama ve marka yönetimi",
+                location: "A Blok 4. Kat",
+                established: "2019-03-10"
+            },
+            {
+                id: 4,
+                name: "Satış",
+                manager: "Can Arslan",
+                employeeCount: 35,
+                budget: "₺1,800,000",
+                description: "Kurumsal satış ve müşteri ilişkileri",
+                location: "C Blok 1. Kat",
+                established: "2018-09-20"
+            },
+            {
+                id: 5,
+                name: "Finans",
+                manager: "Zeynep Kara",
+                employeeCount: 18,
+                budget: "₺900,000",
+                description: "Mali işler ve muhasebe",
+                location: "B Blok 1. Kat",
+                established: "2017-12-05"
+            }
+        ];
+
+        let teams = [
+            {
+                id: 1,
+                name: "Frontend Takımı",
+                project: "E-ticaret Platformu",
+                members: ["Ahmet Yılmaz", "Can Arslan", "Zeynep Kara"],
+                status: "active",
+                progress: 75
+            },
+            {
+                id: 2,
+                name: "Backend Takımı",
+                project: "API Geliştirme",
+                members: ["Mehmet Kaya", "Ali Veli", "Seda Yıldız"],
+                status: "active",
+                progress: 60
+            }
+        ];
+
+        // Navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName).classList.remove('hidden');
+            
+            // Update sidebar
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Initialize charts if dashboard is selected
+            if (sectionName === 'dashboard') {
+                setTimeout(initCharts, 100);
+            }
+        }
+
+        // Employee Management
+        function renderEmployees() {
+            const grid = document.getElementById('employeeGrid');
+            const searchTerm = document.getElementById('employeeSearch')?.value.toLowerCase() || '';
+            const deptFilter = document.getElementById('departmentFilter')?.value || '';
+            const statusFilter = document.getElementById('statusFilter')?.value || '';
+            
+            const filteredEmployees = employees.filter(emp => {
+                const matchesSearch = emp.name.toLowerCase().includes(searchTerm) || 
+                                    emp.email.toLowerCase().includes(searchTerm);
+                const matchesDept = !deptFilter || emp.department === deptFilter;
+                const matchesStatus = !statusFilter || emp.status === statusFilter;
+                
+                return matchesSearch && matchesDept && matchesStatus;
+            });
+
+            grid.innerHTML = filteredEmployees.map(emp => `
+                <div class="employee-card bg-white rounded-xl p-6 shadow-lg">
+                    <div class="text-center mb-4">
+                        <div class="text-4xl mb-2">${emp.avatar}</div>
+                        <h3 class="font-semibold text-lg text-gray-800">${emp.name}</h3>
+                        <p class="text-gray-600 text-sm">${emp.position}</p>
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-medium mt-2 ${getStatusClass(emp.status)}">
+                            ${getStatusText(emp.status)}
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center">
+                            <span class="mr-2">🏢</span>
+                            <span class="text-gray-600">${emp.department}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-2">📧</span>
+                            <span class="text-gray-600">${emp.email}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-2">📞</span>
+                            <span class="text-gray-600">${emp.phone}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-2">📊</span>
+                            <span class="text-gray-600">Performans: ${emp.performance}/100</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 flex gap-2">
+                        <button onclick="openEmployeeModal(${emp.id})" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">
+                            ✏️ Düzenle
+                        </button>
+                        <button onclick="deleteEmployee(${emp.id})" class="flex-1 bg-red-600 text-white py-2 rounded-lg text-sm hover:bg-red-700 transition-colors">
+                            🗑️ Sil
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                active: 'bg-green-100 text-green-800',
+                vacation: 'bg-yellow-100 text-yellow-800',
+                inactive: 'bg-red-100 text-red-800'
+            };
+            return classes[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                active: 'Aktif',
+                vacation: 'İzinli',
+                inactive: 'Pasif'
+            };
+            return texts[status] || 'Bilinmiyor';
+        }
+
+        // Department Management
+        function renderDepartments() {
+            const grid = document.getElementById('departmentGrid');
+            grid.innerHTML = departments.map(dept => {
+                const deptEmployees = employees.filter(emp => emp.department === dept.name.split(' ')[0]);
+                const avgPerformance = deptEmployees.length > 0 ? 
+                    Math.round(deptEmployees.reduce((sum, emp) => sum + emp.performance, 0) / deptEmployees.length) : 0;
+                
+                return `
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                    <div class="text-center mb-4">
+                        <span class="text-4xl mb-2 block">${getDepartmentIcon(dept.name)}</span>
+                        <h3 class="font-semibold text-lg text-gray-800">${dept.name}</h3>
+                        <p class="text-gray-600 text-sm">${dept.description}</p>
+                    </div>
+                    
+                    <div class="space-y-3 mb-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">👨‍💼 Yönetici:</span>
+                            <span class="font-medium text-sm">${dept.manager}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">👥 Çalışan:</span>
+                            <span class="font-medium">${dept.employeeCount} kişi</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">💰 Bütçe:</span>
+                            <span class="font-medium text-sm">${dept.budget}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">📊 Performans:</span>
+                            <span class="font-medium">${avgPerformance}/100</span>
+                        </div>
+                        ${dept.location ? `
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">📍 Lokasyon:</span>
+                            <span class="font-medium text-sm">${dept.location}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Performance Bar -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-gray-600">Departman Performansı</span>
+                            <span class="font-medium">${avgPerformance}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-300" 
+                                 style="width: ${avgPerformance}%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Employee Status -->
+                    <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="text-xs text-gray-600 mb-2">Çalışan Durumu</div>
+                        <div class="flex justify-between text-sm">
+                            <div class="text-center">
+                                <div class="font-semibold text-green-600">${deptEmployees.filter(e => e.status === 'active').length}</div>
+                                <div class="text-xs text-gray-500">Aktif</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-semibold text-yellow-600">${deptEmployees.filter(e => e.status === 'vacation').length}</div>
+                                <div class="text-xs text-gray-500">İzinli</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-semibold text-red-600">${deptEmployees.filter(e => e.status === 'inactive').length}</div>
+                                <div class="text-xs text-gray-500">Pasif</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="viewDepartmentDetails(${dept.id})" class="flex-1 bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+                            👁️ Detay
+                        </button>
+                        <button onclick="editDepartment(${dept.id})" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">
+                            ✏️ Düzenle
+                        </button>
+                        <button onclick="deleteDepartment(${dept.id})" class="bg-red-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function getDepartmentIcon(deptName) {
+            const icons = {
+                'Yazılım Geliştirme': '💻',
+                'İnsan Kaynakları': '👥',
+                'Pazarlama': '📢',
+                'Satış': '💼',
+                'Finans': '💰',
+                'Operasyon': '⚙️'
+            };
+            return icons[deptName] || '🏢';
+        }
+
+        function viewDepartmentDetails(deptId) {
+            const dept = departments.find(d => d.id === deptId);
+            const deptEmployees = employees.filter(emp => emp.department === dept.name.split(' ')[0]);
+            
+            alert(`${dept.name} Detayları:\n\n` +
+                  `👨‍💼 Yönetici: ${dept.manager}\n` +
+                  `👥 Toplam Çalışan: ${dept.employeeCount}\n` +
+                  `💰 Yıllık Bütçe: ${dept.budget}\n` +
+                  `📍 Lokasyon: ${dept.location || 'Belirtilmemiş'}\n` +
+                  `📅 Kuruluş: ${dept.established || 'Belirtilmemiş'}\n\n` +
+                  `Aktif Çalışanlar: ${deptEmployees.filter(e => e.status === 'active').length}\n` +
+                  `İzinli Çalışanlar: ${deptEmployees.filter(e => e.status === 'vacation').length}`);
+        }
+
+        function editDepartment(deptId) {
+            const dept = departments.find(d => d.id === deptId);
+            
+            // Populate department modal with existing data
+            document.getElementById('departmentModalTitle').textContent = 'Departman Düzenle';
+            document.getElementById('departmentName').value = dept.name;
+            document.getElementById('departmentDescription').value = dept.description;
+            document.getElementById('departmentBudget').value = dept.budget.replace('₺', '').replace(',', '');
+            document.getElementById('departmentLocation').value = dept.location || '';
+            document.getElementById('departmentEstablished').value = dept.established || '';
+            
+            // Populate manager dropdown
+            populateManagerDropdown();
+            document.getElementById('departmentManager').value = dept.manager;
+            
+            openDepartmentModal();
+            
+            // Store editing ID for form submission
+            document.getElementById('departmentForm').dataset.editingId = deptId;
+        }
+
+        function deleteDepartment(deptId) {
+            const dept = departments.find(d => d.id === deptId);
+            if (confirm(`"${dept.name}" departmanını silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz.`)) {
+                departments = departments.filter(d => d.id !== deptId);
+                renderDepartments();
+            }
+        }
+
+        // Team Management
+        function renderTeams() {
+            const grid = document.getElementById('teamGrid');
+            grid.innerHTML = teams.map(team => `
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                    <div class="mb-4">
+                        <h3 class="font-semibold text-lg text-gray-800 mb-2">${team.name}</h3>
+                        <p class="text-gray-600 text-sm">${team.project}</p>
+                        <div class="mt-3">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>İlerleme</span>
+                                <span>${team.progress}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${team.progress}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-600 mb-2">Ekip Üyeleri:</p>
+                        <div class="space-y-1">
+                            ${team.members.map(member => `
+                                <div class="text-sm bg-gray-50 px-3 py-1 rounded-lg">${member}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button class="flex-1 bg-purple-600 text-white py-2 rounded-lg text-sm hover:bg-purple-700">
+                            Detay
+                        </button>
+                        <button class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700">
+                            Düzenle
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Modal Functions
+        function openEmployeeModal(employeeId = null) {
+            const modal = document.getElementById('employeeModal');
+            const form = document.getElementById('employeeForm');
+            
+            if (employeeId) {
+                const employee = employees.find(e => e.id === employeeId);
+                document.getElementById('employeeModalTitle').textContent = 'Personel Düzenle';
+                
+                // Populate form with employee data
+                const nameParts = employee.name.split(' ');
+                document.getElementById('employeeFirstName').value = nameParts[0] || '';
+                document.getElementById('employeeLastName').value = nameParts.slice(1).join(' ') || '';
+                document.getElementById('employeeEmail').value = employee.email;
+                document.getElementById('employeePhone').value = employee.phone;
+                document.getElementById('employeeDepartment').value = employee.department;
+                document.getElementById('employeePosition').value = employee.position;
+                document.getElementById('employeeStartDate').value = employee.startDate;
+                
+                form.dataset.editingId = employeeId;
+            } else {
+                document.getElementById('employeeModalTitle').textContent = 'Yeni Personel Ekle';
+                form.reset();
+                delete form.dataset.editingId;
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeEmployeeModal() {
+            const modal = document.getElementById('employeeModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('employeeForm').reset();
+        }
+
+        function openDepartmentModal() {
+            populateManagerDropdown();
+            document.getElementById('departmentModal').classList.remove('hidden');
+            document.getElementById('departmentModal').classList.add('flex');
+        }
+
+        function closeDepartmentModal() {
+            const modal = document.getElementById('departmentModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('departmentForm').reset();
+            delete document.getElementById('departmentForm').dataset.editingId;
+        }
+
+        function openTeamModal() {
+            populateTeamDropdowns();
+            document.getElementById('teamModal').classList.remove('hidden');
+            document.getElementById('teamModal').classList.add('flex');
+        }
+
+        function closeTeamModal() {
+            const modal = document.getElementById('teamModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('teamForm').reset();
+            document.getElementById('selectedMembers').innerHTML = '';
+            selectedTeamMembers = [];
+        }
+
+        function populateManagerDropdown() {
+            const managerSelect = document.getElementById('departmentManager');
+            managerSelect.innerHTML = '<option value="">Yönetici Seçin</option>';
+            
+            employees.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = emp.name;
+                option.textContent = `${emp.name} - ${emp.position}`;
+                managerSelect.appendChild(option);
+            });
+        }
+
+        function populateTeamDropdowns() {
+            // Populate team leader dropdown
+            const leaderSelect = document.getElementById('teamLeader');
+            leaderSelect.innerHTML = '<option value="">Lider Seçin</option>';
+            
+            // Populate member select dropdown
+            const memberSelect = document.getElementById('memberSelect');
+            memberSelect.innerHTML = '<option value="">Personel Seçin</option>';
+            
+            employees.forEach(emp => {
+                const leaderOption = document.createElement('option');
+                leaderOption.value = emp.name;
+                leaderOption.textContent = `${emp.name} - ${emp.position}`;
+                leaderSelect.appendChild(leaderOption);
+                
+                const memberOption = document.createElement('option');
+                memberOption.value = emp.name;
+                memberOption.textContent = `${emp.name} - ${emp.department}`;
+                memberSelect.appendChild(memberOption);
+            });
+        }
+
+        // Global variables for team management
+        let selectedTeamMembers = [];
+
+        // Employee Form
+        document.getElementById('employeeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('employeeFirstName').value;
+            const lastName = document.getElementById('employeeLastName').value;
+            const fullName = `${firstName} ${lastName}`.trim();
+            
+            const employeeData = {
+                name: fullName,
+                email: document.getElementById('employeeEmail').value,
+                department: document.getElementById('employeeDepartment').value,
+                position: document.getElementById('employeePosition').value,
+                phone: document.getElementById('employeePhone').value,
+                startDate: document.getElementById('employeeStartDate').value,
+                tc: document.getElementById('employeeTC').value,
+                birthDate: document.getElementById('employeeBirthDate').value,
+                gender: document.getElementById('employeeGender').value,
+                maritalStatus: document.getElementById('employeeMaritalStatus').value,
+                address: document.getElementById('employeeAddress').value,
+                level: document.getElementById('employeeLevel').value,
+                salary: document.getElementById('employeeSalary').value,
+                workType: document.getElementById('employeeWorkType').value,
+                education: document.getElementById('employeeEducation').value,
+                school: document.getElementById('employeeSchool').value,
+                skills: document.getElementById('employeeSkills').value,
+                emergencyContactName: document.getElementById('emergencyContactName').value,
+                emergencyContactRelation: document.getElementById('emergencyContactRelation').value,
+                emergencyContactPhone: document.getElementById('emergencyContactPhone').value,
+                status: 'active',
+                performance: Math.floor(Math.random() * 20) + 80,
+                avatar: '👤'
+            };
+            
+            if (this.dataset.editingId) {
+                // Update existing employee
+                const employeeId = parseInt(this.dataset.editingId);
+                const employeeIndex = employees.findIndex(e => e.id === employeeId);
+                if (employeeIndex !== -1) {
+                    employees[employeeIndex] = { ...employees[employeeIndex], ...employeeData };
+                }
+            } else {
+                // Add new employee
+                const newEmployee = {
+                    id: Date.now(),
+                    ...employeeData
+                };
+                employees.push(newEmployee);
+            }
+            
+            renderEmployees();
+            updateStats();
+            closeEmployeeModal();
+        });
+
+        // Department Form
+        document.getElementById('departmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const departmentData = {
+                name: document.getElementById('departmentName').value,
+                description: document.getElementById('departmentDescription').value,
+                manager: document.getElementById('departmentManager').value,
+                budget: `₺${parseInt(document.getElementById('departmentBudget').value || 0).toLocaleString()}`,
+                location: document.getElementById('departmentLocation').value,
+                established: document.getElementById('departmentEstablished').value,
+                employeeCount: employees.filter(emp => emp.department === document.getElementById('departmentName').value.split(' ')[0]).length
+            };
+            
+            if (this.dataset.editingId) {
+                // Update existing department
+                const deptId = parseInt(this.dataset.editingId);
+                const deptIndex = departments.findIndex(d => d.id === deptId);
+                if (deptIndex !== -1) {
+                    departments[deptIndex] = { ...departments[deptIndex], ...departmentData };
+                }
+            } else {
+                // Add new department
+                const newDepartment = {
+                    id: Date.now(),
+                    ...departmentData
+                };
+                departments.push(newDepartment);
+            }
+            
+            renderDepartments();
+            closeDepartmentModal();
+        });
+
+        // Team Form
+        document.getElementById('teamForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const teamData = {
+                name: document.getElementById('teamName').value,
+                project: document.getElementById('teamProject').value,
+                description: document.getElementById('teamDescription').value,
+                leader: document.getElementById('teamLeader').value,
+                department: document.getElementById('teamDepartment').value,
+                members: [...selectedTeamMembers],
+                startDate: document.getElementById('teamStartDate').value,
+                endDate: document.getElementById('teamEndDate').value,
+                priority: document.getElementById('teamPriority').value,
+                status: 'active',
+                progress: Math.floor(Math.random() * 30) + 10 // Random initial progress
+            };
+            
+            const newTeam = {
+                id: Date.now(),
+                ...teamData
+            };
+            
+            teams.push(newTeam);
+            renderTeams();
+            closeTeamModal();
+        });
+
+        // Team member management
+        function addTeamMember() {
+            const memberSelect = document.getElementById('memberSelect');
+            const selectedMember = memberSelect.value;
+            
+            if (selectedMember && !selectedTeamMembers.includes(selectedMember)) {
+                selectedTeamMembers.push(selectedMember);
+                renderSelectedMembers();
+                memberSelect.value = '';
+            }
+        }
+
+        function removeTeamMember(memberName) {
+            selectedTeamMembers = selectedTeamMembers.filter(member => member !== memberName);
+            renderSelectedMembers();
+        }
+
+        function renderSelectedMembers() {
+            const container = document.getElementById('selectedMembers');
+            container.innerHTML = selectedTeamMembers.map(member => `
+                <div class="flex items-center justify-between bg-white p-3 rounded-lg border">
+                    <span class="font-medium">${member}</span>
+                    <button type="button" onclick="removeTeamMember('${member}')" 
+                            class="text-red-600 hover:text-red-800 text-sm">
+                        ❌ Çıkar
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Employee management functions
+        function deleteEmployee(employeeId) {
+            const employee = employees.find(e => e.id === employeeId);
+            if (confirm(`"${employee.name}" adlı personeli silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz.`)) {
+                employees = employees.filter(e => e.id !== employeeId);
+                renderEmployees();
+                updateStats();
+            }
+        }
+
+        // Search and Filter
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('employeeSearch')?.addEventListener('input', renderEmployees);
+            document.getElementById('departmentFilter')?.addEventListener('change', renderEmployees);
+            document.getElementById('statusFilter')?.addEventListener('change', renderEmployees);
+        });
+
+        // Charts
+        function initCharts() {
+            // Department Chart
+            const deptCtx = document.getElementById('departmentChart');
+            if (deptCtx) {
+                new Chart(deptCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Yazılım', 'İK', 'Pazarlama', 'Satış', 'Finans'],
+                        datasets: [{
+                            data: [45, 12, 28, 35, 18],
+                            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Trend Chart
+            const trendCtx = document.getElementById('trendChart');
+            if (trendCtx) {
+                new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz'],
+                        datasets: [{
+                            label: 'Personel Sayısı',
+                            data: [1180, 1195, 1210, 1225, 1235, 1247],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 1150,
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return value.toLocaleString();
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Performance Chart
+            const perfCtx = document.getElementById('performanceChart');
+            if (perfCtx) {
+                new Chart(perfCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mükemmel', 'İyi', 'Orta', 'Gelişmeli'],
+                        datasets: [{
+                            data: [45, 78, 32, 12],
+                            backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'],
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Task Management Functions
+        function renderTasks() {
+            updateTaskStats();
+            if (currentTaskView === 'board') {
+                renderTaskBoard();
+            } else {
+                renderTaskList();
+            }
+            populateTaskFilters();
+        }
+
+        function updateTaskStats() {
+            const totalTasks = tasks.length;
+            const inProgressTasks = tasks.filter(t => t.status === 'in-progress').length;
+            const completedTasks = tasks.filter(t => t.status === 'completed').length;
+            const overdueTasks = tasks.filter(t => {
+                const today = new Date();
+                const dueDate = new Date(t.dueDate);
+                return dueDate < today && t.status !== 'completed';
+            }).length;
+
+            document.getElementById('totalTasks').textContent = totalTasks;
+            document.getElementById('inProgressTasks').textContent = inProgressTasks;
+            document.getElementById('completedTasks').textContent = completedTasks;
+            document.getElementById('overdueTasks').textContent = overdueTasks;
+        }
+
+        function renderTaskBoard() {
+            const statusColumns = {
+                'todo': 'todoTasks',
+                'in-progress': 'inProgressTasksBoard',
+                'review': 'reviewTasks',
+                'completed': 'completedTasksBoard'
+            };
+
+            // Clear all columns
+            Object.values(statusColumns).forEach(columnId => {
+                document.getElementById(columnId).innerHTML = '';
+            });
+
+            // Update counts
+            document.getElementById('todoCount').textContent = tasks.filter(t => t.status === 'todo').length;
+            document.getElementById('inProgressCount').textContent = tasks.filter(t => t.status === 'in-progress').length;
+            document.getElementById('reviewCount').textContent = tasks.filter(t => t.status === 'review').length;
+            document.getElementById('completedCount').textContent = tasks.filter(t => t.status === 'completed').length;
+
+            // Filter tasks
+            const filteredTasks = getFilteredTasks();
+
+            // Render tasks in appropriate columns
+            filteredTasks.forEach(task => {
+                if (statusColumns[task.status]) {
+                    const taskCard = createTaskCard(task);
+                    document.getElementById(statusColumns[task.status]).appendChild(taskCard);
+                }
+            });
+        }
+
+        function createTaskCard(task) {
+            const card = document.createElement('div');
+            card.className = 'bg-white p-4 rounded-lg shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition-shadow';
+            card.onclick = () => openTaskModal(task.id);
+
+            const priorityColors = {
+                low: 'bg-green-100 text-green-800',
+                medium: 'bg-yellow-100 text-yellow-800',
+                high: 'bg-orange-100 text-orange-800',
+                urgent: 'bg-red-100 text-red-800'
+            };
+
+            const priorityIcons = {
+                low: '🟢',
+                medium: '🟡',
+                high: '🟠',
+                urgent: '🔴'
+            };
+
+            const categoryIcons = {
+                development: '💻',
+                design: '🎨',
+                testing: '🧪',
+                documentation: '📚',
+                meeting: '🤝',
+                research: '🔍',
+                bug: '🐛'
+            };
+
+            const isOverdue = new Date(task.dueDate) < new Date() && task.status !== 'completed';
+
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-xs px-2 py-1 rounded-full ${priorityColors[task.priority]}">
+                        ${priorityIcons[task.priority]} ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                    </span>
+                    ${task.category ? `<span class="text-lg">${categoryIcons[task.category] || '📋'}</span>` : ''}
+                </div>
+                
+                <h4 class="font-medium text-gray-800 mb-2 line-clamp-2">${task.title}</h4>
+                
+                <p class="text-xs text-gray-600 mb-3 line-clamp-2">${task.description}</p>
+                
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-500">İlerleme</span>
+                        <span class="font-medium">${task.progress}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-1.5">
+                        <div class="bg-blue-600 h-1.5 rounded-full transition-all duration-300" style="width: ${task.progress}%"></div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-3 text-xs">
+                    <span class="text-gray-600">${task.assignee}</span>
+                    <span class="text-gray-500 ${isOverdue ? 'text-red-600 font-medium' : ''}">${formatDate(task.dueDate)}</span>
+                </div>
+                
+                ${task.tags.length > 0 ? `
+                <div class="flex flex-wrap gap-1 mt-2">
+                    ${task.tags.slice(0, 3).map(tag => `
+                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">${tag}</span>
+                    `).join('')}
+                    ${task.tags.length > 3 ? `<span class="text-xs text-gray-500">+${task.tags.length - 3}</span>` : ''}
+                </div>
+                ` : ''}
+            `;
+
+            return card;
+        }
+
+        function renderTaskList() {
+            const tbody = document.getElementById('taskTableBody');
+            const filteredTasks = getFilteredTasks();
+
+            tbody.innerHTML = filteredTasks.map(task => {
+                const isOverdue = new Date(task.dueDate) < new Date() && task.status !== 'completed';
+                
+                return `
+                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="openTaskModal(${task.id})">
+                        <td class="px-6 py-4">
+                            <div>
+                                <div class="font-medium text-gray-900">${task.title}</div>
+                                <div class="text-sm text-gray-500">${task.description.substring(0, 60)}...</div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">${task.assignee}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">${task.project}</td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(task.priority)}">
+                                ${task.priority}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(task.status)}">
+                                ${getStatusText(task.status)}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm ${isOverdue ? 'text-red-600 font-medium' : 'text-gray-900'}">
+                            ${formatDate(task.dueDate)}
+                        </td>
+                        <td class="px-6 py-4 text-sm">
+                            <div class="flex space-x-2">
+                                <button onclick="event.stopPropagation(); editTask(${task.id})" class="text-blue-600 hover:text-blue-900">✏️</button>
+                                <button onclick="event.stopPropagation(); deleteTask(${task.id})" class="text-red-600 hover:text-red-900">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getFilteredTasks() {
+            const searchTerm = document.getElementById('taskSearch')?.value.toLowerCase() || '';
+            const statusFilter = document.getElementById('taskStatusFilter')?.value || '';
+            const priorityFilter = document.getElementById('taskPriorityFilter')?.value || '';
+            const assigneeFilter = document.getElementById('taskAssigneeFilter')?.value || '';
+            const projectFilter = document.getElementById('taskProjectFilter')?.value || '';
+
+            return tasks.filter(task => {
+                const matchesSearch = task.title.toLowerCase().includes(searchTerm) || 
+                                   task.description.toLowerCase().includes(searchTerm);
+                const matchesStatus = !statusFilter || task.status === statusFilter;
+                const matchesPriority = !priorityFilter || task.priority === priorityFilter;
+                const matchesAssignee = !assigneeFilter || task.assignee === assigneeFilter;
+                const matchesProject = !projectFilter || task.project === projectFilter;
+
+                return matchesSearch && matchesStatus && matchesPriority && matchesAssignee && matchesProject;
+            });
+        }
+
+        function populateTaskFilters() {
+            // Populate assignee filter
+            const assigneeFilter = document.getElementById('taskAssigneeFilter');
+            const assignees = [...new Set(tasks.map(t => t.assignee))];
+            assigneeFilter.innerHTML = '<option value="">Tüm Atananlar</option>' +
+                assignees.map(assignee => `<option value="${assignee}">${assignee}</option>`).join('');
+
+            // Populate project filter
+            const projectFilter = document.getElementById('taskProjectFilter');
+            const projects = [...new Set(tasks.map(t => t.project))];
+            projectFilter.innerHTML = '<option value="">Tüm Projeler</option>' +
+                projects.map(project => `<option value="${project}">${project}</option>`).join('');
+        }
+
+        function toggleTaskView(view) {
+            currentTaskView = view;
+            
+            const boardBtn = document.getElementById('boardViewBtn');
+            const listBtn = document.getElementById('listViewBtn');
+            const taskListView = document.getElementById('taskListView');
+            const taskBoard = document.querySelector('.grid.grid-cols-1.lg\\:grid-cols-4');
+
+            if (view === 'board') {
+                boardBtn.className = 'px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm';
+                listBtn.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm';
+                taskListView.classList.add('hidden');
+                taskBoard.classList.remove('hidden');
+                renderTaskBoard();
+            } else {
+                boardBtn.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm';
+                listBtn.className = 'px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm';
+                taskListView.classList.remove('hidden');
+                taskBoard.classList.add('hidden');
+                renderTaskList();
+            }
+        }
+
+        function getPriorityClass(priority) {
+            const classes = {
+                low: 'bg-green-100 text-green-800',
+                medium: 'bg-yellow-100 text-yellow-800',
+                high: 'bg-orange-100 text-orange-800',
+                urgent: 'bg-red-100 text-red-800'
+            };
+            return classes[priority] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                todo: 'bg-gray-100 text-gray-800',
+                'in-progress': 'bg-blue-100 text-blue-800',
+                review: 'bg-yellow-100 text-yellow-800',
+                completed: 'bg-green-100 text-green-800',
+                cancelled: 'bg-red-100 text-red-800'
+            };
+            return classes[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                todo: 'Yapılacak',
+                'in-progress': 'Devam Eden',
+                review: 'İnceleme',
+                completed: 'Tamamlandı',
+                cancelled: 'İptal'
+            };
+            return texts[status] || status;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('tr-TR', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+        }
+
+        // Task Modal Functions
+        function openTaskModal(taskId = null) {
+            const modal = document.getElementById('taskModal');
+            const form = document.getElementById('taskForm');
+            
+            // Populate dropdowns
+            populateTaskDropdowns();
+            
+            if (taskId) {
+                const task = tasks.find(t => t.id === taskId);
+                document.getElementById('taskModalTitle').textContent = 'Görev Düzenle';
+                
+                // Populate form with task data
+                document.getElementById('taskTitle').value = task.title;
+                document.getElementById('taskDescription').value = task.description;
+                document.getElementById('taskProject').value = task.project;
+                document.getElementById('taskAssignee').value = task.assignee;
+                document.getElementById('taskReporter').value = task.reporter;
+                document.getElementById('taskPriority').value = task.priority;
+                document.getElementById('taskStatus').value = task.status;
+                document.getElementById('taskCategory').value = task.category;
+                document.getElementById('taskEstimatedHours').value = task.estimatedHours;
+                document.getElementById('taskStartDate').value = task.startDate;
+                document.getElementById('taskDueDate').value = task.dueDate;
+                document.getElementById('taskCompletedDate').value = task.completedDate || '';
+                document.getElementById('taskProgress').value = task.progress;
+                document.getElementById('progressValue').textContent = task.progress + '%';
+                document.getElementById('taskSpentHours').value = task.spentHours;
+                document.getElementById('taskTags').value = task.tags.join(', ');
+                document.getElementById('taskNotes').value = task.notes;
+                
+                form.dataset.editingId = taskId;
+            } else {
+                document.getElementById('taskModalTitle').textContent = 'Yeni Görev Oluştur';
+                form.reset();
+                document.getElementById('progressValue').textContent = '0%';
+                delete form.dataset.editingId;
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeTaskModal() {
+            const modal = document.getElementById('taskModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('taskForm').reset();
+        }
+
+        function populateTaskDropdowns() {
+            // Populate assignee and reporter dropdowns
+            const assigneeSelect = document.getElementById('taskAssignee');
+            const reporterSelect = document.getElementById('taskReporter');
+            
+            const employeeOptions = employees.map(emp => 
+                `<option value="${emp.name}">${emp.name} - ${emp.position}</option>`
+            ).join('');
+            
+            assigneeSelect.innerHTML = '<option value="">Kişi Seçin</option>' + employeeOptions;
+            reporterSelect.innerHTML = '<option value="">Kişi Seçin</option>' + employeeOptions;
+            
+            // Populate dependencies dropdown
+            const dependenciesSelect = document.getElementById('taskDependencies');
+            dependenciesSelect.innerHTML = tasks.map(task => 
+                `<option value="${task.id}">${task.title}</option>`
+            ).join('');
+        }
+
+        function editTask(taskId) {
+            openTaskModal(taskId);
+        }
+
+        function deleteTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (confirm(`"${task.title}" görevini silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz.`)) {
+                tasks = tasks.filter(t => t.id !== taskId);
+                renderTasks();
+            }
+        }
+
+        // Task Form Submission
+        document.getElementById('taskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const taskData = {
+                title: document.getElementById('taskTitle').value,
+                description: document.getElementById('taskDescription').value,
+                project: document.getElementById('taskProject').value,
+                assignee: document.getElementById('taskAssignee').value,
+                reporter: document.getElementById('taskReporter').value,
+                priority: document.getElementById('taskPriority').value,
+                status: document.getElementById('taskStatus').value,
+                category: document.getElementById('taskCategory').value,
+                estimatedHours: parseFloat(document.getElementById('taskEstimatedHours').value) || 0,
+                startDate: document.getElementById('taskStartDate').value,
+                dueDate: document.getElementById('taskDueDate').value,
+                completedDate: document.getElementById('taskCompletedDate').value || null,
+                progress: parseInt(document.getElementById('taskProgress').value),
+                spentHours: parseFloat(document.getElementById('taskSpentHours').value) || 0,
+                tags: document.getElementById('taskTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                notes: document.getElementById('taskNotes').value,
+                dependencies: Array.from(document.getElementById('taskDependencies').selectedOptions).map(option => parseInt(option.value))
+            };
+            
+            if (this.dataset.editingId) {
+                // Update existing task
+                const taskId = parseInt(this.dataset.editingId);
+                const taskIndex = tasks.findIndex(t => t.id === taskId);
+                if (taskIndex !== -1) {
+                    tasks[taskIndex] = { ...tasks[taskIndex], ...taskData };
+                }
+            } else {
+                // Add new task
+                const newTask = {
+                    id: Date.now(),
+                    ...taskData,
+                    createdAt: new Date().toISOString().split('T')[0]
+                };
+                tasks.push(newTask);
+            }
+            
+            renderTasks();
+            closeTaskModal();
+        });
+
+        // Progress slider update
+        document.getElementById('taskProgress').addEventListener('input', function() {
+            document.getElementById('progressValue').textContent = this.value + '%';
+        });
+
+        // Task filter event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('taskSearch')?.addEventListener('input', renderTasks);
+            document.getElementById('taskStatusFilter')?.addEventListener('change', renderTasks);
+            document.getElementById('taskPriorityFilter')?.addEventListener('change', renderTasks);
+            document.getElementById('taskAssigneeFilter')?.addEventListener('change', renderTasks);
+            document.getElementById('taskProjectFilter')?.addEventListener('change', renderTasks);
+        });
+
+        // Initialize
+        renderEmployees();
+        renderDepartments();
+        renderTeams();
+        renderTasks();
+        initCharts();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9711baa8d47f4fbb',t:'MTc1NTUyMzQ0Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

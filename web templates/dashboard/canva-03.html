@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .widget {
+            transition: all 0.3s ease;
+        }
+        
+        .widget:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-item {
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar-item:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: translateX(5px);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .metric-card-2 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .metric-card-3 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .metric-card-4 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .draggable {
+            cursor: move;
+        }
+        
+        .widget-header {
+            cursor: move;
+        }
+
+        .facility-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .facility-card-orange {
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+        }
+
+        .facility-card-cyan {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .facility-card-green {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .facility-card-purple {
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-50 flex flex-col" id="sidebar">
+        <!-- 1. Şirket Logosu ve Adı -->
+        <div class="gradient-bg p-4 text-white">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-building text-blue-600 text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold">TurizmTech</h1>
+                    <p class="text-blue-100 text-xs">Turizm & Spor Tesisleri</p>
+                </div>
+            </div>
+        </div>
+        <!-- 2. Ana Menü Öğeleri -->
+        <div class="py-4">
+            <div class="px-4 space-y-1">
+                <button onclick="showDashboard()" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg bg-blue-50 text-blue-600 w-full text-left">
+                    <i class="fas fa-chart-line w-4 text-sm"></i>
+                    <span class="font-medium text-sm">Dashboard</span>
+                </button>
+                <button onclick="showAssistant()" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 w-full text-left">
+                    <i class="fas fa-calendar-alt w-4 text-sm"></i>
+                    <span class="text-sm">Ajanda</span>
+                </button>
+                <a href="#" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <i class="fas fa-lightbulb w-4 text-sm"></i>
+                    <span class="text-sm">Fikir Havuzu</span>
+                </a>
+                <a href="#" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <i class="fas fa-project-diagram w-4 text-sm"></i>
+                    <span class="text-sm">Projeler</span>
+                </a>
+            </div>
+        </div>        
+        <!-- 3. Ayraç Çizgisi -->
+        <div class="px-4">
+            <div class="border-t border-gray-200"></div>
+        </div>
+        <!-- 4. Ana Departmanlar -->
+        <nav class="flex-1 py-2">
+            <div class="px-4">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">DEPARTMANLAR</p>
+                <div class="space-y-1">
+                    <button onclick="showDepartment('sosyal-tesisler')" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 w-full text-left">
+                        <i class="fas fa-swimming-pool w-4 text-sm text-blue-600"></i>
+                        <span class="text-sm">Sosyal Tesisler</span>
+                    </button>
+                    <button onclick="showDepartment('teknik-birim')" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 w-full text-left">
+                        <i class="fas fa-wrench w-4 text-sm text-gray-600"></i>
+                        <span class="text-sm">Teknik Birim</span>
+                    </button>
+                    <button onclick="showDepartment('muhasebe')" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 w-full text-left">
+                        <i class="fas fa-calculator w-4 text-sm text-green-600"></i>
+                        <span class="text-sm">Muhasebe</span>
+                    </button>
+                    <button onclick="showDepartment('satis-pazarlama')" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 w-full text-left">
+                        <i class="fas fa-chart-line w-4 text-sm text-purple-600"></i>
+                        <span class="text-sm">Satış & Pazarlama</span>
+                    </button>
+                    <button onclick="showDepartment('bilgi-islem')" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 w-full text-left">
+                        <i class="fas fa-server w-4 text-sm text-indigo-600"></i>
+                        <span class="text-sm">Bilgi İşlem</span>
+                    </button>
+                    <button onclick="showDepartment('satin-alma')" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 w-full text-left">
+                        <i class="fas fa-shopping-cart w-4 text-sm text-teal-600"></i>
+                        <span class="text-sm">Satın Alma</span>
+                    </button>
+                    <button onclick="showDepartment('insan-kaynaklari')" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 w-full text-left">
+                        <i class="fas fa-users w-4 text-sm text-orange-600"></i>
+                        <span class="text-sm">İnsan Kaynakları</span>
+                    </button>
+                    <button onclick="showDepartment('yazilim')" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 w-full text-left">
+                        <i class="fas fa-code w-4 text-sm text-pink-600"></i>
+                        <span class="text-sm">Yazılım Departmanı</span>
+                    </button>
+                    <button onclick="showDepartment('guvenlik')" class="sidebar-item flex items-center space-x-3 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-gray-100 w-full text-left">
+                        <i class="fas fa-shield-alt w-4 text-sm text-red-500"></i>
+                        <span class="text-sm">Güvenlik</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 3. Widget Alanı -->
+        <div class="p-4 border-t border-gray-200 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-3">
+                <h4 class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Widget'lar</h4>
+                <button id="addWidgetBtn" class="bg-blue-500 hover:bg-blue-600 text-white text-xs px-2 py-1 rounded-md transition-colors">
+                    <i class="fas fa-plus mr-1"></i>Ekle
+                </button>
+            </div>
+            
+            <!-- Günlük Rezervasyon Widget -->
+            <div class="bg-gradient-to-r from-orange-400 to-red-500 rounded-lg p-3 mb-3 text-white widget-item">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-white/80">Bugünkü Rezervasyonlar</p>
+                        <p class="text-lg font-bold">73</p>
+                    </div>
+                    <i class="fas fa-calendar-check text-white/80"></i>
+                </div>
+                <div class="flex justify-between text-xs text-white/80 mt-2">
+                    <span>Otel: 45</span>
+                    <span>Kafe: 28</span>
+                </div>
+            </div>
+            
+            <!-- Hava Durumu Widget -->
+            <div class="bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg p-3 mb-3 text-white widget-item">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-white/80">Antalya Hava</p>
+                        <p class="text-lg font-bold">28°C</p>
+                    </div>
+                    <div class="text-xl">☀️</div>
+                </div>
+                <div class="flex justify-between text-xs text-white/80 mt-1">
+                    <span>Güneşli</span>
+                    <span>Rüzgar: 12km/h</span>
+                </div>
+            </div>
+
+            <!-- Sosyal Tesis Doluluk Widget -->
+            <div class="bg-gradient-to-r from-green-400 to-green-600 rounded-lg p-3 mb-3 text-white widget-item">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs text-white/80">Tesis Doluluk</p>
+                    <i class="fas fa-swimming-pool text-white/80"></i>
+                </div>
+                <div class="space-y-1 text-xs">
+                    <div class="flex justify-between">
+                        <span>Havuz</span>
+                        <span class="font-bold">%85</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Spor Salonu</span>
+                        <span class="font-bold">%60</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Spa</span>
+                        <span class="font-bold">%40</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Günlük Aktivite Widget -->
+            <div class="bg-gradient-to-r from-purple-400 to-purple-600 rounded-lg p-3 mb-3 text-white widget-item">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs text-white/80">Bugünkü Aktiviteler</p>
+                    <i class="fas fa-hiking text-white/80"></i>
+                </div>
+                <div class="space-y-1 text-xs">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-yellow-300 rounded-full"></div>
+                        <span>Yoga - 09:00</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-300 rounded-full"></div>
+                        <span>Dalış Turu - 14:00</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-blue-300 rounded-full"></div>
+                        <span>Gece Yürüyüşü - 20:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Müşteri Memnuniyet Widget -->
+            <div class="bg-gradient-to-r from-pink-400 to-pink-600 rounded-lg p-3 mb-3 text-white widget-item">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-white/80">Müşteri Puanı</p>
+                        <p class="text-lg font-bold">4.8/5</p>
+                    </div>
+                    <div class="text-yellow-300">⭐⭐⭐⭐⭐</div>
+                </div>
+                <p class="text-xs text-white/80 mt-1">Son 24 saat: 23 değerlendirme</p>
+            </div>
+
+            <!-- Canlı Sohbet Widget -->
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-3 mb-3 text-white widget-item">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-xs font-medium">Ekip Sohbeti</h4>
+                    <div class="flex items-center space-x-1">
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="text-xs text-white/80">8 aktif</span>
+                    </div>
+                </div>
+                <div class="space-y-1 mb-2 max-h-16 overflow-y-auto">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-white/20 rounded-full flex items-center justify-center text-xs">M</div>
+                        <p class="text-xs text-white/90">Havuz temizliği tamam</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-white/20 rounded-full flex items-center justify-center text-xs">A</div>
+                        <p class="text-xs text-white/90">Yeni misafirler geldi</p>
+                    </div>
+                </div>
+                <button class="w-full bg-white/20 hover:bg-white/30 rounded-md py-1 text-xs transition-colors">
+                    <i class="fas fa-comment mr-1"></i>Mesaj Yaz
+                </button>
+            </div>
+
+            <!-- Acil Durum Widget -->
+            <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-lg p-3 mb-3 text-white widget-item">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs text-white/80">Acil Durum</p>
+                    <i class="fas fa-exclamation-triangle text-white/80"></i>
+                </div>
+                <div class="grid grid-cols-2 gap-1">
+                    <button class="bg-white/20 hover:bg-white/30 rounded text-xs py-1 transition-colors">
+                        <i class="fas fa-phone mr-1"></i>Güvenlik
+                    </button>
+                    <button class="bg-white/20 hover:bg-white/30 rounded text-xs py-1 transition-colors">
+                        <i class="fas fa-medkit mr-1"></i>Sağlık
+                    </button>
+                </div>
+            </div>
+
+            <!-- Gelir Getiren Birimler Widget -->
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg p-3 mb-3 text-white widget-item">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs text-white/80">Gelir Birimleri</p>
+                    <i class="fas fa-chart-pie text-white/80"></i>
+                </div>
+                <div class="space-y-1 text-xs">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-300 rounded-full"></div>
+                            <span>Otel</span>
+                        </div>
+                        <span class="font-bold">₺125K</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-yellow-300 rounded-full"></div>
+                            <span>Kafe</span>
+                        </div>
+                        <span class="font-bold">₺48K</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-blue-300 rounded-full"></div>
+                            <span>Sosyal Tesis</span>
+                        </div>
+                        <span class="font-bold">₺32K</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hızlı Rezervasyon Widget -->
+            <div class="bg-gradient-to-r from-teal-400 to-teal-600 rounded-lg p-3 mb-3 text-white widget-item">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs text-white/80">Hızlı İşlemler</p>
+                    <i class="fas fa-bolt text-white/80"></i>
+                </div>
+                <div class="grid grid-cols-2 gap-1">
+                    <button class="bg-white/20 hover:bg-white/30 rounded text-xs py-1 transition-colors">
+                        <i class="fas fa-bed mr-1"></i>Oda
+                    </button>
+                    <button class="bg-white/20 hover:bg-white/30 rounded text-xs py-1 transition-colors">
+                        <i class="fas fa-coffee mr-1"></i>Kafe
+                    </button>
+                    <button class="bg-white/20 hover:bg-white/30 rounded text-xs py-1 transition-colors">
+                        <i class="fas fa-dumbbell mr-1"></i>Spor
+                    </button>
+                    <button class="bg-white/20 hover:bg-white/30 rounded text-xs py-1 transition-colors">
+                        <i class="fas fa-spa mr-1"></i>Spa
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mini Takvim Widget -->
+            <div class="bg-gray-50 rounded-lg p-3 mb-3 widget-item">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-xs font-medium text-gray-700">Bugün</h4>
+                    <span class="text-xs text-gray-500">15 Haziran</span>
+                </div>
+                <div class="space-y-1 text-xs text-gray-600">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span>Yönetim Toplantısı - 10:00</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>Misafir Karşılama - 15:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pomodoro Timer Widget -->
+            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg p-3 mb-3 text-white widget-item">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs text-white/80">Odaklanma Zamanı</p>
+                    <i class="fas fa-clock text-white/80"></i>
+                </div>
+                <div class="text-center">
+                    <p class="text-lg font-bold" id="pomodoroTimer">25:00</p>
+                    <div class="flex justify-center space-x-1 mt-2">
+                        <button id="startPomodoro" class="bg-white/20 hover:bg-white/30 rounded px-2 py-1 text-xs transition-colors">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button id="pausePomodoro" class="bg-white/20 hover:bg-white/30 rounded px-2 py-1 text-xs transition-colors">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button id="resetPomodoro" class="bg-white/20 hover:bg-white/30 rounded px-2 py-1 text-xs transition-colors">
+                            <i class="fas fa-stop"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800" id="pageTitle">Dashboard</h2>
+                        <p class="text-gray-600" id="pageSubtitle">Hoş geldiniz! İşte güncel durumunuz.</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Yeni Widget
+                        </button>
+                        <button id="customizeBtn" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                            <i class="fas fa-edit mr-2"></i>Özelleştir
+                        </button>
+                        <div class="relative">
+                            <button class="bg-gray-100 p-2 rounded-lg hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-bell text-gray-600"></i>
+                            </button>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </div>
+                        
+                        <!-- Kullanıcı Bilgileri -->
+                        <div class="flex items-center space-x-3 border-l border-gray-200 pl-4">
+                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                AY
+                            </div>
+                            <div class="hidden md:block">
+                                <p class="font-medium text-gray-800 text-sm">Ahmet Yılmaz</p>
+                                <p class="text-xs text-gray-600">Sistem Yöneticisi</p>
+                            </div>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="p-6" id="mainContent">
+            <!-- Metrics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="widget metric-card rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/80 text-sm">Toplam Çalışan</p>
+                            <p class="text-3xl font-bold mt-2">1,247</p>
+                            <p class="text-white/80 text-sm mt-2">
+                                <i class="fas fa-arrow-up mr-1"></i>+12% bu ay
+                            </p>
+                        </div>
+                        <div class="bg-white/20 p-3 rounded-lg">
+                            <i class="fas fa-users text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget metric-card-2 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/80 text-sm">Aktif Projeler</p>
+                            <p class="text-3xl font-bold mt-2">47</p>
+                            <p class="text-white/80 text-sm mt-2">
+                                <i class="fas fa-arrow-up mr-1"></i>+8% bu ay
+                            </p>
+                        </div>
+                        <div class="bg-white/20 p-3 rounded-lg">
+                            <i class="fas fa-project-diagram text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget metric-card-3 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/80 text-sm">Aylık Gelir</p>
+                            <p class="text-3xl font-bold mt-2">₺2.4M</p>
+                            <p class="text-white/80 text-sm mt-2">
+                                <i class="fas fa-arrow-up mr-1"></i>+15% bu ay
+                            </p>
+                        </div>
+                        <div class="bg-white/20 p-3 rounded-lg">
+                            <i class="fas fa-chart-line text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget metric-card-4 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/80 text-sm">Müşteri Memnuniyeti</p>
+                            <p class="text-3xl font-bold mt-2">94%</p>
+                            <p class="text-white/80 text-sm mt-2">
+                                <i class="fas fa-arrow-up mr-1"></i>+3% bu ay
+                            </p>
+                        </div>
+                        <div class="bg-white/20 p-3 rounded-lg">
+                            <i class="fas fa-smile text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="widget bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="widget-header p-6 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-800">Aylık Performans</h3>
+                        <div class="flex space-x-2">
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                            </button>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="widget-header p-6 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-800">Departman Dağılımı</h3>
+                        <div class="flex space-x-2">
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                            </button>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="chart-container">
+                            <canvas id="departmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather & Quick Info Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Hava Durumu Widget -->
+                <div class="widget bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <p class="text-white/80 text-sm">İstanbul</p>
+                            <p class="text-2xl font-bold">22°C</p>
+                        </div>
+                        <div class="text-3xl">☀️</div>
+                    </div>
+                    <div class="flex items-center justify-between text-sm text-white/80">
+                        <span>Güneşli</span>
+                        <span>Nem: %45</span>
+                    </div>
+                    <div class="flex justify-between mt-3 text-xs text-white/70">
+                        <span>Min: 18°</span>
+                        <span>Max: 26°</span>
+                    </div>
+                </div>
+
+                <!-- Borsa Widget -->
+                <div class="widget bg-gradient-to-br from-green-400 to-green-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-white/80 text-sm">BIST 100</p>
+                        <i class="fas fa-chart-line text-white/80"></i>
+                    </div>
+                    <p class="text-2xl font-bold mb-1">8,247</p>
+                    <div class="flex items-center space-x-1">
+                        <i class="fas fa-arrow-up text-xs"></i>
+                        <span class="text-sm text-white/90">+2.4% (+195)</span>
+                    </div>
+                    <div class="mt-3 text-xs text-white/70">
+                        Son güncelleme: 16:30
+                    </div>
+                </div>
+
+                <!-- Sistem Durumu Widget -->
+                <div class="widget bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-white/80 text-sm">Sistem Durumu</p>
+                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                    </div>
+                    <p class="text-lg font-bold mb-2">Tüm Sistemler Aktif</p>
+                    <div class="space-y-1 text-xs text-white/80">
+                        <div class="flex justify-between">
+                            <span>Sunucu</span>
+                            <span class="text-green-300">✓ Aktif</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Veritabanı</span>
+                            <span class="text-green-300">✓ Aktif</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>API</span>
+                            <span class="text-green-300">✓ Aktif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doğum Günleri Widget -->
+                <div class="widget bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-white/80 text-sm">Bu Hafta</p>
+                        <i class="fas fa-birthday-cake text-white/80"></i>
+                    </div>
+                    <p class="text-lg font-bold mb-3">🎉 Doğum Günleri</p>
+                    <div class="space-y-2 text-sm text-white/90">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-xs">E</div>
+                            <div>
+                                <p class="font-medium">Elif Kaya</p>
+                                <p class="text-xs text-white/70">Yarın (25 yaş)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities & Tasks -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="widget bg-white rounded-xl shadow-sm border border-gray-200 lg:col-span-2">
+                    <div class="widget-header p-6 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-800">Son Aktiviteler</h3>
+                        <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Tümünü Gör</button>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user-plus text-blue-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-gray-800 font-medium">Yeni çalışan eklendi</p>
+                                    <p class="text-gray-600 text-sm">Mehmet Demir, Yazılım Geliştirme departmanına katıldı</p>
+                                    <p class="text-gray-400 text-xs mt-1">2 saat önce</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-green-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-gray-800 font-medium">Proje tamamlandı</p>
+                                    <p class="text-gray-600 text-sm">E-ticaret platformu projesi başarıyla teslim edildi</p>
+                                    <p class="text-gray-400 text-xs mt-1">4 saat önce</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-exclamation text-yellow-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-gray-800 font-medium">Sistem bakımı</p>
+                                    <p class="text-gray-600 text-sm">Sunucu bakımı 15:00-17:00 arası gerçekleştirilecek</p>
+                                    <p class="text-gray-400 text-xs mt-1">6 saat önce</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="widget-header p-6 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-800">Proje Timeline</h3>
+                        <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Detaylar</button>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-6">
+                            <!-- Proje 1 -->
+                            <div class="relative">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-medium text-gray-800 text-sm">E-ticaret Platformu</h4>
+                                    <span class="text-xs text-gray-500">85% tamamlandı</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full" style="width: 85%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-500">
+                                    <span>Başlangıç: 15 Mar</span>
+                                    <span>Bitiş: 30 Haz</span>
+                                </div>
+                            </div>
+
+                            <!-- Proje 2 -->
+                            <div class="relative">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-medium text-gray-800 text-sm">Mobil Uygulama</h4>
+                                    <span class="text-xs text-gray-500">60% tamamlandı</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                    <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full" style="width: 60%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-500">
+                                    <span>Başlangıç: 1 Nis</span>
+                                    <span>Bitiş: 15 Tem</span>
+                                </div>
+                            </div>
+
+                            <!-- Proje 3 -->
+                            <div class="relative">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-medium text-gray-800 text-sm">CRM Sistemi</h4>
+                                    <span class="text-xs text-gray-500">30% tamamlandı</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full" style="width: 30%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-500">
+                                    <span>Başlangıç: 10 May</span>
+                                    <span>Bitiş: 20 Ağu</span>
+                                </div>
+                            </div>
+
+                            <!-- Yaklaşan Milestone -->
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-flag text-yellow-600 text-sm"></i>
+                                    <div>
+                                        <p class="text-sm font-medium text-yellow-800">Yaklaşan Milestone</p>
+                                        <p class="text-xs text-yellow-700">E-ticaret test aşaması - 3 gün kaldı</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Customization Modal -->
+    <div id="customizeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-xl p-6 w-96 max-w-90vw">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">Dashboard Özelleştir</h3>
+                <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tema Rengi</label>
+                    <div class="flex space-x-2">
+                        <button class="w-8 h-8 rounded-full bg-blue-600 border-2 border-blue-600"></button>
+                        <button class="w-8 h-8 rounded-full bg-purple-600 border-2 border-transparent hover:border-gray-300"></button>
+                        <button class="w-8 h-8 rounded-full bg-green-600 border-2 border-transparent hover:border-gray-300"></button>
+                        <button class="w-8 h-8 rounded-full bg-red-600 border-2 border-transparent hover:border-gray-300"></button>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Widget Düzeni</label>
+                    <select class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option>Varsayılan (2x2)</option>
+                        <option>Kompakt (1x4)</option>
+                        <option>Geniş (4x1)</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="w-4 h-4 text-blue-600 rounded">
+                        <span class="text-sm text-gray-700">Koyu tema</span>
+                    </label>
+                </div>
+                
+                <div>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" checked>
+                        <span class="text-sm text-gray-700">Animasyonları etkinleştir</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="flex space-x-3 mt-6">
+                <button class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Kaydet
+                </button>
+                <button id="cancelCustomize" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                    İptal
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Departman Verileri
+        const departmentData = {
+            'sosyal-tesisler': {
+                title: "Sosyal Tesisler",
+                subtitle: "Turizm ve eğlence hizmetleri yönetimi",
+                icon: "fas fa-swimming-pool",
+                color: "bg-gradient-to-r from-blue-500 to-blue-600",
+                subUnits: [
+                    { id: 'otel', name: 'Otel İşletmesi', icon: 'fas fa-bed', color: 'blue' },
+                    { id: 'kafe', name: 'Kafe & Restoran', icon: 'fas fa-coffee', color: 'orange' },
+                    { id: 'havuz', name: 'Havuz & Aqua', icon: 'fas fa-swimming-pool', color: 'cyan' },
+                    { id: 'spor', name: 'Spor & Fitness', icon: 'fas fa-dumbbell', color: 'green' },
+                    { id: 'spa', name: 'Spa & Wellness', icon: 'fas fa-spa', color: 'purple' },
+                    { id: 'misafir-hizmetleri', name: 'Misafir Hizmetleri', icon: 'fas fa-concierge-bell', color: 'cyan' }
+                ]
+            },
+            'teknik-birim': {
+                title: "Teknik Birim",
+                subtitle: "Altyapı ve teknik destek hizmetleri",
+                icon: "fas fa-wrench",
+                color: "bg-gradient-to-r from-gray-500 to-gray-600",
+                subUnits: [
+                    { id: 'elektrik', name: 'Elektrik', icon: 'fas fa-bolt', color: 'yellow' },
+                    { id: 'mekanik', name: 'Mekanik', icon: 'fas fa-cogs', color: 'gray' },
+                    { id: 'hvac', name: 'HVAC Sistemleri', icon: 'fas fa-fan', color: 'blue' },
+                    { id: 'bakim', name: 'Bakım Onarım', icon: 'fas fa-tools', color: 'red' },
+                    { id: 'enerji', name: 'Enerji Yönetimi', icon: 'fas fa-solar-panel', color: 'green' }
+                ]
+            },
+            'muhasebe': {
+                title: "Muhasebe",
+                subtitle: "Mali işler ve finansal yönetim",
+                icon: "fas fa-calculator",
+                color: "bg-gradient-to-r from-green-500 to-green-600",
+                subUnits: [
+                    { id: 'genel-muhasebe', name: 'Genel Muhasebe', icon: 'fas fa-file-invoice', color: 'green' },
+                    { id: 'butce', name: 'Bütçe Planlama', icon: 'fas fa-chart-pie', color: 'blue' },
+                    { id: 'maliyet', name: 'Maliyet Analizi', icon: 'fas fa-calculator', color: 'purple' },
+                    { id: 'vergi', name: 'Vergi İşlemleri', icon: 'fas fa-receipt', color: 'red' },
+                    { id: 'raporlama', name: 'Mali Raporlama', icon: 'fas fa-chart-bar', color: 'indigo' }
+                ]
+            },
+            'satis-pazarlama': {
+                title: "Satış & Pazarlama",
+                subtitle: "Müşteri ilişkileri ve pazarlama stratejileri",
+                icon: "fas fa-chart-line",
+                color: "bg-gradient-to-r from-purple-500 to-purple-600",
+                subUnits: [
+                    { id: 'satis', name: 'Satış Ekibi', icon: 'fas fa-handshake', color: 'purple' },
+                    { id: 'dijital-pazarlama', name: 'Dijital Pazarlama', icon: 'fas fa-laptop', color: 'blue' },
+                    { id: 'etkinlik', name: 'Etkinlik Yönetimi', icon: 'fas fa-calendar-alt', color: 'pink' },
+                    { id: 'musteri-hizmetleri', name: 'Müşteri Hizmetleri', icon: 'fas fa-headset', color: 'green' },
+                    { id: 'crm', name: 'CRM Yönetimi', icon: 'fas fa-users-cog', color: 'indigo' }
+                ]
+            },
+            'bilgi-islem': {
+                title: "Bilgi İşlem",
+                subtitle: "IT altyapısı ve sistem yönetimi",
+                icon: "fas fa-server",
+                color: "bg-gradient-to-r from-indigo-500 to-indigo-600",
+                subUnits: [
+                    { id: 'sistem-yonetimi', name: 'Sistem Yönetimi', icon: 'fas fa-server', color: 'indigo' },
+                    { id: 'network', name: 'Ağ Yönetimi', icon: 'fas fa-network-wired', color: 'blue' },
+                    { id: 'guvenlik', name: 'Siber Güvenlik', icon: 'fas fa-shield-alt', color: 'red' },
+                    { id: 'veritabani', name: 'Veritabanı', icon: 'fas fa-database', color: 'green' },
+                    { id: 'destek', name: 'Teknik Destek', icon: 'fas fa-life-ring', color: 'orange' }
+                ]
+            },
+            'satin-alma': {
+                title: "Satın Alma",
+                subtitle: "Tedarik zinciri ve satın alma süreçleri",
+                icon: "fas fa-shopping-cart",
+                color: "bg-gradient-to-r from-teal-500 to-teal-600",
+                subUnits: [
+                    { id: 'tedarik', name: 'Tedarikçi Yönetimi', icon: 'fas fa-truck', color: 'teal' },
+                    { id: 'satin-alma-ops', name: 'Satın Alma Operasyonları', icon: 'fas fa-shopping-cart', color: 'blue' },
+                    { id: 'kalite-kontrol', name: 'Kalite Kontrol', icon: 'fas fa-check-circle', color: 'green' },
+                    { id: 'depo', name: 'Depo Yönetimi', icon: 'fas fa-warehouse', color: 'gray' },
+                    { id: 'lojistik', name: 'Lojistik', icon: 'fas fa-shipping-fast', color: 'purple' }
+                ]
+            },
+            'insan-kaynaklari': {
+                title: "İnsan Kaynakları",
+                subtitle: "Personel yönetimi ve organizasyon geliştirme",
+                icon: "fas fa-users",
+                color: "bg-gradient-to-r from-orange-500 to-orange-600",
+                subUnits: [
+                    { id: 'ise-alim', name: 'İşe Alım', icon: 'fas fa-user-plus', color: 'orange' },
+                    { id: 'egitim', name: 'Eğitim & Gelişim', icon: 'fas fa-graduation-cap', color: 'blue' },
+                    { id: 'performans', name: 'Performans Yönetimi', icon: 'fas fa-chart-line', color: 'green' },
+                    { id: 'bordro', name: 'Bordro & Özlük', icon: 'fas fa-money-check-alt', color: 'purple' },
+                    { id: 'is-sagligi', name: 'İş Sağlığı', icon: 'fas fa-hard-hat', color: 'red' }
+                ]
+            },
+            'yazilim': {
+                title: "Yazılım Departmanı",
+                subtitle: "Yazılım geliştirme ve teknoloji çözümleri",
+                icon: "fas fa-code",
+                color: "bg-gradient-to-r from-pink-500 to-pink-600",
+                subUnits: [
+                    { id: 'frontend', name: 'Frontend Geliştirme', icon: 'fas fa-desktop', color: 'pink' },
+                    { id: 'backend', name: 'Backend Geliştirme', icon: 'fas fa-server', color: 'blue' },
+                    { id: 'mobile', name: 'Mobil Uygulama', icon: 'fas fa-mobile-alt', color: 'green' },
+                    { id: 'devops', name: 'DevOps', icon: 'fas fa-infinity', color: 'purple' },
+                    { id: 'qa', name: 'Kalite Güvence', icon: 'fas fa-bug', color: 'red' }
+                ]
+            },
+            'guvenlik': {
+                title: "Güvenlik",
+                subtitle: "Fiziksel güvenlik ve koruma hizmetleri",
+                icon: "fas fa-shield-alt",
+                color: "bg-gradient-to-r from-red-500 to-red-600",
+                subUnits: [
+                    { id: 'fiziksel-guvenlik', name: 'Fiziksel Güvenlik', icon: 'fas fa-shield-alt', color: 'red' },
+                    { id: 'kamera-sistemi', name: 'Kamera Sistemleri', icon: 'fas fa-video', color: 'blue' },
+                    { id: 'giris-kontrol', name: 'Giriş Kontrol', icon: 'fas fa-door-closed', color: 'gray' },
+                    { id: 'acil-durum', name: 'Acil Durum', icon: 'fas fa-exclamation-triangle', color: 'yellow' },
+                    { id: 'yangın-guvenlik', name: 'Yangın Güvenliği', icon: 'fas fa-fire-extinguisher', color: 'orange' }
+                ]
+            }
+        };
+
+        // Departman Sayfası Gösterme Fonksiyonu
+        function showDepartment(departmentId) {
+            const data = departmentData[departmentId];
+            if (!data) return;
+
+            // Başlık güncelleme
+            document.getElementById('pageTitle').textContent = data.title;
+            document.getElementById('pageSubtitle').textContent = data.subtitle;
+
+            // Ana içerik alanını güncelle
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <!-- Department Header -->
+                <div class="mb-8">
+                    <div class="${data.color} rounded-xl p-6 text-white">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
+                                <i class="${data.icon} text-3xl"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-3xl font-bold">${data.title}</h1>
+                                <p class="text-white/80">${data.subtitle}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub Units Tabs -->
+                <div class="mb-8">
+                    <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex space-x-8 overflow-x-auto">
+                            ${data.subUnits.map((unit, index) => `
+                                <button onclick="showSubUnit('${departmentId}', '${unit.id}', this)" 
+                                        class="sub-unit-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors ${index === 0 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}">
+                                    <i class="${unit.icon} mr-2"></i>
+                                    ${unit.name}
+                                </button>
+                            `).join('')}
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Sub Unit Content -->
+                <div id="subUnitContent">
+                    <!-- İlk alt birim otomatik yüklenecek -->
+                </div>
+
+                <!-- Back to Dashboard Button -->
+                <div class="mt-8 text-center">
+                    <button onclick="showDashboard()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Dashboard'a Dön
+                    </button>
+                </div>
+            `;
+
+            // İlk alt birimi otomatik göster
+            setTimeout(() => {
+                showSubUnit(departmentId, data.subUnits[0].id, document.querySelector('.sub-unit-tab'));
+            }, 100);
+        }
+
+        // Alt Birim Gösterme Fonksiyonu
+        function showSubUnit(departmentId, subUnitId, tabElement) {
+            // Tab aktif durumunu güncelle
+            document.querySelectorAll('.sub-unit-tab').forEach(tab => {
+                tab.classList.remove('border-blue-500', 'text-blue-600');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            if (tabElement) {
+                tabElement.classList.remove('border-transparent', 'text-gray-500');
+                tabElement.classList.add('border-blue-500', 'text-blue-600');
+            }
+
+            // Alt birim içeriğini göster
+            const subUnitContent = document.getElementById('subUnitContent');
+            const departmentData_local = departmentData[departmentId];
+            const subUnit = departmentData_local.subUnits.find(unit => unit.id === subUnitId);
+            
+            if (!subUnit) return;
+
+            // Alt birim için örnek içerik oluştur
+            subUnitContent.innerHTML = generateSubUnitContent(departmentId, subUnitId, subUnit);
+        }
+
+        // Alt Birim İçeriği Oluşturma Fonksiyonu
+        function generateSubUnitContent(departmentId, subUnitId, subUnit) {
+            // Her departman ve alt birim için özel içerik
+            const colorClasses = {
+                'blue': 'bg-blue-50 text-blue-800 border-blue-200',
+                'orange': 'bg-orange-50 text-orange-800 border-orange-200',
+                'cyan': 'bg-cyan-50 text-cyan-800 border-cyan-200',
+                'green': 'bg-green-50 text-green-800 border-green-200',
+                'purple': 'bg-purple-50 text-purple-800 border-purple-200',
+                'yellow': 'bg-yellow-50 text-yellow-800 border-yellow-200',
+                'gray': 'bg-gray-50 text-gray-800 border-gray-200',
+                'red': 'bg-red-50 text-red-800 border-red-200',
+                'pink': 'bg-pink-50 text-pink-800 border-pink-200',
+                'indigo': 'bg-indigo-50 text-indigo-800 border-indigo-200',
+                'teal': 'bg-teal-50 text-teal-800 border-teal-200'
+            };
+
+            const colorClass = colorClasses[subUnit.color] || colorClasses['blue'];
+
+            return `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Ana Bilgi Kartı -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 ${colorClass} rounded-lg flex items-center justify-center border">
+                                        <i class="${subUnit.icon} text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-800">${subUnit.name}</h3>
+                                        <p class="text-gray-600">Departman: ${departmentData[departmentId].title}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-gray-600 text-sm">Aktif Personel</p>
+                                                <p class="text-2xl font-bold text-gray-800">${Math.floor(Math.random() * 50) + 10}</p>
+                                            </div>
+                                            <i class="fas fa-users text-gray-600 text-xl"></i>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-gray-600 text-sm">Aylık Bütçe</p>
+                                                <p class="text-2xl font-bold text-gray-800">₺${(Math.floor(Math.random() * 500) + 100)}K</p>
+                                            </div>
+                                            <i class="fas fa-chart-line text-gray-600 text-xl"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <h4 class="font-semibold text-gray-800">Güncel Projeler</h4>
+                                    ${generateRandomProjects(3).map(project => `
+                                        <div class="border border-gray-200 rounded-lg p-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <h5 class="font-medium text-gray-800">${project.name}</h5>
+                                                <span class="text-xs px-2 py-1 rounded-full ${project.status === 'Devam Ediyor' ? 'bg-blue-100 text-blue-800' : project.status === 'Tamamlandı' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">${project.status}</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${project.progress}%"></div>
+                                            </div>
+                                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                                <span>%${project.progress} tamamlandı</span>
+                                                <span>${project.deadline}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yan Panel -->
+                    <div class="space-y-6">
+                        <!-- Ekip Üyeleri -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-4 border-b border-gray-200">
+                                <h4 class="font-semibold text-gray-800">Ekip Üyeleri</h4>
+                            </div>
+                            <div class="p-4">
+                                <div class="space-y-3">
+                                    ${generateRandomTeamMembers(4).map(member => `
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                                                ${member.initials}
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="text-sm font-medium text-gray-800">${member.name}</p>
+                                                <p class="text-xs text-gray-600">${member.role}</p>
+                                            </div>
+                                            <div class="w-2 h-2 ${member.online ? 'bg-green-400' : 'bg-gray-300'} rounded-full"></div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hızlı İstatistikler -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-4 border-b border-gray-200">
+                                <h4 class="font-semibold text-gray-800">Bu Ay</h4>
+                            </div>
+                            <div class="p-4">
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-gray-600">Tamamlanan Görevler</span>
+                                        <span class="font-semibold text-gray-800">${Math.floor(Math.random() * 50) + 20}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-gray-600">Devam Eden Projeler</span>
+                                        <span class="font-semibold text-gray-800">${Math.floor(Math.random() * 10) + 3}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-gray-600">Performans Skoru</span>
+                                        <span class="font-semibold text-green-600">${Math.floor(Math.random() * 20) + 80}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Son Aktiviteler -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-4 border-b border-gray-200">
+                                <h4 class="font-semibold text-gray-800">Son Aktiviteler</h4>
+                            </div>
+                            <div class="p-4">
+                                <div class="space-y-3">
+                                    ${generateRandomActivities(3).map(activity => `
+                                        <div class="flex items-start space-x-3">
+                                            <div class="w-6 h-6 ${colorClass} rounded-full flex items-center justify-center border text-xs">
+                                                <i class="${activity.icon}"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="text-sm text-gray-800">${activity.text}</p>
+                                                <p class="text-xs text-gray-500">${activity.time}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Yardımcı Fonksiyonlar
+        function generateRandomProjects(count) {
+            const projectNames = [
+                'Sistem Modernizasyonu', 'Kalite İyileştirme', 'Süreç Optimizasyonu', 
+                'Dijital Dönüşüm', 'Eğitim Programı', 'Güvenlik Güncellemesi',
+                'Performans Artırma', 'Müşteri Memnuniyeti', 'Verimlilik Projesi'
+            ];
+            const statuses = ['Devam Ediyor', 'Tamamlandı', 'Planlama'];
+            
+            return Array.from({length: count}, () => ({
+                name: projectNames[Math.floor(Math.random() * projectNames.length)],
+                status: statuses[Math.floor(Math.random() * statuses.length)],
+                progress: Math.floor(Math.random() * 100),
+                deadline: `${Math.floor(Math.random() * 28) + 1} ${['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz'][Math.floor(Math.random() * 6)]}`
+            }));
+        }
+
+        function generateRandomTeamMembers(count) {
+            const names = [
+                'Ahmet Yılmaz', 'Ayşe Kaya', 'Mehmet Demir', 'Fatma Şahin', 
+                'Ali Özkan', 'Zeynep Çelik', 'Mustafa Arslan', 'Elif Koç'
+            ];
+            const roles = [
+                'Uzman', 'Koordinatör', 'Analист', 'Teknisyen', 'Müdür', 'Asistan'
+            ];
+            
+            return Array.from({length: count}, () => {
+                const name = names[Math.floor(Math.random() * names.length)];
+                return {
+                    name: name,
+                    initials: name.split(' ').map(n => n[0]).join(''),
+                    role: roles[Math.floor(Math.random() * roles.length)],
+                    online: Math.random() > 0.5
+                };
+            });
+        }
+
+        function generateRandomActivities(count) {
+            const activities = [
+                { text: 'Yeni görev oluşturuldu', icon: 'fas fa-plus', time: '2 saat önce' },
+                { text: 'Rapor tamamlandı', icon: 'fas fa-check', time: '4 saat önce' },
+                { text: 'Toplantı planlandı', icon: 'fas fa-calendar', time: '6 saat önce' },
+                { text: 'Döküman güncellendi', icon: 'fas fa-edit', time: '1 gün önce' },
+                { text: 'Proje onaylandı', icon: 'fas fa-thumbs-up', time: '2 gün önce' }
+            ];
+            
+            return activities.slice(0, count);
+        }
+
+        // Ajanda Sayfası Gösterme Fonksiyonu
+        function showAgenda() {
+            document.getElementById('pageTitle').textContent = 'Ajanda';
+            document.getElementById('pageSubtitle').textContent = 'Etkinlikler, toplantılar ve önemli tarihler';
+            
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <!-- Agenda Header -->
+                <div class="mb-8">
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-calendar-alt text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-3xl font-bold">Ajanda</h1>
+                                    <p class="text-white/80">Bugün ${new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                                </div>
+                            </div>
+                            <button class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors">
+                                <i class="fas fa-plus mr-2"></i>Yeni Etkinlik
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar and Events -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Calendar -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg font-semibold text-gray-800">Haziran 2024</h3>
+                                    <div class="flex space-x-2">
+                                        <button class="p-2 hover:bg-gray-100 rounded-lg">
+                                            <i class="fas fa-chevron-left text-gray-600"></i>
+                                        </button>
+                                        <button class="p-2 hover:bg-gray-100 rounded-lg">
+                                            <i class="fas fa-chevron-right text-gray-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <!-- Calendar Grid -->
+                                <div class="grid grid-cols-7 gap-1 mb-4">
+                                    <div class="text-center text-sm font-medium text-gray-500 py-2">Pzt</div>
+                                    <div class="text-center text-sm font-medium text-gray-500 py-2">Sal</div>
+                                    <div class="text-center text-sm font-medium text-gray-500 py-2">Çar</div>
+                                    <div class="text-center text-sm font-medium text-gray-500 py-2">Per</div>
+                                    <div class="text-center text-sm font-medium text-gray-500 py-2">Cum</div>
+                                    <div class="text-center text-sm font-medium text-gray-500 py-2">Cmt</div>
+                                    <div class="text-center text-sm font-medium text-gray-500 py-2">Paz</div>
+                                </div>
+                                <div class="grid grid-cols-7 gap-1">
+                                    ${generateCalendarDays().map(day => `
+                                        <div class="aspect-square flex flex-col items-center justify-center p-1 rounded-lg hover:bg-gray-50 cursor-pointer ${day.isToday ? 'bg-blue-100 text-blue-600 font-semibold' : ''} ${day.hasEvent ? 'bg-purple-50' : ''}">
+                                            <span class="text-sm ${day.isCurrentMonth ? 'text-gray-800' : 'text-gray-400'}">${day.date}</span>
+                                            ${day.hasEvent ? '<div class="w-1 h-1 bg-purple-500 rounded-full mt-1"></div>' : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Events Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Today's Events -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-4 border-b border-gray-200">
+                                <h4 class="font-semibold text-gray-800">Bugünkü Etkinlikler</h4>
+                            </div>
+                            <div class="p-4">
+                                <div class="space-y-3">
+                                    <div class="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                                        <div class="w-3 h-3 bg-blue-500 rounded-full mt-1"></div>
+                                        <div class="flex-1">
+                                            <p class="font-medium text-gray-800 text-sm">Yönetim Toplantısı</p>
+                                            <p class="text-xs text-gray-600">10:00 - 11:30</p>
+                                            <p class="text-xs text-gray-500">Toplantı Salonu A</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
+                                        <div class="w-3 h-3 bg-green-500 rounded-full mt-1"></div>
+                                        <div class="flex-1">
+                                            <p class="font-medium text-gray-800 text-sm">Misafir Karşılama</p>
+                                            <p class="text-xs text-gray-600">15:00 - 16:00</p>
+                                            <p class="text-xs text-gray-500">Resepsiyon</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-3 p-3 bg-purple-50 rounded-lg">
+                                        <div class="w-3 h-3 bg-purple-500 rounded-full mt-1"></div>
+                                        <div class="flex-1">
+                                            <p class="font-medium text-gray-800 text-sm">Personel Eğitimi</p>
+                                            <p class="text-xs text-gray-600">19:00 - 20:30</p>
+                                            <p class="text-xs text-gray-500">Eğitim Salonu</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Events -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-4 border-b border-gray-200">
+                                <h4 class="font-semibold text-gray-800">Yaklaşan Etkinlikler</h4>
+                            </div>
+                            <div class="p-4">
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                        <div>
+                                            <p class="font-medium text-gray-800 text-sm">Departman Toplantısı</p>
+                                            <p class="text-xs text-gray-600">Yarın, 14:00</p>
+                                        </div>
+                                        <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                        <div>
+                                            <p class="font-medium text-gray-800 text-sm">Güvenlik Denetimi</p>
+                                            <p class="text-xs text-gray-600">18 Haziran, 09:00</p>
+                                        </div>
+                                        <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                        <div>
+                                            <p class="font-medium text-gray-800 text-sm">Müşteri Ziyareti</p>
+                                            <p class="text-xs text-gray-600">20 Haziran, 11:00</p>
+                                        </div>
+                                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-4 border-b border-gray-200">
+                                <h4 class="font-semibold text-gray-800">Hızlı İşlemler</h4>
+                            </div>
+                            <div class="p-4">
+                                <div class="space-y-2">
+                                    <button class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 p-3 rounded-lg text-sm font-medium transition-colors">
+                                        <i class="fas fa-plus mr-2"></i>Toplantı Planla
+                                    </button>
+                                    <button class="w-full bg-green-50 hover:bg-green-100 text-green-700 p-3 rounded-lg text-sm font-medium transition-colors">
+                                        <i class="fas fa-calendar-check mr-2"></i>Etkinlik Oluştur
+                                    </button>
+                                    <button class="w-full bg-purple-50 hover:bg-purple-100 text-purple-700 p-3 rounded-lg text-sm font-medium transition-colors">
+                                        <i class="fas fa-bell mr-2"></i>Hatırlatıcı Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back to Dashboard Button -->
+                <div class="mt-8 text-center">
+                    <button onclick="showDashboard()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Dashboard'a Dön
+                    </button>
+                </div>
+            `;
+        }
+
+        // Takvim günlerini oluşturma fonksiyonu
+        function generateCalendarDays() {
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay() + 1); // Pazartesi başlangıcı
+            
+            const days = [];
+            const eventDays = [5, 12, 18, 20, 25]; // Örnek etkinlik günleri
+            
+            for (let i = 0; i < 42; i++) { // 6 hafta x 7 gün
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                
+                days.push({
+                    date: date.getDate(),
+                    isCurrentMonth: date.getMonth() === currentMonth,
+                    isToday: date.toDateString() === today.toDateString(),
+                    hasEvent: eventDays.includes(date.getDate()) && date.getMonth() === currentMonth
+                });
+            }
+            
+            return days;
+        }
+
+        // Dashboard'a dönüş fonksiyonu
+        function showDashboard() {
+            document.getElementById('pageTitle').textContent = 'Dashboard';
+            document.getElementById('pageSubtitle').textContent = 'Hoş geldiniz! İşte güncel durumunuz.';
+            
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <!-- Metrics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="widget metric-card rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-white/80 text-sm">Toplam Çalışan</p>
+                                <p class="text-3xl font-bold mt-2">1,247</p>
+                                <p class="text-white/80 text-sm mt-2">
+                                    <i class="fas fa-arrow-up mr-1"></i>+12% bu ay
+                                </p>
+                            </div>
+                            <div class="bg-white/20 p-3 rounded-lg">
+                                <i class="fas fa-users text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget metric-card-2 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-white/80 text-sm">Aktif Projeler</p>
+                                <p class="text-3xl font-bold mt-2">47</p>
+                                <p class="text-white/80 text-sm mt-2">
+                                    <i class="fas fa-arrow-up mr-1"></i>+8% bu ay
+                                </p>
+                            </div>
+                            <div class="bg-white/20 p-3 rounded-lg">
+                                <i class="fas fa-project-diagram text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget metric-card-3 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-white/80 text-sm">Aylık Gelir</p>
+                                <p class="text-3xl font-bold mt-2">₺2.4M</p>
+                                <p class="text-white/80 text-sm mt-2">
+                                    <i class="fas fa-arrow-up mr-1"></i>+15% bu ay
+                                </p>
+                            </div>
+                            <div class="bg-white/20 p-3 rounded-lg">
+                                <i class="fas fa-chart-line text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget metric-card-4 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-white/80 text-sm">Müşteri Memnuniyeti</p>
+                                <p class="text-3xl font-bold mt-2">94%</p>
+                                <p class="text-white/80 text-sm mt-2">
+                                    <i class="fas fa-arrow-up mr-1"></i>+3% bu ay
+                                </p>
+                            </div>
+                            <div class="bg-white/20 p-3 rounded-lg">
+                                <i class="fas fa-smile text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="widget bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="widget-header p-6 border-b border-gray-200 flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">Aylık Performans</h3>
+                            <div class="flex space-x-2">
+                                <button class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-expand-arrows-alt"></i>
+                                </button>
+                                <button class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="chart-container">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="widget-header p-6 border-b border-gray-200 flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">Departman Dağılımı</h3>
+                            <div class="flex space-x-2">
+                                <button class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-expand-arrows-alt"></i>
+                                </button>
+                                <button class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="chart-container">
+                                <canvas id="departmentChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weather & Quick Info Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Hava Durumu Widget -->
+                    <div class="widget bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <p class="text-white/80 text-sm">İstanbul</p>
+                                <p class="text-2xl font-bold">22°C</p>
+                            </div>
+                            <div class="text-3xl">☀️</div>
+                        </div>
+                        <div class="flex items-center justify-between text-sm text-white/80">
+                            <span>Güneşli</span>
+                            <span>Nem: %45</span>
+                        </div>
+                        <div class="flex justify-between mt-3 text-xs text-white/70">
+                            <span>Min: 18°</span>
+                            <span>Max: 26°</span>
+                        </div>
+                    </div>
+
+                    <!-- Borsa Widget -->
+                    <div class="widget bg-gradient-to-br from-green-400 to-green-600 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-white/80 text-sm">BIST 100</p>
+                            <i class="fas fa-chart-line text-white/80"></i>
+                        </div>
+                        <p class="text-2xl font-bold mb-1">8,247</p>
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-arrow-up text-xs"></i>
+                            <span class="text-sm text-white/90">+2.4% (+195)</span>
+                        </div>
+                        <div class="mt-3 text-xs text-white/70">
+                            Son güncelleme: 16:30
+                        </div>
+                    </div>
+
+                    <!-- Sistem Durumu Widget -->
+                    <div class="widget bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-white/80 text-sm">Sistem Durumu</p>
+                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                        </div>
+                        <p class="text-lg font-bold mb-2">Tüm Sistemler Aktif</p>
+                        <div class="space-y-1 text-xs text-white/80">
+                            <div class="flex justify-between">
+                                <span>Sunucu</span>
+                                <span class="text-green-300">✓ Aktif</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Veritabanı</span>
+                                <span class="text-green-300">✓ Aktif</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>API</span>
+                                <span class="text-green-300">✓ Aktif</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Doğum Günleri Widget -->
+                    <div class="widget bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-white/80 text-sm">Bu Hafta</p>
+                            <i class="fas fa-birthday-cake text-white/80"></i>
+                        </div>
+                        <p class="text-lg font-bold mb-3">🎉 Doğum Günleri</p>
+                        <div class="space-y-2 text-sm text-white/90">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-xs">E</div>
+                                <div>
+                                    <p class="font-medium">Elif Kaya</p>
+                                    <p class="text-xs text-white/70">Yarın (25 yaş)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities & Tasks -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="widget bg-white rounded-xl shadow-sm border border-gray-200 lg:col-span-2">
+                        <div class="widget-header p-6 border-b border-gray-200 flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">Son Aktiviteler</h3>
+                            <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Tümünü Gör</button>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user-plus text-blue-600"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-gray-800 font-medium">Yeni çalışan eklendi</p>
+                                        <p class="text-gray-600 text-sm">Mehmet Demir, Yazılım Geliştirme departmanına katıldı</p>
+                                        <p class="text-gray-400 text-xs mt-1">2 saat önce</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-check text-green-600"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-gray-800 font-medium">Proje tamamlandı</p>
+                                        <p class="text-gray-600 text-sm">E-ticaret platformu projesi başarıyla teslim edildi</p>
+                                        <p class="text-gray-400 text-xs mt-1">4 saat önce</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-exclamation text-yellow-600"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-gray-800 font-medium">Sistem bakımı</p>
+                                        <p class="text-gray-600 text-sm">Sunucu bakımı 15:00-17:00 arası gerçekleştirilecek</p>
+                                        <p class="text-gray-400 text-xs mt-1">6 saat önce</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="widget-header p-6 border-b border-gray-200 flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">Proje Timeline</h3>
+                            <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Detaylar</button>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-6">
+                                <!-- Proje 1 -->
+                                <div class="relative">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="font-medium text-gray-800 text-sm">E-ticaret Platformu</h4>
+                                        <span class="text-xs text-gray-500">85% tamamlandı</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-gray-500">
+                                        <span>Başlangıç: 15 Mar</span>
+                                        <span>Bitiş: 30 Haz</span>
+                                    </div>
+                                </div>
+
+                                <!-- Proje 2 -->
+                                <div class="relative">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="font-medium text-gray-800 text-sm">Mobil Uygulama</h4>
+                                        <span class="text-xs text-gray-500">60% tamamlandı</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                        <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full" style="width: 60%"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-gray-500">
+                                        <span>Başlangıç: 1 Nis</span>
+                                        <span>Bitiş: 15 Tem</span>
+                                    </div>
+                                </div>
+
+                                <!-- Proje 3 -->
+                                <div class="relative">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="font-medium text-gray-800 text-sm">CRM Sistemi</h4>
+                                        <span class="text-xs text-gray-500">30% tamamlandı</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                        <div class="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full" style="width: 30%"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-gray-500">
+                                        <span>Başlangıç: 10 May</span>
+                                        <span>Bitiş: 20 Ağu</span>
+                                    </div>
+                                </div>
+
+                                <!-- Yaklaşan Milestone -->
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-flag text-yellow-600 text-sm"></i>
+                                        <div>
+                                            <p class="text-sm font-medium text-yellow-800">Yaklaşan Milestone</p>
+                                            <p class="text-xs text-yellow-700">E-ticaret test aşaması - 3 gün kaldı</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Grafikleri yeniden oluştur
+            setTimeout(() => {
+                initializeCharts();
+            }, 100);
+        }
+
+        //Akıllı asistan
+        function showAssistant() {
+            document.getElementById('pageTitle').textContent = 'Akıllı Asistan';
+            document.getElementById('pageSubtitle').textContent = 'Sorularınızı sorun, anında yanıt alın.';
+
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <style>
+                    .chat-container { max-height: 65vh; }
+                    .user-msg { background-color: #E0E7FF; align-self: flex-end; }
+                    .assistant-msg { background-color: #F3F4F6; align-self: flex-start; }
+                    .suggestion-chip { cursor: pointer; transition: background-color 0.2s; }
+                    .suggestion-chip:hover { background-color: #DBEAFE; }
+                </style>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <!-- Chat History -->
+                    <div id="chat-history" class="p-6 overflow-y-auto chat-container flex flex-col space-y-4">
+                        <!-- Initial Assistant Message -->
+                        <div class="assistant-msg p-4 rounded-lg max-w-lg">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">Akıllı Asistan</p>
+                                    <p class="text-gray-700">Merhaba Ahmet Bey, size nasıl yardımcı olabilirim? Aşağıdaki önerilerden birini seçebilir veya sorunuzu yazabilirsiniz.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Suggestion Chips -->
+                    <div id="suggestion-chips" class="p-4 border-t border-b border-gray-200 flex flex-wrap gap-2">
+                        <div class="suggestion-chip text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-3 py-1.5" onclick="sendSuggestedQuery('Bugün kimler izinli?')">Bugün kimler izinli?</div>
+                        <div class="suggestion-chip text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-3 py-1.5" onclick="sendSuggestedQuery('Satış departmanının bu aylık hedefleri nedir?')">Satış departmanı hedefleri</div>
+                        <div class="suggestion-chip text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-3 py-1.5" onclick="sendSuggestedQuery('Mobil Uygulama projesinin son durumu nedir?')">Mobil Uygulama projesi durumu</div>
+                         <div class="suggestion-chip text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-3 py-1.5" onclick="sendSuggestedQuery('Bekleyen onaylarım nelerdir?')">Bekleyen onaylarım</div>
+                    </div>
+                
+                    <!-- Message Input -->
+                    <div class="p-4 flex items-center space-x-3">
+                        <input type="text" id="chat-input" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow" placeholder="Mesajınızı buraya yazın...">
+                        <button id="send-btn" class="bg-blue-600 text-white rounded-lg px-6 py-3 hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Event listeners'ı içeriği oluşturduktan sonra ekle
+            setupAssistantListeners();
+        }        
+
+        function setupAssistantListeners() {
+            const sendBtn = document.getElementById('send-btn');
+            const chatInput = document.getElementById('chat-input');
+
+            sendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+
+        function sendMessage() {
+            const chatInput = document.getElementById('chat-input');
+            const message = chatInput.value.trim();
+
+            if (message) {
+                addUserMessage(message);
+                chatInput.value = '';
+                getAssistantResponse(message);
+            }
+        }
+
+        function sendSuggestedQuery(query) {
+            addUserMessage(query);
+            getAssistantResponse(query);
+        }
+
+        function addUserMessage(message) {
+            const chatHistory = document.getElementById('chat-history');
+            const messageHtml = `
+                <div class="user-msg p-3 rounded-lg max-w-lg">
+                    <p class="text-gray-800">${message}</p>
+                </div>
+            `;
+            chatHistory.innerHTML += messageHtml;
+            chatHistory.scrollTop = chatHistory.scrollHeight; // En alta kaydır
+        }
+
+        function addAssistantMessage(message) {
+            const chatHistory = document.getElementById('chat-history');
+            const messageHtml = `
+                <div class="assistant-msg p-4 rounded-lg max-w-lg">
+                     <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800">Akıllı Asistan</p>
+                            <p class="text-gray-700">${message}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // "Yazıyor..." animasyonunu kaldır
+            const typingIndicator = document.getElementById('typing-indicator');
+            if(typingIndicator) {
+                typingIndicator.remove();
+            }
+        
+            chatHistory.innerHTML += messageHtml;
+            chatHistory.scrollTop = chatHistory.scrollHeight; // En alta kaydır
+        }
+
+        function showTypingIndicator() {
+            const chatHistory = document.getElementById('chat-history');
+            const typingHtml = `
+                <div id="typing-indicator" class="assistant-msg p-4 rounded-lg max-w-xs">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+                    </div>
+                </div>
+            `;
+            chatHistory.innerHTML += typingHtml;
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // BU BÖLÜM DJANGO BACKEND'E BAĞLANACAK
+        async function getAssistantResponse(query) {
+            showTypingIndicator();
+
+            // --- DJANGO API BAĞLANTISI BURADA OLACAK ---
+            // Şimdilik sahte (mock) verilerle çalışıyoruz.
+            // Gerçekte burada fetch() ile Django'ya istek atacaksınız.
+
+            console.log("Django'ya gönderilen sorgu:", query);
+
+            // Simulating network delay
+            setTimeout(() => {
+                let response = "Üzgünüm, bu soruyu anlayamadım. Lütfen farklı bir şekilde sormayı deneyin.";
+            
+                if (query.toLowerCase().includes("izinli")) {
+                    response = "Bugün izinli olan personel: <br> - <strong>Ayşe Yılmaz</strong> (İK Departmanı) <br> - <strong>Mehmet Öztürk</strong> (Teknik Birim)";
+                } else if (query.toLowerCase().includes("satış") && query.toLowerCase().includes("hedef")) {
+                    response = "Satış departmanının bu aylık ciro hedefi <strong>₺850,000</strong>'dir. Şu anki durum: <strong>₺410,000 (%48.2)</strong>.";
+                } else if (query.toLowerCase().includes("mobil uygulama")) {
+                    response = "Mobil Uygulama projesi <strong>%60</strong> oranında tamamlanmıştır. Tahmini bitiş tarihi <strong>15 Temmuz</strong>'dur. Şu anki aşama: Kullanıcı Testleri.";
+                } else if (query.toLowerCase().includes("onay")) {
+                    response = "Onayınızı bekleyen <strong>3</strong> işlem bulunmaktadır: <br> 1. Ali Veli - Yıllık İzin Talebi <br> 2. IT Departmanı - Sunucu Alım Talebi <br> 3. Zeynep Kaya - Masraf Formu";
+                }
+            
+                addAssistantMessage(response);
+            }, 1500); // 1.5 saniye bekleme süresi
+        }
+
+        // Grafikleri başlatma fonksiyonu
+        function initializeCharts() {
+            // Chart.js configurations
+            const performanceCtx = document.getElementById('performanceChart');
+            const departmentCtx = document.getElementById('departmentChart');
+            
+            if (performanceCtx) {
+                const performanceChart = new Chart(performanceCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz'],
+                        datasets: [{
+                            label: 'Performans',
+                            data: [65, 78, 85, 82, 90, 88],
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (departmentCtx) {
+                const departmentChart = new Chart(departmentCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Otel İşletmesi', 'Sosyal Tesisler', 'Teknik Birim', 'Satış & Pazarlama', 'Bilgi İşlem', 'Diğer'],
+                        datasets: [{
+                            data: [28, 22, 18, 15, 10, 7],
+                            backgroundColor: [
+                                '#667eea',
+                                '#f093fb',
+                                '#4facfe',
+                                '#43e97b',
+                                '#fa709a',
+                                '#ffd93d'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Sayfa yüklendiğinde grafikleri başlat
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+        });
+
+        // Modal functionality
+        const customizeBtn = document.getElementById('customizeBtn');
+        const customizeModal = document.getElementById('customizeModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelCustomize = document.getElementById('cancelCustomize');
+
+        customizeBtn.addEventListener('click', () => {
+            customizeModal.classList.remove('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            customizeModal.classList.add('hidden');
+        });
+
+        cancelCustomize.addEventListener('click', () => {
+            customizeModal.classList.add('hidden');
+        });
+
+        // Click outside modal to close
+        customizeModal.addEventListener('click', (e) => {
+            if (e.target === customizeModal) {
+                customizeModal.classList.add('hidden');
+            }
+        });
+
+        // Widget drag and drop functionality
+        let draggedElement = null;
+
+        document.querySelectorAll('.widget').forEach(widget => {
+            widget.draggable = true;
+            
+            widget.addEventListener('dragstart', (e) => {
+                draggedElement = widget;
+                widget.style.opacity = '0.5';
+            });
+            
+            widget.addEventListener('dragend', (e) => {
+                widget.style.opacity = '1';
+                draggedElement = null;
+            });
+            
+            widget.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            
+            widget.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (draggedElement && draggedElement !== widget) {
+                    const parent = widget.parentNode;
+                    const draggedIndex = Array.from(parent.children).indexOf(draggedElement);
+                    const targetIndex = Array.from(parent.children).indexOf(widget);
+                    
+                    if (draggedIndex < targetIndex) {
+                        parent.insertBefore(draggedElement, widget.nextSibling);
+                    } else {
+                        parent.insertBefore(draggedElement, widget);
+                    }
+                }
+            });
+        });
+
+        // Task checkbox functionality
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const taskText = e.target.nextElementSibling.querySelector('p');
+                if (e.target.checked) {
+                    taskText.classList.add('line-through');
+                    taskText.classList.add('text-gray-500');
+                } else {
+                    taskText.classList.remove('line-through');
+                    taskText.classList.remove('text-gray-500');
+                }
+            });
+        });
+
+        // Pomodoro Timer functionality
+        let pomodoroTime = 25 * 60; // 25 minutes in seconds
+        let pomodoroInterval = null;
+        let isRunning = false;
+
+        function updatePomodoroDisplay() {
+            const minutes = Math.floor(pomodoroTime / 60);
+            const seconds = pomodoroTime % 60;
+            const timerElement = document.getElementById('pomodoroTimer');
+            if (timerElement) {
+                timerElement.textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        const startBtn = document.getElementById('startPomodoro');
+        const pauseBtn = document.getElementById('pausePomodoro');
+        const resetBtn = document.getElementById('resetPomodoro');
+
+        if (startBtn) {
+            startBtn.addEventListener('click', () => {
+                if (!isRunning) {
+                    isRunning = true;
+                    pomodoroInterval = setInterval(() => {
+                        pomodoroTime--;
+                        updatePomodoroDisplay();
+                        
+                        if (pomodoroTime <= 0) {
+                            clearInterval(pomodoroInterval);
+                            isRunning = false;
+                            pomodoroTime = 25 * 60;
+                            updatePomodoroDisplay();
+                            alert('Pomodoro tamamlandı! 5 dakika mola zamanı.');
+                        }
+                    }, 1000);
+                }
+            });
+        }
+
+        if (pauseBtn) {
+            pauseBtn.addEventListener('click', () => {
+                if (isRunning) {
+                    clearInterval(pomodoroInterval);
+                    isRunning = false;
+                }
+            });
+        }
+
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                clearInterval(pomodoroInterval);
+                isRunning = false;
+                pomodoroTime = 25 * 60;
+                updatePomodoroDisplay();
+            });
+        }
+
+        // Widget Add functionality
+        const addWidgetBtn = document.getElementById('addWidgetBtn');
+        if (addWidgetBtn) {
+            addWidgetBtn.addEventListener('click', () => {
+                const widgetArea = document.querySelector('.p-4.border-t.border-gray-200.max-h-96.overflow-y-auto');
+                const newWidget = document.createElement('div');
+                newWidget.className = 'bg-gradient-to-r from-gray-400 to-gray-600 rounded-lg p-3 mb-3 text-white widget-item';
+                newWidget.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-white/80">Yeni Widget</p>
+                            <p class="text-lg font-bold">Özelleştir</p>
+                        </div>
+                        <i class="fas fa-plus text-white/80"></i>
+                    </div>
+                    <p class="text-xs text-white/80 mt-1">Bu widget'ı özelleştirebilirsiniz</p>
+                `;
+                
+                // Insert before the last widget (Pomodoro)
+                const pomodoroWidget = widgetArea.lastElementChild.previousElementSibling;
+                widgetArea.insertBefore(newWidget, pomodoroWidget);
+            });
+        }
+
+        // Responsive sidebar toggle for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Add mobile menu button for smaller screens
+        if (window.innerWidth < 1024) {
+            const header = document.querySelector('header .flex');
+            const menuBtn = document.createElement('button');
+            menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            menuBtn.className = 'lg:hidden bg-gray-100 p-2 rounded-lg';
+            menuBtn.onclick = toggleSidebar;
+            header.insertBefore(menuBtn, header.firstChild);
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'971fd62ff502a61b',t:'MTc1NTY3MTM3MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+
+</html>

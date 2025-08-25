@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Ajanda Sistemi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #0ea5e9;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --sidebar-bg: #334155;
+            --card-bg: #1e293b;
+            --border-color: #475569;
+        }
+        
+        body {
+            background-color: #0f172a;
+            color: var(--light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            min-height: 100vh;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .task-card {
+            background-color: #334155;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .priority-high { border-left: 4px solid var(--danger); }
+        .priority-medium { border-left: 4px solid var(--warning); }
+        .priority-low { border-left: 4px solid var(--success); }
+        
+        .status-pending { background-color: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .status-progress { background-color: rgba(37, 99, 235, 0.15); color: #3b82f6; }
+        .status-completed { background-color: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .status-delayed { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        
+        .btn-custom {
+            background-color: #475569;
+            border: 1px solid var(--border-color);
+            color: var(--light);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-custom:hover {
+            background-color: #5a6b85;
+            color: var(--light);
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary);
+            border: none;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .calendar-day {
+            height: 100px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #334155;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            background-color: #475569;
+        }
+        
+        .calendar-day.today {
+            background-color: rgba(37, 99, 235, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .calendar-day.has-tasks {
+            border-left: 3px solid var(--primary);
+        }
+        
+        .calendar-day .task-indicator {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary);
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-control, .form-select {
+            background-color: #334155;
+            border: 1px solid var(--border-color);
+            color: var(--light);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: #334155;
+            border-color: var(--primary);
+            color: var(--light);
+            box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+        }
+        
+        .nav-link {
+            color: var(--secondary);
+            transition: all 0.2s ease;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--light);
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+        
+        .badge-custom {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+        }
+        
+        .task-progress {
+            height: 8px;
+            background-color: #475569;
+        }
+        
+        .progress-bar-custom {
+            background-color: var(--primary);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+        
+        .stat-card {
+            background-color: #334155;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .search-box {
+            background-color: #334155;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        
+        .filter-btn {
+            background-color: #475569;
+            border: 1px solid var(--border-color);
+            color: var(--light);
+        }
+        
+        .filter-btn:hover {
+            background-color: #5a6b85;
+        }
+        
+        .task-comment {
+            background-color: #475569;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .team-member {
+            background-color: #334155;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.2s ease;
+        }
+        
+        .team-member:hover {
+            background-color: #475569;
+        }
+        
+        .document-item {
+            background-color: #334155;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .message-item {
+            background-color: #334155;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .message-item.unread {
+            border-left: 3px solid var(--primary);
+        }
+        
+        .chart-container {
+            background-color: #334155;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            height: 300px;
+        }
+        
+        .setting-item {
+            background-color: #334155;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .view-content {
+            display: none;
+        }
+        
+        .view-content.active {
+            display: block;
+        }
+        
+        .meeting-card {
+            background-color: #334155;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.2s ease;
+        }
+        
+        .meeting-card:hover {
+            background-color: #475569;
+        }
+        
+        .meeting-card.upcoming {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .meeting-card.past {
+            opacity: 0.7;
+        }
+        
+        .tab-btn {
+            background-color: #475569;
+            border: 1px solid var(--border-color);
+            color: var(--light);
+            border-radius: 0;
+        }
+        
+        .tab-btn.active {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .tab-btn:first-child {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+        
+        .tab-btn:last-child {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="main-container">
+                    <div class="row g-0">
+                        <!-- Sidebar -->
+                        <div class="col-lg-3 sidebar">
+                            <div class="p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="user-avatar bg-primary me-3">GM</div>
+                                    <div>
+                                        <h5 class="mb-0">Genel Müdür</h5>
+                                        <p class="text-secondary mb-0 small">Ahmet Yılmaz</p>
+                                    </div>
+                                    <div class="ms-auto position-relative">
+                                        <i class="bi bi-bell fs-5"></i>
+                                        <span class="notification-badge">3</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="search-box mb-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-transparent border-0 text-secondary">
+                                            <i class="bi bi-search"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-0 bg-transparent text-light" placeholder="Ara...">
+                                    </div>
+                                </div>
+                                
+                                <nav class="nav flex-column">
+                                    <a class="nav-link active mb-1" href="#" data-view="agenda">
+                                        <i class="bi bi-calendar-event me-2"></i>
+                                        Ajanda
+                                    </a>
+                                    <a class="nav-link mb-1" href="#" data-view="tasks">
+                                        <i class="bi bi-list-check me-2"></i>
+                                        Görevlerim
+                                        <span class="badge bg-primary float-end">5</span>
+                                    </a>
+                                    <a class="nav-link mb-1" href="#" data-view="team">
+                                        <i class="bi bi-people me-2"></i>
+                                        Takımım
+                                    </a>
+                                    <a class="nav-link mb-1" href="#" data-view="reports">
+                                        <i class="bi bi-bar-chart me-2"></i>
+                                        Raporlar
+                                    </a>
+                                    <a class="nav-link mb-1" href="#" data-view="documents">
+                                        <i class="bi bi-file-earmark-text me-2"></i>
+                                        Belgeler
+                                    </a>
+                                    <a class="nav-link mb-1" href="#" data-view="messages">
+                                        <i class="bi bi-chat-dots me-2"></i>
+                                        Mesajlar
+                                        <span class="badge bg-danger float-end">2</span>
+                                    </a>
+                                    <a class="nav-link" href="#" data-view="settings">
+                                        <i class="bi bi-gear me-2"></i>
+                                        Ayarlar
+                                    </a>
+                                </nav>
+                                
+                                <div class="mt-5">
+                                    <h6 class="text-secondary mb-3">Hızlı Erişim</h6>
+                                    <button class="btn btn-custom w-100 mb-2" data-bs-toggle="modal" data-bs-target="#newTaskModal">
+                                        <i class="bi bi-plus-circle me-2"></i>
+                                        Yeni Görev
+                                    </button>
+                                    <button class="btn btn-custom w-100 mb-2" data-bs-toggle="modal" data-bs-target="#newMeetingModal">
+                                        <i class="bi bi-calendar-plus me-2"></i>
+                                        Toplantı Ayarla
+                                    </button>
+                                    <button class="btn btn-custom w-100">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>
+                                        Acil Görev
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Main Content -->
+                        <div class="col-lg-9">
+                            <div class="p-4">
+                                <!-- Ajanda View -->
+                                <div id="agenda-view" class="view-content active">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <div>
+                                            <h2 class="mb-1">Kurumsal Ajanda</h2>
+                                            <p class="text-secondary mb-0">Tüm görevler ve etkinlikler - 3 Kasım 2025</p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <button class="btn btn-primary-custom me-2" data-bs-toggle="modal" data-bs-target="#newTaskModal">
+                                                <i class="bi bi-plus-lg me-1"></i>
+                                                Yeni Görev
+                                            </button>
+                                            <div class="dropdown me-2">
+                                                <button class="btn filter-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-filter me-1"></i>
+                                                    Filtrele
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#">Tümü</a></li>
+                                                    <li><a class="dropdown-item" href="#">Acil</a></li>
+                                                    <li><a class="dropdown-item" href="#">Devam Eden</a></li>
+                                                    <li><a class="dropdown-item" href="#">Tamamlanan</a></li>
+                                                </ul>
+                                            </div>
+                                            <button class="btn btn-custom">
+                                                <i class="bi bi-three-dots"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Stats -->
+                                    <div class="row mb-4">
+                                        <div class="col-md-3 mb-3 mb-md-0">
+                                            <div class="stat-card">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-primary bg-opacity-25 p-2 rounded me-3">
+                                                        <i class="bi bi-list-check text-primary fs-4"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="mb-0">24</h5>
+                                                        <p class="text-secondary mb-0 small">Toplam Görev</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3 mb-md-0">
+                                            <div class="stat-card">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-warning bg-opacity-25 p-2 rounded me-3">
+                                                        <i class="bi bi-hourglass-split text-warning fs-4"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="mb-0">8</h5>
+                                                        <p class="text-secondary mb-0 small">Bekleyen</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3 mb-md-0">
+                                            <div class="stat-card">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-info bg-opacity-25 p-2 rounded me-3">
+                                                        <i class="bi bi-arrow-repeat text-info fs-4"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="mb-0">12</h5>
+                                                        <p class="text-secondary mb-0 small">Devam Eden</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-success bg-opacity-25 p-2 rounded me-3">
+                                                        <i class="bi bi-check-circle text-success fs-4"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="mb-0">4</h5>
+                                                        <p class="text-secondary mb-0 small">Tamamlanan</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Calendar View -->
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5>Kasım 2025</h5>
+                                            <div>
+                                                <button class="btn btn-sm btn-custom me-1">
+                                                    <i class="bi bi-chevron-left"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-custom">
+                                                    <i class="bi bi-chevron-right"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row g-2 text-center">
+                                            <div class="col-1 text-secondary small">Pzt</div>
+                                            <div class="col-1 text-secondary small">Sal</div>
+                                            <div class="col-1 text-secondary small">Çar</div>
+                                            <div class="col-1 text-secondary small">Per</div>
+                                            <div class="col-1 text-secondary small">Cum</div>
+                                            <div class="col-1 text-secondary small">Cmt</div>
+                                            <div class="col-1 text-secondary small">Paz</div>
+                                        </div>
+                                        
+                                        <div class="row g-2 mt-1">
+                                            <!-- Calendar Days -->
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">1</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">2</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2 today">
+                                                    <span class="fw-bold">3</span>
+                                                    <div class="mt-auto">
+                                                        <span class="badge bg-primary badge-custom">2</span>
+                                                    </div>
+                                                    <div class="task-indicator"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2 has-tasks">
+                                                    <span class="text-secondary small">4</span>
+                                                    <div class="mt-auto">
+                                                        <span class="badge bg-primary badge-custom">1</span>
+                                                    </div>
+                                                    <div class="task-indicator"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">5</span>
+                                                    <div class="task-indicator"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">6</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">7</span>
+                                                </div>
+                                            </div>
+                                            <!-- More days... -->
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">8</span>
+                                                    <div class="task-indicator"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">9</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">10</span>
+                                                    <div class="task-indicator"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">11</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">12</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">13</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="calendar-day d-flex flex-column p-2">
+                                                    <span class="text-secondary small">14</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Tasks List -->
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5>Aktif Görevler</h5>
+                                            <span class="text-secondary small">8 görev</span>
+                                        </div>
+                                        
+                                        <div class="row g-3">
+                                            <!-- Task 1 -->
+                                            <div class="col-12">
+                                                <div class="task-card p-3 priority-high">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Web Sitesi Yenileme</h6>
+                                                        <span class="badge status-pending badge-custom">Beklemede</span>
+                                                    </div>
+                                                    <p class="text-secondary small mb-2">Yeni kurumsal web sitesinin tasarımı ve geliştirilmesi</p>
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="user-avatar bg-info me-2" style="width: 24px; height: 24px; font-size: 10px;">IT</div>
+                                                            <span class="text-secondary small">IT Departmanı</span>
+                                                        </div>
+                                                        <span class="text-secondary small">Bitiş: 15 Kas</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="d-flex">
+                                                            <div class="user-avatar bg-success me-1" style="width: 20px; height: 20px; font-size: 8px;">AY</div>
+                                                            <div class="user-avatar bg-warning me-1" style="width: 20px; height: 20px; font-size: 8px;">MZ</div>
+                                                            <div class="user-avatar bg-danger" style="width: 20px; height: 20px; font-size: 8px;">+2</div>
+                                                        </div>
+                                                        <div class="small text-secondary">30% tamamlandı</div>
+                                                    </div>
+                                                    <div class="task-progress mt-2">
+                                                        <div class="progress-bar progress-bar-custom" style="width: 30%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Task 2 -->
+                                            <div class="col-12">
+                                                <div class="task-card p-3 priority-medium">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Personel Eğitimi</h6>
+                                                        <span class="badge status-progress badge-custom">Devam Ediyor</span>
+                                                    </div>
+                                                    <p class="text-secondary small mb-2">Yeni çalışanlar için oryantasyon programı</p>
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="user-avatar bg-success me-2" style="width: 24px; height: 24px; font-size: 10px;">İK</div>
+                                                            <span class="text-secondary small">İnsan Kaynakları</span>
+                                                        </div>
+                                                        <span class="text-secondary small">Bitiş: 20 Kas</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="d-flex">
+                                                            <div class="user-avatar bg-primary me-1" style="width: 20px; height: 20px; font-size: 8px;">ZE</div>
+                                                            <div class="user-avatar bg-info" style="width: 20px; height: 20px; font-size: 8px;">+1</div>
+                                                        </div>
+                                                        <div class="small text-secondary">65% tamamlandı</div>
+                                                    </div>
+                                                    <div class="task-progress mt-2">
+                                                        <div class="progress-bar progress-bar-custom" style="width: 65%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Görevlerim View -->
+                                <div id="tasks-view" class="view-content">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <div>
+                                            <h2 class="mb-1">Görevlerim</h2>
+                                            <p class="text-secondary mb-0">Size atanan görevler</p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <button class="btn btn-primary-custom me-2" data-bs-toggle="modal" data-bs-target="#newTaskModal">
+                                                <i class="bi bi-plus-lg me-1"></i>
+                                                Yeni Görev
+                                            </button>
+                                            <button class="btn btn-custom me-2" data-bs-toggle="modal" data-bs-target="#newMeetingModal">
+                                                <i class="bi bi-calendar-plus me-1"></i>
+                                                Toplantı Ayarla
+                                            </button>
+                                            <div class="dropdown">
+                                                <button class="btn filter-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-filter me-1"></i>
+                                                    Filtrele
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#">Tümü</a></li>
+                                                    <li><a class="dropdown-item" href="#">Acil</a></li>
+                                                    <li><a class="dropdown-item" href="#">Devam Eden</a></li>
+                                                    <li><a class="dropdown-item" href="#">Tamamlanan</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Tabs -->
+                                    <div class="d-flex mb-4">
+                                        <button class="tab-btn active flex-grow-1 py-2">Görevler</button>
+                                        <button class="tab-btn flex-grow-1 py-2">Toplantılar</button>
+                                    </div>
+                                    
+                                    <!-- Tasks Tab -->
+                                    <div id="tasks-tab" class="tab-content">
+                                        <div class="row g-3">
+                                            <!-- Assigned Task 1 -->
+                                            <div class="col-12">
+                                                <div class="task-card p-3 priority-high">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Web Sitesi Yenileme</h6>
+                                                        <span class="badge status-progress badge-custom">Devam Ediyor</span>
+                                                    </div>
+                                                    <p class="text-secondary small mb-2">Yeni kurumsal web sitesinin tasarımı ve geliştirilmesi</p>
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="user-avatar bg-info me-2" style="width: 24px; height: 24px; font-size: 10px;">IT</div>
+                                                            <span class="text-secondary small">IT Departmanı</span>
+                                                        </div>
+                                                        <span class="text-secondary small">Bitiş: 15 Kas</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="small text-secondary">Atayan: Ahmet Yılmaz</div>
+                                                        <div class="small text-secondary">30% tamamlandı</div>
+                                                    </div>
+                                                    <div class="task-progress mt-2">
+                                                        <div class="progress-bar progress-bar-custom" style="width: 30%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Assigned Task 2 -->
+                                            <div class="col-12">
+                                                <div class="task-card p-3 priority-medium">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0">Sunucu Bakımı</h6>
+                                                        <span class="badge status-pending badge-custom">Beklemede</span>
+                                                    </div>
+                                                    <p class="text-secondary small mb-2">Aylık sunucu bakım işlemleri</p>
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="user-avatar bg-danger me-2" style="width: 24px; height: 24px; font-size: 10px;">SYS</div>
+                                                            <span class="text-secondary small">Sistem Yönetimi</span>
+                                                        </div>
+                                                        <span class="text-secondary small">Bitiş: 10 Kas</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="small text-secondary">Atayan: Mehmet Kaya</div>
+                                                        <div class="small text-secondary">0% tamamlandı</div>
+                                                    </div>
+                                                    <div class="task-progress mt-2">
+                                                        <div class="progress-bar progress-bar-custom" style="width: 0%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Meetings Tab -->
+                                    <div id="meetings-tab" class="tab-content" style="display: none;">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5>Toplantılar</h5>
+                                            <button class="btn btn-primary-custom btn-sm" data-bs-toggle="modal" data-bs-target="#newMeetingModal">
+                                                <i class="bi bi-plus-lg me-1"></i>
+                                                Yeni Toplantı
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="meeting-card upcoming">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="mb-0">IT Departmanı Aylık Planlama</h6>
+                                                <span class="badge bg-primary badge-custom">Yaklaşan</span>
+                                            </div>
+                                            <div class="d-flex align-items-center text-secondary small mb-2">
+                                                <i class="bi bi-calendar me-1"></i>
+                                                <span>5 Kasım 2025, 10:00 - 11:30</span>
+                                            </div>
+                                            <div class="d-flex align-items-center text-secondary small mb-2">
+                                                <i class="bi bi-geo-alt me-1"></i>
+                                                <span>Konferans Salonu A</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar bg-info me-1" style="width: 24px; height: 24px; font-size: 10px;">MZ</div>
+                                                <div class="user-avatar bg-success me-1" style="width: 24px; height: 24px; font-size: 10px;">HK</div>
+                                                <div class="user-avatar bg-warning" style="width: 24px; height: 24px; font-size: 10px;">+3</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="meeting-card upcoming">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="mb-0">Bütçe Gözden Geçirme</h6>
+                                                <span class="badge bg-primary badge-custom">Yaklaşan</span>
+                                            </div>
+                                            <div class="d-flex align-items-center text-secondary small mb-2">
+                                                <i class="bi bi-calendar me-1"></i>
+                                                <span>7 Kasım 2025, 14:00 - 15:00</span>
+                                            </div>
+                                            <div class="d-flex align-items-center text-secondary small mb-2">
+                                                <i class="bi bi-geo-alt me-1"></i>
+                                                <span>Yönetim Odası</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar bg-warning me-1" style="width: 24px; height: 24px; font-size: 10px;">MK</div>
+                                                <div class="user-avatar bg-primary" style="width: 24px; height: 24px; font-size: 10px;">AY</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="meeting-card past">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="mb-0">Çeyrek Değerlendirme</h6>
+                                                <span class="badge bg-secondary badge-custom">Geçmiş</span>
+                                            </div>
+                                            <div class="d-flex align-items-center text-secondary small mb-2">
+                                                <i class="bi bi-calendar me-1"></i>
+                                                <span>1 Kasım 2025, 09:00 - 12:00</span>
+                                            </div>
+                                            <div class="d-flex align-items-center text-secondary small mb-2">
+                                                <i class="bi bi-geo-alt me-1"></i>
+                                                <span>Konferans Salonu B</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar bg-primary me-1" style="width: 24px; height: 24px; font-size: 10px;">AY</div>
+                                                <div class="user-avatar bg-info me-1" style="width: 24px; height: 24px; font-size: 10px;">MZ</div>
+                                                <div class="user-avatar bg-success me-1" style="width: 24px; height: 24px; font-size: 10px;">ZE</div>
+                                                <div class="user-avatar bg-warning" style="width: 24px; height: 24px; font-size: 10px;">+2</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Takımım View -->
+                                <div id="team-view" class="view-content">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <div>
+                                            <h2 class="mb-1">Takımım</h2>
+                                            <p class="text-secondary mb-0">Departman yöneticileri ve ekipler</p>
+                                        </div>
+                                        <button class="btn btn-primary-custom">
+                                            <i class="bi bi-person-plus me-1"></i>
+                                            Üye Ekle
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="row g-3">
+                                        <!-- Team Member 1 -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="team-member">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="user-avatar bg-info me-3" style="width: 50px; height: 50px; font-size: 18px;">MZ</div>
+                                                    <div>
+                                                        <h5 class="mb-0">Mehmet Zorlu</h5>
+                                                        <p class="text-secondary mb-0 small">IT Müdürü</p>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <div class="d-flex justify-content-between small mb-1">
+                                                        <span>Görevler</span>
+                                                        <span>8/12</span>
+                                                    </div>
+                                                    <div class="task-progress">
+                                                        <div class="progress-bar progress-bar-custom" style="width: 67%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex justify-content-between text-secondary small">
+                                                    <span><i class="bi bi-envelope me-1"></i> mzorlu@firma.com</span>
+                                                    <span><i class="bi bi-telephone me-1"></i> 555-0123</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Team Member 2 -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="team-member">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="user-avatar bg-success me-3" style="width: 50px; height: 50px; font-size: 18px;">ZE</div>
+                                                    <div>
+                                                        <h5 class="mb-0">Zeynep Erdoğan</h5>
+                                                        <p class="text-secondary mb-0 small">İK Müdürü</p>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <div class="d-flex justify-content-between small mb-1">
+                                                        <span>Görevler</span>
+                                                        <span>5/7</span>
+                                                    </div>
+                                                    <div class="task-progress">
+                                                        <div class="progress-bar progress-bar-custom" style="width: 71%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex justify-content-between text-secondary small">
+                                                    <span><i class="bi bi-envelope me-1"></i> zerdogan@firma.com</span>
+                                                    <span><i class="bi bi-telephone me-1"></i> 555-0124</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Team Member 3 -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="team-member">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="user-avatar bg-warning me-3" style="width: 50px; height: 50px; font-size: 18px;">MK</div>
+                                                    <div>
+                                                        <h5 class="mb-0">Mehmet Kaya</h5>
+                                                        <p class="text-secondary mb-0 small">Finans Müdürü</p>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <div class="d-flex justify-content-between small mb-1">
+                                                        <span>Görevler</span>
+                                                        <span>3/5</span>
+                                                    </div>
+                                                    <div class="task-progress">
+                                                        <div class="progress-bar progress-bar-custom" style="width: 60%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex justify-content-between text-secondary small">
+                                                    <span><i class="bi bi-envelope me-1"></i> mkaya@firma.com</span>
+                                                    <span><i class="bi bi-telephone me-1"></i> 555-0125</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Raporlar View -->
+                                <div id="reports-view" class="view-content">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <div>
+                                            <h2 class="mb-1">Raporlar</h2>
+                                            <p class="text-secondary mb-0">Performans ve ilerleme raporları</p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <button class="btn btn-custom me-2">
+                                                <i class="bi bi-download me-1"></i>
+                                                PDF İndir
+                                            </button>
+                                            <button class="btn btn-custom">
+                                                <i class="bi bi-printer me-1"></i>
+                                                Yazdır
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row g-4">
+                                        <div class="col-lg-6">
+                                            <div class="chart-container">
+                                                <h5 class="mb-3">Departmanlara Göre Görev Dağılımı</h5>
+                                                <div class="d-flex align-items-end h-75">
+                                                    <div class="flex-grow-1 text-center mx-1">
+                                                        <div class="bg-primary mx-auto" style="height: 80%; width: 40px;"></div>
+                                                        <div class="text-secondary small mt-2">IT</div>
+                                                    </div>
+                                                    <div class="flex-grow-1 text-center mx-1">
+                                                        <div class="bg-success mx-auto" style="height: 60%; width: 40px;"></div>
+                                                        <div class="text-secondary small mt-2">İK</div>
+                                                    </div>
+                                                    <div class="flex-grow-1 text-center mx-1">
+                                                        <div class="bg-warning mx-auto" style="height: 40%; width: 40px;"></div>
+                                                        <div class="text-secondary small mt-2">Finans</div>
+                                                    </div>
+                                                    <div class="flex-grow-1 text-center mx-1">
+                                                        <div class="bg-danger mx-auto" style="height: 30%; width: 40px;"></div>
+                                                        <div class="text-secondary small mt-2">Lojistik</div>
+                                                    </div>
+                                                    <div class="flex-grow-1 text-center mx-1">
+                                                        <div class="bg-info mx-auto" style="height: 20%; width: 40px;"></div>
+                                                        <div class="text-secondary small mt-2">Üretim</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-6">
+                                            <div class="chart-container">
+                                                <h5 class="mb-3">Aylık Görev Tamamlama Oranı</h5>
+                                                <div class="d-flex align-items-end h-75">
+                                                    <div class="flex-grow-1 text-center mx-1">
+                                                        <div class="bg-success mx-auto" style="height: 70%; width: 30px;"></div>
+                                                        <div class="text-secondary small mt-2">Eyl</div>
+                                                    </div>
+                                                    <div class="flex-grow-1 text-center mx-1">
+                                                        <div class="bg-success mx-auto" style="height: 85%; width: 30px;"></div>
+                                                        <div class="text-secondary small mt-2">Eki</div>
+                                                    </div>
+                                                    <div class="flex-grow-1 text-center mx-1">
+                                                        <div class="bg-warning mx-auto" style="height: 60%; width: 30px;"></div>
+                                                        <div class="text-secondary small mt-2">Kas</div>
+                                                    </div>
+                                                    <div class="flex-grow-1 text-center mx-1">
+                                                        <div class="bg-primary mx-auto" style="height: 40%; width: 30px;"></div>
+                                                        <div class="text-secondary small mt-2">Ara</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <div class="stat-card">
+                                                <h5 class="mb-3">Performans Özeti</h5>
+                                                <div class="row">
+                                                    <div class="col-md-3 mb-3 mb-md-0">
+                                                        <div class="text-center">
+                                                            <div class="display-6 text-primary">24</div>
+                                                            <div class="text-secondary">Toplam Görev</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 mb-3 mb-md-0">
+                                                        <div class="text-center">
+                                                            <div class="display-6 text-success">18</div>
+                                                            <div class="text-secondary">Tamamlanan</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 mb-3 mb-md-0">
+                                                        <div class="text-center">
+                                                            <div class="display-6 text-warning">4</div>
+                                                            <div class="text-secondary">Devam Eden</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="text-center">
+                                                            <div class="display-6 text-danger">2</div>
+                                                            <div class="text-secondary">Geciken</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Belgeler View -->
+                                <div id="documents-view" class="view-content">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <div>
+                                            <h2 class="mb-1">Belgeler</h2>
+                                            <p class="text-secondary mb-0">Paylaşılan dosyalar ve dokümanlar</p>
+                                        </div>
+                                        <button class="btn btn-primary-custom">
+                                            <i class="bi bi-upload me-1"></i>
+                                            Dosya Yükle
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="row g-3">
+                                        <!-- Document 1 -->
+                                        <div class="col-md-6">
+                                            <div class="document-item">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-primary bg-opacity-25 p-2 rounded me-3">
+                                                        <i class="bi bi-file-earmark-text fs-4 text-primary"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">Proje Planı.docx</h6>
+                                                        <p class="text-secondary mb-0 small">Genel proje planı ve zaman çizelgesi</p>
+                                                        <div class="d-flex justify-content-between mt-2">
+                                                            <span class="text-secondary small">Ahmet Yılmaz</span>
+                                                            <span class="text-secondary small">2 gün önce</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Document 2 -->
+                                        <div class="col-md-6">
+                                            <div class="document-item">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-success bg-opacity-25 p-2 rounded me-3">
+                                                        <i class="bi bi-file-earmark-image fs-4 text-success"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">Tasarım Dosyaları.fig</h6>
+                                                        <p class="text-secondary mb-0 small">Web sitesi tasarımı ve prototipler</p>
+                                                        <div class="d-flex justify-content-between mt-2">
+                                                            <span class="text-secondary small">Mehmet Zorlu</span>
+                                                            <span class="text-secondary small">1 hafta önce</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Document 3 -->
+                                        <div class="col-md-6">
+                                            <div class="document-item">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-warning bg-opacity-25 p-2 rounded me-3">
+                                                        <i class="bi bi-file-earmark-pdf fs-4 text-warning"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">Finansal Rapor.pdf</h6>
+                                                        <p class="text-secondary mb-0 small">3. çeyrek finansal raporu</p>
+                                                        <div class="d-flex justify-content-between mt-2">
+                                                            <span class="text-secondary small">Mehmet Kaya</span>
+                                                            <span class="text-secondary small">3 gün önce</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Document 4 -->
+                                        <div class="col-md-6">
+                                            <div class="document-item">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-info bg-opacity-25 p-2 rounded me-3">
+                                                        <i class="bi bi-file-earmark-excel fs-4 text-info"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">Personel Listesi.xlsx</h6>
+                                                        <p class="text-secondary mb-0 small">Tüm personel bilgileri ve iletişim</p>
+                                                        <div class="d-flex justify-content-between mt-2">
+                                                            <span class="text-secondary small">Zeynep Erdoğan</span>
+                                                            <span class="text-secondary small">5 gün önce</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Mesajlar View -->
+                                <div id="messages-view" class="view-content">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <div>
+                                            <h2 class="mb-1">Mesajlar</h2>
+                                            <p class="text-secondary mb-0">Takım üyeleriyle iletişim</p>
+                                        </div>
+                                        <button class="btn btn-primary-custom">
+                                            <i class="bi bi-pencil me-1"></i>
+                                            Yeni Mesaj
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="border rounded p-3" style="border-color: var(--border-color); height: 500px;">
+                                                <div class="mb-3">
+                                                    <div class="search-box">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text bg-transparent border-0 text-secondary">
+                                                                <i class="bi bi-search"></i>
+                                                            </span>
+                                                            <input type="text" class="form-control border-0 bg-transparent text-light" placeholder="Kişi ara...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="message-item unread">
+                                                    <div class="d-flex">
+                                                        <div class="user-avatar bg-info me-2" style="width: 40px; height: 40px; font-size: 14px;">MZ</div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="d-flex justify-content-between">
+                                                                <h6 class="mb-0">Mehmet Zorlu</h6>
+                                                                <span class="text-secondary small">10:30</span>
+                                                            </div>
+                                                            <p class="text-secondary mb-0 small">Web sitesi tasarımı hazır...</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="message-item">
+                                                    <div class="d-flex">
+                                                        <div class="user-avatar bg-success me-2" style="width: 40px; height: 40px; font-size: 14px;">ZE</div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="d-flex justify-content-between">
+                                                                <h6 class="mb-0">Zeynep Erdoğan</h6>
+                                                                <span class="text-secondary small">Dün</span>
+                                                            </div>
+                                                            <p class="text-secondary mb-0 small">Personel eğitimi için...</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="message-item">
+                                                    <div class="d-flex">
+                                                        <div class="user-avatar bg-warning me-2" style="width: 40px; height: 40px; font-size: 14px;">MK</div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="d-flex justify-content-between">
+                                                                <h6 class="mb-0">Mehmet Kaya</h6>
+                                                                <span class="text-secondary small">2 gün önce</span>
+                                                            </div>
+                                                            <p class="text-secondary mb-0 small">Finansal rapor hakkında...</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-8">
+                                            <div class="border rounded p-3" style="border-color: var(--border-color); height: 500px;">
+                                                <div class="d-flex align-items-center mb-3 pb-3 border-bottom" style="border-color: var(--border-color);">
+                                                    <div class="user-avatar bg-info me-3" style="width: 50px; height: 50px; font-size: 18px;">MZ</div>
+                                                    <div>
+                                                        <h5 class="mb-0">Mehmet Zorlu</h5>
+                                                        <p class="text-secondary mb-0 small">IT Müdürü</p>
+                                                    </div>
+                                                    <div class="ms-auto">
+                                                        <button class="btn btn-sm btn-custom me-1">
+                                                            <i class="bi bi-telephone"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-custom">
+                                                            <i class="bi bi-camera-video"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-3" style="height: 350px; overflow-y: auto;">
+                                                    <div class="d-flex mb-3">
+                                                        <div class="user-avatar bg-info me-2" style="width: 35px; height: 35px; font-size: 12px;">MZ</div>
+                                                        <div class="bg-primary bg-opacity-25 rounded p-3" style="max-width: 70%;">
+                                                            <p class="mb-1">Web sitesi tasarımı hazır. Figma dosyasını paylaştım. Lütfen inceleyin ve geri bildirin.</p>
+                                                            <div class="text-secondary small">10:25</div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="d-flex justify-content-end mb-3">
+                                                        <div class="bg-success bg-opacity-25 rounded p-3" style="max-width: 70%;">
+                                                            <p class="mb-1">Harika görünüyor. Sadece mobil görünümde küçük düzenlemeler gerekebilir.</p>
+                                                            <div class="text-secondary small text-end">10:28</div>
+                                                        </div>
+                                                        <div class="user-avatar bg-primary ms-2" style="width: 35px; height: 35px; font-size: 12px;">AY</div>
+                                                    </div>
+                                                    
+                                                    <div class="d-flex mb-3">
+                                                        <div class="user-avatar bg-info me-2" style="width: 35px; height: 35px; font-size: 12px;">MZ</div>
+                                                        <div class="bg-primary bg-opacity-25 rounded p-3" style="max-width: 70%;">
+                                                            <p class="mb-1">Mobil görünümdeki sorunları düzelttim. Yeni sürümü yükledim.</p>
+                                                            <div class="text-secondary small">10:30</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="d-flex">
+                                                    <input type="text" class="form-control me-2" placeholder="Mesaj yazın...">
+                                                    <button class="btn btn-primary-custom">
+                                                        <i class="bi bi-send"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Ayarlar View -->
+                                <div id="settings-view" class="view-content">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <div>
+                                            <h2 class="mb-1">Ayarlar</h2>
+                                            <p class="text-secondary mb-0">Hesap ve sistem ayarları</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <div class="setting-item">
+                                                <h5 class="mb-3">Profil Bilgileri</h5>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Ad Soyad</label>
+                                                        <input type="text" class="form-control" value="Ahmet Yılmaz">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Pozisyon</label>
+                                                        <input type="text" class="form-control" value="Genel Müdür">
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">E-posta</label>
+                                                        <input type="email" class="form-control" value="ayilmaz@firma.com">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Telefon</label>
+                                                        <input type="text" class="form-control" value="555-0123">
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-primary-custom">Değişiklikleri Kaydet</button>
+                                            </div>
+                                            
+                                            <div class="setting-item">
+                                                <h5 class="mb-3">Bildirim Ayarları</h5>
+                                                <div class="form-check form-switch mb-3">
+                                                    <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                                    <label class="form-check-label" for="emailNotifications">E-posta bildirimleri</label>
+                                                </div>
+                                                <div class="form-check form-switch mb-3">
+                                                    <input class="form-check-input" type="checkbox" id="smsNotifications">
+                                                    <label class="form-check-label" for="smsNotifications">SMS bildirimleri</label>
+                                                </div>
+                                                <div class="form-check form-switch mb-3">
+                                                    <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
+                                                    <label class="form-check-label" for="pushNotifications">Push bildirimleri</label>
+                                                </div>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="dailySummary" checked>
+                                                    <label class="form-check-label" for="dailySummary">Günlük özet raporu</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="setting-item">
+                                                <h5 class="mb-3">Güvenlik</h5>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Mevcut Şifre</label>
+                                                    <input type="password" class="form-control" placeholder="Mevcut şifrenizi girin">
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Yeni Şifre</label>
+                                                        <input type="password" class="form-control" placeholder="Yeni şifrenizi girin">
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Yeni Şifre (Tekrar)</label>
+                                                        <input type="password" class="form-control" placeholder="Yeni şifrenizi tekrar girin">
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-primary-custom">Şifreyi Değiştir</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-4">
+                                            <div class="setting-item">
+                                                <h5 class="mb-3">Hesap Durumu</h5>
+                                                <div class="mb-3">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Hesap Türü:</span>
+                                                        <span class="fw-bold">Genel Müdür</span>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Kayıt Tarihi:</span>
+                                                        <span>15 Mart 2023</span>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Son Giriş:</span>
+                                                        <span>3 Kasım 2025, 09:15</span>
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-custom w-100">
+                                                    <i class="bi bi-box-arrow-right me-1"></i>
+                                                    Çıkış Yap
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="setting-item">
+                                                <h5 class="mb-3">Dil ve Bölge</h5>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Dil</label>
+                                                    <select class="form-select">
+                                                        <option>Türkçe</option>
+                                                        <option>English</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="form-label">Saat Dilimi</label>
+                                                    <select class="form-select">
+                                                        <option>GMT+3 (İstanbul)</option>
+                                                        <option>GMT+2 (Berlin)</option>
+                                                        <option>GMT+1 (London)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Task Modal -->
+    <div class="modal fade" id="newTaskModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-bottom" style="border-color: var(--border-color);">
+                    <h5 class="modal-title">Yeni Görev Oluştur</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Görev Başlığı *</label>
+                            <input type="text" class="form-control" placeholder="Görev başlığını girin">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Açıklama</label>
+                            <textarea class="form-control" rows="3" placeholder="Görev detaylarını girin"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Atanan Departman</label>
+                                <select class="form-select">
+                                    <option>Seçiniz...</option>
+                                    <option>IT Departmanı</option>
+                                    <option>İnsan Kaynakları</option>
+                                    <option>Finans</option>
+                                    <option>Üretim</option>
+                                    <option>Lojistik</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Öncelik</label>
+                                <select class="form-select">
+                                    <option>Düşük</option>
+                                    <option selected>Orta</option>
+                                    <option>Yüksek</option>
+                                    <option>Kritik</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Bitiş Tarihi</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">İlgili Personel</label>
+                                <select class="form-select">
+                                    <option>Seçiniz...</option>
+                                    <option>Ahmet Yılmaz (Genel Müdür)</option>
+                                    <option>Zeynep Erdoğan (İK Müdürü)</option>
+                                    <option>Mehmet Kaya (IT Müdürü)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Alt Görevler</label>
+                            <div class="border rounded p-3" style="border-color: var(--border-color);">
+                                <div class="d-flex mb-2">
+                                    <input type="text" class="form-control me-2" placeholder="Alt görev girin">
+                                    <button type="button" class="btn btn-sm btn-custom">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="subtask1">
+                                    <label class="form-check-label" for="subtask1">
+                                        Tasarım dosyalarının hazırlanması
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="subtask2">
+                                    <label class="form-check-label" for="subtask2">
+                                        Frontend geliştirme
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Ek Dosyalar</label>
+                            <div class="border rounded p-3" style="border-color: var(--border-color);">
+                                <button type="button" class="btn btn-sm btn-custom">
+                                    <i class="bi bi-upload me-1"></i>
+                                    Dosya Yükle
+                                </button>
+                                <div class="mt-2 small text-secondary">
+                                    Maksimum dosya boyutu: 10MB
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">İptal</button>
+                            <button type="submit" class="btn btn-primary-custom">Görevi Oluştur</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Meeting Modal -->
+    <div class="modal fade" id="newMeetingModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-bottom" style="border-color: var(--border-color);">
+                    <h5 class="modal-title">Yeni Toplantı Oluştur</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Toplantı Başlığı *</label>
+                            <input type="text" class="form-control" placeholder="Toplantı başlığını girin">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Açıklama</label>
+                            <textarea class="form-control" rows="3" placeholder="Toplantı detaylarını girin"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tarih</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Başlangıç Saati</label>
+                                <input type="time" class="form-control" value="10:00">
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Bitiş Saati</label>
+                                <input type="time" class="form-control" value="11:00">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Konum</label>
+                            <input type="text" class="form-control" placeholder="Toplantı konumunu girin">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Katılımcılar</label>
+                            <div class="border rounded p-3" style="border-color: var(--border-color);">
+                                <div class="d-flex mb-2">
+                                    <select class="form-select me-2">
+                                        <option>Departman seçin...</option>
+                                        <option>IT Departmanı</option>
+                                        <option>İnsan Kaynakları</option>
+                                        <option>Finans</option>
+                                        <option>Üretim</option>
+                                        <option>Lojistik</option>
+                                    </select>
+                                    <button type="button" class="btn btn-sm btn-custom">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="d-flex align-items-center mb-2 p-2" style="background-color: #475569; border-radius: 6px;">
+                                    <div class="user-avatar bg-info me-2" style="width: 30px; height: 30px; font-size: 12px;">MZ</div>
+                                    <div class="flex-grow-1">
+                                        <div class="small fw-bold">Mehmet Zorlu</div>
+                                        <div class="text-secondary small">IT Müdürü</div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="d-flex align-items-center mb-2 p-2" style="background-color: #475569; border-radius: 6px;">
+                                    <div class="user-avatar bg-success me-2" style="width: 30px; height: 30px; font-size: 12px;">ZE</div>
+                                    <div class="flex-grow-1">
+                                        <div class="small fw-bold">Zeynep Erdoğan</div>
+                                        <div class="text-secondary small">İK Müdürü</div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="d-flex align-items-center p-2" style="background-color: #475569; border-radius: 6px;">
+                                    <div class="user-avatar bg-warning me-2" style="width: 30px; height: 30px; font-size: 12px;">MK</div>
+                                    <div class="flex-grow-1">
+                                        <div class="small fw-bold">Mehmet Kaya</div>
+                                        <div class="text-secondary small">Finans Müdürü</div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Toplantı Türü</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="meetingType" id="inPerson" checked>
+                                <label class="form-check-label" for="inPerson">
+                                    Yüz yüze toplantı
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="meetingType" id="online">
+                                <label class="form-check-label" for="online">
+                                    Çevrimiçi toplantı
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Hatırlatıcı</label>
+                            <select class="form-select">
+                                <option>15 dakika önce</option>
+                                <option selected>30 dakika önce</option>
+                                <option>1 saat önce</option>
+                                <option>1 gün önce</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Ek Dosyalar</label>
+                            <div class="border rounded p-3" style="border-color: var(--border-color);">
+                                <button type="button" class="btn btn-sm btn-custom">
+                                    <i class="bi bi-upload me-1"></i>
+                                    Dosya Yükle
+                                </button>
+                                <div class="mt-2 small text-secondary">
+                                    Maksimum dosya boyutu: 10MB
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">İptal</button>
+                            <button type="submit" class="btn btn-primary-custom">Toplantıyı Oluştur</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // View switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // View switching
+            const navLinks = document.querySelectorAll('.nav-link');
+            const views = document.querySelectorAll('.view-content');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links and views
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    views.forEach(v => v.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Show corresponding view
+                    const viewId = this.getAttribute('data-view') + '-view';
+                    document.getElementById(viewId).classList.add('active');
+                });
+            });
+            
+            // Calendar day click event
+            const calendarDays = document.querySelectorAll('.calendar-day');
+            calendarDays.forEach(day => {
+                day.addEventListener('click', function() {
+                    const date = this.querySelector('span').textContent;
+                    alert(date + ' Kasım için etkinlikler gösterilecek');
+                });
+            });
+            
+            // Task card click event
+            const taskCards = document.querySelectorAll('.task-card');
+            taskCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    alert('Görev detayları gösterilecek');
+                });
+            });
+            
+            // Tab switching in Görevlerim view
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons and contents
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.style.display = 'none');
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    const tabIndex = Array.from(tabBtns).indexOf(this);
+                    const contentId = tabIndex === 0 ? 'tasks-tab' : 'meetings-tab';
+                    document.getElementById(contentId).style.display = 'block';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

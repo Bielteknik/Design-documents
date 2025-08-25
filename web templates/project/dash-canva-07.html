@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Ekip Yönetimi Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .sidebar-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            backdrop-filter: blur(10px);
+        }
+        .card-hover:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .progress-bar { transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .fade-in { animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slide-in { animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateX(-20px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
+        
+        .nav-item:hover { transform: translateX(4px); }
+        .status-indicator { animation: pulse 2s infinite; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .priority-high { border-left: 4px solid #ef4444; }
+        .priority-medium { border-left: 4px solid #f59e0b; }
+        .priority-low { border-left: 4px solid #10b981; }
+        
+        .department-badge {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.6);
+        }
+        
+        .form-group { position: relative; }
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            transform: translateY(-24px) scale(0.85);
+            color: #667eea;
+        }
+        
+        .form-label {
+            transition: all 0.2s ease;
+            transform-origin: left top;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div class="flex h-screen">
+        <!-- Enhanced Sidebar -->
+        <div id="sidebar" class="gradient-bg text-white w-72 sidebar-transition shadow-2xl">
+            <div class="p-6 border-b border-white/20">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                        <i class="fas fa-building text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">TechCorp Enterprise</h1>
+                        <p class="text-white/70 text-sm">Ekip Yönetimi Sistemi</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="mt-6 px-4">
+                <div class="space-y-2">
+                    <a href="#" onclick="showSection('dashboard')" class="nav-item flex items-center px-4 py-3 text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl">
+                        <i class="fas fa-chart-pie mr-4 text-lg"></i>
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+                    <a href="#" onclick="showSection('projects')" class="nav-item flex items-center px-4 py-3 text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl">
+                        <i class="fas fa-project-diagram mr-4 text-lg"></i>
+                        <span class="font-medium">Projeler</span>
+                        <span class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full">24</span>
+                    </a>
+                    <a href="#" onclick="showSection('tasks')" class="nav-item flex items-center px-4 py-3 text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl">
+                        <i class="fas fa-tasks mr-4 text-lg"></i>
+                        <span class="font-medium">Görevler</span>
+                        <span class="ml-auto bg-red-500 text-xs px-2 py-1 rounded-full">156</span>
+                    </a>
+                    <a href="#" onclick="showSection('team')" class="nav-item flex items-center px-4 py-3 text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl">
+                        <i class="fas fa-users mr-4 text-lg"></i>
+                        <span class="font-medium">Ekip Üyeleri</span>
+                        <span class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full">1,247</span>
+                    </a>
+                    <a href="#" onclick="showSection('departments')" class="nav-item flex items-center px-4 py-3 text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl">
+                        <i class="fas fa-sitemap mr-4 text-lg"></i>
+                        <span class="font-medium">Departmanlar</span>
+                    </a>
+                    <a href="#" onclick="showSection('calendar')" class="nav-item flex items-center px-4 py-3 text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl">
+                        <i class="fas fa-calendar mr-4 text-lg"></i>
+                        <span class="font-medium">Takvim</span>
+                    </a>
+                    <a href="#" onclick="showSection('analytics')" class="nav-item flex items-center px-4 py-3 text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl">
+                        <i class="fas fa-chart-bar mr-4 text-lg"></i>
+                        <span class="font-medium">Analitik</span>
+                    </a>
+                    <a href="#" onclick="showSection('reports')" class="nav-item flex items-center px-4 py-3 text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl">
+                        <i class="fas fa-file-alt mr-4 text-lg"></i>
+                        <span class="font-medium">Raporlar</span>
+                    </a>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-white/20">
+                    <p class="text-white/60 text-xs uppercase tracking-wider font-semibold mb-3 px-4">Hızlı Erişim</p>
+                    <div class="space-y-2">
+                        <a href="#" class="nav-item flex items-center px-4 py-2 text-white/70 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl text-sm">
+                            <i class="fas fa-bell mr-3"></i>
+                            <span>Bildirimler</span>
+                            <span class="ml-auto bg-red-500 text-xs px-2 py-1 rounded-full">8</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center px-4 py-2 text-white/70 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl text-sm">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>Ayarlar</span>
+                        </a>
+                        <a href="#" class="nav-item flex items-center px-4 py-2 text-white/70 hover:bg-white/10 hover:text-white transition-all duration-200 rounded-xl text-sm">
+                            <i class="fas fa-question-circle mr-3"></i>
+                            <span>Yardım</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Enhanced Header -->
+            <header class="glass-effect shadow-lg border-b border-white/20">
+                <div class="flex items-center justify-between px-8 py-4">
+                    <div class="flex items-center space-x-6">
+                        <button onclick="toggleSidebar()" class="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-white/50 transition-all">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        <div>
+                            <h2 id="pageTitle" class="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Dashboard</h2>
+                            <p class="text-gray-500 text-sm mt-1">Hoş geldiniz, bugün harika bir gün!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-6">
+                        <div class="relative">
+                            <input type="text" placeholder="Projeler, görevler, kişiler ara..." class="bg-white/70 backdrop-blur-sm rounded-xl px-6 py-3 pl-12 w-80 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all shadow-sm">
+                            <i class="fas fa-search absolute left-4 top-4 text-gray-400"></i>
+                            <div class="absolute right-3 top-3 text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">⌘K</div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <button class="relative p-3 text-gray-600 hover:text-gray-800 hover:bg-white/50 rounded-xl transition-all">
+                                <i class="fas fa-bell text-xl"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center status-indicator">8</span>
+                            </button>
+                            
+                            <button class="relative p-3 text-gray-600 hover:text-gray-800 hover:bg-white/50 rounded-xl transition-all">
+                                <i class="fas fa-envelope text-xl"></i>
+                                <span class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">3</span>
+                            </button>
+                            
+                            <div class="flex items-center space-x-3 bg-white/50 backdrop-blur-sm rounded-xl px-4 py-2">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23667eea;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23764ba2;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='20' cy='20' r='20' fill='url(%23grad)'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-size='14' font-weight='bold'%3EAY%3C/text%3E%3C/svg%3E" alt="Avatar" class="w-10 h-10 rounded-full ring-2 ring-white">
+                                <div>
+                                    <span class="text-gray-800 font-semibold block">Ahmet Yılmaz</span>
+                                    <span class="text-gray-500 text-sm">Proje Müdürü</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-gray-400 ml-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                <!-- Enhanced Dashboard Section -->
+                <div id="dashboard" class="section fade-in">
+                    <!-- KPI Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="glass-effect rounded-2xl shadow-xl p-6 card-hover border border-white/20">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium">Toplam Proje</p>
+                                    <p class="text-4xl font-bold text-gray-800 mt-2">247</p>
+                                    <p class="text-green-600 text-sm mt-1">
+                                        <i class="fas fa-arrow-up mr-1"></i>+12% bu ay
+                                    </p>
+                                </div>
+                                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl shadow-lg">
+                                    <i class="fas fa-project-diagram text-white text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-effect rounded-2xl shadow-xl p-6 card-hover border border-white/20">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium">Aktif Görev</p>
+                                    <p class="text-4xl font-bold text-gray-800 mt-2">1,847</p>
+                                    <p class="text-green-600 text-sm mt-1">
+                                        <i class="fas fa-arrow-up mr-1"></i>+8% bu hafta
+                                    </p>
+                                </div>
+                                <div class="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-2xl shadow-lg">
+                                    <i class="fas fa-tasks text-white text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-effect rounded-2xl shadow-xl p-6 card-hover border border-white/20">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium">Ekip Üyesi</p>
+                                    <p class="text-4xl font-bold text-gray-800 mt-2">1,247</p>
+                                    <p class="text-blue-600 text-sm mt-1">
+                                        <i class="fas fa-users mr-1"></i>15 departman
+                                    </p>
+                                </div>
+                                <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-4 rounded-2xl shadow-lg">
+                                    <i class="fas fa-users text-white text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-effect rounded-2xl shadow-xl p-6 card-hover border border-white/20">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium">Verimlilik</p>
+                                    <p class="text-4xl font-bold text-gray-800 mt-2">94.2%</p>
+                                    <p class="text-green-600 text-sm mt-1">
+                                        <i class="fas fa-arrow-up mr-1"></i>+2.1% bu ay
+                                    </p>
+                                </div>
+                                <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-2xl shadow-lg">
+                                    <i class="fas fa-chart-line text-white text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Dashboard Content -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Recent Projects -->
+                        <div class="lg:col-span-2 glass-effect rounded-2xl shadow-xl p-6 border border-white/20">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-bold text-gray-800">Son Projeler</h3>
+                                <button class="text-indigo-600 hover:text-indigo-800 font-medium text-sm">Tümünü Gör</button>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border-l-4 border-green-500">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-shopping-cart text-white"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">E-ticaret Platformu v2.0</p>
+                                            <p class="text-sm text-gray-600">Son güncelleme: 2 saat önce • 12 kişi</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-sm bg-green-500 text-white px-3 py-1 rounded-full font-medium">%92</span>
+                                        <p class="text-xs text-gray-500 mt-1">15 Ara'da teslim</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl border-l-4 border-yellow-500">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-mobile-alt text-white"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">Mobil Uygulama iOS/Android</p>
+                                            <p class="text-sm text-gray-600">Son güncelleme: 1 gün önce • 8 kişi</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-sm bg-yellow-500 text-white px-3 py-1 rounded-full font-medium">%67</span>
+                                        <p class="text-xs text-gray-500 mt-1">28 Ara'da teslim</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border-l-4 border-blue-500">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-globe text-white"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">Kurumsal Web Sitesi</p>
+                                            <p class="text-sm text-gray-600">Son güncelleme: 3 gün önce • 6 kişi</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-sm bg-blue-500 text-white px-3 py-1 rounded-full font-medium">%43</span>
+                                        <p class="text-xs text-gray-500 mt-1">10 Oca'da teslim</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Team Performance -->
+                        <div class="glass-effect rounded-2xl shadow-xl p-6 border border-white/20">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Departman Performansı</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-code text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">Yazılım Geliştirme</p>
+                                            <p class="text-sm text-gray-500">156 kişi</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-semibold text-green-600">%96</p>
+                                        <div class="w-16 bg-gray-200 rounded-full h-2 mt-1">
+                                            <div class="bg-green-500 h-2 rounded-full progress-bar" style="width: 96%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-palette text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">Tasarım</p>
+                                            <p class="text-sm text-gray-500">42 kişi</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-semibold text-green-600">%94</p>
+                                        <div class="w-16 bg-gray-200 rounded-full h-2 mt-1">
+                                            <div class="bg-green-500 h-2 rounded-full progress-bar" style="width: 94%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-chart-bar text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">Pazarlama</p>
+                                            <p class="text-sm text-gray-500">38 kişi</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-semibold text-yellow-600">%87</p>
+                                        <div class="w-16 bg-gray-200 rounded-full h-2 mt-1">
+                                            <div class="bg-yellow-500 h-2 rounded-full progress-bar" style="width: 87%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-headset text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">Müşteri Hizmetleri</p>
+                                            <p class="text-sm text-gray-500">67 kişi</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-semibold text-green-600">%91</p>
+                                        <div class="w-16 bg-gray-200 rounded-full h-2 mt-1">
+                                            <div class="bg-green-500 h-2 rounded-full progress-bar" style="width: 91%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks Section -->
+                <div id="tasks" class="section hidden">
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <h3 class="text-3xl font-bold text-gray-800">Görev Yönetimi</h3>
+                            <p class="text-gray-600 mt-1">Tüm görevleri takip edin ve yönetin</p>
+                        </div>
+                        <button onclick="openModal('taskModal')" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg font-medium">
+                            <i class="fas fa-plus mr-2"></i>Yeni Görev Oluştur
+                        </button>
+                    </div>
+
+                    <div class="glass-effect rounded-2xl shadow-xl border border-white/20">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="filterTasks('all')" class="task-filter px-6 py-2 rounded-xl bg-indigo-100 text-indigo-700 font-medium transition-all">Tümü (1,847)</button>
+                                <button onclick="filterTasks('todo')" class="task-filter px-6 py-2 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all">Yapılacak (456)</button>
+                                <button onclick="filterTasks('progress')" class="task-filter px-6 py-2 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all">Devam Ediyor (892)</button>
+                                <button onclick="filterTasks('review')" class="task-filter px-6 py-2 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all">İncelemede (234)</button>
+                                <button onclick="filterTasks('completed')" class="task-filter px-6 py-2 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all">Tamamlanan (265)</button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="space-y-4" id="taskList">
+                                <div class="task-item priority-high flex items-center justify-between p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all border" data-status="todo">
+                                    <div class="flex items-center space-x-4">
+                                        <input type="checkbox" class="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500" onchange="toggleTaskStatus(this)">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-code text-red-600"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-800">API Güvenlik Güncellemesi</h4>
+                                                <p class="text-sm text-gray-500">E-ticaret Platformu v2.0 • Backend Geliştirme</p>
+                                                <div class="flex items-center space-x-4 mt-2">
+                                                    <span class="bg-red-100 text-red-800 text-xs px-3 py-1 rounded-full font-medium">Kritik</span>
+                                                    <span class="text-xs text-gray-500">Son tarih: Bugün 18:00</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="flex -space-x-2">
+                                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%234f46e5'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EMK%3C/text%3E%3C/svg%3E" class="w-8 h-8 rounded-full border-2 border-white">
+                                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2310b981'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3ECS%3C/text%3E%3C/svg%3E" class="w-8 h-8 rounded-full border-2 border-white">
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-medium text-gray-800">8 saat kaldı</p>
+                                            <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
+                                                <div class="bg-red-500 h-2 rounded-full" style="width: 75%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="task-item priority-medium flex items-center justify-between p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all border" data-status="progress">
+                                    <div class="flex items-center space-x-4">
+                                        <input type="checkbox" class="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500" onchange="toggleTaskStatus(this)">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-palette text-yellow-600"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-800">Kullanıcı Arayüzü Tasarımı</h4>
+                                                <p class="text-sm text-gray-500">Mobil Uygulama iOS/Android • UI/UX Tasarım</p>
+                                                <div class="flex items-center space-x-4 mt-2">
+                                                    <span class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full font-medium">Orta</span>
+                                                    <span class="text-xs text-gray-500">Son tarih: Yarın 17:00</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="flex -space-x-2">
+                                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2310b981'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EAD%3C/text%3E%3C/svg%3E" class="w-8 h-8 rounded-full border-2 border-white">
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-medium text-gray-800">1 gün 8 saat</p>
+                                            <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
+                                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 60%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="task-item priority-low flex items-center justify-between p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all border" data-status="completed">
+                                    <div class="flex items-center space-x-4">
+                                        <input type="checkbox" class="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500" checked onchange="toggleTaskStatus(this)">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-database text-green-600"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-800 line-through">Veritabanı Şeması Optimizasyonu</h4>
+                                                <p class="text-sm text-gray-500">E-ticaret Platformu v2.0 • Backend Geliştirme</p>
+                                                <div class="flex items-center space-x-4 mt-2">
+                                                    <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Düşük</span>
+                                                    <span class="text-xs text-gray-500">Tamamlandı: Dün 14:30</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="flex -space-x-2">
+                                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23f59e0b'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3ECS%3C/text%3E%3C/svg%3E" class="w-8 h-8 rounded-full border-2 border-white">
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-medium text-green-600">Tamamlandı</p>
+                                            <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other sections would be here... -->
+                <div id="projects" class="section hidden">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-6">Projeler</h3>
+                    <p class="text-gray-600">Proje yönetimi bölümü geliştiriliyor...</p>
+                </div>
+
+                <div id="team" class="section hidden">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-6">Ekip Üyeleri</h3>
+                    <p class="text-gray-600">Ekip yönetimi bölümü geliştiriliyor...</p>
+                </div>
+
+                <div id="departments" class="section hidden">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-6">Departmanlar</h3>
+                    <p class="text-gray-600">Departman yönetimi bölümü geliştiriliyor...</p>
+                </div>
+
+                <div id="calendar" class="section hidden">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-6">Takvim</h3>
+                    <p class="text-gray-600">Takvim bölümü geliştiriliyor...</p>
+                </div>
+
+                <div id="analytics" class="section hidden">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-6">Analitik</h3>
+                    <p class="text-gray-600">Analitik bölümü geliştiriliyor...</p>
+                </div>
+
+                <div id="reports" class="section hidden">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-6">Raporlar</h3>
+                    <p class="text-gray-600">Raporlar bölümü geliştiriliyor...</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced Task Modal -->
+    <div id="taskModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
+        <div class="glass-effect rounded-2xl p-8 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl border border-white/20">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800">Yeni Görev Oluştur</h3>
+                    <p class="text-gray-600 mt-1">Detaylı görev bilgilerini girin ve ekibinize atayın</p>
+                </div>
+                <button onclick="closeModal('taskModal')" class="text-gray-500 hover:text-gray-700 p-2 hover:bg-gray-100 rounded-lg transition-all">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form onsubmit="addTask(event)" class="space-y-8">
+                <!-- Basic Information -->
+                <div class="bg-white/50 rounded-xl p-6 border border-white/20">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-indigo-600"></i>
+                        Temel Bilgiler
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <input type="text" name="taskTitle" placeholder=" " class="form-input w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white" required>
+                            <label class="form-label absolute left-4 top-3 text-gray-500 pointer-events-none">Görev Başlığı *</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <select name="taskProject" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white" required>
+                                <option value="">Proje Seçin</option>
+                                <option value="ecommerce">E-ticaret Platformu v2.0</option>
+                                <option value="mobile">Mobil Uygulama iOS/Android</option>
+                                <option value="website">Kurumsal Web Sitesi</option>
+                                <option value="crm">CRM Sistemi</option>
+                                <option value="analytics">Analitik Dashboard</option>
+                            </select>
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <textarea name="taskDescription" rows="4" placeholder="Görev açıklaması ve detayları..." class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignment & Priority -->
+                <div class="bg-white/50 rounded-xl p-6 border border-white/20">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-users mr-2 text-indigo-600"></i>
+                        Atama ve Öncelik
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Sorumlu Kişi *</label>
+                            <select name="taskAssignee" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white" required>
+                                <option value="">Kişi Seçin</option>
+                                <option value="mehmet">Mehmet Kaya - Frontend Developer</option>
+                                <option value="ayse">Ayşe Demir - UI/UX Designer</option>
+                                <option value="can">Can Şahin - Backend Developer</option>
+                                <option value="zehra">Zehra Özkan - Project Manager</option>
+                                <option value="ali">Ali Yıldız - DevOps Engineer</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Öncelik Seviyesi *</label>
+                            <select name="taskPriority" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white" required>
+                                <option value="low">🟢 Düşük - Acil değil</option>
+                                <option value="medium">🟡 Orta - Normal süreç</option>
+                                <option value="high">🟠 Yüksek - Önemli</option>
+                                <option value="critical">🔴 Kritik - Acil</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Departman</label>
+                            <select name="taskDepartment" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white">
+                                <option value="">Departman Seçin</option>
+                                <option value="development">Yazılım Geliştirme</option>
+                                <option value="design">Tasarım</option>
+                                <option value="marketing">Pazarlama</option>
+                                <option value="sales">Satış</option>
+                                <option value="support">Müşteri Hizmetleri</option>
+                                <option value="hr">İnsan Kaynakları</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline & Tracking -->
+                <div class="bg-white/50 rounded-xl p-6 border border-white/20">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-calendar-alt mr-2 text-indigo-600"></i>
+                        Zaman Çizelgesi ve Takip
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Başlangıç Tarihi *</label>
+                            <input type="date" name="taskStartDate" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bitiş Tarihi *</label>
+                            <input type="date" name="taskEndDate" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tahmini Süre (Saat)</label>
+                            <input type="number" name="taskEstimatedHours" min="1" max="1000" placeholder="40" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Durum</label>
+                            <select name="taskStatus" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white">
+                                <option value="todo">📋 Yapılacak</option>
+                                <option value="progress">⚡ Devam Ediyor</option>
+                                <option value="review">👀 İncelemede</option>
+                                <option value="completed">✅ Tamamlandı</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Details -->
+                <div class="bg-white/50 rounded-xl p-6 border border-white/20">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-cogs mr-2 text-indigo-600"></i>
+                        Ek Detaylar
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Etiketler</label>
+                            <input type="text" name="taskTags" placeholder="frontend, api, güvenlik (virgülle ayırın)" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bağımlılıklar</label>
+                            <select name="taskDependencies" multiple class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white">
+                                <option value="task1">Veritabanı Şeması Tasarımı</option>
+                                <option value="task2">API Dokümantasyonu</option>
+                                <option value="task3">Güvenlik Testleri</option>
+                                <option value="task4">UI Mockup Onayı</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bildirim Ayarları</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="notifyEmail" class="rounded text-indigo-600 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm text-gray-700">E-posta bildirimi gönder</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="notifySlack" class="rounded text-indigo-600 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm text-gray-700">Slack bildirimi gönder</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dosya Ekleri</label>
+                            <input type="file" name="taskAttachments" multiple class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white">
+                            <p class="text-xs text-gray-500 mt-1">Maksimum 10MB, birden fazla dosya seçebilirsiniz</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collaboration -->
+                <div class="bg-white/50 rounded-xl p-6 border border-white/20">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-handshake mr-2 text-indigo-600"></i>
+                        İşbirliği ve Gözden Geçirme
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Gözden Geçiren</label>
+                            <select name="taskReviewer" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white">
+                                <option value="">Gözden geçiren seçin</option>
+                                <option value="zehra">Zehra Özkan - Project Manager</option>
+                                <option value="emre">Emre Kılıç - Tech Lead</option>
+                                <option value="selin">Selin Acar - Senior Developer</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">İzleyiciler</label>
+                            <select name="taskWatchers" multiple class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white">
+                                <option value="manager1">Ahmet Yılmaz - Proje Müdürü</option>
+                                <option value="manager2">Fatma Şen - Departman Müdürü</option>
+                                <option value="stakeholder1">Murat Özdemir - Ürün Sahibi</option>
+                            </select>
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Özel Notlar</label>
+                            <textarea name="taskNotes" rows="3" placeholder="Görevle ilgili özel notlar, hatırlatmalar veya önemli bilgiler..." class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all bg-white resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                    <button type="button" onclick="closeModal('taskModal')" class="px-6 py-3 text-gray-600 hover:bg-gray-100 rounded-xl font-medium transition-all">
+                        İptal
+                    </button>
+                    <button type="button" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 font-medium transition-all">
+                        Taslak Olarak Kaydet
+                    </button>
+                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 font-medium transition-all shadow-lg">
+                        <i class="fas fa-check mr-2"></i>Görevi Oluştur
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            document.getElementById(sectionId).classList.remove('hidden');
+            document.getElementById(sectionId).classList.add('fade-in');
+            
+            const titles = {
+                'dashboard': 'Dashboard',
+                'projects': 'Projeler',
+                'tasks': 'Görev Yönetimi',
+                'team': 'Ekip Üyeleri',
+                'departments': 'Departmanlar',
+                'calendar': 'Takvim',
+                'analytics': 'Analitik',
+                'reports': 'Raporlar'
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionId];
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('bg-white/10', 'text-white');
+                item.classList.add('text-white/80');
+            });
+            event.target.classList.add('bg-white/10', 'text-white');
+            event.target.classList.remove('text-white/80');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('w-72');
+            sidebar.classList.toggle('w-20');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            document.getElementById(modalId).classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.getElementById(modalId).classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        function filterTasks(status) {
+            const tasks = document.querySelectorAll('.task-item');
+            const filters = document.querySelectorAll('.task-filter');
+            
+            filters.forEach(filter => {
+                filter.classList.remove('bg-indigo-100', 'text-indigo-700');
+                filter.classList.add('text-gray-600');
+            });
+            event.target.classList.add('bg-indigo-100', 'text-indigo-700');
+            event.target.classList.remove('text-gray-600');
+            
+            tasks.forEach(task => {
+                if (status === 'all' || task.dataset.status === status) {
+                    task.style.display = 'flex';
+                } else {
+                    task.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleTaskStatus(checkbox) {
+            const taskItem = checkbox.closest('.task-item');
+            const taskTitle = taskItem.querySelector('h4');
+            
+            if (checkbox.checked) {
+                taskTitle.classList.add('line-through', 'text-gray-500');
+                taskItem.dataset.status = 'completed';
+            } else {
+                taskTitle.classList.remove('line-through', 'text-gray-500');
+                taskItem.dataset.status = 'todo';
+            }
+        }
+
+        function addTask(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            
+            // Create success notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-xl shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-check-circle text-xl"></i>
+                    <div>
+                        <p class="font-semibold">Görev Başarıyla Oluşturuldu!</p>
+                        <p class="text-sm opacity-90">"${formData.get('taskTitle')}" görevi ekibinize atandı.</p>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate notification
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove notification after 5 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 5000);
+            
+            closeModal('taskModal');
+            event.target.reset();
+        }
+
+        // Initialize dashboard on load
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('dashboard');
+            
+            // Set default dates in task form
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            const startDateInput = document.querySelector('input[name="taskStartDate"]');
+            const endDateInput = document.querySelector('input[name="taskEndDate"]');
+            
+            if (startDateInput) startDateInput.value = today.toISOString().split('T')[0];
+            if (endDateInput) endDateInput.value = tomorrow.toISOString().split('T')[0];
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.metaKey || e.ctrlKey) {
+                switch(e.key) {
+                    case 'k':
+                        e.preventDefault();
+                        document.querySelector('input[placeholder*="ara"]').focus();
+                        break;
+                    case 'n':
+                        e.preventDefault();
+                        openModal('taskModal');
+                        break;
+                }
+            }
+            
+            if (e.key === 'Escape') {
+                const modals = document.querySelectorAll('[id$="Modal"]');
+                modals.forEach(modal => {
+                    if (!modal.classList.contains('hidden')) {
+                        closeModal(modal.id);
+                    }
+                });
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97118a7436339cd2',t:'MTc1NTUyMTQ2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

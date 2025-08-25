@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectFlow Pro - Kapsamlı Proje Yönetimi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#06b6d4',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-in': 'bounceIn 0.6s ease-out'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            70% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+
+        .notification {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+        }
+
+        .sidebar-gradient {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        }
+
+        .status-badge {
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--tw-gradient-from), var(--tw-gradient-to));
+        }
+
+        .task-item {
+            transition: all 0.2s ease;
+        }
+
+        .task-item:hover {
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 4px solid #6366f1;
+        }
+
+        .chat-message {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .floating-card {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-72 sidebar-gradient shadow-2xl z-20 border-r border-gray-200">
+        <div class="p-6 border-b border-gray-100">
+            <div class="flex items-center space-x-4">
+                <div
+                    class="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-2xl flex items-center justify-center shadow-lg">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                        </path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold gradient-text">ProjectFlow</h1>
+                    <p class="text-sm text-gray-500">Pro Edition</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="p-4 space-y-2 custom-scrollbar overflow-y-auto h-full pb-20">
+            <div class="mb-6">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Ana Menü</p>
+                <a href="#"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all duration-200 group">
+                    <svg class="w-5 h-5 group-hover:text-primary transition-colors" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                    </svg>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+                <a href="#"
+                    class="flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                        </path>
+                    </svg>
+                    <span class="font-medium">Projeler</span>
+                    <span class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full">12</span>
+                </a>
+                <a href="#"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all duration-200 group">
+                    <svg class="w-5 h-5 group-hover:text-primary transition-colors" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                        </path>
+                    </svg>
+                    <span class="font-medium">Görevler</span>
+                    <span class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">5</span>
+                </a>
+            </div>
+
+            <div class="mb-6">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Yönetim</p>
+                <a href="#"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all duration-200 group">
+                    <svg class="w-5 h-5 group-hover:text-primary transition-colors" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
+                        </path>
+                    </svg>
+                    <span class="font-medium">Takım</span>
+                </a>
+                <a href="#"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all duration-200 group">
+                    <svg class="w-5 h-5 group-hover:text-primary transition-colors" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                        </path>
+                    </svg>
+                    <span class="font-medium">Raporlar</span>
+                </a>
+                <a href="#"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all duration-200 group">
+                    <svg class="w-5 h-5 group-hover:text-primary transition-colors" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span class="font-medium">Ayarlar</span>
+                </a>
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-blue-900 text-sm">Pro Özellikler</p>
+                        <p class="text-xs text-blue-600">Sınırsız proje</p>
+                    </div>
+                </div>
+                <button
+                    class="w-full bg-blue-600 text-white text-sm font-medium py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Yükselt
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-72 min-h-screen">
+        <!-- Header -->
+        <div class="glass-effect border-b border-gray-200 p-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Yeni Proje Oluştur</h2>
+                    <p class="text-gray-600 mt-1">Kapsamlı proje yönetimi ve takip sistemi</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div
+                        class="flex items-center space-x-2 bg-white rounded-xl px-4 py-2 shadow-sm border border-gray-200">
+                        <div class="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
+                        <span class="text-sm font-medium text-gray-700">Otomatik Kaydet: Açık</span>
+                    </div>
+                    <button
+                        class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium">
+                        📄 Taslak Kaydet
+                    </button>
+                    <button
+                        class="px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl hover:shadow-lg transition-all duration-200 font-medium">
+                        🚀 Projeyi Oluştur
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
+            <div class="flex overflow-x-auto">
+                <button
+                    class="tab-btn active px-8 py-4 text-sm font-semibold whitespace-nowrap border-b-3 border-primary text-primary bg-blue-50"
+                    data-tab="project">
+                    📋 Proje Detayları
+                </button>
+                <button
+                    class="tab-btn px-8 py-4 text-sm font-semibold whitespace-nowrap border-b-3 border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                    data-tab="sales">
+                    📈 Satış & Pazarlama
+                </button>
+                <button
+                    class="tab-btn px-8 py-4 text-sm font-semibold whitespace-nowrap border-b-3 border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                    data-tab="procurement">
+                    🛒 Satınalma
+                </button>
+                <button
+                    class="tab-btn px-8 py-4 text-sm font-semibold whitespace-nowrap border-b-3 border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                    data-tab="finance">
+                    💰 Finans
+                </button>
+                <button
+                    class="tab-btn px-8 py-4 text-sm font-semibold whitespace-nowrap border-b-3 border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                    data-tab="team">
+                    👥 Takım
+                </button>
+                <button
+                    class="tab-btn px-8 py-4 text-sm font-semibold whitespace-nowrap border-b-3 border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                    data-tab="chat">
+                    💬 Sohbet
+                </button>
+                <button
+                    class="tab-btn px-8 py-4 text-sm font-semibold whitespace-nowrap border-b-3 border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                    data-tab="reports">
+                    📊 Raporlar
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="p-8 bg-gray-50 min-h-screen">
+            <!-- Project Details Tab -->
+            <div id="project" class="tab-content active">
+                <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+                    <!-- Main Content -->
+                    <div class="xl:col-span-3 space-y-8">
+                        <!-- Project Basic Info -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-2xl font-bold text-gray-800">📝 Temel Bilgiler</h3>
+                                <span
+                                    class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full status-badge">Aktif</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Adı
+                                            *</label>
+                                        <input type="text"
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                            placeholder="Örn: E-ticaret Platformu v2.0"
+                                            value="Yeni E-ticaret Platformu">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Kodu</label>
+                                        <input type="text"
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                            placeholder="Otomatik oluşturulacak" value="ETP-2024-001" readonly>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori *</label>
+                                        <select
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                                            <option>🌐 Web Geliştirme</option>
+                                            <option>📱 Mobil Uygulama</option>
+                                            <option>🎨 Tasarım & UI/UX</option>
+                                            <option>📊 Veri Analizi</option>
+                                            <option>🤖 Yapay Zeka</option>
+                                            <option>🔒 Siber Güvenlik</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Öncelik
+                                            Seviyesi</label>
+                                        <select
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                                            <option>🔴 Yüksek</option>
+                                            <option selected>🟡 Orta</option>
+                                            <option>🟢 Düşük</option>
+                                            <option>⚡ Kritik</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Başlangıç Tarihi
+                                            *</label>
+                                        <input type="date"
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                            value="2024-03-15">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Hedef Bitiş Tarihi
+                                            *</label>
+                                        <input type="date"
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                            value="2024-06-15">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Açıklaması *</label>
+                                <textarea rows="4"
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                    placeholder="Proje hakkında detaylı bilgi, hedefler ve beklentiler...">Modern, kullanıcı dostu bir e-ticaret platformu geliştirme projesi. Mobil uyumlu tasarım, gelişmiş ödeme sistemleri ve AI destekli ürün önerileri içerecek.</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Tasks Management -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-2xl font-bold text-gray-800">✅ Görev Yönetimi</h3>
+                                <div class="flex items-center space-x-3">
+                                    <select class="px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                                        <option>Tüm Görevler</option>
+                                        <option>Tamamlanan</option>
+                                        <option>Devam Eden</option>
+                                        <option>Bekleyen</option>
+                                    </select>
+                                    <button
+                                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-medium">
+                                        + Yeni Görev
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="task-item p-4 border border-gray-200 rounded-xl">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                            <input type="checkbox" checked class="w-5 h-5 text-primary rounded">
+                                            <div>
+                                                <h4 class="font-semibold text-gray-800 line-through">Proje Planlaması ve
+                                                    Analiz</h4>
+                                                <p class="text-sm text-gray-600">Gereksinim analizi ve teknik
+                                                    dokümantasyon</p>
+                                                <div class="flex items-center space-x-2 mt-2">
+                                                    <span
+                                                        class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">✅
+                                                        Tamamlandı</span>
+                                                    <span
+                                                        class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Planlama</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="text-right">
+                                                <p class="text-sm font-medium text-gray-800">10 Mart 2024</p>
+                                                <p class="text-xs text-green-600">2 gün erken</p>
+                                            </div>
+                                            <div
+                                                class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                                <span class="text-green-600 font-semibold text-sm">AY</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="task-item p-4 border border-gray-200 rounded-xl">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                            <input type="checkbox" class="w-5 h-5 text-primary rounded">
+                                            <div>
+                                                <h4 class="font-semibold text-gray-800">UI/UX Tasarım Geliştirme</h4>
+                                                <p class="text-sm text-gray-600">Wireframe, mockup ve prototip oluşturma
+                                                </p>
+                                                <div class="flex items-center space-x-2 mt-2">
+                                                    <span
+                                                        class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">🔄
+                                                        Devam Ediyor</span>
+                                                    <span
+                                                        class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Tasarım</span>
+                                                    <div class="flex items-center space-x-1">
+                                                        <div class="w-16 bg-gray-200 rounded-full h-2">
+                                                            <div class="bg-blue-500 h-2 rounded-full progress-bar"
+                                                                style="width: 65%"></div>
+                                                        </div>
+                                                        <span class="text-xs text-gray-600">65%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="text-right">
+                                                <p class="text-sm font-medium text-gray-800">25 Mart 2024</p>
+                                                <p class="text-xs text-blue-600">10 gün kaldı</p>
+                                            </div>
+                                            <div
+                                                class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                                <span class="text-purple-600 font-semibold text-sm">SÖ</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="task-item p-4 border border-gray-200 rounded-xl">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                            <input type="checkbox" class="w-5 h-5 text-primary rounded">
+                                            <div>
+                                                <h4 class="font-semibold text-gray-800">Backend API Geliştirme</h4>
+                                                <p class="text-sm text-gray-600">RESTful API ve veritabanı tasarımı</p>
+                                                <div class="flex items-center space-x-2 mt-2">
+                                                    <span
+                                                        class="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">⏳
+                                                        Bekliyor</span>
+                                                    <span
+                                                        class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Backend</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="text-right">
+                                                <p class="text-sm font-medium text-gray-800">5 Nisan 2024</p>
+                                                <p class="text-xs text-gray-500">Başlamamış</p>
+                                            </div>
+                                            <div
+                                                class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <span class="text-blue-600 font-semibold text-sm">EY</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="task-item p-4 border border-gray-200 rounded-xl">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                            <input type="checkbox" class="w-5 h-5 text-primary rounded">
+                                            <div>
+                                                <h4 class="font-semibold text-gray-800">Frontend Geliştirme</h4>
+                                                <p class="text-sm text-gray-600">React.js ile kullanıcı arayüzü kodlama
+                                                </p>
+                                                <div class="flex items-center space-x-2 mt-2">
+                                                    <span
+                                                        class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">🔄
+                                                        Devam Ediyor</span>
+                                                    <span
+                                                        class="px-2 py-1 bg-cyan-100 text-cyan-800 text-xs rounded-full">Frontend</span>
+                                                    <div class="flex items-center space-x-1">
+                                                        <div class="w-16 bg-gray-200 rounded-full h-2">
+                                                            <div class="bg-cyan-500 h-2 rounded-full progress-bar"
+                                                                style="width: 30%"></div>
+                                                        </div>
+                                                        <span class="text-xs text-gray-600">30%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="text-right">
+                                                <p class="text-sm font-medium text-gray-800">20 Nisan 2024</p>
+                                                <p class="text-xs text-blue-600">26 gün kaldı</p>
+                                            </div>
+                                            <div
+                                                class="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center">
+                                                <span class="text-cyan-600 font-semibold text-sm">MK</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project Timeline -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-6">📅 Proje Zaman Çizelgesi</h3>
+                            <div class="relative">
+                                <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                                <div class="space-y-6">
+                                    <div class="relative flex items-center space-x-4">
+                                        <div
+                                            class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center relative z-10">
+                                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                    clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1 bg-green-50 rounded-lg p-4">
+                                            <h4 class="font-semibold text-green-800">Proje Başlangıcı</h4>
+                                            <p class="text-sm text-green-600">15 Mart 2024 - Tamamlandı</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative flex items-center space-x-4">
+                                        <div
+                                            class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center relative z-10 pulse-dot">
+                                            <div class="w-3 h-3 bg-white rounded-full"></div>
+                                        </div>
+                                        <div class="flex-1 bg-blue-50 rounded-lg p-4">
+                                            <h4 class="font-semibold text-blue-800">Tasarım Aşaması</h4>
+                                            <p class="text-sm text-blue-600">16 Mart - 30 Mart 2024 - Devam Ediyor</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative flex items-center space-x-4">
+                                        <div
+                                            class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center relative z-10">
+                                            <div class="w-3 h-3 bg-white rounded-full"></div>
+                                        </div>
+                                        <div class="flex-1 bg-gray-50 rounded-lg p-4">
+                                            <h4 class="font-semibold text-gray-600">Geliştirme Aşaması</h4>
+                                            <p class="text-sm text-gray-500">1 Nisan - 15 Mayıs 2024 - Bekliyor</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative flex items-center space-x-4">
+                                        <div
+                                            class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center relative z-10">
+                                            <div class="w-3 h-3 bg-white rounded-full"></div>
+                                        </div>
+                                        <div class="flex-1 bg-gray-50 rounded-lg p-4">
+                                            <h4 class="font-semibold text-gray-600">Test ve Optimizasyon</h4>
+                                            <p class="text-sm text-gray-500">16 Mayıs - 31 Mayıs 2024 - Bekliyor</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative flex items-center space-x-4">
+                                        <div
+                                            class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center relative z-10">
+                                            <div class="w-3 h-3 bg-white rounded-full"></div>
+                                        </div>
+                                        <div class="flex-1 bg-gray-50 rounded-lg p-4">
+                                            <h4 class="font-semibold text-gray-600">Proje Teslimi</h4>
+                                            <p class="text-sm text-gray-500">15 Haziran 2024 - Hedef</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Project Progress -->
+                        <div class="bg-gradient-to-br from-primary to-secondary rounded-2xl p-6 text-white card-hover">
+                            <h3 class="text-xl font-bold mb-4">📊 Proje İlerlemesi</h3>
+                            <div class="flex items-center justify-center mb-6">
+                                <div class="relative w-32 h-32">
+                                    <svg class="w-32 h-32 transform -rotate-90">
+                                        <circle cx="64" cy="64" r="56" stroke="rgba(255,255,255,0.2)" stroke-width="8"
+                                            fill="transparent" />
+                                        <circle cx="64" cy="64" r="56" stroke="white" stroke-width="8"
+                                            fill="transparent" stroke-dasharray="351.86" stroke-dashoffset="140.74"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="text-center">
+                                            <div class="text-3xl font-bold">60%</div>
+                                            <div class="text-sm opacity-90">Tamamlandı</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="opacity-90">Toplam Görev</span>
+                                    <span class="font-semibold">8</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="opacity-90">Tamamlanan</span>
+                                    <span class="font-semibold">3</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="opacity-90">Devam Eden</span>
+                                    <span class="font-semibold">3</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="opacity-90">Bekleyen</span>
+                                    <span class="font-semibold">2</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Team Members -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">👥 Takım Üyeleri</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-3">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-bold">AY</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-gray-800">Ahmet Yılmaz</p>
+                                        <p class="text-sm text-gray-600">Proje Yöneticisi</p>
+                                    </div>
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-bold">SÖ</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-gray-800">Selin Özkan</p>
+                                        <p class="text-sm text-gray-600">UI/UX Designer</p>
+                                    </div>
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-bold">EY</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-gray-800">Emre Yıldız</p>
+                                        <p class="text-sm text-gray-600">Backend Developer</p>
+                                    </div>
+                                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-bold">MK</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-gray-800">Mehmet Kaya</p>
+                                        <p class="text-sm text-gray-600">Frontend Developer</p>
+                                    </div>
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                </div>
+                            </div>
+                            <button
+                                class="w-full mt-4 px-4 py-2 border-2 border-dashed border-gray-300 text-gray-600 rounded-xl hover:border-primary hover:text-primary transition-all">
+                                + Üye Ekle
+                            </button>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">🔔 Son Aktiviteler</h3>
+                            <div class="space-y-4 custom-scrollbar max-h-64 overflow-y-auto">
+                                <div class="flex items-start space-x-3">
+                                    <div
+                                        class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-green-600 font-semibold text-xs">AY</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-800">Ahmet Yılmaz proje planlamasını tamamladı</p>
+                                        <p class="text-xs text-gray-500">2 saat önce</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div
+                                        class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-purple-600 font-semibold text-xs">SÖ</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-800">Selin Özkan yeni tasarım dosyası yükledi</p>
+                                        <p class="text-xs text-gray-500">4 saat önce</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div
+                                        class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-blue-600 font-semibold text-xs">MK</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-800">Mehmet Kaya projeye katıldı</p>
+                                        <p class="text-xs text-gray-500">1 gün önce</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div
+                                        class="w-8 h-8 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-cyan-600 font-semibold text-xs">EY</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-800">Emre Yıldız teknik dokümantasyon ekledi</p>
+                                        <p class="text-xs text-gray-500">2 gün önce</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project Stats -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">📈 Proje İstatistikleri</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Toplam Süre</span>
+                                    <span class="font-semibold">92 gün</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Geçen Süre</span>
+                                    <span class="font-semibold text-blue-600">15 gün</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Kalan Süre</span>
+                                    <span class="font-semibold text-orange-600">77 gün</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Bütçe Kullanımı</span>
+                                    <span class="font-semibold text-green-600">%35</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full progress-bar"
+                                        style="width: 35%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales & Marketing Tab -->
+            <div id="sales" class="tab-content">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <div class="xl:col-span-2 space-y-8">
+                        <!-- Sales Targets -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-6">🎯 Satış Hedefleri & Stratejiler</h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Hedef Gelir
+                                            (Yıllık)</label>
+                                        <div class="relative">
+                                            <span class="absolute left-3 top-3 text-gray-500">₺</span>
+                                            <input type="text"
+                                                class="w-full pl-8 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                                placeholder="1,000,000" value="2,500,000">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Hedef Müşteri
+                                            Sayısı</label>
+                                        <input type="number"
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                            placeholder="500" value="1200">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Ortalama Sipariş
+                                            Değeri</label>
+                                        <div class="relative">
+                                            <span class="absolute left-3 top-3 text-gray-500">₺</span>
+                                            <input type="text"
+                                                class="w-full pl-8 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                                placeholder="2,000" value="2,083">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Pazarlama
+                                            Bütçesi</label>
+                                        <div class="relative">
+                                            <span class="absolute left-3 top-3 text-gray-500">₺</span>
+                                            <input type="text"
+                                                class="w-full pl-8 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                                placeholder="100,000" value="250,000">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Hedef
+                                            Pazar</label>
+                                        <select
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                                            <option>🇹🇷 Türkiye</option>
+                                            <option>🌍 Avrupa</option>
+                                            <option>🌎 Küresel</option>
+                                            <option>🏙️ Şehir Bazlı</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Satış
+                                            Modeli</label>
+                                        <select
+                                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                                            <option>💳 B2C E-ticaret</option>
+                                            <option>🏢 B2B Satış</option>
+                                            <option>📱 Mobil Uygulama</option>
+                                            <option>🔄 Abonelik Modeli</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Marketing Channels -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-6">📢 Pazarlama Kanalları & Kampanyalar</h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 mb-4">Dijital Pazarlama Kanalları</h4>
+                                    <div class="space-y-3">
+                                        <label
+                                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <div class="flex items-center space-x-3">
+                                                <input type="checkbox" checked class="w-5 h-5 text-primary rounded">
+                                                <span>📱 Sosyal Medya Pazarlama</span>
+                                            </div>
+                                            <span class="text-sm text-gray-500">₺50,000</span>
+                                        </label>
+                                        <label
+                                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <div class="flex items-center space-x-3">
+                                                <input type="checkbox" checked class="w-5 h-5 text-primary rounded">
+                                                <span>🔍 Google Ads & SEO</span>
+                                            </div>
+                                            <span class="text-sm text-gray-500">₺75,000</span>
+                                        </label>
+                                        <label
+                                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <div class="flex items-center space-x-3">
+                                                <input type="checkbox" class="w-5 h-5 text-primary rounded">
+                                                <span>📧 E-posta Pazarlama</span>
+                                            </div>
+                                            <span class="text-sm text-gray-500">₺25,000</span>
+                                        </label>
+                                        <label
+                                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <div class="flex items-center space-x-3">
+                                                <input type="checkbox" checked class="w-5 h-5 text-primary rounded">
+                                                <span>📝 İçerik Pazarlama</span>
+                                            </div>
+                                            <span class="text-sm text-gray-500">₺40,000</span>
+                                        </label>
+                                        <label
+                                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <div class="flex items-center space-x-3">
+                                                <input type="checkbox" class="w-5 h-5 text-primary rounded">
+                                                <span>🎥 Video Pazarlama</span>
+                                            </div>
+                                            <span class="text-sm text-gray-500">₺60,000</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 mb-4">Geleneksel Pazarlama</h4>
+                                    <div class="space-y-3">
+                                        <label
+                                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <div class="flex items-center space-x-3">
+                                                <input type="checkbox" class="w-5 h-5 text-primary rounded">
+                                                <span>📺 TV Reklamları</span>
+                                            </div>
+                                            <span class="text-sm text-gray-500">₺150,000</span>
+                                        </label>
+                                        <label
+                                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <div class="flex items-center space-x-3">
+                                                <input type="checkbox" class="w-5 h-5 text-primary rounded">
+                                                <span>📻 Radyo Reklamları</span>
+                                            </div>
+                                            <span class="text-sm text-gray-500">₺30,000</span>
+                                        </label>
+                                        <label
+                                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <div class="flex items-center space-x-3">
+                                                <input type="checkbox" checked class="w-5 h-5 text-primary rounded">
+                                                <span>🎪 Etkinlik Sponsorluğu</span>
+                                            </div>
+                                            <span class="text-sm text-gray-500">₺80,000</span>
+                                        </label>
+                                        <label
+                                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            <div class="flex items-center space-x-3">
+                                                <input type="checkbox" class="w-5 h-5 text-primary rounded">
+                                                <span>📰 Basın & PR</span>
+                                            </div>
+                                            <span class="text-sm text-gray-500">₺20,000</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campaign Management -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-2xl font-bold text-gray-800">🚀 Aktif Kampanyalar</h3>
+                                <button
+                                    class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-medium">
+                                    + Yeni Kampanya
+                                </button>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-xl p-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-gray-800">🌸 Bahar Kampanyası 2024
+                                            </h4>
+                                            <p class="text-sm text-gray-600">Tüm ürünlerde %25 indirim</p>
+                                        </div>
+                                        <span
+                                            class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">Aktif</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-green-600">₺125K</p>
+                                            <p class="text-sm text-gray-600">Gelir</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-blue-600">2,340</p>
+                                            <p class="text-sm text-gray-600">Tıklama</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-purple-600">%4.2</p>
+                                            <p class="text-sm text-gray-600">Dönüşüm</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-orange-600">₺53</p>
+                                            <p class="text-sm text-gray-600">CPC</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600">15 Mart - 30 Nisan 2024</span>
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full progress-bar"
+                                                    style="width: 60%"></div>
+                                            </div>
+                                            <span class="text-sm text-gray-600">60%</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border border-gray-200 rounded-xl p-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-gray-800">👥 Yeni Müşteri Kazanımı
+                                            </h4>
+                                            <p class="text-sm text-gray-600">İlk alışverişte %15 indirim + ücretsiz
+                                                kargo</p>
+                                        </div>
+                                        <span
+                                            class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">Planlanan</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-gray-400">₺0</p>
+                                            <p class="text-sm text-gray-600">Gelir</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-gray-400">0</p>
+                                            <p class="text-sm text-gray-600">Tıklama</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-gray-400">%0</p>
+                                            <p class="text-sm text-gray-600">Dönüşüm</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-gray-400">₺0</p>
+                                            <p class="text-sm text-gray-600">CPC</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600">1 Mayıs - 31 Mayıs 2024</span>
+                                        <span class="text-sm text-blue-600">Başlamadı</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sales Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Sales Performance -->
+                        <div
+                            class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white card-hover">
+                            <h3 class="text-xl font-bold mb-4">💰 Satış Performansı</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="opacity-90">Bu Ay Satış</span>
+                                        <span class="text-2xl font-bold">₺185K</span>
+                                    </div>
+                                    <div class="w-full bg-white/20 rounded-full h-3">
+                                        <div class="bg-white h-3 rounded-full progress-bar" style="width: 37%"></div>
+                                    </div>
+                                    <p class="text-sm opacity-90 mt-1">Hedefin %37'si (₺500K)</p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mt-6">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold">156</p>
+                                        <p class="text-sm opacity-90">Yeni Müşteri</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold">1,247</p>
+                                        <p class="text-sm opacity-90">Toplam Müşteri</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Marketing ROI -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">📊 Pazarlama ROI</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Toplam Harcama</span>
+                                    <span class="font-semibold">₺95,000</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Elde Edilen Gelir</span>
+                                    <span class="font-semibold text-green-600">₺285,000</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">ROI</span>
+                                    <span class="font-bold text-green-600">%200</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3">
+                                    <div class="bg-gradient-to-r from-green-400 to-emerald-500 h-3 rounded-full progress-bar"
+                                        style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Performing Channels -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">🏆 En İyi Kanallar</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-blue-600 text-sm">📱</span>
+                                        </div>
+                                        <span class="font-medium">Instagram</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-semibold">₺85K</p>
+                                        <p class="text-xs text-green-600">+%45</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-red-600 text-sm">🔍</span>
+                                        </div>
+                                        <span class="font-medium">Google Ads</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-semibold">₺65K</p>
+                                        <p class="text-xs text-green-600">+%32</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-green-600 text-sm">📧</span>
+                                        </div>
+                                        <span class="font-medium">E-posta</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-semibold">₺35K</p>
+                                        <p class="text-xs text-green-600">+%28</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customer Insights -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">👤 Müşteri Analizi</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-gray-600">Müşteri Memnuniyeti</span>
+                                        <span class="font-semibold">4.8/5</span>
+                                    </div>
+                                    <div class="flex space-x-1">
+                                        <span class="text-yellow-400">⭐⭐⭐⭐⭐</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-gray-600">Tekrar Alışveriş</span>
+                                        <span class="font-semibold">%68</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-500 h-2 rounded-full progress-bar" style="width: 68%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-gray-600">Ortalama Yaş</span>
+                                        <span class="font-semibold">32 yaş</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-gray-600">Cinsiyet Dağılımı</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <div class="flex-1 bg-pink-200 rounded-full h-2">
+                                            <div class="bg-pink-500 h-2 rounded-full progress-bar" style="width: 60%">
+                                            </div>
+                                        </div>
+                                        <span class="text-xs text-gray-600">%60 K</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procurement Tab -->
+            <div id="procurement" class="tab-content">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <div class="xl:col-span-2 space-y-8">
+                        <!-- Purchase Requests -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-2xl font-bold text-gray-800">📋 Satınalma Talepleri</h3>
+                                <div class="flex items-center space-x-3">
+                                    <select class="px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                                        <option>Tüm Talepler</option>
+                                        <option>Bekleyen</option>
+                                        <option>Onaylanan</option>
+                                        <option>Reddedilen</option>
+                                    </select>
+                                    <button
+                                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-medium">
+                                        + Yeni Talep
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-gray-800">💻 Yazılım Lisansları</h4>
+                                            <p class="text-sm text-gray-600">Adobe Creative Suite, Microsoft Office 365,
+                                                Figma Pro</p>
+                                        </div>
+                                        <span
+                                            class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">✅
+                                            Onaylandı</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600">Tutar</p>
+                                            <p class="text-xl font-bold text-gray-800">₺45,000</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Talep Tarihi</p>
+                                            <p class="font-semibold">10 Mart 2024</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Onay Tarihi</p>
+                                            <p class="font-semibold text-green-600">12 Mart 2024</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Tedarikçi</p>
+                                            <p class="font-semibold">TechSoft Ltd.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2">
+                                            <div
+                                                class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <span class="text-blue-600 font-semibold text-xs">AY</span>
+                                            </div>
+                                            <span class="text-sm text-gray-600">Ahmet Yılmaz tarafından talep
+                                                edildi</span>
+                                        </div>
+                                        <button
+                                            class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-lg hover:bg-blue-200 transition-colors">
+                                            Detaylar
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-gray-800">🖥️ Donanım Yükseltme</h4>
+                                            <p class="text-sm text-gray-600">Sunucu, network ekipmanları ve geliştirici
+                                                bilgisayarları</p>
+                                        </div>
+                                        <span
+                                            class="px-3 py-1 bg-orange-100 text-orange-800 text-sm font-medium rounded-full">⏳
+                                            Bekliyor</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600">Tutar</p>
+                                            <p class="text-xl font-bold text-gray-800">₺125,000</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Talep Tarihi</p>
+                                            <p class="font-semibold">8 Mart 2024</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Bekleme Süresi</p>
+                                            <p class="font-semibold text-orange-600">7 gün</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Öncelik</p>
+                                            <p class="font-semibold text-red-600">Yüksek</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2">
+                                            <div
+                                                class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                                <span class="text-green-600 font-semibold text-xs">EY</span>
+                                            </div>
+                                            <span class="text-sm text-gray-600">Emre Yıldız tarafından talep
+                                                edildi</span>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button
+                                                class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-lg hover:bg-green-200 transition-colors">
+                                                Onayla
+                                            </button>
+                                            <button
+                                                class="px-3 py-1 bg-red-100 text-red-800 text-sm rounded-lg hover:bg-red-200 transition-colors">
+                                                Reddet
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-gray-800">📦 Ofis Malzemeleri</h4>
+                                            <p class="text-sm text-gray-600">Kırtasiye, temizlik malzemeleri ve ofis
+                                                mobilyaları</p>
+                                        </div>
+                                        <span
+                                            class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">🔍
+                                            İnceleniyor</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600">Tutar</p>
+                                            <p class="text-xl font-bold text-gray-800">₺18,500</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Talep Tarihi</p>
+                                            <p class="font-semibold">12 Mart 2024</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">İnceleme Süresi</p>
+                                            <p class="font-semibold text-blue-600">3 gün</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Kategori</p>
+                                            <p class="font-semibold">Ofis</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2">
+                                            <div
+                                                class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                                <span class="text-purple-600 font-semibold text-xs">SÖ</span>
+                                            </div>
+                                            <span class="text-sm text-gray-600">Selin Özkan tarafından talep
+                                                edildi</span>
+                                        </div>
+                                        <button
+                                            class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-lg hover:bg-blue-200 transition-colors">
+                                            İncele
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Supplier Management -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-2xl font-bold text-gray-800">🏢 Tedarikçi Yönetimi</h3>
+                                <button
+                                    class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-medium">
+                                    + Yeni Tedarikçi
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div class="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all">
+                                    <div class="flex items-center space-x-4 mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                                            <span class="text-white font-bold text-lg">TT</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-gray-800">TechTrade Ltd.</h4>
+                                            <p class="text-sm text-gray-600">Teknoloji & Yazılım Tedarikçisi</p>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Güvenilirlik Skoru</span>
+                                            <div class="flex items-center space-x-1">
+                                                <span class="text-yellow-400">⭐⭐⭐⭐⭐</span>
+                                                <span class="font-semibold">4.9/5</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Toplam İşlem</span>
+                                            <span class="font-semibold">₺450,000</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Teslimat Süresi</span>
+                                            <span class="font-semibold text-green-600">2-3 gün</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Son İşlem</span>
+                                            <span class="font-semibold">12 Mart 2024</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 flex space-x-2">
+                                        <button
+                                            class="flex-1 px-3 py-2 bg-blue-100 text-blue-800 text-sm rounded-lg hover:bg-blue-200 transition-colors">
+                                            İletişim
+                                        </button>
+                                        <button
+                                            class="flex-1 px-3 py-2 bg-gray-100 text-gray-800 text-sm rounded-lg hover:bg-gray-200 transition-colors">
+                                            Geçmiş
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all">
+                                    <div class="flex items-center space-x-4 mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-xl flex items-center justify-center">
+                                            <span class="text-white font-bold text-lg">OS</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-gray-800">Ofis Sarayı A.Ş.</h4>
+                                            <p class="text-sm text-gray-600">Ofis Malzemeleri & Mobilya</p>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Güvenilirlik Skoru</span>
+                                            <div class="flex items-center space-x-1">
+                                                <span class="text-yellow-400">⭐⭐⭐⭐</span>
+                                                <span class="font-semibold">4.6/5</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Toplam İşlem</span>
+                                            <span class="font-semibold">₺125,000</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Teslimat Süresi</span>
+                                            <span class="font-semibold text-orange-600">5-7 gün</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Son İşlem</span>
+                                            <span class="font-semibold">5 Mart 2024</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 flex space-x-2">
+                                        <button
+                                            class="flex-1 px-3 py-2 bg-green-100 text-green-800 text-sm rounded-lg hover:bg-green-200 transition-colors">
+                                            İletişim
+                                        </button>
+                                        <button
+                                            class="flex-1 px-3 py-2 bg-gray-100 text-gray-800 text-sm rounded-lg hover:bg-gray-200 transition-colors">
+                                            Geçmiş
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all">
+                                    <div class="flex items-center space-x-4 mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
+                                            <span class="text-white font-bold text-lg">DH</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-semibold text-gray-800">Dijital Hizmetler</h4>
+                                            <p class="text-sm text-gray-600">Cloud & Hosting Hizmetleri</p>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Güvenilirlik Skoru</span>
+                                            <div class="flex items-center space-x-1">
+                                                <span class="text-yellow-400">⭐⭐⭐⭐⭐</span>
+                                                <span class="font-semibold">4.8/5</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Toplam İşlem</span>
+                                            <span class="font-semibold">₺85,000</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Teslimat Süresi</span>
+                                            <span class="font-semibold text-green-600">Anında</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Son İşlem</span>
+                                            <span class="font-semibold">1 Mart 2024</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 flex space-x-2">
+                                        <button
+                                            class="flex-1 px-3 py-2 bg-purple-100 text-purple-800 text-sm rounded-lg hover:bg-purple-200 transition-colors">
+                                            İletişim
+                                        </button>
+                                        <button
+                                            class="flex-1 px-3 py-2 bg-gray-100 text-gray-800 text-sm rounded-lg hover:bg-gray-200 transition-colors">
+                                            Geçmiş
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="border-2 border-dashed border-gray-300 rounded-xl p-6 flex items-center justify-center hover:border-primary hover:bg-blue-50 transition-all cursor-pointer">
+                                    <div class="text-center">
+                                        <div
+                                            class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                        </div>
+                                        <p class="font-medium text-gray-600">Yeni Tedarikçi Ekle</p>
+                                        <p class="text-sm text-gray-500">Tedarikçi ağınızı genişletin</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Procurement Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Budget Status -->
+                        <div
+                            class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl p-6 text-white card-hover">
+                            <h3 class="text-xl font-bold mb-4">💳 Bütçe Durumu</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="opacity-90">Toplam Bütçe</span>
+                                        <span class="text-2xl font-bold">₺500K</span>
+                                    </div>
+                                    <div class="w-full bg-white/20 rounded-full h-3">
+                                        <div class="bg-white h-3 rounded-full progress-bar" style="width: 72%"></div>
+                                    </div>
+                                    <p class="text-sm opacity-90 mt-1">₺360K kullanıldı (%72)</p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mt-6">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold">₺140K</p>
+                                        <p class="text-sm opacity-90">Kalan Bütçe</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold">15</p>
+                                        <p class="text-sm opacity-90">Bekleyen Talep</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Monthly Spending -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">📊 Aylık Harcamalar</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-blue-600 text-sm">💻</span>
+                                        </div>
+                                        <span class="font-medium">Teknoloji</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-semibold">₺125K</p>
+                                        <div class="w-16 bg-gray-200 rounded-full h-2">
+                                            <div class="bg-blue-500 h-2 rounded-full progress-bar" style="width: 60%">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-green-600 text-sm">📦</span>
+                                        </div>
+                                        <span class="font-medium">Ofis</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-semibold">₺45K</p>
+                                        <div class="w-16 bg-gray-200 rounded-full h-2">
+                                            <div class="bg-green-500 h-2 rounded-full progress-bar" style="width: 35%">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                            <span class="text-purple-600 text-sm">☁️</span>
+                                        </div>
+                                        <span class="font-medium">Hizmetler</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-semibold">₺28K</p>
+                                        <div class="w-16 bg-gray-200 rounded-full h-2">
+                                            <div class="bg-purple-500 h-2 rounded-full progress-bar" style="width: 25%">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Approvals -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">⏰ Onay Bekleyenler</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Donanım Yükseltme</p>
+                                        <p class="text-sm text-gray-600">₺125,000</p>
+                                    </div>
+                                    <span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">7
+                                        gün</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Ofis Malzemeleri</p>
+                                        <p class="text-sm text-gray-600">₺18,500</p>
+                                    </div>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">3 gün</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Yazılım Lisansı</p>
+                                        <p class="text-sm text-gray-600">₺32,000</p>
+                                    </div>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">1
+                                        gün</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">⚡ Hızlı İşlemler</h3>
+                            <div class="space-y-3">
+                                <button
+                                    class="w-full p-3 text-left bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                                    <p class="font-medium text-blue-800">📋 Talep Oluştur</p>
+                                    <p class="text-sm text-blue-600">Yeni satınalma talebi</p>
+                                </button>
+                                <button
+                                    class="w-full p-3 text-left bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+                                    <p class="font-medium text-green-800">✅ Toplu Onay</p>
+                                    <p class="text-sm text-green-600">Bekleyen talepleri onayla</p>
+                                </button>
+                                <button
+                                    class="w-full p-3 text-left bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
+                                    <p class="font-medium text-purple-800">📊 Bütçe Raporu</p>
+                                    <p class="text-sm text-purple-600">Harcama analizi</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Finance Tab -->
+            <div id="finance" class="tab-content">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <div class="xl:col-span-2 space-y-8">
+                        <!-- Financial Overview -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div
+                                class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white card-hover metric-card">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-semibold">💰 Toplam Gelir</h3>
+                                    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
+                                                clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <p class="text-3xl font-bold mb-2">₺1,250,000</p>
+                                <p class="text-sm opacity-90">↗ %18 artış (geçen aya göre)</p>
+                            </div>
+
+                            <div
+                                class="bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl p-6 text-white card-hover metric-card">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-semibold">💸 Toplam Gider</h3>
+                                    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z"
+                                                clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <p class="text-3xl font-bold mb-2">₺485,000</p>
+                                <p class="text-sm opacity-90">↗ %12 artış (geçen aya göre)</p>
+                            </div>
+
+                            <div
+                                class="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl p-6 text-white card-hover metric-card">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-semibold">📈 Net Kar</h3>
+                                    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
+                                                clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <p class="text-3xl font-bold mb-2">₺765,000</p>
+                                <p class="text-sm opacity-90">↗ %25 artış (geçen aya göre)</p>
+                            </div>
+                        </div>
+
+                        <!-- Financial Transactions -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-2xl font-bold text-gray-800">💳 Finansal İşlemler</h3>
+                                <div class="flex items-center space-x-3">
+                                    <select class="px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                                        <option>Son 30 Gün</option>
+                                        <option>Son 7 Gün</option>
+                                        <option>Bu Ay</option>
+                                        <option>Geçen Ay</option>
+                                    </select>
+                                    <button
+                                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-medium">
+                                        + Yeni İşlem
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div
+                                    class="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">Müşteri Ödemesi - ABC Şirketi</p>
+                                            <p class="text-sm text-gray-600">Fatura #INV-2024-0156 - E-ticaret projesi
+                                            </p>
+                                            <p class="text-xs text-gray-500">15 Mart 2024, 14:30</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xl font-bold text-green-600">+₺85,000</p>
+                                        <p class="text-sm text-gray-500">Banka Transferi</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M20 12H4"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">Maaş Ödemeleri - Mart 2024</p>
+                                            <p class="text-sm text-gray-600">13 personel için aylık maaş ödemesi</p>
+                                            <p class="text-xs text-gray-500">1 Mart 2024, 09:00</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xl font-bold text-red-600">-₺165,000</p>
+                                        <p class="text-sm text-gray-500">Otomatik Ödeme</p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                                </path>
+                                                <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'970f8743035b5ed6',t:'MTc1NTUwMDM2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>

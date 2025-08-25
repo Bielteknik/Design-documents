@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Ajanda Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--gray-800);
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .brand-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .brand-text p {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 320px;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 12px;
+            font-size: 0.875rem;
+            background: var(--gray-50);
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+        }
+
+        .date-display {
+            text-align: right;
+        }
+
+        .current-date {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .date-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0 2rem;
+            position: sticky;
+            top: 88px;
+            z-index: 40;
+        }
+
+        .tab-nav {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .tab-item {
+            position: relative;
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-500);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-item:hover {
+            color: var(--gray-700);
+            background: var(--gray-50);
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .tab-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 2rem;
+            min-height: calc(100vh - 176px);
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        /* Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+
+        @media (max-width: 1024px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+            .search-input { width: 200px; }
+            .header-content { flex-direction: column; gap: 1rem; }
+            .tab-nav { overflow-x: auto; }
+        }
+
+        /* Calendar Specific */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--gray-200);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            background: var(--gray-100);
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.875rem;
+        }
+
+        .calendar-day {
+            background: white;
+            padding: 1rem;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: var(--gray-50);
+        }
+
+        .calendar-day.today {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .calendar-day.other-month {
+            color: var(--gray-400);
+            background: var(--gray-50);
+        }
+
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .day-events {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .event-dot {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: white;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .event-primary { background: var(--primary); }
+        .event-success { background: var(--success); }
+        .event-warning { background: var(--warning); }
+        .event-danger { background: var(--danger); }
+
+        /* Task Items */
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .task-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 0.25rem;
+        }
+
+        .task-checkbox:checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .task-description {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .task-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .priority-high { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .priority-medium { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .priority-low { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+
+        /* Note Cards */
+        .note-card {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f3d078;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .note-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
+        }
+
+        .note-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.75rem;
+        }
+
+        .note-content {
+            color: var(--gray-700);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .note-footer {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        /* Meeting Cards */
+        .meeting-card {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border: 1px solid #93c5fd;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .meeting-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .meeting-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .meeting-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 1.125rem;
+        }
+
+        .meeting-date {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1d4ed8;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .meeting-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .meeting-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        .meeting-description {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        /* Tool Widgets */
+        .tool-widget {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .tool-widget:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+        }
+
+        .tool-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+
+        .tool-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-description {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        .fab:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+            margin: 1rem;
+            transform: scale(0.9);
+            transition: all 0.2s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Quick Action Menu */
+        .quick-action-menu {
+            position: absolute;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9);
+            transition: all 0.2s ease;
+            min-width: 200px;
+        }
+
+        .quick-action-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .quick-action-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .quick-action-item:hover {
+            background: var(--gray-50);
+            color: var(--primary);
+        }
+
+        .quick-action-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--gray-500);
+        }
+
+        .quick-action-item:hover .quick-action-icon {
+            color: var(--primary);
+        }
+
+        .date-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <h1>Akıllı Ajanda Pro</h1>
+                        <p>Gelişmiş Görev Yönetimi</p>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" class="search-input" placeholder="Görev, toplantı, not ara...">
+                        <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    
+                    <div class="date-display">
+                        <div class="current-date" id="currentDate">15 Aralık 2024, Pazar</div>
+                        <div class="date-label">Bugün</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tab Bar -->
+        <nav class="tab-bar">
+            <div class="tab-nav">
+                <button class="tab-item active" onclick="switchTab('calendar', this)">
+                    <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span>Takvim</span>
+                </button>
+                <button class="tab-item" onclick="switchTab('tasks', this)">
+                    <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span>Görevler</span>
+                </button>
+                <button class="tab-item" onclick="switchTab('notes', this)">
+                    <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    <span>Notlar</span>
+                </button>
+                <button class="tab-item" onclick="switchTab('meetings', this)">
+                    <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span>Toplantılar</span>
+                </button>
+                <button class="tab-item" onclick="switchTab('events', this)">
+                    <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2V9.828c0-.537-.213-1.052-.593-1.431l-7.793-7.793A2.02 2.02 0 0011.172 0H5z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h6m-6 4h6m-6 4h4"></path>
+                    </svg>
+                    <span>Etkinlikler</span>
+                </button>
+                <button class="tab-item" onclick="switchTab('tools', this)">
+                    <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Araçlar</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Takvim Sayfası -->
+            <section id="calendar-section" class="content-section active">
+                <div class="page-header">
+                    <h1 class="page-title">Takvim</h1>
+                    <p class="page-subtitle">Etkinliklerinizi ve randevularınızı görüntüleyin</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 300px; gap: 2rem; margin-bottom: 2rem;">
+                    <div class="card">
+                        <div class="card-header" style="justify-content: space-between;">
+                            <h2 class="card-title">Aralık 2024</h2>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-secondary">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                <button class="btn btn-secondary">Bugün</button>
+                                <button class="btn btn-secondary">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="calendar-grid">
+                            <div class="calendar-header">Pzt</div>
+                            <div class="calendar-header">Sal</div>
+                            <div class="calendar-header">Çar</div>
+                            <div class="calendar-header">Per</div>
+                            <div class="calendar-header">Cum</div>
+                            <div class="calendar-header">Cmt</div>
+                            <div class="calendar-header">Paz</div>
+                            
+                            <!-- Calendar days will be generated here -->
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '30 Kasım 2024')"><div class="day-number">25</div></div>
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '1 Aralık 2024')"><div class="day-number">26</div></div>
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '2 Aralık 2024')"><div class="day-number">27</div></div>
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '3 Aralık 2024')"><div class="day-number">28</div></div>
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '4 Aralık 2024')"><div class="day-number">29</div></div>
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '5 Aralık 2024')"><div class="day-number">30</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '1 Aralık 2024')">
+                                <div class="day-number">1</div>
+                                <div class="day-events">
+                                    <div class="event-dot event-primary">Proje Başlangıcı</div>
+                                </div>
+                            </div>
+                            
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '2 Aralık 2024')"><div class="day-number">2</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '3 Aralık 2024')"><div class="day-number">3</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '4 Aralık 2024')"><div class="day-number">4</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '5 Aralık 2024')"><div class="day-number">5</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '6 Aralık 2024')"><div class="day-number">6</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '7 Aralık 2024')"><div class="day-number">7</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '8 Aralık 2024')"><div class="day-number">8</div></div>
+                            
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '9 Aralık 2024')"><div class="day-number">9</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '10 Aralık 2024')"><div class="day-number">10</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '11 Aralık 2024')"><div class="day-number">11</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '12 Aralık 2024')"><div class="day-number">12</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '13 Aralık 2024')"><div class="day-number">13</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '14 Aralık 2024')"><div class="day-number">14</div></div>
+                            <div class="calendar-day today" ondblclick="showQuickActions(event, '15 Aralık 2024')">
+                                <div class="day-number">15</div>
+                                <div class="day-events">
+                                    <div class="event-dot event-success">Ekip Toplantısı</div>
+                                    <div class="event-dot event-warning">Proje Sunumu</div>
+                                </div>
+                            </div>
+                            
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '16 Aralık 2024')"><div class="day-number">16</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '17 Aralık 2024')"><div class="day-number">17</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '18 Aralık 2024')"><div class="day-number">18</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '19 Aralık 2024')"><div class="day-number">19</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '20 Aralık 2024')"><div class="day-number">20</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '21 Aralık 2024')"><div class="day-number">21</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '22 Aralık 2024')"><div class="day-number">22</div></div>
+                            
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '23 Aralık 2024')"><div class="day-number">23</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '24 Aralık 2024')"><div class="day-number">24</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '25 Aralık 2024')"><div class="day-number">25</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '26 Aralık 2024')"><div class="day-number">26</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '27 Aralık 2024')"><div class="day-number">27</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '28 Aralık 2024')"><div class="day-number">28</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '29 Aralık 2024')"><div class="day-number">29</div></div>
+                            
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '30 Aralık 2024')"><div class="day-number">30</div></div>
+                            <div class="calendar-day" ondblclick="showQuickActions(event, '31 Aralık 2024')"><div class="day-number">31</div></div>
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '1 Ocak 2025')"><div class="day-number">1</div></div>
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '2 Ocak 2025')"><div class="day-number">2</div></div>
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '3 Ocak 2025')"><div class="day-number">3</div></div>
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '4 Ocak 2025')"><div class="day-number">4</div></div>
+                            <div class="calendar-day other-month" ondblclick="showQuickActions(event, '5 Ocak 2025')"><div class="day-number">5</div></div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div class="card">
+                            <h3 class="card-title">Bugünün Etkinlikleri</h3>
+                            <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                                    <div style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></div>
+                                    <div>
+                                        <div style="font-weight: 500; font-size: 0.875rem;">Ekip Toplantısı</div>
+                                        <div style="font-size: 0.75rem; color: var(--gray-500);">14:00 - 15:00</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: rgba(245, 158, 11, 0.1); border-radius: 8px;">
+                                    <div style="width: 8px; height: 8px; background: var(--warning); border-radius: 50%;"></div>
+                                    <div>
+                                        <div style="font-weight: 500; font-size: 0.875rem;">Proje Sunumu</div>
+                                        <div style="font-size: 0.75rem; color: var(--gray-500);">16:00 - 17:00</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <h3 class="card-title">Hızlı Eylemler</h3>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+                                <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="openModal('task')">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    Görev Ekle
+                                </button>
+                                <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="openModal('meeting')">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    Toplantı Planla
+                                </button>
+                                <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="openModal('note')">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                    Not Ekle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Görevler Sayfası -->
+            <section id="tasks-section" class="content-section">
+                <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 class="page-title">Görevler</h1>
+                        <p class="page-subtitle">Görevlerinizi yönetin ve takip edin</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('task')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Yeni Görev
+                    </button>
+                </div>
+
+                <div class="grid-4" style="margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--primary);">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Toplam Görev</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--success);">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Tamamlanan</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--warning);">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Bekleyen</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--danger);">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Yüksek Öncelik</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Aktif Görevler</h2>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox">
+                            <div class="task-content">
+                                <div class="task-title">Proje sunumu hazırla</div>
+                                <div class="task-description">Q4 sonuçları için sunum materyali hazırla ve grafikler oluştur</div>
+                                <div class="task-meta">
+                                    <span>📅 Bugün</span>
+                                    <span>⏰ 14:00</span>
+                                    <span class="priority-badge priority-high">Yüksek Öncelik</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox">
+                            <div class="task-content">
+                                <div class="task-title">Kod review yap</div>
+                                <div class="task-description">Yeni özellik dalının kod incelemesi ve geri bildirim</div>
+                                <div class="task-meta">
+                                    <span>📅 Yarın</span>
+                                    <span>⏰ 10:00</span>
+                                    <span class="priority-badge priority-medium">Orta Öncelik</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" checked>
+                            <div class="task-content">
+                                <div class="task-title" style="text-decoration: line-through; opacity: 0.6;">Müşteri görüşmesi</div>
+                                <div class="task-description" style="opacity: 0.6;">ABC Şirketi ile yeni proje görüşmesi tamamlandı</div>
+                                <div class="task-meta">
+                                    <span>📅 Bugün</span>
+                                    <span>⏰ 16:00</span>
+                                    <span class="priority-badge priority-low">Düşük Öncelik</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notlar Sayfası -->
+            <section id="notes-section" class="content-section">
+                <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 class="page-title">Notlar</h1>
+                        <p class="page-subtitle">Fikirlerinizi ve önemli bilgileri kaydedin</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('note')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Yeni Not
+                    </button>
+                </div>
+
+                <div class="grid-3">
+                    <div class="note-card">
+                        <div class="note-title">Proje Fikirleri</div>
+                        <div class="note-content">
+                            Yeni özellikler için fikirler:<br>
+                            • Dark mode implementasyonu<br>
+                            • Bildirim sistemi geliştirme<br>
+                            • Drag & drop özelliği<br>
+                            • Mobil uygulama versiyonu
+                        </div>
+                        <div class="note-footer">
+                            <span style="background: rgba(139, 92, 246, 0.1); color: var(--secondary); padding: 0.25rem 0.5rem; border-radius: 12px; font-weight: 500;">Fikir</span>
+                            <span>Bugün</span>
+                        </div>
+                    </div>
+                    
+                    <div class="note-card">
+                        <div class="note-title">Toplantı Notları</div>
+                        <div class="note-content">
+                            Müşteri geri bildirimleri:<br>
+                            • UI/UX iyileştirmeleri isteniyor<br>
+                            • Performans optimizasyonu gerekli<br>
+                            • Yeni entegrasyon talepleri<br>
+                            • Güvenlik güncellemeleri
+                        </div>
+                        <div class="note-footer">
+                            <span style="background: rgba(6, 182, 212, 0.1); color: var(--accent); padding: 0.25rem 0.5rem; border-radius: 12px; font-weight: 500;">Toplantı</span>
+                            <span>Bugün</span>
+                        </div>
+                    </div>
+                    
+                    <div class="note-card">
+                        <div class="note-title">Kişisel Hedefler</div>
+                        <div class="note-content">
+                            Bu ay tamamlanacaklar:<br>
+                            • 3 yeni teknoloji öğren<br>
+                            • Fitness rutinini düzenle<br>
+                            • Kitap okuma hedefi: 2 kitap<br>
+                            • Networking etkinliklerine katıl
+                        </div>
+                        <div class="note-footer">
+                            <span style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 0.25rem 0.5rem; border-radius: 12px; font-weight: 500;">Kişisel</span>
+                            <span>Bugün</span>
+                        </div>
+                    </div>
+                    
+                    <div class="note-card">
+                        <div class="note-title">Alışveriş Listesi</div>
+                        <div class="note-content">
+                            Market alışverişi:<br>
+                            • Süt, yumurta, ekmek<br>
+                            • Meyve ve sebze<br>
+                            • Temizlik malzemeleri<br>
+                            • Kahve ve çay<br>
+                            • Vitamin takviyeleri
+                        </div>
+                        <div class="note-footer">
+                            <span style="background: var(--gray-100); color: var(--gray-600); padding: 0.25rem 0.5rem; border-radius: 12px; font-weight: 500;">Genel</span>
+                            <span>Bugün</span>
+                        </div>
+                    </div>
+                    
+                    <div class="note-card">
+                        <div class="note-title">Öğrenme Notları</div>
+                        <div class="note-content">
+                            JavaScript ES6+ özellikleri:<br>
+                            • Arrow functions<br>
+                            • Destructuring<br>
+                            • Template literals<br>
+                            • Async/await<br>
+                            • Modules
+                        </div>
+                        <div class="note-footer">
+                            <span style="background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 0.25rem 0.5rem; border-radius: 12px; font-weight: 500;">Eğitim</span>
+                            <span>Dün</span>
+                        </div>
+                    </div>
+                    
+                    <div class="note-card">
+                        <div class="note-title">Seyahat Planı</div>
+                        <div class="note-content">
+                            Yaz tatili için yapılacaklar:<br>
+                            • Otel rezervasyonu<br>
+                            • Uçak bileti al<br>
+                            • Pasaport kontrolü<br>
+                            • Bavul hazırla<br>
+                            • Sigorta yaptır
+                        </div>
+                        <div class="note-footer">
+                            <span style="background: rgba(245, 158, 11, 0.1); color: var(--warning); padding: 0.25rem 0.5rem; border-radius: 12px; font-weight: 500;">Seyahat</span>
+                            <span>2 gün önce</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Toplantılar Sayfası -->
+            <section id="meetings-section" class="content-section">
+                <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 class="page-title">Toplantılar</h1>
+                        <p class="page-subtitle">Toplantılarınızı planlayın ve yönetin</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('meeting')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Yeni Toplantı
+                    </button>
+                </div>
+
+                <div class="grid-2">
+                    <div class="meeting-card">
+                        <div class="meeting-header">
+                            <div class="meeting-title">Ekip Toplantısı</div>
+                            <div class="meeting-date">Bugün</div>
+                        </div>
+                        <div class="meeting-details">
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                14:00 - 15:00
+                            </div>
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                </svg>
+                                Toplantı Odası A
+                            </div>
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                5 katılımcı
+                            </div>
+                        </div>
+                        <div class="meeting-description">
+                            Haftalık ekip durumu ve proje güncellemeleri. Sprint review ve gelecek hafta planlaması.
+                        </div>
+                    </div>
+                    
+                    <div class="meeting-card">
+                        <div class="meeting-header">
+                            <div class="meeting-title">Müşteri Sunumu</div>
+                            <div class="meeting-date">Yarın</div>
+                        </div>
+                        <div class="meeting-details">
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                16:30 - 17:30
+                            </div>
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                </svg>
+                                Zoom Meeting
+                            </div>
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                3 katılımcı
+                            </div>
+                        </div>
+                        <div class="meeting-description">
+                            Yeni proje önerisi sunumu ve müşteri geri bildirimlerinin alınması.
+                        </div>
+                    </div>
+                    
+                    <div class="meeting-card">
+                        <div class="meeting-header">
+                            <div class="meeting-title">Stratejik Planlama</div>
+                            <div class="meeting-date">Yarın</div>
+                        </div>
+                        <div class="meeting-details">
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                09:00 - 11:00
+                            </div>
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                </svg>
+                                Yönetim Kurulu Salonu
+                            </div>
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                8 katılımcı
+                            </div>
+                        </div>
+                        <div class="meeting-description">
+                            2024 yılı stratejik hedefler ve bütçe planlaması toplantısı.
+                        </div>
+                    </div>
+                    
+                    <div class="meeting-card">
+                        <div class="meeting-header">
+                            <div class="meeting-title">Teknik İnceleme</div>
+                            <div class="meeting-date">Pazartesi</div>
+                        </div>
+                        <div class="meeting-details">
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                11:00 - 12:00
+                            </div>
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                </svg>
+                                Google Meet
+                            </div>
+                            <div class="meeting-detail">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                4 katılımcı
+                            </div>
+                        </div>
+                        <div class="meeting-description">
+                            Yeni teknoloji stack'i değerlendirmesi ve mimari kararları.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Etkinlikler Sayfası -->
+            <section id="events-section" class="content-section">
+                <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 class="page-title">Etkinlikler</h1>
+                        <p class="page-subtitle">Özel günler, kutlamalar ve etkinliklerinizi yönetin</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('event')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Yeni Etkinlik
+                    </button>
+                </div>
+
+                <div class="grid-3">
+                    <div class="card" style="background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1px solid #f3d078;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem;">🎂 Doğum Günü</h3>
+                                <p style="color: var(--gray-700); font-size: 0.875rem;">Ahmet'in doğum günü</p>
+                            </div>
+                            <span style="background: rgba(245, 158, 11, 0.2); color: #d97706; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">Bugün</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.75rem;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Tüm gün
+                        </div>
+                        <p style="color: var(--gray-600); font-size: 0.875rem; line-height: 1.5;">Ahmet'in 28. yaş günü kutlaması. Akşam yemeği planlandı.</p>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); border: 1px solid #93c5fd;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem;">🎄 Yılbaşı Partisi</h3>
+                                <p style="color: var(--gray-700); font-size: 0.875rem;">Şirket yılbaşı kutlaması</p>
+                            </div>
+                            <span style="background: rgba(59, 130, 246, 0.2); color: #1d4ed8; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">31 Aralık</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.75rem;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            20:00 - 02:00
+                        </div>
+                        <p style="color: var(--gray-600); font-size: 0.875rem; line-height: 1.5;">Yılbaşı gecesi şirket partisi. Otel ballroom'da düzenlenecek.</p>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); border: 1px solid #86efac;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem;">🏃‍♂️ Maraton</h3>
+                                <p style="color: var(--gray-700); font-size: 0.875rem;">İstanbul Maratonu</p>
+                            </div>
+                            <span style="background: rgba(16, 185, 129, 0.2); color: #059669; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">5 Ocak</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.75rem;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            08:00 - 14:00
+                        </div>
+                        <p style="color: var(--gray-600); font-size: 0.875rem; line-height: 1.5;">42K maraton yarışması. Başlangıç noktası: Boğaziçi Köprüsü</p>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #fce7f3, #fbcfe8); border: 1px solid #f9a8d4;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem;">💝 Sevgililer Günü</h3>
+                                <p style="color: var(--gray-700); font-size: 0.875rem;">Romantik akşam yemeği</p>
+                            </div>
+                            <span style="background: rgba(236, 72, 153, 0.2); color: #be185d; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">14 Şubat</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.75rem;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            19:30 - 22:00
+                        </div>
+                        <p style="color: var(--gray-600); font-size: 0.875rem; line-height: 1.5;">Sevgililer günü için özel restoran rezervasyonu yapıldı.</p>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #f3e8ff, #e9d5ff); border: 1px solid #c4b5fd;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem;">🎓 Mezuniyet</h3>
+                                <p style="color: var(--gray-700); font-size: 0.875rem;">Kardeşimin mezuniyet töreni</p>
+                            </div>
+                            <span style="background: rgba(139, 92, 246, 0.2); color: #7c3aed; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">20 Haziran</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.75rem;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            10:00 - 16:00
+                        </div>
+                        <p style="color: var(--gray-600); font-size: 0.875rem; line-height: 1.5;">Üniversite mezuniyet töreni. Aile fotoğrafları çekilecek.</p>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #fef2f2, #fecaca); border: 1px solid #fca5a5;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem;">🎪 Konser</h3>
+                                <p style="color: var(--gray-700); font-size: 0.875rem;">Favori sanatçı konseri</p>
+                            </div>
+                            <span style="background: rgba(239, 68, 68, 0.2); color: #dc2626; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">15 Mart</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.75rem;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            21:00 - 24:00
+                        </div>
+                        <p style="color: var(--gray-600); font-size: 0.875rem; line-height: 1.5;">Olimpiyat Stadyumu'nda konser. Biletler alındı, arkadaşlarla gidilecek.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Araçlar Sayfası -->
+            <section id="tools-section" class="content-section">
+                <div class="page-header">
+                    <h1 class="page-title">Araçlar</h1>
+                    <p class="page-subtitle">Günlük işlerinizi kolaylaştıracak kullanışlı araçlar</p>
+                </div>
+
+                <div class="grid-4">
+                    <div class="tool-widget">
+                        <div class="tool-icon">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="tool-title">Pomodoro Timer</div>
+                        <div class="tool-description">Odaklanmanızı artırmak için 25 dakikalık çalışma seansları</div>
+                        <button class="btn btn-primary">Başlat</button>
+                    </div>
+                    
+                    <div class="tool-widget">
+                        <div class="tool-icon">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="tool-title">Hesap Makinesi</div>
+                        <div class="tool-description">Hızlı hesaplamalar için basit hesap makinesi</div>
+                        <button class="btn btn-primary">Aç</button>
+                    </div>
+                    
+                    <div class="tool-widget">
+                        <div class="tool-icon">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+                            </svg>
+                        </div>
+                        <div class="tool-title">Hava Durumu</div>
+                        <div class="tool-description">Güncel hava durumu bilgileri ve tahminler</div>
+                        <button class="btn btn-primary">Görüntüle</button>
+                    </div>
+                    
+                    <div class="tool-widget">
+                        <div class="tool-icon">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                        </div>
+                        <div class="tool-title">Şifre Oluşturucu</div>
+                        <div class="tool-description">Güvenli ve karmaşık şifreler oluşturun</div>
+                        <button class="btn btn-primary">Oluştur</button>
+                    </div>
+                    
+                    <div class="tool-widget">
+                        <div class="tool-icon">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 3V1m0 18v2m8-10a4 4 0 00-4-4H7m4 8a4 4 0 004-4V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v8a4 4 0 004 4z"></path>
+                            </svg>
+                        </div>
+                        <div class="tool-title">Renk Seçici</div>
+                        <div class="tool-description">Renk kodları seçin ve kopyalayın</div>
+                        <button class="btn btn-primary">Seç</button>
+                    </div>
+                    
+                    <div class="tool-widget">
+                        <div class="tool-icon">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="tool-title">QR Kod Oluşturucu</div>
+                        <div class="tool-description">Metin ve URL'ler için QR kod oluşturun</div>
+                        <button class="btn btn-primary">Oluştur</button>
+                    </div>
+                    
+                    <div class="tool-widget">
+                        <div class="tool-icon">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                            </svg>
+                        </div>
+                        <div class="tool-title">Birim Çevirici</div>
+                        <div class="tool-description">Uzunluk, ağırlık ve sıcaklık çevirileri</div>
+                        <button class="btn btn-primary">Çevir</button>
+                    </div>
+                    
+                    <div class="tool-widget">
+                        <div class="tool-icon">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="tool-title">Dünya Saatleri</div>
+                        <div class="tool-description">Farklı şehirlerin saat dilimlerini görün</div>
+                        <button class="btn btn-primary">Görüntüle</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Floating Action Button -->
+        <button class="fab" onclick="openModal('task')">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+        </button>
+
+        <!-- Quick Action Menu -->
+        <div id="quickActionMenu" class="quick-action-menu">
+            <div class="date-badge" id="selectedDateBadge">15 Aralık 2024</div>
+            <button class="quick-action-item" onclick="quickAction('task')">
+                <svg class="quick-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                Yeni Görev
+            </button>
+            <button class="quick-action-item" onclick="quickAction('note')">
+                <svg class="quick-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Yeni Not
+            </button>
+            <button class="quick-action-item" onclick="quickAction('meeting')">
+                <svg class="quick-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                Yeni Toplantı
+            </button>
+            <button class="quick-action-item" onclick="quickAction('event')">
+                <svg class="quick-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2V9.828c0-.537-.213-1.052-.593-1.431l-7.793-7.793A2.02 2.02 0 0011.172 0H5z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h6m-6 4h6m-6 4h4"></path>
+                </svg>
+                Yeni Etkinlik
+            </button>
+        </div>
+
+        <!-- Modal -->
+        <div id="modal" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalTitle">Yeni Görev Ekle</h2>
+                </div>
+                
+                <div id="modalContent">
+                    <!-- Modal content will be dynamically inserted here -->
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal()">İptal</button>
+                    <button class="btn btn-primary" onclick="saveModal()">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'calendar';
+        let currentModal = null;
+        let selectedDate = null;
+
+        // Tab switching
+        function switchTab(tab, element) {
+            // Update active tab
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+
+            // Update content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`${tab}-section`).classList.add('active');
+
+            currentTab = tab;
+        }
+
+        // Quick action menu for calendar
+        function showQuickActions(event, dateString) {
+            event.stopPropagation();
+            
+            const menu = document.getElementById('quickActionMenu');
+            const badge = document.getElementById('selectedDateBadge');
+            
+            selectedDate = dateString;
+            badge.textContent = dateString;
+            
+            // Position menu near the clicked day
+            const rect = event.currentTarget.getBoundingClientRect();
+            menu.style.left = `${rect.left + rect.width / 2 - 100}px`;
+            menu.style.top = `${rect.top + rect.height + 10}px`;
+            
+            // Show menu
+            menu.classList.add('active');
+            
+            // Hide menu when clicking elsewhere
+            setTimeout(() => {
+                document.addEventListener('click', hideQuickActions, { once: true });
+            }, 100);
+        }
+
+        function hideQuickActions() {
+            document.getElementById('quickActionMenu').classList.remove('active');
+        }
+
+        function quickAction(type) {
+            hideQuickActions();
+            openModal(type, selectedDate);
+        }
+
+        // Modal functions
+        function openModal(type, date = null) {
+            currentModal = type;
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+
+            let titleText = '';
+            let contentHTML = '';
+
+            switch(type) {
+                case 'task':
+                    titleText = date ? `${date} için Yeni Görev` : 'Yeni Görev Ekle';
+                    contentHTML = `
+                        <div class="form-group">
+                            <label class="form-label">Görev Başlığı</label>
+                            <input type="text" class="form-input" id="taskTitle" placeholder="Görev başlığını girin">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Açıklama</label>
+                            <textarea class="form-input form-textarea" id="taskDescription" placeholder="Görev açıklaması"></textarea>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Başlangıç Tarihi</label>
+                                <input type="date" class="form-input" id="taskDate">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bitiş Tarihi</label>
+                                <input type="date" class="form-input" id="taskEndDate">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Başlangıç Saati</label>
+                                <input type="time" class="form-input" id="taskTime">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tahmini Süre (saat)</label>
+                                <input type="number" class="form-input" id="taskDuration" placeholder="2" min="0.5" step="0.5">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Öncelik</label>
+                                <select class="form-input" id="taskPriority">
+                                    <option value="low">Düşük Öncelik</option>
+                                    <option value="medium" selected>Orta Öncelik</option>
+                                    <option value="high">Yüksek Öncelik</option>
+                                    <option value="urgent">Acil</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Kategori</label>
+                                <select class="form-input" id="taskCategory">
+                                    <option value="work">İş</option>
+                                    <option value="personal">Kişisel</option>
+                                    <option value="health">Sağlık</option>
+                                    <option value="education">Eğitim</option>
+                                    <option value="finance">Finans</option>
+                                    <option value="home">Ev İşleri</option>
+                                    <option value="social">Sosyal</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Atanan Kişi</label>
+                            <input type="text" class="form-input" id="taskAssignee" placeholder="Kişi adı (opsiyonel)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Etiketler</label>
+                            <input type="text" class="form-input" id="taskTags" placeholder="etiket1, etiket2, etiket3">
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="taskReminder" style="width: auto;">
+                                <span class="form-label" style="margin: 0;">Hatırlatma gönder</span>
+                            </label>
+                        </div>
+                    `;
+                    break;
+                case 'note':
+                    titleText = date ? `${date} için Yeni Not` : 'Yeni Not Ekle';
+                    contentHTML = `
+                        <div class="form-group">
+                            <label class="form-label">Not Başlığı</label>
+                            <input type="text" class="form-input" id="noteTitle" placeholder="Not başlığını girin">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">İçerik</label>
+                            <textarea class="form-input form-textarea" id="noteContent" placeholder="Not içeriğini yazın" style="min-height: 150px;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kategori</label>
+                            <select class="form-input" id="noteCategory">
+                                <option value="general">Genel</option>
+                                <option value="work">İş</option>
+                                <option value="personal">Kişisel</option>
+                                <option value="idea">Fikir</option>
+                                <option value="meeting">Toplantı</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+                case 'meeting':
+                    titleText = date ? `${date} için Yeni Toplantı` : 'Yeni Toplantı Planla';
+                    contentHTML = `
+                        <div class="form-group">
+                            <label class="form-label">Toplantı Başlığı</label>
+                            <input type="text" class="form-input" id="meetingTitle" placeholder="Toplantı başlığını girin">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Tarih</label>
+                                <input type="date" class="form-input" id="meetingDate">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Başlangıç Saati</label>
+                                <input type="time" class="form-input" id="meetingTime">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Süre (dakika)</label>
+                                <select class="form-input" id="meetingDuration">
+                                    <option value="15">15 dakika</option>
+                                    <option value="30">30 dakika</option>
+                                    <option value="60" selected>1 saat</option>
+                                    <option value="90">1.5 saat</option>
+                                    <option value="120">2 saat</option>
+                                    <option value="180">3 saat</option>
+                                    <option value="custom">Özel süre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Toplantı Türü</label>
+                                <select class="form-input" id="meetingType">
+                                    <option value="meeting">Toplantı</option>
+                                    <option value="presentation">Sunum</option>
+                                    <option value="brainstorm">Beyin Fırtınası</option>
+                                    <option value="review">İnceleme</option>
+                                    <option value="training">Eğitim</option>
+                                    <option value="interview">Mülakat</option>
+                                    <option value="standup">Standup</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Konum Türü</label>
+                                <select class="form-input" id="meetingLocationType" onchange="toggleLocationInput()">
+                                    <option value="physical">Fiziksel Mekan</option>
+                                    <option value="online">Online</option>
+                                    <option value="hybrid">Hibrit</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Katılımcı Sayısı</label>
+                                <input type="number" class="form-input" id="meetingParticipantCount" placeholder="5" min="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Konum/Link</label>
+                            <input type="text" class="form-input" id="meetingLocation" placeholder="Toplantı odası veya online link">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Katılımcılar</label>
+                            <textarea class="form-input" id="meetingParticipants" placeholder="Katılımcı isimleri (her satıra bir isim)" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gündem</label>
+                            <textarea class="form-input form-textarea" id="meetingAgenda" placeholder="Toplantı gündemi ve konuları"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Açıklama/Notlar</label>
+                            <textarea class="form-input" id="meetingDescription" placeholder="Ek açıklamalar ve notlar" rows="2"></textarea>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" id="meetingReminder" style="width: auto;" checked>
+                                    <span class="form-label" style="margin: 0;">Hatırlatma gönder</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" id="meetingRecording" style="width: auto;">
+                                    <span class="form-label" style="margin: 0;">Kayıt alınacak</span>
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'event':
+                    titleText = date ? `${date} için Yeni Etkinlik` : 'Yeni Etkinlik Ekle';
+                    contentHTML = `
+                        <div class="form-group">
+                            <label class="form-label">Etkinlik Başlığı</label>
+                            <input type="text" class="form-input" id="eventTitle" placeholder="Etkinlik başlığını girin">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Başlangıç Tarihi</label>
+                                <input type="date" class="form-input" id="eventStartDate">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bitiş Tarihi</label>
+                                <input type="date" class="form-input" id="eventEndDate">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Başlangıç Saati</label>
+                                <input type="time" class="form-input" id="eventStartTime">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bitiş Saati</label>
+                                <input type="time" class="form-input" id="eventEndTime">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Etkinlik Türü</label>
+                                <select class="form-input" id="eventType">
+                                    <option value="birthday">🎂 Doğum Günü</option>
+                                    <option value="anniversary">💕 Yıldönümü</option>
+                                    <option value="holiday">🎄 Tatil/Bayram</option>
+                                    <option value="party">🎉 Parti</option>
+                                    <option value="wedding">💒 Düğün</option>
+                                    <option value="graduation">🎓 Mezuniyet</option>
+                                    <option value="concert">🎵 Konser</option>
+                                    <option value="sports">⚽ Spor</option>
+                                    <option value="conference">📊 Konferans</option>
+                                    <option value="travel">✈️ Seyahat</option>
+                                    <option value="other">📅 Diğer</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Öncelik</label>
+                                <select class="form-input" id="eventPriority">
+                                    <option value="low">Düşük</option>
+                                    <option value="medium" selected>Orta</option>
+                                    <option value="high">Yüksek</option>
+                                    <option value="critical">Kritik</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Konum</label>
+                            <input type="text" class="form-input" id="eventLocation" placeholder="Etkinlik konumu">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Katılımcılar/Misafirler</label>
+                            <textarea class="form-input" id="eventParticipants" placeholder="Katılımcı isimleri (her satıra bir isim)" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Açıklama</label>
+                            <textarea class="form-input form-textarea" id="eventDescription" placeholder="Etkinlik açıklaması ve detayları"></textarea>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Bütçe (TL)</label>
+                                <input type="number" class="form-input" id="eventBudget" placeholder="0" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Hatırlatma (gün önce)</label>
+                                <select class="form-input" id="eventReminderDays">
+                                    <option value="0">Aynı gün</option>
+                                    <option value="1" selected>1 gün önce</option>
+                                    <option value="3">3 gün önce</option>
+                                    <option value="7">1 hafta önce</option>
+                                    <option value="14">2 hafta önce</option>
+                                    <option value="30">1 ay önce</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="eventAllDay" style="width: auto;">
+                                <span class="form-label" style="margin: 0;">Tüm gün etkinliği</span>
+                            </label>
+                        </div>
+                    `;
+                    break;
+            }
+
+            title.textContent = titleText;
+            content.innerHTML = contentHTML;
+            
+            // Set default date
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = content.querySelector('input[type="date"]');
+            if (dateInput) {
+                if (date) {
+                    // Convert date string to ISO format if needed
+                    const dateObj = new Date(date);
+                    if (!isNaN(dateObj.getTime())) {
+                        dateInput.value = dateObj.toISOString().split('T')[0];
+                    } else {
+                        dateInput.value = today;
+                    }
+                } else {
+                    dateInput.value = today;
+                }
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            currentModal = null;
+            selectedDate = null;
+        }
+
+        function saveModal() {
+            if (!currentModal) return;
+
+            let title = '';
+            switch(currentModal) {
+                case 'task':
+                    title = document.getElementById('taskTitle').value;
+                    break;
+                case 'note':
+                    title = document.getElementById('noteTitle').value;
+                    break;
+                case 'meeting':
+                    title = document.getElementById('meetingTitle').value;
+                    break;
+                case 'event':
+                    title = document.getElementById('eventTitle').value;
+                    break;
+            }
+
+            if (title.trim()) {
+                const itemType = currentModal === 'task' ? 'Görev' : 
+                               currentModal === 'note' ? 'Not' : 
+                               currentModal === 'meeting' ? 'Toplantı' : 'Etkinlik';
+                const dateInfo = selectedDate ? ` (${selectedDate})` : '';
+                alert(`${itemType} "${title}"${dateInfo} başarıyla eklendi!`);
+                closeModal();
+            } else {
+                alert('Lütfen başlık alanını doldurun!');
+            }
+        }
+
+        // Helper function for meeting location type toggle
+        function toggleLocationInput() {
+            const locationType = document.getElementById('meetingLocationType').value;
+            const locationInput = document.getElementById('meetingLocation');
+            
+            if (locationType === 'online') {
+                locationInput.placeholder = 'Zoom, Teams, Meet linki';
+            } else if (locationType === 'physical') {
+                locationInput.placeholder = 'Toplantı odası, adres';
+            } else {
+                locationInput.placeholder = 'Fiziksel konum + Online link';
+            }
+        }
+
+        // Update current date
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long'
+            };
+            document.getElementById('currentDate').textContent = 
+                now.toLocaleDateString('tr-TR', options);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentDate();
+            
+            // Update date every minute
+            setInterval(updateCurrentDate, 60000);
+        });
+    </script>
+</html>

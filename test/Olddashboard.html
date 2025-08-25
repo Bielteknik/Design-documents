@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejder3200 - BI Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#0a0e27',
+                        'secondary': '#1a1f3a',
+                        'tertiary': '#2d3561',
+                        'accent': '#4f46e5',
+                        'accent-light': '#6366f1',
+                        'success': '#059669',
+                        'warning': '#d97706',
+                        'danger': '#dc2626',
+                        'info': '#0284c7',
+                        'glass': 'rgba(255, 255, 255, 0.05)',
+                        'glass-border': 'rgba(255, 255, 255, 0.1)'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-in': 'slideIn 0.4s ease-out',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'rotate-slow': 'rotate 20s linear infinite',
+                        'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(79, 70, 229, 0.4)' },
+                            '50%': { boxShadow: '0 0 40px rgba(79, 70, 229, 0.8)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0a0e27; /* Main background from the image */
+        }
+        .glass-morphism {
+            background: rgba(26, 31, 58, 0.5); /* Adjusted from image */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-strong {
+            background: rgba(10, 14, 39, 0.6); /* Adjusted from image */
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar-gradient {
+            background: #111530; /* Sidebar color from image */
+        }
+        .nav-module.active {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(99, 102, 241, 0.1));
+            border-left: 3px solid #4f46e5;
+        }
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .submenu.open {
+            max-height: 500px; /* Adjust as needed */
+        }
+        .notification-dot {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="bg-primary text-gray-200 overflow-x-hidden font-sans">
+    <div class="flex">
+        <!-- Enterprise Sidebar -->
+        <div id="sidebar" class="fixed left-0 top-0 h-full w-80 sidebar-gradient border-r border-glass-border z-50 overflow-y-auto">
+            <!-- Enterprise Header -->
+            <div class="p-6 border-b border-glass-border">
+                <div class="flex items-center space-x-4 mb-6">
+                    <div class="w-12 h-12 bg-accent rounded-lg flex items-center justify-center">
+                        <i class="fas fa-building text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">
+                            Ejder3200
+                        </h1>
+                        <p class="text-xs text-gray-400">BI Platform v1.0.0</p>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Advanced Navigation -->
+        <nav class="mt-4 px-4 overflow-y-auto flex-1">
+            <div class="space-y-1">
+                <div class="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">TEMEL MODÜLLER</div>
+                
+                <!-- Yönetici Paneli -->
+                <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 bg-blue-50 text-blue-700 shadow-lg" onclick="showDashboard()">
+                    <i class="fas fa-chart-line mr-3 text-lg"></i>
+                    <div>
+                        <div class="font-semibold">Yönetici Paneli</div>
+                        <div class="text-xs opacity-70">Gerçek Zamanlı Analitik</div>
+                    </div>
+                </a>
+                
+                <!-- Departmanlar -->
+                <div class="mt-6">
+                    <button class="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gray-100" onclick="toggleDepartments()">
+                        <div class="flex items-center">
+                            <i class="fas fa-building mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Departmanlar</div>
+                                <div class="text-xs opacity-70">Kurumsal Modüller</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down transition-transform duration-300" id="departmentsChevron"></i>
+                    </button>
+                    
+                    <div class="ml-4 mt-2 space-y-1 hidden" id="departmentsList">
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-600 hover:text-white">
+                            <i class="fas fa-code mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Yazılım Birimi</div>
+                                <div class="text-xs opacity-70">Geliştirme & Test</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:text-white">
+                            <i class="fas fa-server mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Bilgi İşlem</div>
+                                <div class="text-xs opacity-70">IT Altyapı & Destek</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 hover:text-white">
+                            <i class="fas fa-dollar-sign mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Finansal Yönetim</div>
+                                <div class="text-xs opacity-70">Bütçe & Muhasebe</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-600 hover:text-white">
+                            <i class="fas fa-bullhorn mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Satış Pazarlama</div>
+                                <div class="text-xs opacity-70">CRM & Kampanyalar</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-600 hover:text-white">
+                            <i class="fas fa-truck mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Tedarik Zinciri</div>
+                                <div class="text-xs opacity-70">Lojistik & Stok</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-600 hover:text-white">
+                            <i class="fas fa-users mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">İnsan Kaynakları</div>
+                                <div class="text-xs opacity-70">Personel & Bordro</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-teal-500 hover:to-green-600 hover:text-white">
+                            <i class="fas fa-gamepad mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Rekreasyon</div>
+                                <div class="text-xs opacity-70">Etkinlik Yönetimi</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Sosyal Tesisler -->
+                <div class="mt-6">
+                    <button class="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gray-100" onclick="toggleSocialFacilities()">
+                        <div class="flex items-center">
+                            <i class="fas fa-building mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Sosyal Tesisler</div>
+                                <div class="text-xs opacity-70">Konaklama & F&B</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down transition-transform duration-300" id="socialFacilitiesChevron"></i>
+                    </button>
+                    
+                    <div class="ml-4 mt-2 space-y-1 hidden" id="socialFacilitiesList">
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-600 hover:text-white">
+                            <i class="fas fa-bed mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Konaklama</div>
+                                <div class="text-xs opacity-70">Otel & Rezervasyon</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-600 hover:text-white">
+                            <i class="fas fa-utensils mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Restoran & Kafeler</div>
+                                <div class="text-xs opacity-70">F&B Yönetimi</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-600 hover:text-white">
+                            <i class="fas fa-ticket-alt mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Bilet Satış</div>
+                                <div class="text-xs opacity-70">Online & Gişe</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Teknik Ofis -->
+                <div class="mt-6">
+                    <button class="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gray-100" onclick="toggleTechnicalOffice()">
+                        <div class="flex items-center">
+                            <i class="fas fa-cogs mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Teknik Ofis</div>
+                                <div class="text-xs opacity-70">Altyapı & Sistemler</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down transition-transform duration-300" id="technicalOfficeChevron"></i>
+                    </button>
+                    
+                    <div class="ml-4 mt-2 space-y-1 hidden" id="technicalOfficeList">
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-600 hover:text-white">
+                            <i class="fas fa-skiing mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Pist Yönetimi</div>
+                                <div class="text-xs opacity-70">Kar & Güvenlik</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-600 hover:text-white">
+                            <i class="fas fa-cable-car mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Teleferik Sistemi</div>
+                                <div class="text-xs opacity-70">Kabin & Motor</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-yellow-500 hover:to-orange-600 hover:text-white">
+                            <i class="fas fa-bolt mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Enerji Sistemleri</div>
+                                <div class="text-xs opacity-70">Elektrik & Jeneratör</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-gray-500 hover:to-slate-600 hover:text-white">
+                            <i class="fas fa-tools mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Makina Sistemleri</div>
+                                <div class="text-xs opacity-70">Kar Makinası & Bakım</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-600 hover:text-white">
+                            <i class="fas fa-thermometer-half mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">HVAC Sistemleri</div>
+                                <div class="text-xs opacity-70">Isıtma & Havalandırma</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-600 hover:text-white">
+                            <i class="fas fa-hammer mr-3 text-lg"></i>
+                            <div>
+                                <div class="font-semibold">Yapı İnşaat</div>
+                                <div class="text-xs opacity-70">Bina & Altyapı</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+        <!-- Main Content Area -->
+        <div class="ml-80 flex-1 flex flex-col">
+            <!-- Enterprise Header -->
+            <header class="glass-strong border-b border-glass-border px-8 py-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-8">
+                        <div>
+                            <h2 id="page-title" class="text-4xl font-bold bg-gradient-to-r from-white via-accent-light to-purple-400 bg-clip-text text-transparent">
+                                Executive Dashboard
+                            </h2>
+                            <p class="text-gray-400 mt-2 text-lg">Kurumsal performans ve iş süreçlerinizi tek ekrandan yönetin</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-6">
+                        <!-- Action Buttons -->
+                        <div class="flex items-center space-x-4">
+
+                            <button class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition-all duration-300 group">
+                                <i class="fas fa-calendar-alt text-gray-300 group-hover:text-blue-500 text-lg"></i>
+                            </button>
+
+                            <button class="relative w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition-all duration-300 group">
+                                <i class="fas fa-bell text-gray-300 group-hover:text-yellow-400 text-lg"></i>
+                                <div class="absolute -top-2 -right-2 w-5 h-5 bg-danger rounded-full flex items-center justify-center notification-dot">
+                                    <span class="text-xs font-bold">12</span>
+                                </div>
+                            </button>
+
+                            <button class="w-10 h-10 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all duration-300 group">
+                                <i class="fas fa-envelope text-gray-300 group-hover:text-amber-400 text-lg"></i>
+                            </button>
+
+                            <button class="w-10 h-10 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all duration-300 group">
+                                <i class="fas fa-comments text-grey-300 group-hover:text-green-400 text-lg"></i>
+                            </button>
+                            
+                            <div class="w-px h-10 bg-white/20"></div>
+
+                            <button class="w-10 h-10 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all duration-300 group">
+                                <i class="fas fa-lightbulb text-gray-300 group-hover:text-orange-500 text-lg"></i>
+                            </button>
+
+                            <button class="w-10 h-10 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all duration-300 group">
+                                <i class="fas fa-project-diagram text-gray-300 group-hover:text-indigo-500 text-lg"></i>
+                            </button>
+
+                            <div class="w-px h-10 bg-white/20"></div>                    
+
+                            <div class="flex items-center space-x-4">
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-white">Mehmet Özkan</p>
+                                    <p class="text-sm text-gray-400">Sistem Yöneticisi</p>
+                                </div>
+                                <div class="w-12 h-12 bg-gradient-to-br from-accent to-purple-600 rounded-2xl flex items-center justify-center">
+                                    <i class="fas fa-user-tie text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>            
+            <!-- Main Dashboard Content -->
+            <main class="flex-1 p-6 bg-primary">
+                 <!-- The main content area is intentionally left blank as in the original screenshot -->
+                 <!-- You can add the dashboard widgets and charts from your full HTML file here if needed. -->
+            </main>
+        </div>
+    </div>
+
+<script>
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Departments Toggle
+        function toggleDepartments() {
+            const departmentsList = document.getElementById('departmentsList');
+            const chevron = document.getElementById('departmentsChevron');
+            
+            departmentsList.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // Social Facilities Toggle
+        function toggleSocialFacilities() {
+            const socialFacilitiesList = document.getElementById('socialFacilitiesList');
+            const chevron = document.getElementById('socialFacilitiesChevron');
+            
+            socialFacilitiesList.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // Technical Office Toggle
+        function toggleTechnicalOffice() {
+            const technicalOfficeList = document.getElementById('technicalOfficeList');
+            const chevron = document.getElementById('technicalOfficeChevron');
+            
+            technicalOfficeList.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // System Menu Toggle
+        function toggleSystemMenu() {
+            const systemMenuDropdown = document.getElementById('systemMenuDropdown');
+            const chevron = document.getElementById('systemMenuChevron');
+            
+            systemMenuDropdown.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const systemMenuDropdown = document.getElementById('systemMenuDropdown');
+            const systemMenuButton = event.target.closest('button[onclick="toggleSystemMenu()"]');
+            const menuButton = event.target.closest('button');
+            
+            // Close system menu when clicking outside
+            if (!systemMenuDropdown.contains(event.target) && !systemMenuButton) {
+                systemMenuDropdown.classList.add('hidden');
+                document.getElementById('systemMenuChevron').classList.remove('rotate-180');
+            }
+            
+            // Close sidebar when clicking outside on mobile
+            if (!sidebar.contains(event.target) && !menuButton?.onclick?.toString().includes('toggleSidebar')) {
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            }
+        }); 
+</script>    
+
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EJDER3200 - Ultimate Yönetim Platformu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0e27;
+            color: #e5e7eb;
+        }
+
+        /* test.html'den temel stiller */
+        .glass-morphism {
+            background: rgba(26, 31, 58, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar-gradient {
+            background: linear-gradient(180deg, rgba(10, 14, 39, 0.95) 0%, rgba(26, 31, 58, 0.9) 100%);
+            backdrop-filter: blur(25px);
+        }
+        .card-enterprise:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.2);
+        }
+        .submenu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-in-out; }
+        .submenu.open { max-height: 800px; }
+
+        /* canva-14.html'den stiller */
+        .notification-badge { animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+        .terminal { background: #1a1a1a; font-family: 'Courier New', monospace; color: #00ff00; }
+        #snowfall-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+        .snowflake { position: absolute; top: -20px; color: rgba(255, 255, 255, 0.7); user-select: none; animation: snowfall linear infinite; }
+        @keyframes snowfall { 0% { transform: translateY(0); } 100% { transform: translateY(100vh); } }
+    </style>
+</head>
+<body class="bg-[#0a0e27] text-slate-200 overflow-x-hidden">
+
+    <div id="snowfall-container"></div>
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-0">
+        <div class="absolute top-20 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-20 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: -3s;"></div>
+    </div>
+
+    <!-- Kenar Çubuğu (Sidebar) -->
+    <div id="sidebar" class="fixed left-0 top-0 h-full w-96 sidebar-gradient border-r border-white/10 transform transition-transform duration-300 z-50 overflow-y-auto">
+        <!-- Logo (canva-14) -->
+        <div class="p-6 text-center bg-gradient-to-br from-indigo-600 to-purple-700">
+            <h1 class="text-white text-2xl font-bold">EJDER3200</h1>
+            <p class="text-white/80 text-xs">Kayak Merkezleri A.Ş</p>
+        </div>
+        
+        <!-- User Profile (canva-14) -->
+        <div class="p-4 border-b border-white/20">
+            <div class="flex items-center space-x-3">
+                <div class="relative"><div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center"><span class="text-white font-bold">CTO</span></div><div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[#1a1f3a] animate-pulse"></div></div>
+                <div><p class="text-white font-semibold">Mehmet Kar</p><p class="text-slate-400 text-sm">Genel Müdür</p></div>
+            </div>
+            <div class="flex items-center justify-center space-x-3 mt-4">
+                <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full w-10 h-10 cursor-pointer hover:scale-105 transition-transform flex items-center justify-center" title="AI Asistan"><i class="fas fa-robot text-white text-sm"></i></div>
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full w-10 h-10 cursor-pointer hover:scale-105 transition-transform flex items-center justify-center" title="Fikir Havuzu"><i class="fas fa-lightbulb text-white text-sm"></i></div>
+                <div class="bg-gradient-to-r from-orange-500 to-red-500 rounded-full w-10 h-10 cursor-pointer hover:scale-105 transition-transform flex items-center justify-center" title="Projeler"><i class="fas fa-project-diagram text-white text-sm"></i></div>
+            </div>
+        </div>
+
+        <!-- Navigasyon Menüsü (test.html yapısı + canva-14 içeriği) -->
+        <nav class="p-6 flex-1">
+            <div class="space-y-2">
+                <a href="#" class="nav-module active p-4 flex items-center space-x-3 rounded-xl hover:bg-white/5 transition-colors">
+                    <i class="fas fa-chart-line w-6 text-indigo-400"></i>
+                    <div><span class="font-semibold text-white">Yönetici Paneli</span><div class="text-xs text-slate-400">Gerçek Zamanlı Analitik</div></div>
+                </a>
+
+                <div class="nav-module glass-morphism rounded-xl overflow-hidden">
+                    <button onclick="toggleSubmenu('departments-sub')" class="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors">
+                        <div class="flex items-center space-x-3"><i class="fas fa-building w-6 text-green-400"></i><div><span class="font-semibold text-white text-left">Departmanlar</span><div class="text-xs text-slate-400">Kurumsal Modüller</div></div></div>
+                        <i class="fas fa-chevron-down text-xs text-slate-400 transition-transform" id="departments-sub-icon"></i>
+                    </button>
+                    <div id="departments-sub" class="submenu bg-black/20"><div class="p-2 space-y-1">
+                        <a href="#" class="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg">Finansal Yönetim</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg">İnsan Kaynakları</a>
+                    </div></div>
+                </div>
+                
+                 <div class="nav-module glass-morphism rounded-xl overflow-hidden">
+                    <button onclick="toggleSubmenu('facilities-sub')" class="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors">
+                        <div class="flex items-center space-x-3"><i class="fas fa-concierge-bell w-6 text-yellow-400"></i><div><span class="font-semibold text-white text-left">Sosyal Tesisler</span><div class="text-xs text-slate-400">Konaklama & F&B</div></div></div>
+                        <i class="fas fa-chevron-down text-xs text-slate-400 transition-transform" id="facilities-sub-icon"></i>
+                    </button>
+                    <div id="facilities-sub" class="submenu bg-black/20"><div class="p-2 space-y-1">
+                        <a href="#" class="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg">Konaklama & Rezervasyon</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg">Restoran & Kafeler</a>
+                    </div></div>
+                </div>
+
+                <div class="nav-module glass-morphism rounded-xl overflow-hidden">
+                    <button onclick="toggleSubmenu('technical-sub')" class="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors">
+                        <div class="flex items-center space-x-3"><i class="fas fa-cogs w-6 text-cyan-400"></i><div><span class="font-semibold text-white text-left">Teknik Ofis</span><div class="text-xs text-slate-400">Altyapı & Sistemler</div></div></div>
+                        <i class="fas fa-chevron-down text-xs text-slate-400 transition-transform" id="technical-sub-icon"></i>
+                    </button>
+                    <div id="technical-sub" class="submenu bg-black/20"><div class="p-2 space-y-1">
+                        <a href="#" class="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg">Pist Yönetimi</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg">Teleferik Sistemi</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg">Enerji Sistemleri</a>
+                    </div></div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Ana İçerik Alanı -->
+    <div class="ml-96 min-h-screen relative z-10">
+        <!-- Header (test.html yapısı + canva-14 widgetları) -->
+        <header class="glass-morphism border-b border-white/10 px-8 py-4 sticky top-0 z-40">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 id="page-title" class="text-3xl font-bold text-white">Yönetici Paneli</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl p-3 cursor-pointer hover:scale-105 transition-transform">
+                        <div class="flex items-center space-x-3"><i class="fas fa-snowflake text-white text-2xl"></i><div><div class="text-white font-bold text-lg">-8°C</div><div class="text-white/80 text-xs">45cm Kar</div></div></div>
+                    </div>
+                    <button class="relative w-12 h-12 glass-morphism rounded-xl flex items-center justify-center text-red-500 hover:bg-red-500/20 transition-colors" title="Acil Durum Uyarıları"><i class="fas fa-exclamation-triangle text-xl"></i><span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold notification-badge">!</span></button>
+                    <button class="relative w-12 h-12 glass-morphism rounded-xl flex items-center justify-center text-slate-300 hover:bg-white/10 transition-colors" title="Bildirimler"><i class="fas fa-bell text-xl"></i><span class="absolute -top-1 -right-1 bg-indigo-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">12</span></button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Ana İçerik (canva-14'ten olduğu gibi alındı ve uyarlandı) -->
+        <main class="p-8">
+            <div id="dashboard-section" class="section-content">
+                <!-- KPI Kartları -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+                    <div class="bg-white/5 p-5 rounded-2xl card-enterprise border border-white/10">
+                        <div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-400">Aylık Gelir</span><div class="flex items-center text-green-400 text-sm font-semibold"><i class="fas fa-arrow-up mr-1 text-xs"></i>18.2%</div></div>
+                        <p class="text-3xl font-bold text-white">₺24.7M</p>
+                    </div>
+                    <div class="bg-white/5 p-5 rounded-2xl card-enterprise border border-white/10">
+                         <div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-400">Günlük Ziyaretçi</span><div class="flex items-center text-green-400 text-sm font-semibold"><i class="fas fa-arrow-up mr-1 text-xs"></i>25.8%</div></div>
+                        <p class="text-3xl font-bold text-white">3,247</p>
+                    </div>
+                    <div class="bg-white/5 p-5 rounded-2xl card-enterprise border border-white/10">
+                        <div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-400">Teleferik Kapasitesi</span><div class="text-green-400 text-sm font-semibold">8/9 Aktif</div></div>
+                        <p class="text-3xl font-bold text-white">%87</p>
+                    </div>
+                    <div class="bg-white/5 p-5 rounded-2xl card-enterprise border border-white/10">
+                         <div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-400">Rüzgar Hızı</span><div class="text-yellow-400 text-sm font-semibold">Orta</div></div>
+                        <p class="text-3xl font-bold text-white">15 km/s</p>
+                    </div>
+                    <div class="bg-white/5 p-5 rounded-2xl card-enterprise border border-white/10">
+                         <div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-400">Güvenlik Puanı</span><div class="text-green-400 text-sm font-semibold">24/7</div></div>
+                        <p class="text-3xl font-bold text-white">A+</p>
+                    </div>
+                </div>
+
+                <!-- Grafikler -->
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+                    <div class="lg:col-span-3 glass-morphism rounded-2xl p-6 card-enterprise">
+                        <h3 class="text-xl font-bold text-white mb-4">Gelir Analitikleri</h3>
+                        <div class="h-80"><canvas id="revenueChart"></canvas></div>
+                    </div>
+                    <div class="lg:col-span-2 glass-morphism rounded-2xl p-6 card-enterprise">
+                        <h3 class="text-xl font-bold text-white mb-4">Sistem Performansı</h3>
+                        <div class="h-80"><canvas id="performanceChart"></canvas></div>
+                    </div>
+                </div>
+                
+                <!-- İnteraktif Kontrol Paneli -->
+                <div class="glass-morphism rounded-2xl p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-white mb-6">İnteraktif Kontrol Paneli</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="p-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl cursor-pointer card-enterprise">
+                            <div class="flex items-center justify-between mb-4"><div class="flex items-center space-x-3"><i class="fas fa-cable-car text-3xl"></i><div><h4 class="text-xl font-bold">Teleferik Kontrol</h4><p class="text-sm opacity-90">8/9 Hat Aktif</p></div></div><div class="text-right"><div class="text-2xl font-bold">%87</div><div class="text-xs opacity-75">Kapasite</div></div></div>
+                        </div>
+                        <div class="p-6 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl cursor-pointer card-enterprise">
+                            <div class="flex items-center justify-between mb-4"><div class="flex items-center space-x-3"><i class="fas fa-snowflake text-3xl"></i><div><h4 class="text-xl font-bold">Kar Makinaları</h4><p class="text-sm opacity-90">12/15 Aktif</p></div></div><div class="text-right"><div class="text-2xl font-bold">%80</div><div class="text-xs opacity-75">Verimlilik</div></div></div>
+                        </div>
+                        <div class="p-6 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl cursor-pointer card-enterprise">
+                             <div class="flex items-center justify-between mb-4"><div class="flex items-center space-x-3"><i class="fas fa-shield-alt text-3xl"></i><div><h4 class="text-xl font-bold">Güvenlik Sistemi</h4><p class="text-sm opacity-90">Tüm Alanlar Güvenli</p></div></div><div class="text-right"><div class="text-2xl font-bold">A+</div><div class="text-xs opacity-75">Güvenlik</div></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sistem Durumu & Terminal -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-1 glass-morphism rounded-2xl p-6 card-enterprise">
+                        <h3 class="text-xl font-bold text-white mb-4">Sistem Sağlığı</h3>
+                        <div class="space-y-4">
+                             <div class="flex items-center justify-between text-sm"><span class="text-slate-300">API Gateway</span><span class="font-bold text-green-400">Çalışıyor</span></div>
+                             <div class="flex items-center justify-between text-sm"><span class="text-slate-300">Bilet Sistemi</span><span class="font-bold text-green-400">Çalışıyor</span></div>
+                             <div class="flex items-center justify-between text-sm"><span class="text-slate-300">Teleferik Kontrol</span><span class="font-bold text-yellow-400">Yavaş</span></div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 glass-morphism rounded-2xl p-6 card-enterprise">
+                        <h3 class="text-xl font-bold text-white mb-4">Resort Control Terminal</h3>
+                        <div class="terminal rounded-lg p-4 h-40 overflow-y-auto text-sm">
+                            <p class="text-gray-400">> lift-control status --all</p>
+                            <p class="text-green-400">● Lift System Status: OPERATIONAL</p>
+                            <p class="text-gray-400">> snow-depth-monitor --pists</p>
+                            <p class="text-yellow-400">WARN: Başlangıç pisti kar kalınlığı 25cm altında.</p>
+                            <p class="text-gray-400">> <span class="animate-pulse bg-green-400 w-2 h-4 inline-block"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function createSnowfall() {
+            const container = document.getElementById('snowfall-container');
+            const snowflakeCount = 40;
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = '❄';
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.animationDuration = (Math.random() * 8 + 7) + 's';
+                snowflake.style.animationDelay = Math.random() * 10 + 's';
+                snowflake.style.opacity = Math.random() * 0.5 + 0.2;
+                snowflake.style.fontSize = (Math.random() * 8 + 8) + 'px';
+                container.appendChild(snowflake);
+            }
+        }
+
+        function toggleSubmenu(submenuId) {
+            const submenu = document.getElementById(submenuId);
+            const icon = document.getElementById(submenuId + '-icon');
+            const isOpen = submenu.classList.contains('open');
+            document.querySelectorAll('.submenu.open').forEach(sub => {
+                if (sub.id !== submenuId) {
+                    sub.classList.remove('open');
+                    document.getElementById(sub.id + '-icon').style.transform = 'rotate(0deg)';
+                }
+            });
+            if (!isOpen) { submenu.classList.add('open'); icon.style.transform = 'rotate(180deg)'; } 
+            else { submenu.classList.remove('open'); icon.style.transform = 'rotate(0deg)'; }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            createSnowfall();
+            const darkThemeChartOptions = {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#9ca3af' } } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                    x: { ticks: { color: '#9ca3af' }, grid: { display: false } }
+                }
+            };
+            
+            new Chart(document.getElementById('revenueChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Bilet', 'Teleferik', 'Konaklama', 'Restoran', 'Kiralama'],
+                    datasets: [{ label: 'Gelir (₺ bin)', data: [125, 89, 156, 67, 34], backgroundColor: 'rgba(79, 70, 229, 0.7)', borderRadius: 8 }]
+                },
+                options: darkThemeChartOptions
+            });
+
+            new Chart(document.getElementById('performanceChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['08:00', '10:00', '12:00', '14:00', '16:00'],
+                    datasets: [
+                        { label: 'Sistem Yükü (%)', data: [68, 74, 82, 69, 58], borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.2)', fill: true, tension: 0.4 },
+                        { label: 'Ziyaretçi', data: [289, 334, 367, 298, 156], borderColor: '#06b6d4', backgroundColor: 'rgba(6, 182, 212, 0.2)', fill: true, tension: 0.4, borderDash: [5, 5] }
+                    ]
+                },
+                options: darkThemeChartOptions
+            });
+        });
+    </script>
+</body>
+</html>
