@@ -1,15 +1,14 @@
-{% extends 'base.html' %}
-{% block title %}Ajanda{% endblock title %}
-{% block breadcrumb %}
-<i class="fas fa-chevron-right text-slate-400 text-xs"></i>
-<span class="text-slate-600">Asistan & Ajanda</span>
-{% endblock breadcrumb %}
-
-{% block page_description %}Takvim, görevler ve iletişim yönetimi{% endblock page_description %}
-
-{% block extra_styles %}
-<!-- Script -->
-<style>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal İnovasyon Yönetim Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         
         * {
@@ -17,172 +16,357 @@
         }
         
         body {
-            background: #fafbfc;
-            color: #1a202c;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #0f172a;
+            min-height: 100vh;
         }
         
-        /* Professional Color Palette */
+        /* Enhanced Corporate Color Palette */
         :root {
             --primary-50: #eff6ff;
             --primary-100: #dbeafe;
             --primary-500: #3b82f6;
             --primary-600: #2563eb;
             --primary-700: #1d4ed8;
+            --primary-800: #1e40af;
             --primary-900: #1e3a8a;
             
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
             
-            --success-50: #ecfdf5;
-            --success-500: #10b981;
-            --success-600: #059669;
+            --success-50: #f0fdf4;
+            --success-500: #22c55e;
+            --success-600: #16a34a;
+            --success-700: #15803d;
             
-            --warning-50: #fffbeb;
-            --warning-500: #f59e0b;
-            --warning-600: #d97706;
+            --warning-50: #fefce8;
+            --warning-500: #eab308;
+            --warning-600: #ca8a04;
             
             --error-50: #fef2f2;
             --error-500: #ef4444;
             --error-600: #dc2626;
+            
+            --indigo-50: #eef2ff;
+            --indigo-500: #6366f1;
+            --indigo-600: #4f46e5;
+            
+            --emerald-50: #ecfdf5;
+            --emerald-500: #10b981;
+            --emerald-600: #059669;
+            
+            --violet-50: #f5f3ff;
+            --violet-500: #8b5cf6;
+            --violet-600: #7c3aed;
         }
         
-        /* Professional Header */
+        /* Enhanced Corporate Header */
         .professional-header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 25%, var(--primary-900) 50%, var(--indigo-900) 75%, var(--violet-900) 100%);
+            box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.3), 0 4px 6px -2px rgba(15, 23, 42, 0.2);
+            position: relative;
+            overflow: hidden;
         }
         
-        /* Professional Cards */
+        .professional-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        /* Enhanced Corporate Cards */
         .professional-card {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 24px;
+            box-shadow: 
+                0 4px 6px -1px rgba(15, 23, 42, 0.05),
+                0 2px 4px -1px rgba(15, 23, 42, 0.03),
+                0 0 0 1px rgba(255, 255, 255, 0.8);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .professional-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, 
+                var(--primary-500) 0%, 
+                var(--indigo-500) 25%, 
+                var(--violet-500) 50%, 
+                var(--emerald-500) 75%, 
+                var(--primary-500) 100%);
+            opacity: 0;
+            transition: all 0.4s ease;
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        .professional-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.03) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
         }
         
         .professional-card:hover {
-            border-color: var(--primary-200);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transform: translateY(-1px);
+            border-color: rgba(59, 130, 246, 0.2);
+            box-shadow: 
+                0 20px 25px -5px rgba(15, 23, 42, 0.08),
+                0 10px 10px -5px rgba(15, 23, 42, 0.04),
+                0 0 0 1px rgba(59, 130, 246, 0.1),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+            transform: translateY(-4px) scale(1.01);
         }
         
-        /* Status Indicators */
-        .status-draft { border-left: 4px solid var(--gray-400); }
-        .status-review { border-left: 4px solid var(--warning-500); }
-        .status-approved { border-left: 4px solid var(--success-500); }
-        .status-development { border-left: 4px solid var(--primary-500); }
-        .status-completed { border-left: 4px solid var(--success-600); }
-        .status-rejected { border-left: 4px solid var(--error-500); }
+        .professional-card:hover::before {
+            opacity: 1;
+        }
         
-        /* Professional Buttons */
+        .professional-card:hover::after {
+            opacity: 1;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* Enhanced Status Indicators */
+        .status-draft { 
+            border-left: 4px solid var(--slate-400);
+            background: linear-gradient(135deg, var(--slate-50), rgba(248, 250, 252, 0.5));
+        }
+        .status-review { 
+            border-left: 4px solid var(--warning-500);
+            background: linear-gradient(135deg, var(--warning-50), rgba(254, 252, 232, 0.5));
+        }
+        .status-approved { 
+            border-left: 4px solid var(--success-500);
+            background: linear-gradient(135deg, var(--success-50), rgba(240, 253, 244, 0.5));
+        }
+        .status-development { 
+            border-left: 4px solid var(--primary-500);
+            background: linear-gradient(135deg, var(--primary-50), rgba(239, 246, 255, 0.5));
+        }
+        .status-completed { 
+            border-left: 4px solid var(--emerald-600);
+            background: linear-gradient(135deg, var(--emerald-50), rgba(236, 253, 245, 0.5));
+        }
+        .status-rejected { 
+            border-left: 4px solid var(--error-500);
+            background: linear-gradient(135deg, var(--error-50), rgba(254, 242, 242, 0.5));
+        }
+        
+        /* Enhanced Corporate Buttons */
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            background: linear-gradient(135deg, 
+                var(--primary-600) 0%, 
+                var(--primary-700) 50%, 
+                var(--indigo-600) 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 12px 24px;
-            font-weight: 600;
+            border-radius: 16px;
+            padding: 16px 32px;
+            font-weight: 700;
             font-size: 14px;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            letter-spacing: 0.025em;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 8px 16px -4px rgba(59, 130, 246, 0.3),
+                0 4px 8px -2px rgba(59, 130, 246, 0.2),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            padding: 1px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.3), 
+                transparent, 
+                rgba(255, 255, 255, 0.1));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: xor;
+            pointer-events: none;
         }
         
         .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-700), var(--primary-900));
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transform: translateY(-1px);
+            background: linear-gradient(135deg, 
+                var(--primary-700) 0%, 
+                var(--primary-800) 50%, 
+                var(--indigo-700) 100%);
+            box-shadow: 
+                0 16px 24px -4px rgba(59, 130, 246, 0.4),
+                0 8px 16px -4px rgba(59, 130, 246, 0.3),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px) scale(1.02);
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-1px) scale(1.01);
+            transition: all 0.1s ease;
         }
         
         .btn-secondary {
-            background: white;
-            color: var(--gray-700);
-            border: 1px solid var(--gray-300);
-            border-radius: 8px;
-            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            color: var(--slate-700);
+            border: 1px solid var(--slate-300);
+            border-radius: 12px;
+            padding: 14px 28px;
             font-weight: 500;
             font-size: 14px;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.1);
         }
         
         .btn-secondary:hover {
-            background: var(--gray-50);
-            border-color: var(--gray-400);
+            background: rgba(248, 250, 252, 0.95);
+            border-color: var(--slate-400);
+            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1);
+            transform: translateY(-1px);
         }
         
-        /* Professional Inputs */
+        /* Enhanced Corporate Inputs */
         .professional-input {
-            background: white;
-            border: 1px solid var(--gray-300);
-            border-radius: 8px;
-            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--slate-300);
+            border-radius: 12px;
+            padding: 14px 18px;
             font-size: 14px;
-            transition: all 0.2s ease;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%;
+            box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
         }
         
         .professional-input:focus {
             outline: none;
             border-color: var(--primary-500);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1), 0 4px 6px -1px rgba(15, 23, 42, 0.1);
+            transform: translateY(-1px);
         }
         
-        /* Professional Modal */
+        .professional-input::placeholder {
+            color: var(--slate-400);
+            font-weight: 400;
+        }
+        
+        /* Enhanced Corporate Modal */
         .professional-modal {
-            backdrop-filter: blur(8px);
-            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.8);
         }
         
         .modal-content {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--slate-200);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
             max-height: 90vh;
             overflow: hidden;
+            position: relative;
         }
         
-        /* Professional Typography */
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-500), var(--indigo-500), var(--violet-500), transparent);
+        }
+        
+        /* Enhanced Corporate Typography */
         .heading-1 {
             font-size: 32px;
             font-weight: 800;
             line-height: 1.2;
-            color: var(--gray-900);
+            color: var(--slate-900);
+            letter-spacing: -0.025em;
         }
         
         .heading-2 {
             font-size: 24px;
             font-weight: 700;
             line-height: 1.3;
-            color: var(--gray-900);
+            color: var(--slate-900);
+            letter-spacing: -0.02em;
         }
         
         .heading-3 {
             font-size: 20px;
             font-weight: 600;
             line-height: 1.4;
-            color: var(--gray-800);
+            color: var(--slate-800);
+            letter-spacing: -0.015em;
         }
         
         .body-text {
             font-size: 14px;
             font-weight: 400;
-            line-height: 1.5;
-            color: var(--gray-600);
+            line-height: 1.6;
+            color: var(--slate-600);
         }
         
         .caption-text {
             font-size: 12px;
             font-weight: 500;
             line-height: 1.4;
-            color: var(--gray-500);
+            color: var(--slate-500);
+            letter-spacing: 0.025em;
         }
         
         /* Professional Animations */
@@ -305,20 +489,96 @@
             position: fixed;
             bottom: 32px;
             right: 32px;
-            width: 64px;
-            height: 64px;
+            width: 72px;
+            height: 72px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            background: linear-gradient(135deg, 
+                var(--primary-600) 0%, 
+                var(--primary-700) 50%, 
+                var(--indigo-600) 100%);
             color: white;
             border: none;
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 
+                0 12px 24px -4px rgba(59, 130, 246, 0.4),
+                0 8px 16px -4px rgba(59, 130, 246, 0.3),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            position: fixed;
+            overflow: hidden;
+        }
+        
+        .fab::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2), 
+                transparent, 
+                rgba(255, 255, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         .fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.4);
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 
+                0 20px 32px -4px rgba(59, 130, 246, 0.5),
+                0 12px 24px -4px rgba(59, 130, 246, 0.4),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        .fab:hover::before {
+            opacity: 1;
+        }
+        
+        .fab:active {
+            transform: scale(1.05) rotate(2deg);
+            transition: all 0.1s ease;
+        }
+        
+        /* Icon Animation Classes */
+        .icon-bounce {
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+        
+        .icon-pulse {
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+        
+        .icon-rotate {
+            animation: iconRotate 3s linear infinite;
+        }
+        
+        .icon-glow {
+            filter: drop-shadow(0 0 8px currentColor);
+            animation: iconGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes iconBounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        @keyframes iconRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes iconGlow {
+            from { filter: drop-shadow(0 0 4px currentColor); }
+            to { filter: drop-shadow(0 0 12px currentColor); }
         }
         
         /* Professional Filters */
@@ -330,32 +590,85 @@
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
         }
         
-        /* Professional Stats Cards */
+        /* Enhanced Corporate Stats Cards */
         .stat-card {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            padding: 24px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 20px;
+            padding: 32px;
             text-align: center;
-            transition: all 0.2s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, 
+                var(--primary-500) 0%, 
+                var(--indigo-500) 25%, 
+                var(--violet-500) 50%, 
+                var(--emerald-500) 75%, 
+                var(--primary-500) 100%);
+            opacity: 0;
+            transition: all 0.4s ease;
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
         }
         
         .stat-card:hover {
-            border-color: var(--primary-200);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-color: rgba(59, 130, 246, 0.2);
+            box-shadow: 
+                0 20px 25px -5px rgba(15, 23, 42, 0.08),
+                0 10px 10px -5px rgba(15, 23, 42, 0.04),
+                0 0 0 1px rgba(59, 130, 246, 0.1),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+            transform: translateY(-4px) scale(1.02);
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        
+        .stat-card:hover::after {
+            opacity: 1;
         }
         
         .stat-number {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 800;
             line-height: 1;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--slate-900), var(--slate-700));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .stat-label {
             font-size: 14px;
-            font-weight: 500;
-            color: var(--gray-600);
+            font-weight: 600;
+            color: var(--slate-600);
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
         }
         
         /* Responsive Design */
@@ -469,13 +782,11 @@
             align-items: center;
             gap: 4px;
         }
-</style>
-{% endblock extra_styles %}
-
-{% block content %}
-<!-- Main content -->
-<!-- Spectacular Header -->
-<header class="relative overflow-hidden">
+    </style>
+</head>
+<body>
+    <!-- Spectacular Header -->
+    <header class="relative overflow-hidden">
         <!-- Animated Background -->
         <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-blue-900 to-purple-900">
             <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
@@ -497,12 +808,15 @@
             <!-- Spectacular Header Top -->
             <div class="flex items-center justify-between mb-12">
                 <div class="flex items-center space-x-6">
-                    <div class="relative">
-                        <div class="w-16 h-16 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20 shadow-2xl">
-                            <i class="fas fa-lightbulb text-3xl text-white animate-pulse"></i>
+                    <div class="relative group">
+                        <div class="w-20 h-20 bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-lg rounded-3xl flex items-center justify-center border border-white/30 shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                            <i class="fas fa-lightbulb text-4xl text-white icon-glow"></i>
                         </div>
-                        <div class="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
-                            <i class="fas fa-star text-white text-xs"></i>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                            <i class="fas fa-star text-white text-sm icon-bounce"></i>
+                        </div>
+                        <div class="absolute -bottom-1 -left-1 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-md">
+                            <i class="fas fa-check text-white text-xs"></i>
                         </div>
                     </div>
                     <div>
@@ -529,8 +843,8 @@
                 <div class="group relative">
                     <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
                     <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                        <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <i class="fas fa-lightbulb text-white text-xl"></i>
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-blue-500/30 group-hover:shadow-2xl group-hover:shadow-blue-500/40 transition-all duration-300">
+                            <i class="fas fa-lightbulb text-white text-2xl icon-pulse"></i>
                         </div>
                         <div class="text-3xl font-black text-white mb-2" id="totalIdeas">24</div>
                         <div class="text-blue-100 text-sm font-semibold">Toplam Fikir</div>
@@ -538,12 +852,13 @@
                             <div class="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full animate-pulse" style="width: 85%"></div>
                         </div>
                     </div>
-                </div>                
+                </div>
+                
                 <div class="group relative">
                     <div class="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
                     <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                        <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <i class="fas fa-check-circle text-white text-xl"></i>
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 via-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-emerald-500/30 group-hover:shadow-2xl group-hover:shadow-emerald-500/40 transition-all duration-300">
+                            <i class="fas fa-check-circle text-white text-2xl icon-bounce"></i>
                         </div>
                         <div class="text-3xl font-black text-white mb-2" id="approvedIdeas">8</div>
                         <div class="text-green-100 text-sm font-semibold">Onaylanan</div>
@@ -551,12 +866,13 @@
                             <div class="h-full bg-gradient-to-r from-green-400 to-emerald-600 rounded-full animate-pulse" style="width: 65%"></div>
                         </div>
                     </div>
-                </div>                
+                </div>
+                
                 <div class="group relative">
                     <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
                     <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <i class="fas fa-clock text-white text-xl"></i>
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 via-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-orange-500/30 group-hover:shadow-2xl group-hover:shadow-orange-500/40 transition-all duration-300">
+                            <i class="fas fa-clock text-white text-2xl icon-rotate"></i>
                         </div>
                         <div class="text-3xl font-black text-white mb-2" id="reviewIdeas">6</div>
                         <div class="text-yellow-100 text-sm font-semibold">İncelemede</div>
@@ -564,12 +880,13 @@
                             <div class="h-full bg-gradient-to-r from-yellow-400 to-orange-600 rounded-full animate-pulse" style="width: 45%"></div>
                         </div>
                     </div>
-                </div>                
+                </div>
+                
                 <div class="group relative">
                     <div class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
                     <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                        <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <i class="fas fa-cogs text-white text-xl"></i>
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-400 via-violet-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-purple-500/30 group-hover:shadow-2xl group-hover:shadow-purple-500/40 transition-all duration-300">
+                            <i class="fas fa-cogs text-white text-2xl icon-rotate"></i>
                         </div>
                         <div class="text-3xl font-black text-white mb-2" id="developmentIdeas">4</div>
                         <div class="text-purple-100 text-sm font-semibold">Geliştirmede</div>
@@ -577,12 +894,13 @@
                             <div class="h-full bg-gradient-to-r from-purple-400 to-pink-600 rounded-full animate-pulse" style="width: 35%"></div>
                         </div>
                     </div>
-                </div>                
+                </div>
+                
                 <div class="group relative">
                     <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
                     <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <i class="fas fa-trophy text-white text-xl"></i>
+                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-400 via-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-indigo-500/30 group-hover:shadow-2xl group-hover:shadow-indigo-500/40 transition-all duration-300">
+                            <i class="fas fa-trophy text-white text-2xl icon-glow"></i>
                         </div>
                         <div class="text-3xl font-black text-white mb-2">%68</div>
                         <div class="text-indigo-100 text-sm font-semibold">Başarı Oranı</div>
@@ -591,43 +909,42 @@
                         </div>
                     </div>
                 </div>
-            </div>            
-            <!-- Spectacular Quick Actions -->
-            <div class="mt-12 flex flex-wrap items-center justify-center gap-4">
-                <button id="addIdeaBtn" class="group relative px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl font-bold text-white shadow-2xl hover:shadow-yellow-500/25 transition-all duration-300 hover:scale-105">
-                    <div class="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative flex items-center space-x-3">
-                        <i class="fas fa-plus-circle text-xl"></i>
-                        <span class="text-lg">Yeni Fikir Ekle</span>
-                    </div>
-                </button>
-                
-                <button id="showProjectsBtn" class="group relative px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl font-semibold text-white hover:bg-white/20 transition-all duration-300 hover:scale-105">
-                    <div class="flex items-center space-x-3">
-                        <i class="fas fa-project-diagram text-lg"></i>
-                        <span>Projeler</span>
-                    </div>
-                </button>
-                
-                <button class="group relative px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl font-semibold text-white hover:bg-white/20 transition-all duration-300 hover:scale-105">
-                    <div class="flex items-center space-x-3">
-                        <i class="fas fa-chart-bar text-lg"></i>
-                        <span>Analitik Rapor</span>
-                    </div>
-                </button>
             </div>
+            
+
         </div>
-</header>
-<!-- Professional Main Content -->
-<main class="max-w-7xl mx-auto px-6 py-8">
-        <!-- Navigation Tabs -->
+        
+
+    </header>
+
+    <!-- Professional Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Modern Navigation -->
         <div class="mb-8">
-            <div class="flex items-center space-x-1 bg-white rounded-xl p-1 shadow-sm border border-gray-200">
-                <button id="ideasTab" class="flex-1 px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 bg-blue-500 text-white">
-                    <i class="fas fa-lightbulb mr-2"></i>Fikirler
+            <div class="flex items-center space-x-2">
+                <button id="ideasTab" class="group relative px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-lightbulb text-lg"></i>
+                        </div>
+                        <span>Fikirler</span>
+                        <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">
+                            ${ideas.length}
+                        </div>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-orange-400 to-pink-400 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
-                <button id="projectsTab" class="flex-1 px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 text-gray-600 hover:text-gray-800 hover:bg-gray-50">
-                    <i class="fas fa-project-diagram mr-2"></i>Projeler
+                
+                <button id="projectsTab" class="group relative px-6 py-3 bg-white text-gray-700 rounded-2xl font-bold text-lg shadow-lg border-2 border-gray-200 hover:border-orange-300 hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gray-100 group-hover:bg-orange-100 rounded-xl flex items-center justify-center transition-colors">
+                            <i class="fas fa-project-diagram text-lg group-hover:text-orange-600"></i>
+                        </div>
+                        <span class="group-hover:text-orange-600 transition-colors">Projeler</span>
+                        <div class="w-6 h-6 bg-gray-100 group-hover:bg-orange-100 rounded-full flex items-center justify-center text-sm font-bold group-hover:text-orange-600 transition-colors">
+                            ${projects.length}
+                        </div>
+                    </div>
                 </button>
             </div>
         </div>
@@ -651,37 +968,50 @@
                 </button>
             </div>
         </div>
+
         <!-- Projects View -->
         <div id="projectsView" class="hidden">
-            <!-- Project Stats -->
+            <!-- Enhanced Project Stats -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="professional-card p-6 text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-tasks text-white text-xl"></i>
+                <div class="stat-card group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary-500/25 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-tasks text-white text-2xl"></i>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900 mb-1">12</div>
-                    <div class="text-sm text-gray-600">Aktif Proje</div>
+                    <div class="stat-number text-primary-600">12</div>
+                    <div class="stat-label">Aktif Proje</div>
+                    <div class="mt-3 w-full bg-slate-200 rounded-full h-1">
+                        <div class="bg-gradient-to-r from-primary-500 to-primary-600 h-1 rounded-full" style="width: 75%"></div>
+                    </div>
                 </div>
-                <div class="professional-card p-6 text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-check-circle text-white text-xl"></i>
+                <div class="stat-card group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/25 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-check-circle text-white text-2xl"></i>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900 mb-1">8</div>
-                    <div class="text-sm text-gray-600">Tamamlanan</div>
+                    <div class="stat-number text-emerald-600">8</div>
+                    <div class="stat-label">Tamamlanan</div>
+                    <div class="mt-3 w-full bg-slate-200 rounded-full h-1">
+                        <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-1 rounded-full" style="width: 100%"></div>
+                    </div>
                 </div>
-                <div class="professional-card p-6 text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-clock text-white text-xl"></i>
+                <div class="stat-card group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-warning-500 to-warning-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-warning-500/25 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-clock text-white text-2xl"></i>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900 mb-1">3</div>
-                    <div class="text-sm text-gray-600">Geciken</div>
+                    <div class="stat-number text-warning-600">3</div>
+                    <div class="stat-label">Geciken</div>
+                    <div class="mt-3 w-full bg-slate-200 rounded-full h-1">
+                        <div class="bg-gradient-to-r from-warning-500 to-warning-600 h-1 rounded-full" style="width: 25%"></div>
+                    </div>
                 </div>
-                <div class="professional-card p-6 text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-users text-white text-xl"></i>
+                <div class="stat-card group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-violet-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-violet-500/25 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-users text-white text-2xl"></i>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900 mb-1">45</div>
-                    <div class="text-sm text-gray-600">Takım Üyesi</div>
+                    <div class="stat-number text-violet-600">45</div>
+                    <div class="stat-label">Takım Üyesi</div>
+                    <div class="mt-3 w-full bg-slate-200 rounded-full h-1">
+                        <div class="bg-gradient-to-r from-violet-500 to-violet-600 h-1 rounded-full" style="width: 90%"></div>
+                    </div>
                 </div>
             </div>
 
@@ -690,376 +1020,178 @@
                 <!-- Projects will be populated by JavaScript -->
             </div>
         </div>
-</main>
-{% endblock content %}
+    </main>
 
-{% block modals %}
-<!-- Modal -->
-<!-- Professional Add/Edit Idea Modal -->
-<div id="ideaModal" class="hidden fixed inset-0 z-50 professional-modal">
-        <div class="flex items-center justify-center min-h-screen">
-            <div class="modal-content w-full h-full max-w-none max-h-none rounded-none slide-up overflow-hidden flex flex-col">
+    <!-- Modern Floating Action Button -->
+    <button id="fabAddIdea" class="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-full shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 hover:scale-110 z-50 flex items-center justify-center group" title="Yeni Fikir Ekle">
+        <i class="fas fa-plus text-xl group-hover:rotate-90 transition-transform duration-300"></i>
+    </button>
+
+    <!-- Modern Add/Edit Idea Modal -->
+    <div id="ideaModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
                 <!-- Modal Header -->
-                <div class="px-8 py-6 border-b border-gray-200">
-                    <div class="flex items-center justify-between mb-4">
+                <div class="bg-gradient-to-r from-orange-500 to-pink-500 px-8 py-6 text-white">
+                    <div class="flex items-center justify-between">
                         <div>
-                            <h2 class="heading-2" id="modalTitle">Yeni Fikir Ekle</h2>
-                            <p class="body-text mt-1">Fikrinizi detaylandırın ve değerlendirme sürecine gönderin</p>
+                            <h2 class="text-2xl font-bold" id="modalTitle">✨ Yeni Fikir Ekle</h2>
+                            <p class="text-orange-100 mt-1">Hayal gücünü gerçeğe dönüştür</p>
                         </div>
-                        <button id="closeModal" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
-                            <i class="fas fa-times text-gray-500"></i>
+                        <button id="closeModal" class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors">
+                            <i class="fas fa-times text-white"></i>
                         </button>
                     </div>
-                    
-                    <!-- Professional Progress -->
-                    <div class="mb-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="caption-text font-semibold" id="stepTitle">Temel Bilgiler</span>
-                            <span class="caption-text" id="progressText">1 / 6</span>
-                        </div>
-                        <div class="progress-container">
-                            <div id="progressBar" class="progress-bar" style="width: 16.67%"></div>
-                        </div>
-                    </div>                    
-                    <!-- Professional Step Indicators -->
-                    <div class="flex justify-between">
-                        <div class="step-indicator active" data-step="1">
-                            <div class="step-circle">
-                                <i class="fas fa-info-circle"></i>
-                            </div>
-                            <div class="step-label">Temel</div>
-                        </div>
-                        <div class="step-indicator" data-step="2">
-                            <div class="step-circle">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <div class="step-label">Detay</div>
-                        </div>
-                        <div class="step-indicator" data-step="3">
-                            <div class="step-circle">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="step-label">Analiz</div>
-                        </div>
-                        <div class="step-indicator" data-step="4">
-                            <div class="step-circle">
-                                <i class="fas fa-money-bill-wave"></i>
-                            </div>
-                            <div class="step-label">Bütçe</div>
-                        </div>
-                        <div class="step-indicator" data-step="5">
-                            <div class="step-circle">
-                                <i class="fas fa-handshake"></i>
-                            </div>
-                            <div class="step-label">Ortaklık</div>
-                        </div>
-                        <div class="step-indicator" data-step="6">
-                            <div class="step-circle">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                            <div class="step-label">Plan</div>
-                        </div>
-                    </div>
                 </div>
+
                 <!-- Modal Content -->
-                <div class="px-8 py-6 flex-1 overflow-y-auto" style="max-height: calc(100vh - 280px);">
-                    <form id="ideaForm">
-                        <!-- Step 1: Basic Information -->
-                        <div id="step1" class="step-content active space-y-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Fikir Başlığı *
-                                </label>
-                                <input type="text" id="ideaTitle" required 
-                                       class="professional-input" 
-                                       placeholder="Fikrinizin kısa ve açıklayıcı başlığını yazın">
-                            </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Kategori *
-                                    </label>
-                                    <select id="ideaCategory" required class="professional-input">
-                                        <option value="">Kategori seçiniz</option>
-                                        <option value="teknoloji">Teknoloji</option>
-                                        <option value="pazarlama">Pazarlama</option>
-                                        <option value="urun">Ürün Geliştirme</option>
-                                        <option value="operasyon">Operasyon</option>
-                                        <option value="finans">Finans</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Öncelik *
-                                    </label>
-                                    <select id="ideaPriority" required class="professional-input">
-                                        <option value="">Öncelik seçiniz</option>
-                                        <option value="critical">Kritik</option>
-                                        <option value="high">Yüksek</option>
-                                        <option value="medium">Orta</option>
-                                        <option value="low">Düşük</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Fikir Özeti *
-                                </label>
-                                <textarea id="ideaSummary" rows="4" required maxlength="500"
-                                          class="professional-input resize-none"
-                                          placeholder="Fikrinizi kısaca özetleyin (maksimum 500 karakter)"></textarea>
-                                <div class="flex justify-end mt-1">
-                                    <span class="caption-text" id="summaryCounter">0/500</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Step 2: Detailed Description -->
-                        <div id="step2" class="step-content space-y-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Problem Tanımı *
-                                </label>
-                                <textarea id="problemDescription" rows="3" required
-                                          class="professional-input resize-none"
-                                          placeholder="Hangi problemi çözmeyi hedefliyorsunuz?"></textarea>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Çözüm Önerisi *
-                                </label>
-                                <textarea id="solutionDescription" rows="4" required
-                                          class="professional-input resize-none"
-                                          placeholder="Önerdiğiniz çözümü detaylandırın"></textarea>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Hedef Kitle
-                                </label>
-                                <textarea id="targetAudience" rows="3"
-                                          class="professional-input resize-none"
-                                          placeholder="Bu çözümden kimler faydalanacak?"></textarea>
-                            </div>
-                        </div>
-                        <!-- Step 3: Benefits & Impact -->
-                        <div id="step3" class="step-content space-y-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Beklenen Faydalar
-                                </label>
-                                <textarea id="expectedBenefits" rows="4"
-                                          class="professional-input resize-none"
-                                          placeholder="Bu fikrin sağlayacağı faydaları listeleyin"></textarea>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        ROI Tahmini (%)
-                                    </label>
-                                    <input type="number" id="roiEstimate" min="0" max="1000"
-                                           class="professional-input"
-                                           placeholder="Yatırım getirisi tahmini">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Risk Seviyesi
-                                    </label>
-                                    <select id="riskLevel" class="professional-input">
-                                        <option value="low">Düşük Risk</option>
-                                        <option value="medium">Orta Risk</option>
-                                        <option value="high">Yüksek Risk</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Başarı Metrikleri (KPI)
-                                </label>
-                                <textarea id="kpis" rows="4"
-                                          class="professional-input resize-none"
-                                          placeholder="Başarıyı nasıl ölçeceksiniz?"></textarea>
-                            </div>
-                        </div>
-                        <!-- Step 4: Budget & Resources -->
-                        <div id="step4" class="step-content space-y-6">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Tahmini Bütçe (₺)
-                                    </label>
-                                    <input type="number" id="estimatedBudget" min="0"
-                                           class="professional-input"
-                                           placeholder="0">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Süre (Ay)
-                                    </label>
-                                    <input type="number" id="estimatedDuration" min="1" max="60"
-                                           class="professional-input"
-                                           placeholder="1">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Ekip Büyüklüğü
-                                    </label>
-                                    <input type="number" id="teamSize" min="1" max="50"
-                                           class="professional-input"
-                                           placeholder="1">
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Gerekli Kaynaklar
-                                </label>
-                                <textarea id="requiredResources" rows="5"
-                                          class="professional-input resize-none"
-                                          placeholder="İhtiyaç duyulan kaynakları listeleyin"></textarea>
-                            </div>
-                        </div>
-                        <!-- Step 5: Partnerships -->
-                        <div id="step5" class="step-content space-y-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Potansiyel İş Ortakları
-                                    </label>
-                                    <textarea id="potentialPartners" rows="4"
-                                              class="professional-input resize-none"
-                                              placeholder="Hangi firmalarla ortaklık kurabilirsiniz?"></textarea>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        İç Paydaşlar
-                                    </label>
-                                    <textarea id="internalStakeholders" rows="4"
-                                              class="professional-input resize-none"
-                                              placeholder="Hangi departmanlar dahil olacak?"></textarea>
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Dış Paydaşlar
-                                    </label>
-                                    <textarea id="externalStakeholders" rows="3"
-                                              class="professional-input resize-none"
-                                              placeholder="Dış paydaşları belirtin"></textarea>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Ortaklık Türü
-                                    </label>
-                                    <select id="partnershipType" class="professional-input">
-                                        <option value="">Ortaklık türü seçiniz</option>
-                                        <option value="strategic">Stratejik Ortaklık</option>
-                                        <option value="technical">Teknik Ortaklık</option>
-                                        <option value="commercial">Ticari Ortaklık</option>
-                                        <option value="joint-venture">Ortak Girişim</option>
-                                        <option value="supplier">Tedarikçi İlişkisi</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Step 6: Implementation Plan -->
-                        <div id="step6" class="step-content space-y-6">
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Aşama 1: Planlama
-                                    </label>
-                                    <textarea id="phase1" rows="3"
-                                              class="professional-input resize-none"
-                                              placeholder="İlk aşamada neler yapılacak?"></textarea>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Aşama 2: Geliştirme
-                                    </label>
-                                    <textarea id="phase2" rows="3"
-                                              class="professional-input resize-none"
-                                              placeholder="Geliştirme aşamasında neler yapılacak?"></textarea>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Aşama 3: Test & Lansman
-                                    </label>
-                                    <textarea id="phase3" rows="3"
-                                              class="professional-input resize-none"
-                                              placeholder="Test ve lansman aşamasında neler yapılacak?"></textarea>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Ölçüm Yöntemleri
-                                </label>
-                                <textarea id="measurementMethods" rows="4"
-                                          class="professional-input resize-none"
-                                          placeholder="Başarıyı nasıl ölçeceksiniz?"></textarea>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <!-- Modal Footer -->
-                <div class="px-8 py-6 border-t border-gray-200 bg-gray-50 flex-shrink-0 sticky bottom-0 z-10">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <button type="button" id="prevStepBtn" class="hidden btn-secondary">
-                                <i class="fas fa-arrow-left mr-2"></i>Önceki
-                            </button>
-                            <button type="button" id="saveDraftBtn" class="btn-secondary">
-                                <i class="fas fa-save mr-2"></i>Taslak Kaydet
-                            </button>
+                <div class="p-8 overflow-y-auto max-h-[calc(90vh-140px)]">
+                    <form id="ideaForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">
+                                🎯 Fikir Başlığı *
+                            </label>
+                            <input type="text" id="ideaTitle" required 
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors" 
+                                   placeholder="Muhteşem fikrinizin başlığını yazın...">
                         </div>
                         
-                        <div class="flex items-center space-x-3">
-                            <button type="button" id="cancelBtn" class="btn-secondary">
-                                İptal
-                            </button>
-                            <button type="button" id="nextStepBtn" class="btn-primary">
-                                Sonraki
-                                <i class="fas fa-arrow-right ml-2"></i>
-                            </button>
-                            <button type="submit" id="submitBtn" class="hidden btn-primary">
-                                <i class="fas fa-paper-plane mr-2"></i>Gönder
-                            </button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-800 mb-3">
+                                    📂 Kategori *
+                                </label>
+                                <select id="ideaCategory" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors">
+                                    <option value="">Kategori seçin</option>
+                                    <option value="teknoloji">🚀 Teknoloji</option>
+                                    <option value="pazarlama">📢 Pazarlama</option>
+                                    <option value="urun">📦 Ürün Geliştirme</option>
+                                    <option value="operasyon">⚙️ Operasyon</option>
+                                    <option value="finans">💰 Finans</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-gray-800 mb-3">
+                                    ⚡ Öncelik *
+                                </label>
+                                <select id="ideaPriority" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors">
+                                    <option value="">Öncelik seçin</option>
+                                    <option value="critical">🔥 Kritik</option>
+                                    <option value="high">⬆️ Yüksek</option>
+                                    <option value="medium">➡️ Orta</option>
+                                    <option value="low">⬇️ Düşük</option>
+                                </select>
+                            </div>
                         </div>
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">
+                                📝 Fikir Özeti *
+                            </label>
+                            <textarea id="ideaSummary" rows="4" required maxlength="500"
+                                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors resize-none"
+                                      placeholder="Fikrinizi kısaca ve etkileyici şekilde özetleyin..."></textarea>
+                            <div class="flex justify-end mt-2">
+                                <span class="text-sm text-gray-500" id="summaryCounter">0/500</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">
+                                🎯 Problem Tanımı *
+                            </label>
+                            <textarea id="problemDescription" rows="3" required
+                                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors resize-none"
+                                      placeholder="Hangi problemi çözmeyi hedefliyorsunuz?"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800 mb-3">
+                                💡 Çözüm Önerisi *
+                            </label>
+                            <textarea id="solutionDescription" rows="4" required
+                                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors resize-none"
+                                      placeholder="Önerdiğiniz çözümü detaylandırın..."></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-800 mb-3">
+                                    💰 Tahmini Bütçe (₺)
+                                </label>
+                                <input type="number" id="estimatedBudget" min="0"
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors"
+                                       placeholder="0">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-gray-800 mb-3">
+                                    ⏱️ Süre (Ay)
+                                </label>
+                                <input type="number" id="estimatedDuration" min="1" max="60"
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors"
+                                       placeholder="1">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-gray-800 mb-3">
+                                    👥 Ekip Büyüklüğü
+                                </label>
+                                <input type="number" id="teamSize" min="1" max="50"
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors"
+                                       placeholder="1">
+                            </div>
+                        </div>
+
+                        <!-- Hidden fields for compatibility -->
+                        <input type="hidden" id="targetAudience" value="">
+                        <input type="hidden" id="expectedBenefits" value="">
+                        <input type="hidden" id="roiEstimate" value="0">
+                        <input type="hidden" id="riskLevel" value="medium">
+                        <input type="hidden" id="requiredResources" value="">
+                        <input type="hidden" id="potentialPartners" value="">
+                        <input type="hidden" id="internalStakeholders" value="">
+                        <input type="hidden" id="externalStakeholders" value="">
+                        <input type="hidden" id="partnershipType" value="">
+                        <input type="hidden" id="phase1" value="">
+                        <input type="hidden" id="phase2" value="">
+                        <input type="hidden" id="phase3" value="">
+                        <input type="hidden" id="kpis" value="">
+                        <input type="hidden" id="measurementMethods" value="">
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="px-8 py-6 bg-gray-50 border-t border-gray-200">
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" id="cancelBtn" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-colors">
+                            İptal
+                        </button>
+                        <button type="button" id="saveDraftBtn" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-medium transition-colors">
+                            💾 Taslak Kaydet
+                        </button>
+                        <button type="submit" id="submitBtn" class="px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-xl font-bold transition-all duration-300 hover:scale-105">
+                            🚀 Fikri Gönder
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-</div>
-<!-- Professional Idea Detail Modal -->
-<div id="ideaDetailModal" class="hidden fixed inset-0 z-50 professional-modal">
+    </div>
+
+    <!-- Modern Idea Detail Modal -->
+    <div id="ideaDetailModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="modal-content w-full max-w-6xl slide-up">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
                 <div id="ideaDetailContent">
                     <!-- Content will be populated by JavaScript -->
                 </div>
             </div>
         </div>
-</div>
-{% endblock modals %}
+    </div>
 
-{% block extra_scripts %}    
-<!-- Script -->
-<script>
+    <script>
         // Professional data structure
         let projects = [
             {
@@ -1428,7 +1560,7 @@
         const totalSteps = 6;
 
         // Professional DOM elements - will be initialized after DOM loads
-        let ideasGrid, addIdeaBtn, ideaModal, ideaDetailModal, closeModal, cancelBtn, saveDraftBtn, nextStepBtn, prevStepBtn, submitBtn, ideaForm, emptyState, progressBar, progressText, stepTitle;
+        let ideasGrid, ideaModal, ideaDetailModal, closeModal, cancelBtn, saveDraftBtn, nextStepBtn, prevStepBtn, submitBtn, ideaForm, emptyState, progressBar, progressText, stepTitle;
 
         // Professional step titles
         const stepTitles = {
@@ -1474,14 +1606,14 @@
         // Professional utility functions
         function getStatusColor(status) {
             const colors = {
-                'draft': 'bg-gray-100 text-gray-700 border-gray-200',
-                'review': 'bg-yellow-50 text-yellow-700 border-yellow-200',
-                'approved': 'bg-green-50 text-green-700 border-green-200',
-                'development': 'bg-blue-50 text-blue-700 border-blue-200',
-                'completed': 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                'rejected': 'bg-red-50 text-red-700 border-red-200'
+                'draft': 'bg-slate-100 text-slate-700 border-slate-200 shadow-sm',
+                'review': 'bg-gradient-to-r from-warning-50 to-warning-100 text-warning-700 border-warning-200 shadow-sm shadow-warning-500/10',
+                'approved': 'bg-gradient-to-r from-success-50 to-emerald-50 text-success-700 border-success-200 shadow-sm shadow-success-500/10',
+                'development': 'bg-gradient-to-r from-primary-50 to-indigo-50 text-primary-700 border-primary-200 shadow-sm shadow-primary-500/10',
+                'completed': 'bg-gradient-to-r from-emerald-50 to-emerald-100 text-emerald-700 border-emerald-200 shadow-sm shadow-emerald-500/10',
+                'rejected': 'bg-gradient-to-r from-error-50 to-red-50 text-error-700 border-error-200 shadow-sm shadow-error-500/10'
             };
-            return colors[status] || 'bg-gray-100 text-gray-700 border-gray-200';
+            return colors[status] || 'bg-slate-100 text-slate-700 border-slate-200 shadow-sm';
         }
 
         function getStatusText(status) {
@@ -1498,12 +1630,12 @@
 
         function getPriorityColor(priority) {
             const colors = {
-                'critical': 'bg-red-50 text-red-700 border-red-200',
-                'high': 'bg-orange-50 text-orange-700 border-orange-200',
-                'medium': 'bg-blue-50 text-blue-700 border-blue-200',
-                'low': 'bg-green-50 text-green-700 border-green-200'
+                'critical': 'bg-gradient-to-r from-red-50 to-red-100 text-red-700 border-red-200 shadow-sm shadow-red-500/10',
+                'high': 'bg-gradient-to-r from-orange-50 to-warning-50 text-orange-700 border-orange-200 shadow-sm shadow-orange-500/10',
+                'medium': 'bg-gradient-to-r from-primary-50 to-indigo-50 text-primary-700 border-primary-200 shadow-sm shadow-primary-500/10',
+                'low': 'bg-gradient-to-r from-emerald-50 to-success-50 text-emerald-700 border-emerald-200 shadow-sm shadow-emerald-500/10'
             };
-            return colors[priority] || 'bg-gray-50 text-gray-700 border-gray-200';
+            return colors[priority] || 'bg-slate-50 text-slate-700 border-slate-200 shadow-sm';
         }
 
         function getPriorityText(priority) {
@@ -1520,22 +1652,44 @@
             const icons = {
                 'teknoloji': 'fas fa-microchip',
                 'pazarlama': 'fas fa-bullhorn',
-                'urun': 'fas fa-box',
+                'urun': 'fas fa-cube',
                 'operasyon': 'fas fa-cogs',
                 'finans': 'fas fa-chart-line'
             };
             return icons[category] || 'fas fa-lightbulb';
         }
+        
+        function getStatusIcon(status) {
+            const icons = {
+                'draft': 'fas fa-file-alt',
+                'review': 'fas fa-search',
+                'approved': 'fas fa-check-circle',
+                'development': 'fas fa-code',
+                'completed': 'fas fa-trophy',
+                'rejected': 'fas fa-times-circle'
+            };
+            return icons[status] || 'fas fa-question-circle';
+        }
+        
+        function getPriorityIcon(priority) {
+            const icons = {
+                'critical': 'fas fa-exclamation-triangle',
+                'high': 'fas fa-arrow-up',
+                'medium': 'fas fa-minus',
+                'low': 'fas fa-arrow-down'
+            };
+            return icons[priority] || 'fas fa-minus';
+        }
 
         function getCategoryColor(category) {
             const colors = {
-                'teknoloji': 'bg-blue-50 text-blue-600',
-                'pazarlama': 'bg-purple-50 text-purple-600',
-                'urun': 'bg-green-50 text-green-600',
-                'operasyon': 'bg-orange-50 text-orange-600',
-                'finans': 'bg-indigo-50 text-indigo-600'
+                'teknoloji': 'bg-gradient-to-br from-primary-50 to-indigo-50 text-primary-600 shadow-sm shadow-primary-500/10',
+                'pazarlama': 'bg-gradient-to-br from-violet-50 to-purple-50 text-violet-600 shadow-sm shadow-violet-500/10',
+                'urun': 'bg-gradient-to-br from-emerald-50 to-success-50 text-emerald-600 shadow-sm shadow-emerald-500/10',
+                'operasyon': 'bg-gradient-to-br from-warning-50 to-orange-50 text-warning-600 shadow-sm shadow-warning-500/10',
+                'finans': 'bg-gradient-to-br from-indigo-50 to-slate-50 text-indigo-600 shadow-sm shadow-indigo-500/10'
             };
-            return colors[category] || 'bg-gray-50 text-gray-600';
+            return colors[category] || 'bg-gradient-to-br from-slate-50 to-slate-100 text-slate-600 shadow-sm';
         }
 
         function formatCurrency(amount) {
@@ -1851,8 +2005,8 @@
                 <div class="professional-card p-6 status-${idea.status} cursor-pointer fade-in" onclick="showIdeaDetail(${idea.id})">
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 rounded-lg ${getCategoryColor(idea.category)} flex items-center justify-center">
-                                <i class="${getCategoryIcon(idea.category)}"></i>
+                            <div class="w-12 h-12 rounded-xl ${getCategoryColor(idea.category)} flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 hover:rotate-3">
+                                <i class="${getCategoryIcon(idea.category)} text-lg"></i>
                             </div>
                             <div class="flex-1">
                                 <h3 class="heading-3 text-base mb-1">${idea.title}</h3>
@@ -1860,11 +2014,13 @@
                             </div>
                         </div>
                         <div class="flex flex-col items-end space-y-2">
-                            <span class="px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(idea.status)}">
-                                ${getStatusText(idea.status)}
+                            <span class="px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(idea.status)} flex items-center space-x-1">
+                                <i class="${getStatusIcon(idea.status)} text-xs"></i>
+                                <span>${getStatusText(idea.status)}</span>
                             </span>
-                            <span class="px-2 py-1 rounded-md text-xs font-medium border ${getPriorityColor(idea.priority)}">
-                                ${getPriorityText(idea.priority)}
+                            <span class="px-2 py-1 rounded-md text-xs font-medium border ${getPriorityColor(idea.priority)} flex items-center space-x-1">
+                                <i class="${getPriorityIcon(idea.priority)} text-xs"></i>
+                                <span>${getPriorityText(idea.priority)}</span>
                             </span>
                         </div>
                     </div>
@@ -2380,10 +2536,14 @@
             updateStats();
             closeModalFunc();
         }
+
+
+
+
+
         // Professional initialize DOM elements
         function initializeElements() {
             ideasGrid = document.getElementById('ideasGrid');
-            addIdeaBtn = document.getElementById('addIdeaBtn');
             ideaModal = document.getElementById('ideaModal');
             ideaDetailModal = document.getElementById('ideaDetailModal');
             closeModal = document.getElementById('closeModal');
@@ -2399,27 +2559,31 @@
             stepTitle = document.getElementById('stepTitle');
         }
 
-        // Tab switching functions
+        // Modern Tab switching functions
         function showIdeasView() {
             document.getElementById('ideasView').classList.remove('hidden');
             document.getElementById('projectsView').classList.add('hidden');
             
-            document.getElementById('ideasTab').classList.add('bg-blue-500', 'text-white');
-            document.getElementById('ideasTab').classList.remove('text-gray-600', 'hover:text-gray-800', 'hover:bg-gray-50');
+            // Fikirler tab aktif
+            const ideasTab = document.getElementById('ideasTab');
+            ideasTab.className = 'group relative px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105';
             
-            document.getElementById('projectsTab').classList.remove('bg-blue-500', 'text-white');
-            document.getElementById('projectsTab').classList.add('text-gray-600', 'hover:text-gray-800', 'hover:bg-gray-50');
+            // Projeler tab pasif
+            const projectsTab = document.getElementById('projectsTab');
+            projectsTab.className = 'group relative px-6 py-3 bg-white text-gray-700 rounded-2xl font-bold text-lg shadow-lg border-2 border-gray-200 hover:border-orange-300 hover:shadow-xl transition-all duration-300 hover:scale-105';
         }
 
         function showProjectsView() {
             document.getElementById('ideasView').classList.add('hidden');
             document.getElementById('projectsView').classList.remove('hidden');
             
-            document.getElementById('projectsTab').classList.add('bg-blue-500', 'text-white');
-            document.getElementById('projectsTab').classList.remove('text-gray-600', 'hover:text-gray-800', 'hover:bg-gray-50');
+            // Projeler tab aktif
+            const projectsTab = document.getElementById('projectsTab');
+            projectsTab.className = 'group relative px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105';
             
-            document.getElementById('ideasTab').classList.remove('bg-blue-500', 'text-white');
-            document.getElementById('ideasTab').classList.add('text-gray-600', 'hover:text-gray-800', 'hover:bg-gray-50');
+            // Fikirler tab pasif
+            const ideasTab = document.getElementById('ideasTab');
+            ideasTab.className = 'group relative px-6 py-3 bg-white text-gray-700 rounded-2xl font-bold text-lg shadow-lg border-2 border-gray-200 hover:border-orange-300 hover:shadow-xl transition-all duration-300 hover:scale-105';
             
             renderProjects();
         }
@@ -2596,7 +2760,7 @@
             updateStats();
             
             // Add event listeners
-            if (addIdeaBtn) addIdeaBtn.addEventListener('click', openModal);
+            document.getElementById('fabAddIdea').addEventListener('click', openModal);
             if (closeModal) closeModal.addEventListener('click', closeModalFunc);
             if (cancelBtn) cancelBtn.addEventListener('click', closeModalFunc);
             if (nextStepBtn) nextStepBtn.addEventListener('click', nextStep);
@@ -2605,7 +2769,6 @@
             // Tab event listeners
             document.getElementById('ideasTab').addEventListener('click', showIdeasView);
             document.getElementById('projectsTab').addEventListener('click', showProjectsView);
-            document.getElementById('showProjectsBtn').addEventListener('click', showProjectsView);
             if (saveDraftBtn) {
                 saveDraftBtn.addEventListener('click', () => {
                     saveIdea('draft');
@@ -2656,5 +2819,6 @@
                 });
             }
         });
-</script>
-{% endblock extra_scripts %}
+    </script>
+</body>
+</html>

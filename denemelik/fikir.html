@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>İnovasyon Fikir Havuzu</title>
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { boxShadow: { 'soft': '0 10px 25px -10px rgb(0 0 0 / 0.2)' }, }, }, };
+  </script>
+  <style>
+    /* Küçük görsel dokunuşlar */
+    .glass { background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); }
+    .dark .glass { background: rgba(17,24,39,0.6); }
+    .sticky-note { transform: rotate(-1deg); }
+    .sticky-note:nth-child(2n) { transform: rotate(1.5deg); }
+    .sticky-note:nth-child(3n) { transform: rotate(-2deg); }
+    .tag { border: 1px dashed rgba(0,0,0,0.15); }
+    .tw-range::-webkit-slider-thumb { @apply bg-indigo-600; }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 text-slate-800 dark:text-slate-100">
+  <!-- Header -->
+  <header class="sticky top-0 z-30 border-b border-slate-200/60 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-indigo-600"><path d="M11 2a1 1 0 0 1 1 1v2.07A7.002 7.002 0 0 1 18.93 12H21a1 1 0 1 1 0 2h-2.07A7.002 7.002 0 0 1 12 18.93V21a1 1 0 1 1-2 0v-2.07A7.002 7.002 0 0 1 5.07 14H3a1 1 0 1 1 0-2h2.07A7.002 7.002 0 0 1 10 5.07V3a1 1 0 0 1 1-1Z"/></svg>
+        <h1 class="text-xl sm:text-2xl font-semibold tracking-tight">İnovasyon Fikir Havuzu</h1>
+      </div>
+      <div class="ml-auto flex items-center gap-2">
+        <button id="themeBtn" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 text-sm shadow-soft">🌙/☀️</button>
+        <button id="exportBtn" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-sm shadow-soft">Dışa Aktar</button>
+        <label class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-sm cursor-pointer shadow-soft">İçe Aktar
+          <input id="importInput" type="file" accept="application/json" class="hidden" />
+        </label>
+        <button id="newIdeaBtn" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-sm shadow-soft">+ Yeni Fikir</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toolbar -->
+  <section class="max-w-7xl mx-auto px-4 mt-6">
+    <div class="grid md:grid-cols-3 gap-3">
+      <div class="col-span-1">
+        <div class="flex items-center gap-2 p-2 rounded-2xl glass shadow-soft">
+          <svg class="w-5 h-5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="searchInput" type="search" placeholder="Ara: başlık, etiket, kişi…" class="w-full bg-transparent focus:outline-none placeholder:opacity-60">
+        </div>
+      </div>
+      <div class="col-span-1 flex gap-2">
+        <select id="categoryFilter" class="w-full p-2 rounded-2xl glass shadow-soft">
+          <option value="">Kategori (tümü)</option>
+          <option>Ürün</option>
+          <option>Süreç</option>
+          <option>Maliyet</option>
+          <option>Müşteri Deneyimi</option>
+          <option>Ar-Ge</option>
+        </select>
+        <select id="statusFilter" class="w-full p-2 rounded-2xl glass shadow-soft">
+          <option value="">Durum (tümü)</option>
+          <option>Yeni</option>
+          <option>İncelemede</option>
+          <option>Seçildi</option>
+          <option>Reddedildi</option>
+          <option>Arşiv</option>
+        </select>
+      </div>
+      <div class="col-span-1 flex gap-2">
+        <select id="sortBy" class="w-full p-2 rounded-2xl glass shadow-soft">
+          <option value="score">Sırala: Skor</option>
+          <option value="upvotes">Sırala: Oy</option>
+          <option value="recent">Sırala: En Yeni</option>
+        </select>
+        <button id="clearFilters" class="px-3 py-2 rounded-2xl bg-slate-200 dark:bg-slate-800 shadow-soft">Temizle</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="max-w-7xl mx-auto px-4 mt-6">
+    <div class="grid sm:grid-cols-4 gap-3">
+      <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 shadow-soft">
+        <div class="text-sm opacity-70">Toplam Fikir</div>
+        <div id="statTotal" class="text-2xl font-semibold">0</div>
+      </div>
+      <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 shadow-soft">
+        <div class="text-sm opacity-70">Bu Ay Eklenen</div>
+        <div id="statThisMonth" class="text-2xl font-semibold">0</div>
+      </div>
+      <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 shadow-soft">
+        <div class="text-sm opacity-70">Ort. Skor</div>
+        <div id="statAvgScore" class="text-2xl font-semibold">0</div>
+      </div>
+      <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 shadow-soft">
+        <div class="text-sm opacity-70">Beyin Fırtınaları</div>
+        <div id="statBrainstorms" class="text-2xl font-semibold">0</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ideas Grid -->
+  <main class="max-w-7xl mx-auto px-4 mt-6 mb-28">
+    <div id="ideasGrid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+  </main>
+
+  <!-- Floating Quick Add -->
+  <button id="quickAddBtn" title="Yeni Fikir" class="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-soft bg-indigo-600 text-white text-2xl">+</button>
+
+  <!-- Modals -->
+  <dialog id="ideaModal" class="w-full max-w-3xl rounded-2xl p-0 overflow-hidden">
+    <form id="ideaForm" class="bg-white dark:bg-slate-900">
+      <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="text-lg font-semibold">Fikir</h3>
+        <button type="button" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800" onclick="closeModal('ideaModal')">Kapat</button>
+      </div>
+      <div class="p-5 grid sm:grid-cols-2 gap-4">
+        <input type="hidden" id="ideaId" />
+        <div class="sm:col-span-2">
+          <label class="text-sm">Başlık</label>
+          <input id="title" required class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800" placeholder="Kısa ve etkileyici bir başlık" />
+        </div>
+        <div class="sm:col-span-2">
+          <label class="text-sm">Açıklama</label>
+          <textarea id="description" rows="4" required class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800" placeholder="Sorun, çözüm ve beklenen değer…"></textarea>
+        </div>
+        <div>
+          <label class="text-sm">Kategori</label>
+          <select id="category" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800">
+            <option>Ürün</option>
+            <option>Süreç</option>
+            <option>Maliyet</option>
+            <option>Müşteri Deneyimi</option>
+            <option>Ar-Ge</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-sm">Durum</label>
+          <select id="status" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800">
+            <option>Yeni</option>
+            <option>İncelemede</option>
+            <option>Seçildi</option>
+            <option>Reddedildi</option>
+            <option>Arşiv</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="text-sm">Etiketler (virgülle ayır)</label>
+          <input id="tags" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800" placeholder="ör. IoT, enerji, otomasyon" />
+        </div>
+        <div>
+          <label class="text-sm">Öneren</label>
+          <input id="author" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800" placeholder="Ad Soyad" />
+        </div>
+        <div>
+          <label class="text-sm">İsteklenen Bütçe (₺)</label>
+          <input id="budget" type="number" min="0" step="1000" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800" placeholder="opsiyonel" />
+        </div>
+        <div class="sm:col-span-2 grid sm:grid-cols-3 gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
+          <div>
+            <label class="text-sm">Yenilikçilik</label>
+            <input id="novelty" type="range" min="0" max="10" value="5" class="w-full tw-range" />
+          </div>
+          <div>
+            <label class="text-sm">Uygulanabilirlik</label>
+            <input id="feasibility" type="range" min="0" max="10" value="5" class="w-full tw-range" />
+          </div>
+          <div>
+            <label class="text-sm">Etki</label>
+            <input id="impact" type="range" min="0" max="10" value="5" class="w-full tw-range" />
+          </div>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="text-sm">Sorular (her satır bir soru)</label>
+          <textarea id="questions" rows="3" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800" placeholder="Bu fikri doğrulamak için hangi soruları sormalıyız?"></textarea>
+        </div>
+      </div>
+      <div class="p-5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2">
+        <button type="button" class="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800" onclick="closeModal('ideaModal')">İptal</button>
+        <button class="px-4 py-2 rounded-xl bg-indigo-600 text-white">Kaydet</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="detailModal" class="w-full max-w-3xl rounded-2xl p-0 overflow-hidden"></dialog>
+
+  <!-- Templates (JS ile dolduruluyor) -->
+
+  <script>
+    // ----- Basit Depo -----
+    const storeKey = 'idea-pool-v1';
+    const $ = (sel, scope=document) => scope.querySelector(sel);
+    const $$ = (sel, scope=document) => Array.from(scope.querySelectorAll(sel));
+
+    const sampleIdeas = [
+      {
+        id: crypto.randomUUID(),
+        title: 'Enerji geri kazanımlı üretim hattı',
+        description: 'Hattın egzoz ısısını ısı değiştirgeci ile geri kazanıp tesis ısıtmasında kullanmak.',
+        category: 'Maliyet',
+        status: 'İncelemede',
+        tags: ['enerji','ısı','sürdürülebilirlik'],
+        author: 'Ayşe K.',
+        budget: 250000,
+        novelty: 7, feasibility: 8, impact: 9,
+        score: 8.0,
+        upvotes: 14,
+        createdAt: Date.now() - 1000*60*60*24*10,
+        questions: ['Yatırım geri dönüş süresi nedir?','Mevcut hatta entegrasyon riski?'],
+        comments: [{by:'Müh. Ekibi', text:'CFD analizi gerekli.'}],
+        brainstorm: ['Alternatif akışkanlar?','Atık ısı ile su ısıtma mı hava mı?']
+      },
+      {
+        id: crypto.randomUUID(),
+        title: 'Müşteri uygulamasında AR ile kurulum kılavuzu',
+        description: 'Son kullanıcı telefon kamerası ile cihazın üstünde adım adım kurulum görsün.',
+        category: 'Müşteri Deneyimi',
+        status: 'Yeni',
+        tags: ['AR','mobil','UX'],
+        author: 'Kenan D.',
+        budget: 120000,
+        novelty: 9, feasibility: 6, impact: 8,
+        score: 7.7,
+        upvotes: 23,
+        createdAt: Date.now() - 1000*60*60*24*3,
+        questions: ['Hangi cihazlar desteklenecek?','Dokümantasyon yükü azalır mı?'],
+        comments: [{by:'Satış', text:'Demo talebi var.'}],
+        brainstorm: ['Unity mi WebAR mı?','Kritik parçaların 3D modeli']
+      }
+    ];
+
+    const load = () => {
+      try { return JSON.parse(localStorage.getItem(storeKey)) || sampleIdeas; }
+      catch { return sampleIdeas; }
+    };
+    const save = (ideas) => localStorage.setItem(storeKey, JSON.stringify(ideas));
+
+    let ideas = load();
+
+    // ----- Yardımcılar -----
+    const formatDate = (ts) => new Date(ts).toLocaleDateString('tr-TR');
+    const avg = (a,b,c) => Math.round(((a+b+c)/3)*10)/10;
+
+    function computeStats() {
+      $('#statTotal').textContent = ideas.length;
+      const now = new Date();
+      const thisMonth = ideas.filter(i=> {
+        const d = new Date(i.createdAt);
+        return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+      }).length;
+      $('#statThisMonth').textContent = thisMonth;
+      const avgScore = ideas.length? (ideas.reduce((s,i)=>s+(i.score||0),0)/ideas.length).toFixed(1) : 0;
+      $('#statAvgScore').textContent = avgScore;
+      const storms = ideas.reduce((s,i)=> s + (i.brainstorm?.length||0) , 0);
+      $('#statBrainstorms').textContent = storms;
+    }
+
+    // ----- Render -----
+    function renderIdeas() {
+      const grid = $('#ideasGrid');
+      grid.innerHTML = '';
+      const q = $('#searchInput').value.trim().toLowerCase();
+      const cat = $('#categoryFilter').value;
+      const st = $('#statusFilter').value;
+      const sortBy = $('#sortBy').value;
+
+      let list = ideas.filter(i=>
+        (!cat || i.category===cat) && (!st || i.status===st) &&
+        (!q || [i.title, i.description, i.author, ...(i.tags||[])].join(' ').toLowerCase().includes(q))
+      );
+
+      list.sort((a,b)=> {
+        if (sortBy==='upvotes') return (b.upvotes||0)-(a.upvotes||0);
+        if (sortBy==='recent') return (b.createdAt||0)-(a.createdAt||0);
+        return (b.score||0)-(a.score||0);
+      });
+
+      if (!list.length) {
+        grid.innerHTML = `<div class="col-span-full p-10 text-center rounded-2xl bg-white dark:bg-slate-900 shadow-soft">Hiç eşleşen fikir yok.</div>`;
+        computeStats();
+        return;
+      }
+
+      list.forEach(i => grid.appendChild(renderCard(i)));
+      computeStats();
+    }
+
+    function tagPills(tags=[]) {
+      return tags.filter(Boolean).map(t=>`<span class="tag px-2 py-0.5 rounded-xl text-xs opacity-90">#${t}</span>`).join(' ');
+    }
+
+    function scoreBadge(score=0) {
+      const tone = score>=8?'bg-emerald-600': score>=6?'bg-amber-500':'bg-slate-600';
+      return `<span class="px-2 py-0.5 rounded-lg text-xs text-white ${tone}">Skor ${score}</span>`;
+    }
+
+    function statusChip(st) {
+      const map = { 'Yeni':'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300', 'İncelemede':'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300', 'Seçildi':'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300', 'Reddedildi':'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300', 'Arşiv':'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300' };
+      return `<span class="px-2 py-0.5 rounded-lg text-xs ${map[st]||''}">${st}</span>`;
+    }
+
+    function renderCard(i) {
+      const card = document.createElement('article');
+      card.className = 'p-4 rounded-2xl bg-white dark:bg-slate-900 shadow-soft flex flex-col gap-3';
+      card.innerHTML = `
+        <div class="flex items-start gap-2">
+          <div class="flex-1">
+            <h3 class="font-semibold leading-tight">${i.title}</h3>
+            <div class="mt-1 text-sm opacity-80">${i.author||'Anonim'} • ${formatDate(i.createdAt)}</div>
+          </div>
+          <div class="flex flex-col items-end gap-1">${scoreBadge(i.score)} ${statusChip(i.status)}</div>
+        </div>
+        <p class="text-sm line-clamp-3">${i.description}</p>
+        <div class="flex flex-wrap gap-1">${tagPills(i.tags)}</div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-800">
+          <div class="flex items-center gap-2">
+            <button class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-sm" title="Soru Ekle" onclick="openQuestion('${i.id}')">❓ ${i.questions?.length||0}</button>
+            <button class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-sm" title="Yorumlar" onclick="openDetail('${i.id}')">💬 ${i.comments?.length||0}</button>
+            <button class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-sm" title="Beyin Fırtınası" onclick="openBrainstorm('${i.id}')">🧠 ${i.brainstorm?.length||0}</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200 text-sm" onclick="rateIdea('${i.id}')">⭐ Değerlendir</button>
+            <button class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-sm" onclick="upvote('${i.id}')">⬆ ${i.upvotes||0}</button>
+            <button class="px-2 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm" onclick="editIdea('${i.id}')">Düzenle</button>
+          </div>
+        </div>`;
+      return card;
+    }
+
+    // ----- Etkileşimler -----
+    function resetForm() {
+      $('#ideaId').value='';
+      $('#title').value='';
+      $('#description').value='';
+      $('#category').value='Ürün';
+      $('#status').value='Yeni';
+      $('#tags').value='';
+      $('#author').value='';
+      $('#budget').value='';
+      $('#novelty').value=5; $('#feasibility').value=5; $('#impact').value=5;
+      $('#questions').value='';
+    }
+
+    function openModal(id){ const d = document.getElementById(id); d?.showModal(); }
+    function closeModal(id){ const d = document.getElementById(id); d?.close(); }
+
+    function newIdea(){ resetForm(); openModal('ideaModal'); $('#title').focus(); }
+
+    function editIdea(id){
+      const i = ideas.find(x=>x.id===id); if(!i) return;
+      $('#ideaId').value = i.id;
+      $('#title').value = i.title;
+      $('#description').value = i.description;
+      $('#category').value = i.category;
+      $('#status').value = i.status;
+      $('#tags').value = (i.tags||[]).join(', ');
+      $('#author').value = i.author||'';
+      $('#budget').value = i.budget||'';
+      $('#novelty').value = i.novelty||5; $('#feasibility').value = i.feasibility||5; $('#impact').value = i.impact||5;
+      $('#questions').value = (i.questions||[]).join('\n');
+      openModal('ideaModal');
+    }
+
+    $('#ideaForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const id = $('#ideaId').value || crypto.randomUUID();
+      const obj = {
+        id,
+        title: $('#title').value.trim(),
+        description: $('#description').value.trim(),
+        category: $('#category').value,
+        status: $('#status').value,
+        tags: $('#tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+        author: $('#author').value.trim(),
+        budget: Number($('#budget').value)||0,
+        novelty: Number($('#novelty').value),
+        feasibility: Number($('#feasibility').value),
+        impact: Number($('#impact').value),
+        score: avg(Number($('#novelty').value), Number($('#feasibility').value), Number($('#impact').value)),
+        upvotes: 0,
+        createdAt: $('#ideaId').value ? ideas.find(i=>i.id===id).createdAt : Date.now(),
+        questions: $('#questions').value.split('\n').map(s=>s.trim()).filter(Boolean),
+        comments: $('#ideaId').value ? ideas.find(i=>i.id===id).comments : [],
+        brainstorm: $('#ideaId').value ? ideas.find(i=>i.id===id).brainstorm : [],
+      };
+      const idx = ideas.findIndex(i=>i.id===id);
+      if (idx>-1) ideas[idx] = {...ideas[idx], ...obj}; else ideas.unshift(obj);
+      save(ideas);
+      closeModal('ideaModal');
+      renderIdeas();
+    });
+
+    function upvote(id){ const i = ideas.find(x=>x.id===id); if(!i) return; i.upvotes=(i.upvotes||0)+1; save(ideas); renderIdeas(); }
+
+    function rateIdea(id){
+      const i = ideas.find(x=>x.id===id); if(!i) return;
+      const dlg = $('#detailModal');
+      dlg.innerHTML = `
+        <div class="p-5 bg-white dark:bg-slate-900">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Değerlendir: ${i.title}</h3>
+            <button class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800" onclick="closeModal('detailModal')">Kapat</button>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-4 mt-4">
+            ${['Yenilikçilik','Uygulanabilirlik','Etki'].map((label,idx)=>`
+            <div>
+              <div class="text-sm">${label}</div>
+              <input id="rate${idx}" type="range" min="0" max="10" value="${[i.novelty,i.feasibility,i.impact][idx]}" class="w-full" />
+            </div>`).join('')}
+          </div>
+          <div class="mt-4 flex items-center justify-end gap-2">
+            <button class="px-4 py-2 rounded-xl bg-indigo-600 text-white" onclick="applyRate('${i.id}')">Kaydet</button>
+          </div>
+        </div>`;
+      openModal('detailModal');
+    }
+
+    function applyRate(id){
+      const i = ideas.find(x=>x.id===id); if(!i) return;
+      i.novelty = Number($('#rate0').value);
+      i.feasibility = Number($('#rate1').value);
+      i.impact = Number($('#rate2').value);
+      i.score = avg(i.novelty,i.feasibility,i.impact);
+      save(ideas);
+      closeModal('detailModal');
+      renderIdeas();
+    }
+
+    function openQuestion(id){
+      const i = ideas.find(x=>x.id===id); if(!i) return;
+      const dlg = $('#detailModal');
+      dlg.innerHTML = `
+        <div class="p-5 bg-white dark:bg-slate-900">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Sorular: ${i.title}</h3>
+            <button class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800" onclick="closeModal('detailModal')">Kapat</button>
+          </div>
+          <ul class="mt-3 space-y-2">${(i.questions||[]).map(q=>`<li class="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">${q}</li>`).join('')}</ul>
+          <div class="mt-4 flex gap-2">
+            <input id="newQ" class="flex-1 p-3 rounded-xl bg-slate-100 dark:bg-slate-800" placeholder="Soru yazın…" />
+            <button class="px-4 py-2 rounded-xl bg-indigo-600 text-white" onclick="addQuestion('${i.id}')">Ekle</button>
+          </div>
+        </div>`;
+      openModal('detailModal');
+    }
+
+    function addQuestion(id){
+      const i = ideas.find(x=>x.id===id); if(!i) return;
+      const v = $('#newQ').value.trim(); if(!v) return;
+      i.questions = i.questions||[]; i.questions.push(v);
+      save(ideas);
+      openQuestion(id); // yenile
+      renderIdeas();
+    }
+
+    function openBrainstorm(id){
+      const i = ideas.find(x=>x.id===id); if(!i) return;
+      const dlg = $('#detailModal');
+      dlg.innerHTML = `
+        <div class="p-5 bg-white dark:bg-slate-900">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">🧠 Beyin Fırtınası: ${i.title}</h3>
+            <button class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800" onclick="closeModal('detailModal')">Kapat</button>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-3 mt-4" id="stormBoard">
+            ${(i.brainstorm||[]).map((t,idx)=>sticky(t, idx)).join('')}
+          </div>
+          <div class="mt-4 flex gap-2">
+            <input id="noteInput" class="flex-1 p-3 rounded-xl bg-slate-100 dark:bg-slate-800" placeholder="Fikir/Not ekle…" />
+            <button class="px-4 py-2 rounded-xl bg-emerald-600 text-white" onclick="addNote('${i.id}')">Ekle</button>
+          </div>
+        </div>`;
+      openModal('detailModal');
+    }
+
+    function sticky(text, idx){
+      const colors = ['bg-yellow-100','bg-pink-100','bg-teal-100','bg-purple-100','bg-blue-100'];
+      const darks = ['dark:bg-yellow-900/30','dark:bg-pink-900/30','dark:bg-teal-900/30','dark:bg-purple-900/30','dark:bg-blue-900/30'];
+      const c = colors[idx % colors.length] + ' ' + darks[idx % darks.length];
+      return `<div class="sticky-note p-3 rounded-xl ${c} shadow-soft">
+        <div class="text-sm">${text}</div>
+      </div>`;
+    }
+
+    function addNote(id){
+      const i = ideas.find(x=>x.id===id); if(!i) return;
+      const v = $('#noteInput').value.trim(); if(!v) return;
+      i.brainstorm = i.brainstorm||[]; i.brainstorm.push(v);
+      save(ideas);
+      openBrainstorm(id);
+      renderIdeas();
+    }
+
+    function openDetail(id){
+      const i = ideas.find(x=>x.id===id); if(!i) return;
+      const dlg = $('#detailModal');
+      dlg.innerHTML = `
+        <div class="p-5 bg-white dark:bg-slate-900 space-y-4">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="text-lg font-semibold">${i.title}</h3>
+              <div class="text-sm opacity-80">${i.author||'Anonim'} • ${formatDate(i.createdAt)} • ${i.category}</div>
+              <div class="mt-2 flex flex-wrap gap-1">${tagPills(i.tags)}</div>
+            </div>
+            <div class="flex flex-col items-end gap-2">${scoreBadge(i.score)} ${statusChip(i.status)} <div class="text-sm opacity-70">Oy: ${i.upvotes||0}</div></div>
+          </div>
+          <p class="leading-relaxed">${i.description}</p>
+          <div class="grid sm:grid-cols-3 gap-3">
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50"><div class="text-xs opacity-70">Yenilikçilik</div><div class="text-xl font-semibold">${i.novelty}</div></div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50"><div class="text-xs opacity-70">Uygulanabilirlik</div><div class="text-xl font-semibold">${i.feasibility}</div></div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50"><div class="text-xs opacity-70">Etki</div><div class="text-xl font-semibold">${i.impact}</div></div>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-2">Yorumlar</h4>
+            <div id="comments" class="space-y-2">${(i.comments||[]).map(c=>`<div class='p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-sm'><b>${c.by}:</b> ${c.text}</div>`).join('')}</div>
+            <div class="flex gap-2 mt-2">
+              <input id="cBy" class="w-40 p-2 rounded-lg bg-slate-100 dark:bg-slate-800" placeholder="Ad" />
+              <input id="cText" class="flex-1 p-2 rounded-lg bg-slate-100 dark:bg-slate-800" placeholder="Yorum yazın…" />
+              <button class="px-4 py-2 rounded-xl bg-indigo-600 text-white" onclick="addComment('${i.id}')">Ekle</button>
+            </div>
+          </div>
+        </div>`;
+      openModal('detailModal');
+    }
+
+    function addComment(id){
+      const i = ideas.find(x=>x.id===id); if(!i) return;
+      const by = $('#cBy').value.trim() || 'Anonim';
+      const text = $('#cText').value.trim(); if(!text) return;
+      i.comments = i.comments||[]; i.comments.push({by, text});
+      save(ideas);
+      openDetail(id);
+      renderIdeas();
+    }
+
+    // ----- İçe/Dışa Aktar -----
+    $('#exportBtn').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify(ideas, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'fikir-havuzu.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    $('#importInput').addEventListener('change', (e)=>{
+      const file = e.target.files?.[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => { try { ideas = JSON.parse(reader.result); save(ideas); renderIdeas(); } catch { alert('Geçersiz JSON'); } };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    // ----- Filtre/Arama -----
+    ['searchInput','categoryFilter','statusFilter','sortBy'].forEach(id=> $("#"+id).addEventListener('input', renderIdeas));
+    $('#clearFilters').addEventListener('click', ()=>{ $('#searchInput').value=''; $('#categoryFilter').value=''; $('#statusFilter').value=''; $('#sortBy').value='score'; renderIdeas(); });
+
+    // ----- Tema -----
+    const themeBtn = $('#themeBtn');
+    const themeKey = 'idea-theme';
+    function applyTheme(t){ document.documentElement.classList.toggle('dark', t==='dark'); }
+    function initTheme(){ const t = localStorage.getItem(themeKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'); applyTheme(t); }
+    themeBtn.addEventListener('click', ()=>{ const t = document.documentElement.classList.contains('dark')?'light':'dark'; applyTheme(t); localStorage.setItem(themeKey,t); });
+
+    // ----- Kısayollar -----
+    $('#newIdeaBtn').addEventListener('click', newIdea);
+    $('#quickAddBtn').addEventListener('click', newIdea);
+
+    // ----- Başlat -----
+    initTheme();
+    renderIdeas();
+  </script>
+</body>
+</html>

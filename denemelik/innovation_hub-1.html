@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnovasyon Havuzu - Fikirden Ürüne Dönüşüm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .step-active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transform: scale(1.1);
+        }
+        
+        .step-completed {
+            background: #10b981;
+        }
+        
+        .step-inactive {
+            background: #e5e7eb;
+        }
+        
+        .form-section {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.5s ease;
+            display: none;
+        }
+        
+        .form-section.active {
+            opacity: 1;
+            transform: translateX(0);
+            display: block;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+        
+        .input-focus:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .animate-bounce-slow {
+            animation: bounce 2s infinite;
+        }
+        
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .metric-card {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .category-gradient-tech { background: linear-gradient(45deg, #667eea, #764ba2); }
+        .category-gradient-health { background: linear-gradient(45deg, #f093fb, #f5576c); }
+        .category-gradient-education { background: linear-gradient(45deg, #4facfe, #00f2fe); }
+        .category-gradient-environment { background: linear-gradient(45deg, #43e97b, #38f9d7); }
+        .category-gradient-fintech { background: linear-gradient(45deg, #fa709a, #fee140); }
+        
+        .typing-animation::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 min-h-screen">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-40">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">İnovasyon Havuzu</h1>
+                        <p class="text-xs text-gray-500">Fikirden Ürüne Dönüşüm</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <div class="text-sm text-gray-600">
+                        <span class="font-semibold text-blue-600">247</span> aktif fikir
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <span class="font-semibold text-green-600">₺2.4M</span> toplam yatırım
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Progress Steps -->
+        <div class="mb-12">
+            <div class="flex justify-center mb-6">
+                <div class="flex items-center space-x-4">
+                    <div id="step-1" class="step-indicator step-active w-12 h-12 rounded-full flex items-center justify-center text-white font-bold">
+                        1
+                    </div>
+                    <div class="w-16 h-1 bg-gray-300"></div>
+                    <div id="step-2" class="step-indicator step-inactive w-12 h-12 rounded-full flex items-center justify-center text-gray-600 font-bold">
+                        2
+                    </div>
+                    <div class="w-16 h-1 bg-gray-300"></div>
+                    <div id="step-3" class="step-indicator step-inactive w-12 h-12 rounded-full flex items-center justify-center text-gray-600 font-bold">
+                        3
+                    </div>
+                    <div class="w-16 h-1 bg-gray-300"></div>
+                    <div id="step-4" class="step-indicator step-inactive w-12 h-12 rounded-full flex items-center justify-center text-gray-600 font-bold">
+                        4
+                    </div>
+                    <div class="w-16 h-1 bg-gray-300"></div>
+                    <div id="step-5" class="step-indicator step-inactive w-12 h-12 rounded-full flex items-center justify-center text-gray-600 font-bold">
+                        5
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                <div id="progress-bar" class="progress-bar h-2 rounded-full" style="width: 20%"></div>
+            </div>
+            
+            <div class="text-center">
+                <p id="step-title" class="text-xl font-semibold text-gray-800">Platform Tanıtımı</p>
+                <p id="step-description" class="text-gray-600">İnovasyon Havuzu ekosistemini keşfedin</p>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Step 1: Platform Introduction -->
+            <div id="form-step-1" class="form-section active">
+                <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                    <div class="text-center mb-12">
+                        <div class="floating-element mb-6">
+                            <div class="w-24 h-24 gradient-bg rounded-full flex items-center justify-center mx-auto mb-6">
+                                <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                            <span class="typing-animation">Fikirlerinizi Gerçeğe Dönüştürün</span>
+                        </h2>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Türkiye'nin en kapsamlı inovasyon platformu ile fikirlerinizi başarılı ürünlere dönüştürün
+                        </p>
+                    </div>
+
+                    <!-- Key Features -->
+                    <div class="grid md:grid-cols-2 gap-8 mb-12">
+                        <div class="card-hover bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-2xl">
+                            <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">AI Destekli Değerlendirme</h3>
+                            <p class="text-gray-600">Yapay zeka ve uzman paneli ile fikirleriniz objektif olarak değerlendirilir</p>
+                        </div>
+
+                        <div class="card-hover bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl">
+                            <div class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-xl flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Yatırımcı Ağı</h3>
+                            <p class="text-gray-600">Başarılı fikirler doğrudan 200+ aktif yatırımcı ile buluşturulur</p>
+                        </div>
+
+                        <div class="card-hover bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-2xl">
+                            <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-xl flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Hızlı Prototipleme</h3>
+                            <p class="text-gray-600">48 saat içinde fikrinizin ilk değerlendirmesi ve prototip önerisi</p>
+                        </div>
+
+                        <div class="card-hover bg-gradient-to-br from-orange-50 to-red-50 p-6 rounded-2xl">
+                            <div class="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-500 rounded-xl flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Kapsamlı Destek</h3>
+                            <p class="text-gray-600">İş planından pazarlamaya, yasal süreçlerden üretime kadar A-Z destek</p>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                        <div class="metric-card p-6 text-center">
+                            <div class="text-3xl font-bold text-blue-600 mb-2">247</div>
+                            <div class="text-sm text-gray-600">Aktif Fikir</div>
+                        </div>
+                        <div class="metric-card p-6 text-center">
+                            <div class="text-3xl font-bold text-green-600 mb-2">43</div>
+                            <div class="text-sm text-gray-600">Değerlendirmede</div>
+                        </div>
+                        <div class="metric-card p-6 text-center">
+                            <div class="text-3xl font-bold text-purple-600 mb-2">12</div>
+                            <div class="text-sm text-gray-600">Prototipte</div>
+                        </div>
+                        <div class="metric-card p-6 text-center">
+                            <div class="text-3xl font-bold text-orange-600 mb-2">₺2.4M</div>
+                            <div class="text-sm text-gray-600">Toplam Yatırım</div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button onclick="nextStep()" class="btn-primary text-white px-8 py-4 rounded-full font-semibold text-lg">
+                            Platformu Keşfet →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Problem & Solution -->
+            <div id="form-step-2" class="form-section">
+                <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4">Sorunu ve Çözümümüzü Anlayın</h2>
+                        <p class="text-gray-600">Girişimcilik ekosistemindeki boşlukları nasıl dolduruyoruz?</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-12 mb-12">
+                        <!-- Problem -->
+                        <div class="space-y-6">
+                            <div class="bg-red-50 border border-red-200 rounded-2xl p-6">
+                                <h3 class="text-xl font-bold text-red-800 mb-4 flex items-center">
+                                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"/>
+                                    </svg>
+                                    Mevcut Problemler
+                                </h3>
+                                <div class="space-y-4">
+                                    <div class="bg-white p-4 rounded-lg">
+                                        <h4 class="font-semibold text-red-700 mb-2">📉 Düşük Başarı Oranı</h4>
+                                        <p class="text-sm text-red-600">Startupların %90'ı ilk 5 yılda başarısız oluyor</p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg">
+                                        <h4 class="font-semibold text-red-700 mb-2">💰 Finansman Zorluğu</h4>
+                                        <p class="text-sm text-red-600">Girişimciler yatırımcılara ulaşmakta güçlük çekiyor</p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg">
+                                        <h4 class="font-semibold text-red-700 mb-2">🎯 Objektif Değerlendirme Eksikliği</h4>
+                                        <p class="text-sm text-red-600">Fikirler subjektif kriterlerle değerlendiriliyor</p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg">
+                                        <h4 class="font-semibold text-red-700 mb-2">🤝 Mentör Bulma Zorluğu</h4>
+                                        <p class="text-sm text-red-600">Deneyimli mentörlere erişim sınırlı</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Solution -->
+                        <div class="space-y-6">
+                            <div class="bg-green-50 border border-green-200 rounded-2xl p-6">
+                                <h3 class="text-xl font-bold text-green-800 mb-4 flex items-center">
+                                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                                    </svg>
+                                    Bizim Çözümümüz
+                                </h3>
+                                <div class="space-y-4">
+                                    <div class="bg-white p-4 rounded-lg">
+                                        <h4 class="font-semibold text-green-700 mb-2">🚀 %75 Başarı Oranı</h4>
+                                        <p class="text-sm text-green-600">Sistemli yaklaşım ve destek ile yüksek başarı</p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg">
+                                        <h4 class="font-semibold text-green-700 mb-2">💎 Direkt Yatırımcı Erişimi</h4>
+                                        <p class="text-sm text-green-600">200+ aktif yatırımcı ile doğrudan buluşma</p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg">
+                                        <h4 class="font-semibold text-green-700 mb-2">🤖 AI + Uzman Değerlendirme</h4>
+                                        <p class="text-sm text-green-600">Objektif kriterler ve puanlama sistemi</p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg">
+                                        <h4 class="font-semibold text-green-700 mb-2">👨‍🏫 Mentör Ağı</h4>
+                                        <p class="text-sm text-green-600">150+ sektör uzmanı ile eşleştirme</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Market Size -->
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-8 text-white mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-center">Pazar Büyüklüğü</h3>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold mb-2">₺850M</div>
+                                <div class="text-sm opacity-90">Türkiye İnovasyon Pazarı</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold mb-2">%25</div>
+                                <div class="text-sm opacity-90">Yıllık Büyüme Oranı</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold mb-2">50K+</div>
+                                <div class="text-sm opacity-90">Potansiyel Girişimci</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <button onclick="prevStep()" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-full font-semibold">
+                            ← Geri
+                        </button>
+                        <button onclick="nextStep()" class="btn-primary text-white px-8 py-3 rounded-full font-semibold">
+                            İş Modelini Görüntüle →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Business Model -->
+            <div id="form-step-3" class="form-section">
+                <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4">İş Modeli & Gelir Kaynakları</h2>
+                        <p class="text-gray-600">Sürdürülebilir ve karlı büyüme stratejimiz</p>
+                    </div>
+
+                    <!-- Revenue Streams -->
+                    <div class="mb-12">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Gelir Kaynakları</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 category-gradient-tech rounded-xl flex items-center justify-center mr-4">
+                                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold text-blue-800">Platform Üyelikleri</h4>
+                                        <p class="text-blue-600 text-2xl font-bold">35%</p>
+                                    </div>
+                                </div>
+                                <p class="text-blue-700 text-sm">Premium üyelik paketleri, özel özellikler ve öncelikli destek</p>
+                                <div class="mt-4 space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span>Basic (Aylık)</span>
+                                        <span class="font-semibold">₺99</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>Premium (Aylık)</span>
+                                        <span class="font-semibold">₺299</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>Enterprise (Aylık)</span>
+                                        <span class="font-semibold">₺999</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 category-gradient-health rounded-xl flex items-center justify-center mr-4">
+                                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold text-green-800">Değerlendirme Hizmetleri</h4>
+                                        <p class="text-green-600 text-2xl font-bold">25%</p>
+                                    </div>
+                                </div>
+                                <p class="text-green-700 text-sm">Profesyonel fikir analizi, pazar araştırması ve fizibilite çalışması</p>
+                                <div class="mt-4 space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span>Hızlı Değerlendirme</span>
+                                        <span class="font-semibold">₺499</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>Detaylı Analiz</span>
+                                        <span class="font-semibold">₺

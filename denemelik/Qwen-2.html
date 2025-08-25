@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnovasyon Havuzu - Detaylı Proje Sunumu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+        
+        .wave-animation {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="%231e293b" fill-opacity="0.3" d="M0,192L48,197.3C96,203,192,213,288,208C384,203,480,181,576,181.3C672,181,768,203,864,202.7C960,203,1056,181,1152,165.3C1248,149,1344,139,1392,133.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+            animation: wave 15s linear infinite;
+        }
+        
+        @keyframes wave {
+            0% {
+                background-position-x: 0;
+            }
+            100% {
+                background-position-x: 1440px;
+            }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .metric-card {
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .section-header {
+            position: relative;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-header:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .timeline-item:after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 24px;
+            bottom: -1rem;
+            width: 2px;
+            background: #e2e8f0;
+        }
+        
+        .timeline-item:last-child:after {
+            display: none;
+        }
+        
+        .budget-item {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .chart-container {
+            height: 300px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+        
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .stagger-animation {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div class="wave-animation"></div>
+    
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">İnovasyon Havuzu</h1>
+            <p class="text-xl text-blue-100 max-w-4xl mx-auto">
+                Yeni fikirlerin doğduğu, değerlendirildiği ve geliştirildiği dijital ortam - Detaylı Proje Sunumu
+            </p>
+            <div class="mt-6 bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 max-w-4xl mx-auto">
+                <p class="text-white text-lg">
+                    <i class="fas fa-quote-left mr-3"></i>
+                    "İnovasyon, sadece fikirlerin değil, bu fikirlerin sistematik olarak değerlendirilmesi ve uygulanması sürecidir."
+                    <i class="fas fa-quote-right ml-3"></i>
+                </p>
+            </div>
+        </header>
+
+        <!-- Executive Summary -->
+        <section class="bg-white rounded-2xl shadow-xl p-8 mb-8 card-hover">
+            <div class="section-header">
+                <h2 class="text-3xl font-bold text-gray-800">Proje Özeti</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Proje Amacı</h3>
+                    <p class="text-gray-600 mb-4">
+                        Şirketimizin inovasyon kapasitesini artırmak, çalışanların fikirlerini sistematik bir şekilde toplamak, değerlendirmek ve en iyi fikirleri uygulamaya koymak için dijital bir platform oluşturmak.
+                    </p>
+                    <p class="text-gray-600">
+                        Bu platform sayesinde, her seviyedeki çalışanın fikirlerine değer verildiğini göstererek motivasyonu artıracağız ve şirketimizin rekabet avantajını güçlendireceğiz.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Temel Değerler</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <div class="icon-box bg-indigo-100 text-indigo-600 mr-4">
+                                <i class="fas fa-lightbulb fa-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Yaratıcılık</h4>
+                                <p class="text-sm text-gray-600">Her fikrin değerli olduğunu kabul etmek</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="icon-box bg-purple-100 text-purple-600 mr-4">
+                                <i class="fas fa-balance-scale fa-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Adil Değerlendirme</h4>
+                                <p class="text-sm text-gray-600">Standart kriterlere göre objektif değerlendirme</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="icon-box bg-blue-100 text-blue-600 mr-4">
+                                <i class="fas fa-rocket fa-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Hızlı Uygulama</h4>
+                                <p class="text-sm text-gray-600">En iyi fikirleri hızlıca hayata geçirmek</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Budget Section -->
+        <section class="bg-white rounded-2xl shadow-xl p-8 mb-8 card-hover">
+            <div class="section-header">
+                <h2 class="text-3xl font-bold text-gray-800">Bütçe Planı</h2>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-6">Yatırım Bütçesi (Yıllık)</h3>
+                    <div class="space-y-4">
+                        <div class="budget-item bg-gray-50 p-4 rounded-lg border-l-4 border-indigo-500">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Yazılım Geliştirme</h4>
+                                    <p class="text-sm text-gray-600">Platformun geliştirilmesi ve entegrasyonu</p>
+                                </div>
+                                <div class="text-2xl font-bold text-indigo-600">₺250.000</div>
+                            </div>
+                        </div>
+                        <div class="budget-item bg-gray-50 p-4 rounded-lg border-l-4 border-purple-500">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Sunucu ve Altyapı</h4>
+                                    <p class="text-sm text-gray-600">Bulut altyapı, güvenlik ve yedekleme</p>
+                                </div>
+                                <div class="text-2xl font-bold text-purple-600">₺80.000</div>
+                            </div>
+                        </div>
+                        <div class="budget-item bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">İşletme Giderleri</h4>
+                                    <p class="text-sm text-gray-600">Destek, bakım ve güncelleme</p>
+                                </div>
+                                <div class="text-2xl font-bold text-blue-600">₺60.000</div>
+                            </div>
+                        </div>
+                        <div class="budget-item bg-gray-50 p-4 rounded-lg border-l-4 border-green-500">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">İnovasyon Ödülleri</h4>
+                                    <p class="text-sm text-gray-600">En iyi fikirlerin ödüllendirilmesi</p>
+                                </div>
+                                <div class="text-2xl font-bold text-green-600">₺120.000</div>
+                            </div>
+                        </div>
+                        <div class="budget-item bg-gray-50 p-4 rounded-lg border-l-4 border-orange-500">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Eğitim ve Tanıtım</h4>
+                                    <p class="text-sm text-gray-600">Çalışanlara eğitim ve kampanyalar</p>
+                                </div>
+                                <div class="text-2xl font-bold text-orange-600">₺40.000</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-6">Bütçe Dağılımı</h3>
+                    <div class="chart-container bg-gray-50 rounded-xl p-6 flex items-center justify-center">
+                        <div class="w-full max-w-md">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-indigo-500 rounded mr-2"></div>
+                                    <span class="text-sm font-medium">Yazılım: 45%</span>
+                                </div>
+                                <span class="text-sm text-gray-600">₺250.000</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-purple-500 rounded mr-2"></div>
+                                    <span class="text-sm font-medium">Sunucu: 15%</span>
+                                </div>
+                                <span class="text-sm text-gray-600">₺80.000</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-blue-500 rounded mr-2"></div>
+                                    <span class="text-sm font-medium">İşletme: 11%</span>
+                                </div>
+                                <span class="text-sm text-gray-600">₺60.000</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-green-500 rounded mr-2"></div>
+                                    <span class="text-sm font-medium">Ödüller: 22%</span>
+                                </div>
+                                <span class="text-sm text-gray-600">₺120.000</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-orange-500 rounded mr-2"></div>
+                                    <span class="text-sm font-medium">Eğitim: 7%</span>
+                                </div>
+                                <span class="text-sm text-gray-600">₺40.000</span>
+                            </div>
+                            <div class="mt-6">
+                                <div class="flex justify-between text-sm font-semibold mb-2">
+                                    <span>Toplam Yıllık Bütçe</span>
+                                    <span>₺550.000</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 p-6 bg-indigo-50 rounded-xl">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mt-1">
+                        <i class="fas fa-lightbulb text-4xl text-indigo-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="text-lg font-semibold text-indigo-800">Bütçe Optimizasyonu</h4>
+                        <p class="text-indigo-700 mt-2">
+                            İlk yılın bütçesi daha yüksek olmakla birlikte, ikinci yıldan itibaren yazılım geliştirme maliyetleri %70 oranında azalacak. Platformun sunduğu verimlilik artışı ve yeni fikirlerden elde edilecek kazançlar, yatırımın 18 ay içinde geri dönüşünü sağlayacaktır.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <section class="bg-white rounded-2xl shadow-xl p-8 mb-8 card-hover">
+            <div class="section-header">
+                <h2 class="text-3xl font-bold text-gray-800">Proje Zaman Planı</h2>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-6">Proje Aşamaları</h3>
+                    <div class="space-y-8">
+                        <div class="timeline-item">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Hazırlık ve Planlama</h4>
+                            <p class="text-gray-600 mb-2">İhtiyaç analizi, platform tasarımı, değerlendirme kriterlerinin belirlenmesi</p>
+                            <div class="text-sm text-indigo-600 font-semibold">1-2 Ay</div>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Yazılım Geliştirme</h4>
+                            <p class="text-gray-600 mb-2">Platformun geliştirilmesi, test ortamında denemeler</p>
+                            <div class="text-sm text-indigo-600 font-semibold">3-5 Ay</div>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Entegrasyon ve Test</h4>
+                            <p class="text-gray-600 mb-2">Şirket sistemleriyle entegrasyon, güvenlik testleri, kullanıcı kabul testleri</p>
+                            <div class="text-sm text-indigo-600 font-semibold">6-7 Ay</div>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Pilot Uygulama</h4>
+                            <p class="text-gray-600 mb-2">Sınırlı kullanıcı grubuyla pilot uygulama, geri bildirim toplama</p>
+                            <div class="text-sm text-indigo-600 font-semibold">8 Ay</div>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Genel Uygulama</h4>
+                            <p class="text-gray-600 mb-2">Tüm çalışanlara açılım, eğitim programları</p>
+                            <div class="text-sm text-indigo-600 font-semibold">9 Ay</div>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Sürekli Geliştirme</h4>
+                            <p class="text-gray-600 mb-2">Platformun sürekli geliştirilmesi, yeni özelliklerin eklenmesi</p>
+                            <div class="text-sm text-indigo-600 font-semibold">10-12 Ay ve sonrası</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-6">Kritik Milestone'lar</h3>
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-xl border border-green-200">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-check text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-green-800">Proje Başlangıcı</h4>
+                                    <p class="text-sm text-green-700">Haziran 2024</p>
+                                </div>
+                            </div>
+                            <p class="text-green-700 text-sm">Tüm paydaşların katılımıyla proje kickoff toplantısı</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-xl border border-blue-200">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-code text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-blue-800">Geliştirme Tamamlanıyor</h4>
+                                    <p class="text-sm text-blue-700">Ekim 2024</p>
+                                </div>
+                            </div>
+                            <p class="text-blue-700 text-sm">Tüm temel fonksiyonların geliştirilmesi ve test edilmesi</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-purple-50 to-violet-50 p-5 rounded-xl border border-purple-200">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-users text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-purple-800">Pilot Başlangıcı</h4>
+                                    <p class="text-sm text-purple-700">Kasım 2024</p>
+                                </div>
+                            </div>
+                            <p class="text-purple-700 text-sm">İlk 100 kullanıcıyla pilot uygulama başlatılıyor</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-orange-50 to-red-50 p-5 rounded-xl border border-orange-200">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-rocket text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-orange-800">Genel Uygulama</h4>
+                                    <p class="text-sm text-orange-700">Aralık 2024</p>
+                                </div>
+                            </div>
+                            <p class="text-orange-700 text-sm">Tüm çalışanlara platformun açılması ve eğitimlerin başlaması</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-indigo-50 to-pink-50 p-5 rounded-xl border border-indigo-200">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-trophy text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-indigo-800">İlk Ödül Töreni</h4>
+                                    <p class="text-sm text-indigo-700">Şubat 2025</p>
+                                </div>
+                            </div>
+                            <p class="text-indigo-700 text-sm">İlk dört aydaki en iyi fikirlerin ödüllendirilmesi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team and Equipment -->
+        <section class="bg-white rounded-2xl shadow-xl p-8 mb-8 card-hover">
+            <div class="section-header">
+                <h2 class="text-3xl font-bold text-gray-800">Ekip ve Teknik Altyapı</h2>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-6">Proje Ekibi</h3>
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-5 rounded-xl">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-user-tie text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-indigo-800">Proje Müdürü</h4>
+                                    <p class="text-sm text-indigo-700">1 kişi, tam zamanlı</p>
+                                </div>
+                            </div>
+                            <p class="text-indigo-700 text-sm">Projenin genel koordinasyonu, zaman planı, bütçe yönetimi</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-5 rounded-xl">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-laptop-code text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-blue-800">Yazılım Geliştiriciler</h4>
+                                    <p class="text-sm text-blue-700">4 kişi, tam zamanlı</p>
+                                </div>
+                            </div>
+                            <p class="text-blue-700 text-sm">Frontend ve backend geliştirme, API entegrasyonları, güvenlik</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-xl">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-database text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-green-800">Veri Tabanı Uzmanı</h4>
+                                    <p class="text-sm text-green-700">1 kişi, tam zamanlı</p>
+                                </div>
+                            </div>
+                            <p class="text-green-700 text-sm">Veri yapısı tasarımı, performans optimizasyonu, yedekleme stratejisi</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-orange-50 to-red-50 p-5 rounded-xl">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-shield-alt text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-orange-800">Güvenlik Uzmanı</h4>
+                                    <p class="text-sm text-orange-700">1 kişi, yarı zamanlı</p>
+                                </div>
+                            </div>
+                            <p class="text-orange-700 text-sm">Sistem güvenliği, veri koruma, siber saldırı önleme</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-5 rounded-xl">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-users text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-purple-800">Kullanıcı Eğitim Ekibi</h4>
+                                    <p class="text-sm text-purple-700">2 kişi, yarı zamanlı</p>
+                                </div>
+                            </div>
+                            <p class="text-purple-700 text-sm">Çalışanlara eğitim, kullanıcı kılavuzları, destek hattı</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-6">Teknik Altyapı</h3>
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-server mr-3 text-indigo-600"></i>
+                                Sunucu Altyapısı
+                            </h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Bulut tabanlı altyapı (AWS/Azure)</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Yük dengeleme ve otomatik ölçeklendirme</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Coğrafi yedekleme ve olağanüstü durum planı</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Günlük yedekleme ve 7 günlük geri yükleme</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-lock mr-3 text-indigo-600"></i>
+                                Güvenlik Sistemleri
+                            </h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> SSL/TLS şifreleme</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> İki faktörlü kimlik doğrulama</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Düzenli güvenlik taramaları</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Erişim kontrolü ve izin yönetimi</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-plug mr-3 text-indigo-600"></i>
+                                Entegrasyonlar
+                            </h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Şirket email sistemi</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> İnsan kaynakları sistemi</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> İç iletişim platformu</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Performans değerlendirme sistemi</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROI and Benefits -->
+        <section class="bg-white rounded-2xl shadow-xl p-8 card-hover">
+            <div class="section-header">
+                <h2 class="text-3xl font-bold text-gray-800">Getiri Analizi ve Kazanımlar</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="metric-card bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl text-center hover:shadow-lg transition-all duration-300">
+                    <div class="text-3xl font-bold text-green-600 mb-2">₺1.8M</div>
+                    <div class="text-gray-700 font-semibold">Yıllık Beklenen Kazanç</div>
+                    <div class="text-sm text-gray-600 mt-2">Verimlilik artışı ve yeni fikirlerden</div>
+                </div>
+                <div class="metric-card bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl text-center hover:shadow-lg transition-all duration-300">
+                    <div class="text-3xl font-bold text-blue-600 mb-2">2.5x</div>
+                    <div class="text-gray-700 font-semibold">İşlem Verimliliği</div>
+                    <div class="text-sm text-gray-600 mt-2">İş süreçlerinde iyileştirme</div>
+                </div>
+                <div class="metric-card bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl text-center hover:shadow-lg transition-all duration-300">
+                    <div class="text-3xl font-bold text-purple-600 mb-2">40%</div>
+                    <div class="text-gray-700 font-semibold">Çalışan Katılımı</div>
+                    <div class="text-sm text-gray-600 mt-2">İlk yıl hedefi</div>
+                </div>
+                <div class="metric-card bg-gradient-to-br from-orange-50 to-red-50 p-6 rounded-xl text-center hover:shadow-lg transition-all duration-300">
+                    <div class="text-3xl font-bold text-orange-600 mb-2">18 ay</div>
+                    <div class="text-gray-700 font-semibold">Yatırım Geri Dönüşü</div>
+                    <div class="text-sm text-gray-600 mt-2">Beklenen süre</div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-6">Somut Kazanımlar</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start p-4 bg-green-50 rounded-lg">
+                            <div class="flex-shrink-0 mt-1 mr-3">
+                                <i class="fas fa-arrow-up text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">İş Süreçlerinde Verimlilik Artışı</h4>
+                                <p class="text-gray-600 text-sm">Çalışanların önerdiği süreç iyileştirmeleri sayesinde yıllık 250.000 saatten fazla zaman tasarrufu</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-green-50 rounded-lg">
+                            <div class="flex-shrink-0 mt-1 mr-3">
+                                <i class="fas fa-arrow-up text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Yeni Ürün ve Hizmet Geliştirme</h4>
+                                <p class="text-gray-600 text-sm">Yılda ortalama 15 yeni ürün/hizmet fikrinin uygulanması ve pazarlanma</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-green-50 rounded-lg">
+                            <div class="flex-shrink-0 mt-1 mr-3">
+                                <i class="fas fa-arrow-up text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Müşteri Memnuniyetinde Artış</h4>
+                                <p class="text-gray-600 text-sm">Müşteri odaklı fikirlerin uygulanmasıyla müşteri memnuniyeti endeksinde %35 artış</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-green-50 rounded-lg">
+                            <div class="flex-shrink-0 mt-1 mr-3">
+                                <i class="fas fa-arrow-up text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">İşletme Giderlerinde Azalma</h4>
+                                <p class="text-gray-600 text-sm">Kaynak tasarrufu sağlayan fikirlerle yıllık işletme giderlerinde %18 tasarruf</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-6">Yazılım Kazanımları</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start p-4 bg-blue-50 rounded-lg">
+                            <div class="flex-shrink-0 mt-1 mr-3">
+                                <i class="fas fa-star text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Çalışan Motivasyonu ve Bağlılığı</h4>
+                                <p class="text-gray-600 text-sm">Çalışanların fikirlerinin değer gördüğü hissiyle işe bağlılıkta %40 artış</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-blue-50 rounded-lg">
+                            <div class="flex-shrink-0 mt-1 mr-3">
+                                <i class="fas fa-star text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">İnovasyon Kültürü Oluşumu</h4>
+                                <p class="text-gray-600 text-sm">Şirket genelinde sürekli iyileştirme ve yenilikçilik kültürü</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-blue-50 rounded-lg">
+                            <div class="flex-shrink-0 mt-1 mr-3">
+                                <i class="fas fa-star text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Çapraz İşbirliği ve Bilgi Paylaşımı</h4>
+                                <p class="text-gray-600 text-sm">Farklı departmanlar arası işbirliği ve bilgi paylaşımında %60 artış</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-4 bg-blue-50 rounded-lg">
+                            <div class="flex-shrink-0 mt-1 mr-3">
+                                <i class="fas fa-star text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Yenilikçi Marka İmajı</h4>
+                                <p class="text-gray-600 text-sm">Şirketin yenilikçi bir marka olarak algılanması ve işe alımda avantaj</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl text-white">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-rocket text-4xl mr-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">Stratejik Değer</h3>
+                        <p class="mt-2">
+                            Bu proje sadece bir yazılım platformu değil, şirketimizin uzun vadeli rekabet avantajını oluşturacak stratejik bir yatırımdır. 
+                            İnovasyonu kurumsal bir süreç haline getirerek, değişen piyasa koşullarına daha hızlı ve etkili yanıt vermemizi sağlayacak, 
+                            çalışanlarımızın yaratıcılığını ortaya çıkaracak ve şirketimizin sürdürülebilir büyümesini destekleyecektir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Animation on scroll
+        const animateElements = document.querySelectorAll('.stagger-animation, .budget-item');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animateElements.forEach(element => {
+            element.classList.add('stagger-animation');
+            observer.observe(element);
+        });
+        
+        // Progress bar animation
+        setTimeout(() => {
+            document.querySelectorAll('.progress-fill').forEach(bar => {
+                const width = bar.parentElement.parentElement.querySelector('span:last-child').textContent;
+                bar.style.width = width;
+            });
+        }, 500);
+        
+        // Add delay to budget items for staggered animation
+        document.querySelectorAll('.budget-item').forEach((item, index) => {
+            item.style.transitionDelay = `${index * 0.1}s`;
+        });
+    </script>
+</body>
+</html>

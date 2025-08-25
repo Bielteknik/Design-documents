@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnovasyon Havuzu - Detaylı Fikir Formu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+        
+        .wave-animation {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('image/svg+xml;utf8,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="%231e293b" fill-opacity="0.3" d="M0,192L48,197.3C96,203,192,213,288,208C384,203,480,181,576,181.3C672,181,768,203,864,202.7C960,203,1056,181,1152,165.3C1248,149,1344,139,1392,133.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+            animation: wave 15s linear infinite;
+        }
+        
+        @keyframes wave {
+            0% {
+                background-position-x: 0;
+            }
+            100% {
+                background-position-x: 1440px;
+            }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .idea-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .idea-card:hover {
+            transform: scale(1.02);
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        .step-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+            font-weight: bold;
+        }
+        
+        .step-completed {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .step-current {
+            background-color: #6366f1;
+            color: white;
+        }
+        
+        .step-pending {
+            background-color: #e5e7eb;
+            color: #6b7280;
+        }
+        
+        .form-section {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+            transform: translateY(-2px);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-new {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        
+        .status-reviewed {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        
+        .status-accepted {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .status-rejected {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #818cf8;
+        }
+        
+        .form-navigation {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .attachment-item {
+            border: 1px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-item {
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .evaluation-criteria {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .rating-scale {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.5rem 0;
+        }
+        
+        .rating-point {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .rating-point:hover, .rating-point.selected {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div class="wave-animation"></div>
+    
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">İnovasyon Havuzu</h1>
+            <p class="text-xl text-blue-100">Fikir değerlendirme ve geliştirme platformu</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column - Idea Cards -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 card-hover">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Fikir Listesi</h2>
+                    
+                    <!-- Search -->
+                    <div class="relative mb-6">
+                        <input type="text" id="searchIdeas" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikir ara...">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    
+                    <!-- Filter -->
+                    <div class="mb-6">
+                        <select id="filterStatus" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="">Tüm Durumlar</option>
+                            <option value="new">Yeni</option>
+                            <option value="reviewed">Değerlendirildi</option>
+                            <option value="accepted">Kabul Edildi</option>
+                            <option value="rejected">Reddedildi</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Ideas List -->
+                    <div id="ideasList" class="space-y-4 custom-scrollbar max-h-96 overflow-y-auto">
+                        <!-- Idea 1 -->
+                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="openIdeaForm('idea1')">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-semibold text-gray-800">Yapay Zeka Destekli Müşteri Hizmetleri</h3>
+                                <span class="status-badge status-accepted">Kabul Edildi</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Müşteri hizmetlerinde yapay zeka destekli chatbot sistemi geliştirilerek hizmet kalitesi artırılabilir...</p>
+                            <div class="flex justify-between items-center text-xs text-gray-500">
+                                <span>Ahmet Yılmaz</span>
+                                <span>2 gün önce</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Idea 2 -->
+                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="openIdeaForm('idea2')">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-semibold text-gray-800">Sürdürülebilir Ambalaj Çözümleri</h3>
+                                <span class="status-badge status-reviewed">Değerlendirildi</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Şirketimizin ürün ambalajlarında tamamen biyolojik olarak parçalanabilen malzemeler kullanılması...</p>
+                            <div class="flex justify-between items-center text-xs text-gray-500">
+                                <span>Elif Demir</span>
+                                <span>5 gün önce</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Idea 3 -->
+                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="openIdeaForm('idea3')">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-semibold text-gray-800">Çalışan İnovasyon Programı</h3>
+                                <span class="status-badge status-new">Yeni</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Şirketimizde çalışanlara aylık inovasyon bütçesi tahsis edilerek, kendi iş süreçlerini iyileştirmek için...</p>
+                            <div class="flex justify-between items-center text-xs text-gray-500">
+                                <span>Can Kaya</span>
+                                <span>Bugün</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Idea 4 -->
+                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="openIdeaForm('idea4')">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-semibold text-gray-800">Dijital Eğitim Platformu</h3>
+                                <span class="status-badge status-new">Yeni</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Şirket içi eğitimlerin dijital platform üzerinden yapılması ve çalışanların kendi hızlarında...</p>
+                            <div class="flex justify-between items-center text-xs text-gray-500">
+                                <span>Merve Şahin</span>
+                                <span>Dün</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Idea 5 -->
+                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="openIdeaForm('idea5')">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-semibold text-gray-800">Akıllı Ofis Sistemleri</h3>
+                                <span class="status-badge status-reviewed">Değerlendirildi</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Ofislerde enerji tasarrufu sağlayan akıllı sensör sistemleri kurularak elektrik tüketimi azaltılabilir...</p>
+                            <div class="flex justify-between items-center text-xs text-gray-500">
+                                <span>Ali Çelik</span>
+                                <span>1 hafta önce</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 card-hover">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Hızlı İstatistikler</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="text-center p-4 bg-indigo-50 rounded-xl">
+                            <div class="text-2xl font-bold text-indigo-600">247</div>
+                            <div class="text-sm text-gray-600">Toplam Fikir</div>
+                        </div>
+                        <div class="text-center p-4 bg-purple-50 rounded-xl">
+                            <div class="text-2xl font-bold text-purple-600">1,842</div>
+                            <div class="text-sm text-gray-600">Toplam Oy</div>
+                        </div>
+                        <div class="text-center p-4 bg-blue-50 rounded-xl">
+                            <div class="text-2xl font-bold text-blue-600">89</div>
+                            <div class="text-sm text-gray-600">Aktif Kullanıcı</div>
+                        </div>
+                        <div class="text-center p-4 bg-green-50 rounded-xl">
+                            <div class="text-2xl font-bold text-green-600">42</div>
+                            <div class="text-sm text-gray-600">Kabul Edilen</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Detailed Form -->
+            <div class="lg:col-span-2">
+                <div id="ideaFormContainer" class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <!-- Form Navigation -->
+                    <div class="form-navigation">
+                        <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                            <h2 class="text-2xl font-bold text-gray-800" id="formTitle">Fikir Değerlendirme Formu</h2>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-500" id="statusDisplay">Yeni</span>
+                                <button id="saveBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200">
+                                    <i class="fas fa-save mr-1"></i> Kaydet
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Step Progress -->
+                        <div class="flex justify-between px-6 py-4 bg-gray-50">
+                            <div class="text-center flex-1">
+                                <div class="step-indicator step-current" id="step1Indicator">1</div>
+                                <div class="text-xs font-medium text-gray-700 mt-1">Temel Bilgiler</div>
+                            </div>
+                            <div class="text-center flex-1">
+                                <div class="step-indicator step-pending" id="step2Indicator">2</div>
+                                <div class="text-xs font-medium text-gray-500 mt-1">Detaylı Açıklama</div>
+                            </div>
+                            <div class="text-center flex-1">
+                                <div class="step-indicator step-pending" id="step3Indicator">3</div>
+                                <div class="text-xs font-medium text-gray-500 mt-1">Bütçe ve Süre</div>
+                            </div>
+                            <div class="text-center flex-1">
+                                <div class="step-indicator step-pending" id="step4Indicator">4</div>
+                                <div class="text-xs font-medium text-gray-500 mt-1">Değerlendirme</div>
+                            </div>
+                            <div class="text-center flex-1">
+                                <div class="step-indicator step-pending" id="step5Indicator">5</div>
+                                <div class="text-xs font-medium text-gray-500 mt-1">Sonuç</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Steps -->
+                    <form id="detailedForm" class="p-6">
+                        <!-- Step 1: Basic Information -->
+                        <div id="step1" class="step active form-section">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Temel Bilgiler</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Fikir Başlığı *</label>
+                                    <input type="text" id="ideaTitle" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikrinizin başlığını girin" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kategori *</label>
+                                    <select id="ideaCategory" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                        <option value="">Kategori seçin</option>
+                                        <option value="teknoloji">Teknoloji</option>
+                                        <option value="ürün">Ürün Geliştirme</option>
+                                        <option value="hizmet">Hizmet İnovasyonu</option>
+                                        <option value="süreç">Süreç İyileştirme</option>
+                                        <option value="sürdürülebilirlik">Sürdürülebilirlik</option>
+                                        <option value="diğer">Diğer</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kısa Açıklama *</label>
+                                <textarea id="ideaShortDesc" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikrinizi kısa bir şekilde açıklayın..." required></textarea>
+                            </div>
+                            
+                            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Gönderen</label>
+                                    <input type="text" id="ideaSubmitter" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" value="Ahmet Yılmaz" readonly>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Departman</label>
+                                    <input type="text" id="ideaDepartment" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" value="Teknoloji" readonly>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tarih</label>
+                                    <input type="text" id="ideaDate" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" value="15.03.2024" readonly>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 flex justify-between">
+                                <div></div>
+                                <button type="button" onclick="nextStep(1)" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+                                    Devam Et <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 2: Detailed Description -->
+                        <div id="step2" class="step form-section">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Detaylı Açıklama</h3>
+                            
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Problem Tanımı *</label>
+                                <textarea id="problemDescription" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Hangi problemi çözmeyi amaçlıyorsunuz? Mevcut durum nedir?" required></textarea>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Çözüm Önerisi *</label>
+                                <textarea id="solutionProposal" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikriniz detaylı olarak nasıl bir çözüm öneriyor?" required></textarea>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Hedeflenen Faydalar *</label>
+                                <textarea id="expectedBenefits" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Bu fikir uygulandığında hangi faydalar sağlanacak?" required></textarea>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Hedef Kitle</label>
+                                <textarea id="targetAudience" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Bu fikir kimler için faydalı olacak?"></textarea>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">İlgili Departmanlar</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="teknoloji">
+                                        <span class="ml-2 text-gray-700">Teknoloji</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="pazarlama">
+                                        <span class="ml-2 text-gray-700">Pazarlama</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="satış">
+                                        <span class="ml-2 text-gray-700">Satış</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="finans">
+                                        <span class="ml-2 text-gray-700">Finans</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="insan-kaynakları">
+                                        <span class="ml-2 text-gray-700">İnsan Kaynakları</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="üretim">
+                                        <span class="ml-2 text-gray-700">Üretim</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Ek Dosyalar</label>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
+                                    <p class="text-gray-600 mb-2">Dosyaları buraya sürükleyin veya yüklemek için tıklayın</p>
+                                    <p class="text-sm text-gray-500">PDF, DOC, JPG, PNG desteklenir</p>
+                                    <input type="file" class="hidden" id="fileUpload" multiple>
+                                </div>
+                                <div id="uploadedFiles" class="mt-4 space-y-2">
+                                    <!-- Uploaded files will be listed here -->
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 flex justify-between">
+                                <button type="button" onclick="prevStep(2)" class="btn-secondary font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+                                    <i class="fas fa-arrow-left mr-2"></i> Geri
+                                </button>
+                                <button type="button" onclick="nextStep(2)" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+                                    Devam Et <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 3: Budget and Timeline -->
+                        <div id="step3" class="step form-section">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Bütçe ve Süre Planı</h3>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 mb-4">Zaman Planı</h4>
+                                    
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tahmini Süre *</label>
+                                        <select id="timeline" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                            <option value="">Süreyi seçin</option>
+                                            <option value="1-3-ay">1-3 Ay</option>
+                                            <option value="3-6-ay">3-6 Ay</option>
+                                            <option value="6-12-ay">6-12 Ay</option>
+                                            <option value="12-ay-ustu">12 Ay Üzeri</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Aşamalar</label>
+                                        <div id="timelineStages" class="space-y-3">
+                                            <div class="flex space-x-2">
+                                                <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Aşama adı">
+                                                <input type="text" class="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Süre">
+                                                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button type="button" onclick="addTimelineStage()" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                                            <i class="fas fa-plus mr-1"></i> Aşama Ekle
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Kritik Milestone'lar</label>
+                                        <textarea id="milestones" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Projenin kritik aşamaları ve hedef tarihleri"></textarea>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 mb-4">Bütçe Planı</h4>
+                                    
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Toplam Bütçe *</label>
+                                        <div class="flex">
+                                            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                                ₺
+                                            </span>
+                                            <input type="number" id="totalBudget" class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="0" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Bütçe Kalemleri</label>
+                                        <div id="budgetItems" class="space-y-3">
+                                            <div class="flex space-x-2">
+                                                <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Kalem adı">
+                                                <input type="number" class="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Tutar">
+                                                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button type="button" onclick="addBudgetItem()" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                                            <i class="fas fa-plus mr-1"></i> Kalem Ekle
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Finansman Kaynakları</label>
+                                        <textarea id="fundingSources" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Bütçenin hangi kaynaklardan karşılanacağı"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 flex justify-between">
+                                <button type="button" onclick="prevStep(3)" class="btn-secondary font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+                                    <i class="fas fa-arrow-left mr-2"></i> Geri
+                                </button>
+                                <button type="button" onclick="nextStep(3)" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+                                    Devam Et <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 4: Evaluation -->
+                        <div id="step4" class="step form-section">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Değerlendirme</h3>
+                            
+                            <div class="mb-8">
+                                <h4 class="font-semibold text-gray-800 mb-4">Değerlendirme Kriterleri</h4>
+                                <p class="text-sm text-gray-600 mb-4">Her kriteri 1-5 arasında değerlendirin (1: Düşük, 5: Yüksek)</p>
+                                
+                                <div class="space-y-6">
+                                    <!-- Criterion 1 -->
+                                    <div class="evaluation-criteria">
+                                        <div class="flex justify-between mb-2">
+                                            <label class="font-medium text-gray-700">İnovasyon Düzeyi</label>
+                                            <span id="innovationScore" class="text-sm font-medium text-gray-500">0/5</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-3">Fikrin orijinalliği ve yenilikçiliği</p>
+                                        <div class="rating-scale">
+                                            <div class="rating-point" data-value="1" onclick="selectRating(this, 'innovation')">1</div>
+                                            <div class="rating-point" data-value="2" onclick="selectRating(this, 'innovation')">2</div>
+                                            <div class="rating-point" data-value="3" onclick="selectRating(this, 'innovation')">3</div>
+                                            <div class="rating-point" data-value="4" onclick="selectRating(this, 'innovation')">4</div>
+                                            <div class="rating-point" data-value="5" onclick="selectRating(this, 'innovation')">5</div>
+                                        </div>
+                                        <input type="hidden" id="innovationRating" value="0">
+                                    </div>
+                                    
+                                    <!-- Criterion 2 -->
+                                    <div class="evaluation-criteria">
+                                        <div class="flex justify-between mb-2">
+                                            <label class="font-medium text-gray-700">Uygulanabilirlik</label>
+                                            <span id="feasibilityScore" class="text-sm font-medium text-gray-500">0/5</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-3">Fikrin uygulanmasının kolaylığı ve pratikliği</p>
+                                        <div class="rating-scale">
+                                            <div class="rating-point" data-value="1" onclick="selectRating(this, 'feasibility')">1</div>
+                                            <div class="rating-point" data-value="2" onclick="selectRating(this, 'feasibility')">2</div>
+                                            <div class="rating-point" data-value="3" onclick="selectRating(this, 'feasibility')">3</div>
+                                            <div class="rating-point" data-value="4" onclick="selectRating(this, 'feasibility')">4</div>
+                                            <div class="rating-point" data-value="5" onclick="selectRating(this, 'feasibility')">5</div>
+                                        </div>
+                                        <input type="hidden" id="feasibilityRating" value="0">
+                                    </div>
+                                    
+                                    <!-- Criterion 3 -->
+                                    <div class="evaluation-criteria">
+                                        <div class="flex justify-between mb-2">
+                                            <label class="font-medium text-gray-700">Maliyet-Fayda Oranı</label>
+                                            <span id="costBenefitScore" class="text-sm font-medium text-gray-500">0/5</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-3">Yatırılan maliyetin beklenen faydasına oranı</p>
+                                        <div class="rating-scale">
+                                            <div class="rating-point" data-value="1" onclick="selectRating(this, 'costBenefit')">1</div>
+                                            <div class="rating-point" data-value="2" onclick="selectRating(this, 'costBenefit')">2</div>
+                                            <div class="rating-point" data-value="3" onclick="selectRating(this, 'costBenefit')">3</div>
+                                            <div class="rating-point" data-value="4" onclick="selectRating(this, 'costBenefit')">4</div>
+                                            <div class="rating-point" data-value="5" onclick="selectRating(this, 'costBenefit')">5</div>
+                                        </div>
+                                        <input type="hidden" id="costBenefitRating" value="0">
+                                    </div>
+                                    
+                                    <!-- Criterion 4 -->
+                                    <div class="evaluation-criteria">
+                                        <div class="flex justify-between mb-2">
+                                            <label class="font-medium text-gray-700">Stratejik Uyum</label>
+                                            <span id="strategicFitScore" class="text-sm font-medium text-gray-500">0/5</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-3">Fikrin şirket stratejisiyle uyumu</p>
+                                        <div class="rating-scale">
+                                            <div class="rating-point" data-value="1" onclick="selectRating(this, 'strategicFit')">1</div>
+                                            <div class="rating-point" data-value="2" onclick="selectRating(this, 'strategicFit')">2</div>
+                                            <div class="rating-point" data-value="3" onclick="selectRating(this, 'strategicFit')">3</div>
+                                            <div class="rating-point" data-value="4" onclick="selectRating(this, 'strategicFit')">4</div>
+                                            <div class="rating-point" data-value="5" onclick="selectRating(this, 'strategicFit')">5</div>
+                                        </div>
+                                        <input type="hidden" id="strategicFitRating" value="0">
+                                    </div>
+                                    
+                                    <!-- Criterion 5 -->
+                                    <div class="evaluation-criteria">
+                                        <div class="flex justify-between mb-2">
+                                            <label class="font-medium text-gray-700">Risk Düzeyi</label>
+                                            <span id="riskScore" class="text-sm font-medium text-gray-500">0/5</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-3">Uygulanması sırasında karşılaşılacak risklerin düzeyi</p>
+                                        <div class="rating-scale">
+                                            <div class="rating-point" data-value="1" onclick="selectRating(this, 'risk')">1</div>
+                                            <div class="rating-point" data-value="2" onclick="selectRating(this, 'risk')">2</div>
+                                            <div class="rating-point" data-value="3" onclick="selectRating(this, 'risk')">3</div>
+                                            <div class="rating-point" data-value="4" onclick="selectRating(this, 'risk')">4</div>
+                                            <div class="rating-point" data-value="5" onclick="selectRating(this, 'risk')">5</div>
+                                        </div>
+                                        <input type="hidden" id="riskRating" value="0">
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-semibold text-gray-700">Toplam Puan:</span>
+                                        <span id="totalScore" class="text-2xl font-bold text-indigo-600">0/25</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h4 class="font-semibold text-gray-800 mb-4">Değerlendirme Notları</h4>
+                                <textarea id="evaluationNotes" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikirle ilgili değerlendirmenizi detaylıca yazın..."></textarea>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h4 class="font-semibold text-gray-800 mb-4">Ekibin Görüşü</h4>
+                                <div class="space-y-4" id="teamReviews">
+                                    <div class="comment-item">
+                                        <div class="flex items-start">
+                                            <div class="flex-shrink-0 mr-3">
+                                                <div class="w-8 h-8 bg-indigo-200 rounded-full flex items-center justify-center">
+                                                    <span class="text-sm font-medium text-indigo-600">AY</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="flex items-center mb-1">
+                                                    <span class="font-medium text-gray-800">Ahmet Yılmaz</span>
+                                                    <span class="text-xs text-gray-500 ml-2">Değerlendirici</span>
+                                                    <span class="text-xs text-green-600 ml-2">Destekliyor</span>
+                                                </div>
+                                                <p class="text-sm text-gray-700">Fikir oldukça yenilikçi ve uygulanabilir. Özellikle maliyet-fayda oranı çok iyi görünüyor.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="comment-item">
+                                        <div class="flex items-start">
+                                            <div class="flex-shrink-0 mr-3">
+                                                <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center">
+                                                    <span class="text-sm font-medium text-purple-600">ED</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="flex items-center mb-1">
+                                                    <span class="font-medium text-gray-800">Elif Demir</span>
+                                                    <span class="text-xs text-gray-500 ml-2">Değerlendirici</span>
+                                                    <span class="text-xs text-yellow-600 ml-2">Nötr</span>
+                                                </div>
+                                                <p class="text-sm text-gray-700">İnovasyon düzeyi yüksek ancak uygulanabilirlik konusunda bazı teknik zorluklar olabilir.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start mt-4">
+                                    <div class="flex-shrink-0 mr-3">
+                                        <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                                            <span class="text-sm font-medium text-gray-600">S</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <textarea id="reviewComment" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Yorumunuzu yazın..."></textarea>
+                                        <div class="mt-2 flex justify-between items-center">
+                                            <div class="flex space-x-2">
+                                                <button type="button" class="text-green-600 hover:text-green-800 text-sm font-medium" onclick="setReviewStatus('support')">
+                                                    <i class="fas fa-thumbs-up mr-1"></i> Destekliyor
+                                                </button>
+                                                <button type="button" class="text-yellow-600 hover:text-yellow-800 text-sm font-medium" onclick="setReviewStatus('neutral')">
+                                                    <i class="fas fa-hand-paper mr-1"></i> Nötr
+                                                </button>
+                                                <button type="button" class="text-red-600 hover:text-red-800 text-sm font-medium" onclick="setReviewStatus('oppose')">
+                                                    <i class="fas fa-thumbs-down mr-1"></i> Karşı
+                                                </button>
+                                            </div>
+                                            <button type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-1 rounded">
+                                                Gönder
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 flex justify-between">
+                                <button type="button" onclick="prevStep(4)" class="btn-secondary font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+                                    <i class="fas fa-arrow-left mr-2"></i> Geri
+                                </button>
+                                <button type="button" onclick="nextStep(4)" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+                                    Devam Et <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 5: Final Review -->
+                        <div id="step5" class="step form-section">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Sonuç ve Karar</h3>
+                            
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-info-circle text-3xl text-blue-600"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="text-lg font-semibold text-blue-800">Değerlendirme Sonuçları</h4>
+                                        <p class="text-blue-700 mt-2">
+                                            Fikir tüm kriterlere göre değerlendirildi. Toplam puan 25 üzerinden 21 olarak hesaplandı. 
+                                            Bu puan, fikrin yüksek potansiyelli olduğunu göstermektedir.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 mb-4">Fikir Özeti</h4>
+                                    <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Başlık:</span>
+                                            <span id="summaryTitle" class="font-medium text-gray-800">Yapay Zeka Destekli Müşteri Hizmetleri</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Kategori:</span>
+                                            <span id="summaryCategory" class="font-medium text-gray-800">Teknoloji</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Tahmini Süre:</span>
+                                            <span id="summaryTimeline" class="font-medium text-gray-800">3-6 Ay</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Toplam Bütçe:</span>
+                                            <span id="summaryBudget" class="font-medium text-gray-800">₺250.000</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Toplam Puan:</span>
+                                            <span id="summaryScore" class="font-bold text-indigo-600">21/25</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 mb-4">Karar</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Karar Durumu *</label>
+                                            <select id="decisionStatus" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                                <option value="">Karar seçin</option>
+                                                <option value="accepted">Kabul Edildi</option>
+                                                <option value="accepted-with-modifications">Kabul Edildi (Değişikliklerle)</option>
+                                                <option value="needs-more-info">Daha Fazla Bilgi Gerekli</option>
+                                                <option value="rejected">Reddedildi</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div id="modificationFields" class="space-y-4" style="display: none;">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">Gerekli Değişiklikler</label>
+                                                <textarea id="requiredModifications" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikrin uygulanabilmesi için yapılması gereken değişiklikler"></textarea>
+                                            </div>
+                                            
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">Yeni Süre Planı</label>
+                                                <input type="text" id="newTimeline" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Güncellenmiş süre planı">
+                                            </div>
+                                            
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">Yeni Bütçe Planı</label>
+                                                <div class="flex">
+                                                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                                        ₺
+                                                    </span>
+                                                    <input type="number" id="newBudget" class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="0">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h4 class="font-semibold text-gray-800 mb-4">Karar Gerekçesi</h4>
+                                <textarea id="decisionReason" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Kararınızın detaylı gerekçesini yazın..."></textarea>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h4 class="font-semibold text-gray-800 mb-4">İlerleme Planı</h4>
+                                <div id="actionPlan" class="space-y-3">
+                                    <div class="flex space-x-2">
+                                        <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Aksiyon adımı">
+                                        <input type="date" class="w-32 px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                        <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="addActionStep()" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                                    <i class="fas fa-plus mr-1"></i> Aksiyon Ekle
+                                </button>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h4 class="font-semibold text-gray-800 mb-4">Sorumlular</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Proje Sorumlusu</label>
+                                        <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                            <option value="">Sorumlu seçin</option>
+                                            <option value="ahmet">Ahmet Yılmaz</option>
+                                            <option value="elif">Elif Demir</option>
+                                            <option value="can">Can Kaya</option>
+                                            <option value="merve">Merve Şahin</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Destek Ekibi</label>
+                                        <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" multiple>
+                                            <option value="teknoloji">Teknoloji Ekibi</option>
+                                            <option value="finans">Finans Ekibi</option>
+                                            <option value="pazarlama">Pazarlama Ekibi</option>
+                                            <option value="insan-kaynakları">İnsan Kaynakları</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 flex justify-between">
+                                <button type="button" onclick="prevStep(5)" class="btn-secondary font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+                                    <i class="fas fa-arrow-left mr-2"></i> Geri
+                                </button>
+                                <button type="submit" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+                                    <i class="fas fa-check mr-2"></i> Kararı Onayla
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Current active idea
+        let currentIdea = null;
+        
+        // Open idea form
+        function openIdeaForm(ideaId) {
+            currentIdea = ideaId;
+            
+            // Update form title and status
+            const ideaTitle = document.querySelector(`#${ideaId} h3`).textContent;
+            document.getElementById('formTitle').textContent = ideaTitle;
+            
+            const statusBadge = document.querySelector(`#${ideaId} .status-badge`);
+            const statusText = statusBadge.textContent;
+            document.getElementById('statusDisplay').textContent = statusText;
+            document.getElementById('statusDisplay').className = statusBadge.className;
+            
+            // Reset form
+            resetForm();
+            
+            // Show first step
+            showStep(1);
+            
+            // Fill form with idea data (in a real app, this would be from API)
+            if (ideaId === 'idea1') {
+                document.getElementById('ideaTitle').value = 'Yapay Zeka Destekli Müşteri Hizmetleri';
+                document.getElementById('ideaCategory').value = 'teknoloji';
+                document.getElementById('ideaShortDesc').value = 'Müşteri hizmetlerinde yapay zeka destekli chatbot sistemi geliştirilerek hizmet kalitesi artırılabilir.';
+                document.getElementById('problemDescription').value = 'Müşteri hizmetlerimize gelen taleplerin %60\'ı tekrar eden sorularla ilgili. Bu soruların yanıtlanması için personel zamanı harcanıyor.';
+                document.getElementById('solutionProposal').value = 'Yapay zeka destekli bir chatbot sistemi geliştirilerek müşterilerin %80\'lik bir kısmına anında yanıt verilebilir. Karmaşık durumlarda ise insana yönlendirilebilir.';
+                document.getElementById('expectedBenefits').value = 'Müşteri memnuniyetinde %40 artış, müşteri hizmetleri personelinde %30 zaman tasarrufu, yıllık işletme giderlerinde %15 tasarruf.';
+                document.getElementById('targetAudience').value = 'Tüm müşteriler, müşteri hizmetleri personeli';
+                document.getElementById('timeline').value = '3-6-ay';
+                document.getElementById('totalBudget').value = '250000';
+                document.getElementById('fundingSources').value = 'İnovasyon bütçesi, teknoloji geliştirme fonu';
+                document.getElementById('evaluationNotes').value = 'Fikir oldukça yenilikçi ve uygulanabilir. Özellikle maliyet-fayda oranı çok iyi görünüyor. Teknik olarak uygulanabilirliği yüksek.';
+                
+                // Set ratings
+                selectRating(document.querySelector('#step4 .rating-point[data-value="5"]'), 'innovation');
+                selectRating(document.querySelector('#step4 .rating-point[data-value="4"]'), 'feasibility');
+                selectRating(document.querySelector('#step4 .rating-point[data-value="5"]'), 'costBenefit');
+                selectRating(document.querySelector('#step4 .rating-point[data-value="5"]'), 'strategicFit');
+                selectRating(document.querySelector('#step4 .rating-point[data-value="2"]'), 'risk');
+                
+                // Add timeline stage
+                addTimelineStage();
+                document.querySelectorAll('#timelineStages input')[0].value = 'Sistem Analizi';
+                document.querySelectorAll('#timelineStages input')[1].value = '1 Ay';
+                
+                // Add budget item
+                addBudgetItem();
+                document.querySelectorAll('#budgetItems input')[0].value = 'Yazılım Geliştirme';
+                document.querySelectorAll('#budgetItems input')[1].value = '150000';
+            }
+        }
+        
+        // Reset form
+        function resetForm() {
+            // Clear all inputs
+            document.querySelectorAll('input, textarea, select').forEach(input => {
+                if (input.type !== 'checkbox' && input.type !== 'radio') {
+                    input.value = '';
+                }
+            });
+            
+            // Reset checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            
+            // Reset ratings
+            document.querySelectorAll('.rating-point').forEach(rp => {
+                rp.classList.remove('selected');
+                rp.style.backgroundColor = '';
+                rp.style.color = '';
+            });
+            
+            // Hide modification fields
+            document.getElementById('modificationFields').style.display = 'none';
+            
+            // Reset total score
+            document.getElementById('totalScore').textContent = '0/25';
+            
+            // Reset status indicators
+            document.querySelectorAll('.step-indicator').forEach(indicator => {
+                indicator.classList.remove('step-current', 'step-completed');
+                indicator.classList.add('step-pending');
+            });
+            document.getElementById('step1Indicator').classList.add('step-current');
+        }
+        
+        // Show specific step
+        function showStep(stepNum) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Show current step
+            document.getElementById(`step${stepNum}`).classList.add('active');
+            
+            // Update step indicators
+            for (let i = 1; i <= 5; i++) {
+                const indicator = document.getElementById(`step${i}Indicator`);
+                indicator.classList.remove('step-current', 'step-completed', 'step-pending');
+                
+                if (i < stepNum) {
+                    indicator.classList.add('step-completed');
+                } else if (i === stepNum) {
+                    indicator.classList.add('step-current');
+                } else {
+                    indicator.classList.add('step-pending');
+                }
+            }
+            
+            // Update summary if on last step
+            if (stepNum === 5) {
+                updateSummary();
+            }
+        }
+        
+        // Navigate to next step
+        function nextStep(currentStep) {
+            if (currentStep < 5) {
+                showStep(currentStep + 1);
+            }
+        }
+        
+        // Navigate to previous step
+        function prevStep(currentStep) {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        }
+        
+        // Add timeline stage
+        function addTimelineStage() {
+            const container = document.getElementById('timelineStages');
+            const newStage = document.createElement('div');
+            newStage.className = 'flex space-x-2';
+            newStage.innerHTML = `
+                <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Aşama adı">
+                <input type="text" class="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Süre">
+                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm" onclick="removeElement(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newStage);
+        }
+        
+        // Add budget item
+        function addBudgetItem() {
+            const container = document.getElementById('budgetItems');
+            const newItem = document.createElement('div');
+            newItem.className = 'flex space-x-2';
+            newItem.innerHTML = `
+                <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Kalem adı">
+                <input type="number" class="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Tutar">
+                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm" onclick="removeElement(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newItem);
+        }
+        
+        // Add action step
+        function addActionStep() {
+            const container = document.getElementById('actionPlan');
+            const newStep = document.createElement('div');
+            newStep.className = 'flex space-x-2';
+            newStep.innerHTML = `
+                <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Aksiyon adımı">
+                <input type="date" class="w-32 px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm" onclick="removeElement(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newStep);
+        }
+        
+        // Remove element
+        function removeElement(button) {
+            button.parentElement.remove();
+        }
+        
+        // Select rating
+        function selectRating(element, criterion) {
+            // Remove selected class from all points in this criterion
+            const points = document.querySelectorAll(`.rating-point[data-value]`);
+            points.forEach(point => {
+                if (point.parentElement.parentElement.querySelector('input').id.includes(criterion)) {
+                    point.classList.remove('selected');
+                    point.style.backgroundColor = '';
+                    point.style.color = '';
+                }
+            });
+            
+            // Add selected class to clicked point
+            element.classList.add('selected');
+            element.style.backgroundColor = '#6366f1';
+            element.style.color = 'white';
+            
+            // Update hidden input
+            document.getElementById(`${criterion}Rating`).value = element.getAttribute('data-value');
+            
+            // Update score display
+            document.getElementById(`${criterion}Score`).textContent = `${element.getAttribute('data-value')}/5`;
+            
+            // Update total score
+            updateTotalScore();
+        }
+        
+        // Update total score
+        function updateTotalScore() {
+            const innovation = parseInt(document.getElementById('innovationRating').value) || 0;
+            const feasibility = parseInt(document.getElementById('feasibilityRating').value) || 0;
+            const costBenefit = parseInt(document.getElementById('costBenefitRating').value) || 0;
+            const strategicFit = parseInt(document.getElementById('strategicFitRating').value) || 0;
+            const risk = parseInt(document.getElementById('riskRating').value) || 0;
+            
+            const total = innovation + feasibility + costBenefit + strategicFit + risk;
+            document.getElementById('totalScore').textContent = `${total}/25`;
+        }
+        
+        // Set review status
+        function setReviewStatus(status) {
+            const buttons = document.querySelectorAll('#reviewComment ~ div button');
+            buttons.forEach(btn => {
+                if (btn.textContent.includes(status.charAt(0).toUpperCase() + status.slice(1))) {
+                    btn.classList.add('font-bold');
+                } else {
+                    btn.classList.remove('font-bold');
+                }
+            });
+        }
+        
+        // Update summary
+        function updateSummary() {
+            document.getElementById('summaryTitle').textContent = document.getElementById('ideaTitle').value;
+            document.getElementById('summaryCategory').textContent = document.getElementById('ideaCategory').options[document.getElementById('ideaCategory').selectedIndex].text;
+            document.getElementById('summaryTimeline').textContent = document.getElementById('timeline').options[document.getElementById('timeline').selectedIndex].text;
+            document.getElementById('summaryBudget').textContent = '₺' + (document.getElementById('totalBudget').value || '0');
+            document.getElementById('summaryScore').textContent = document.getElementById('totalScore').textContent;
+        }
+        
+        // Handle decision status change
+        document.getElementById('decisionStatus').addEventListener('change', function() {
+            const modificationFields = document.getElementById('modificationFields');
+            if (this.value === 'accepted-with-modifications') {
+                modificationFields.style.display = 'block';
+            } else {
+                modificationFields.style.display = 'none';
+            }
+        });
+        
+        // Form submission
+        document.getElementById('detailedForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            let isValid = true;
+            const requiredFields = this.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('border-red-500');
+                } else {
+                    field.classList.remove('border-red-500');
+                }
+            });
+            
+            if (!isValid) {
+                alert('Lütfen tüm zorunlu alanları doldurun.');
+                return;
+            }
+            
+            // In a real app, this would save to database
+            alert('Fikir başarıyla kaydedildi ve karar onaylandı!');
+            
+            // Close form or redirect
+            // window.location.href = 'dashboard.html';
+        });
+        
+        // File upload
+        document.querySelector('.border-dashed').addEventListener('click', function() {
+            document.getElementById('fileUpload').click();
+        });
+        
+        document.getElementById('fileUpload').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const container = document.getElementById('uploadedFiles');
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'attachment-item';
+                fileItem.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas fa-file-alt text-gray-400 mr-3"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">${file.name}</div>
+                            <div class="text-sm text-gray-500">${formatFileSize(file.size)}</div>
+                        </div>
+                        <button type="button" class="text-red-500 hover:text-red-700" onclick="removeElement(this.parentElement.parentElement)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(fileItem);
+            }
+        });
+        
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Initialize with first idea
+        document.addEventListener('DOMContentLoaded', function() {
+            openIdeaForm('idea1');
+        });
+    </script>
+</body>
+</html>
