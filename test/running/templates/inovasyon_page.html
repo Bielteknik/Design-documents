@@ -1,0 +1,424 @@
+{% extends 'base.html' %}
+
+{% block title %}İnovasyon Merkezi{% endblock title %}
+
+{% block breadcrumb %}
+<i class="fas fa-chevron-right text-slate-400 text-xs"></i>
+<span class="text-slate-600">İnovasyon Merkezi</span>
+{% endblock breadcrumb %}
+
+{% block page_description %}Geleceği şekillendiren fikirler ve projeler{% endblock page_description %}
+
+{% block extra_styles %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    #main-content > main { padding: 0 !important; } /* base.html padding'ini sıfırla */
+    #inovasyon-wrapper { background: #fafbfc; color: #1a202c; }
+    :root { --primary-50: #eff6ff; --primary-100: #dbeafe; --primary-500: #3b82f6; --primary-600: #2563eb; --primary-700: #1d4ed8; --primary-900: #1e3a8a; --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb; --gray-300: #d1d5db; --gray-400: #9ca3af; --gray-500: #6b7280; --gray-600: #4b5563; --gray-700: #374151; --gray-800: #1f2937; --gray-900: #111827; --success-50: #ecfdf5; --success-500: #10b981; --success-600: #059669; --warning-50: #fffbeb; --warning-500: #f59e0b; --warning-600: #d97706; --error-50: #fef2f2; --error-500: #ef4444; --error-600: #dc2626; }
+    .professional-card { background: white; border: 1px solid var(--gray-200); border-radius: 12px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+    .professional-card:hover { border-color: var(--primary-100); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transform: translateY(-1px); }
+    .status-draft { border-left: 4px solid var(--gray-400); } .status-review { border-left: 4px solid var(--warning-500); } .status-approved { border-left: 4px solid var(--success-500); } .status-development { border-left: 4px solid var(--primary-500); } .status-completed { border-left: 4px solid var(--success-600); } .status-rejected { border-left: 4px solid var(--error-500); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary-600), var(--primary-700)); color: white; border: none; border-radius: 8px; padding: 12px 24px; font-weight: 600; font-size: 14px; transition: all 0.2s ease; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+    .btn-primary:hover { background: linear-gradient(135deg, var(--primary-700), var(--primary-900)); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transform: translateY(-1px); }
+    .btn-secondary { background: white; color: var(--gray-700); border: 1px solid var(--gray-300); border-radius: 8px; padding: 12px 24px; font-weight: 500; font-size: 14px; transition: all 0.2s ease; }
+    .btn-secondary:hover { background: var(--gray-50); border-color: var(--gray-400); }
+    .professional-input { background: white; border: 1px solid var(--gray-300); border-radius: 8px; padding: 12px 16px; font-size: 14px; transition: all 0.2s ease; width: 100%; }
+    .professional-input:focus { outline: none; border-color: var(--primary-500); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    .professional-modal { backdrop-filter: blur(8px); background: rgba(17, 24, 39, 0.75); }
+    .modal-content { background: white; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-height: 90vh; overflow: hidden; }
+    .heading-2 { font-size: 24px; font-weight: 700; line-height: 1.3; color: var(--gray-900); }
+    .heading-3 { font-size: 20px; font-weight: 600; line-height: 1.4; color: var(--gray-800); }
+    .body-text { font-size: 14px; font-weight: 400; line-height: 1.5; color: var(--gray-600); }
+    .caption-text { font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--gray-500); }
+    .fade-in { animation: fadeIn 0.3s ease-out; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .slide-up { animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); } @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .progress-container { background: var(--gray-200); border-radius: 8px; height: 8px; overflow: hidden; }
+    .progress-bar { background: linear-gradient(90deg, var(--primary-500), var(--primary-600)); height: 100%; border-radius: 8px; transition: width 0.3s ease; }
+    .step-content { display: none; } .step-content.active { display: block; animation: fadeInStep 0.3s ease-in-out; } @keyframes fadeInStep { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    .vote-button { transition: all 0.2s ease; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .vote-button:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .team-member-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-500), var(--primary-600)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 12px; }
+    .collaboration-badge { background: linear-gradient(135deg, var(--success-500), var(--success-600)); color: white; padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+</style>
+{% endblock extra_styles %}
+
+{% block content %}
+<div id="inovasyon-wrapper">
+    <!-- Orijinal inovasyon.html'den gelen TÜM <body> içeriği -->
+    {% include 'partials/_inovasyon_content.html' %}
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}{% endblock extra_scripts %}
+
+{% block modals %}
+<!-- Professional Add/Edit Idea Modal -->
+<div id="ideaModal" class="hidden fixed inset-0 z-50 professional-modal">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="modal-content w-full max-w-4xl slide-up overflow-hidden flex flex-col rounded-none slide-up overflow-hidden flex flex-col">
+            <!-- Modal Header -->
+            <div class="px-8 py-6 border-b border-gray-200">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="heading-2" id="modalTitle">Yeni Fikir Ekle</h2>
+                        <p class="body-text mt-1">Fikrinizi detaylandırın ve değerlendirme sürecine gönderin</p>
+                    </div>
+                    <button id="closeModal" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                        <i class="fas fa-times text-gray-500"></i>
+                    </button>
+                </div>
+
+                <!-- Professional Progress -->
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="caption-text font-semibold" id="stepTitle">Temel Bilgiler</span>
+                        <span class="caption-text" id="progressText">1 / 6</span>
+                    </div>
+                    <div class="progress-container">
+                        <div id="progressBar" class="progress-bar" style="width: 16.67%"></div>
+                    </div>
+                </div>
+
+                <!-- Professional Step Indicators -->
+                <div class="flex justify-between">
+                    <div class="step-indicator active" data-step="1">
+                        <div class="step-circle">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="step-label">Temel</div>
+                    </div>
+                    <div class="step-indicator" data-step="2">
+                        <div class="step-circle">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="step-label">Detay</div>
+                    </div>
+                    <div class="step-indicator" data-step="3">
+                        <div class="step-circle">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="step-label">Analiz</div>
+                    </div>
+                    <div class="step-indicator" data-step="4">
+                        <div class="step-circle">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="step-label">Bütçe</div>
+                    </div>
+                    <div class="step-indicator" data-step="5">
+                        <div class="step-circle">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div class="step-label">Ortaklık</div>
+                    </div>
+                    <div class="step-indicator" data-step="6">
+                        <div class="step-circle">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="step-label">Plan</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="px-8 py-6 flex-1 overflow-y-auto" style="max-height: calc(100vh - 280px);">
+                <form id="ideaForm">
+                    <!-- Step 1: Basic Information -->
+                    <div id="step1" class="step-content active space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Fikir Başlığı *
+                            </label>
+                            <input type="text" id="ideaTitle" required
+                                   class="professional-input"
+                                   placeholder="Fikrinizin kısa ve açıklayıcı başlığını yazın">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Kategori *
+                                </label>
+                                <select id="ideaCategory" required class="professional-input">
+                                    <option value="">Kategori seçiniz</option>
+                                    <option value="teknoloji">Teknoloji</option>
+                                    <option value="pazarlama">Pazarlama</option>
+                                    <option value="urun">Ürün Geliştirme</option>
+                                    <option value="operasyon">Operasyon</option>
+                                    <option value="finans">Finans</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Öncelik *
+                                </label>
+                                <select id="ideaPriority" required class="professional-input">
+                                    <option value="">Öncelik seçiniz</option>
+                                    <option value="critical">Kritik</option>
+                                    <option value="high">Yüksek</option>
+                                    <option value="medium">Orta</option>
+                                    <option value="low">Düşük</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Fikir Özeti *
+                            </label>
+                            <textarea id="ideaSummary" rows="4" required maxlength="500"
+                                      class="professional-input resize-none"
+                                      placeholder="Fikrinizi kısaca özetleyin (maksimum 500 karakter)"></textarea>
+                            <div class="flex justify-end mt-1">
+                                <span class="caption-text" id="summaryCounter">0/500</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Detailed Description -->
+                    <div id="step2" class="step-content space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Problem Tanımı *
+                            </label>
+                            <textarea id="problemDescription" rows="3" required
+                                      class="professional-input resize-none"
+                                      placeholder="Hangi problemi çözmeyi hedefliyorsunuz?"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Çözüm Önerisi *
+                            </label>
+                            <textarea id="solutionDescription" rows="4" required
+                                      class="professional-input resize-none"
+                                      placeholder="Önerdiğiniz çözümü detaylandırın"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Hedef Kitle
+                            </label>
+                            <textarea id="targetAudience" rows="3"
+                                      class="professional-input resize-none"
+                                      placeholder="Bu çözümden kimler faydalanacak?"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Benefits & Impact -->
+                    <div id="step3" class="step-content space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Beklenen Faydalar
+                            </label>
+                            <textarea id="expectedBenefits" rows="4"
+                                      class="professional-input resize-none"
+                                      placeholder="Bu fikrin sağlayacağı faydaları listeleyin"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    ROI Tahmini (%)
+                                </label>
+                                <input type="number" id="roiEstimate" min="0" max="1000"
+                                       class="professional-input"
+                                       placeholder="Yatırım getirisi tahmini">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Risk Seviyesi
+                                </label>
+                                <select id="riskLevel" class="professional-input">
+                                    <option value="low">Düşük Risk</option>
+                                    <option value="medium">Orta Risk</option>
+                                    <option value="high">Yüksek Risk</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Başarı Metrikleri (KPI)
+                            </label>
+                            <textarea id="kpis" rows="4"
+                                      class="professional-input resize-none"
+                                      placeholder="Başarıyı nasıl ölçeceksiniz?"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Budget & Resources -->
+                    <div id="step4" class="step-content space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Tahmini Bütçe (₺)
+                                </label>
+                                <input type="number" id="estimatedBudget" min="0"
+                                       class="professional-input"
+                                       placeholder="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Süre (Ay)
+                                </label>
+                                <input type="number" id="estimatedDuration" min="1" max="60"
+                                       class="professional-input"
+                                       placeholder="1">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Ekip Büyüklüğü
+                                </label>
+                                <input type="number" id="teamSize" min="1" max="50"
+                                       class="professional-input"
+                                       placeholder="1">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Gerekli Kaynaklar
+                            </label>
+                            <textarea id="requiredResources" rows="5"
+                                      class="professional-input resize-none"
+                                      placeholder="İhtiyaç duyulan kaynakları listeleyin"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Partnerships -->
+                    <div id="step5" class="step-content space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Potansiyel İş Ortakları
+                                </label>
+                                <textarea id="potentialPartners" rows="4"
+                                          class="professional-input resize-none"
+                                          placeholder="Hangi firmalarla ortaklık kurabilirsiniz?"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    İç Paydaşlar
+                                </label>
+                                <textarea id="internalStakeholders" rows="4"
+                                          class="professional-input resize-none"
+                                          placeholder="Hangi departmanlar dahil olacak?"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Dış Paydaşlar
+                                </label>
+                                <textarea id="externalStakeholders" rows="3"
+                                          class="professional-input resize-none"
+                                          placeholder="Dış paydaşları belirtin"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Ortaklık Türü
+                                </label>
+                                <select id="partnershipType" class="professional-input">
+                                    <option value="">Ortaklık türü seçiniz</option>
+                                    <option value="strategic">Stratejik Ortaklık</option>
+                                    <option value="technical">Teknik Ortaklık</option>
+                                    <option value="commercial">Ticari Ortaklık</option>
+                                    <option value="joint-venture">Ortak Girişim</option>
+                                    <option value="supplier">Tedarikçi İlişkisi</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 6: Implementation Plan -->
+                    <div id="step6" class="step-content space-y-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Aşama 1: Planlama
+                                </label>
+                                <textarea id="phase1" rows="3"
+                                          class="professional-input resize-none"
+                                          placeholder="İlk aşamada neler yapılacak?"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Aşama 2: Geliştirme
+                                </label>
+                                <textarea id="phase2" rows="3"
+                                          class="professional-input resize-none"
+                                          placeholder="Geliştirme aşamasında neler yapılacak?"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Aşama 3: Test & Lansman
+                                </label>
+                                <textarea id="phase3" rows="3"
+                                          class="professional-input resize-none"
+                                          placeholder="Test ve lansman aşamasında neler yapılacak?"></textarea>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Ölçüm Yöntemleri
+                            </label>
+                            <textarea id="measurementMethods" rows="4"
+                                      class="professional-input resize-none"
+                                      placeholder="Başarıyı nasıl ölçeceksiniz?"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-8 py-6 border-t border-gray-200 bg-gray-50 flex-shrink-0 sticky bottom-0 z-10">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <button type="button" id="prevStepBtn" class="hidden btn-secondary">
+                            <i class="fas fa-arrow-left mr-2"></i>Önceki
+                        </button>
+                        <button type="button" id="saveDraftBtn" class="btn-secondary">
+                            <i class="fas fa-save mr-2"></i>Taslak Kaydet
+                        </button>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <button type="button" id="cancelBtn" class="btn-secondary">
+                            İptal
+                        </button>
+                        <button type="button" id="nextStepBtn" class="btn-primary">
+                            Sonraki
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                        <button type="submit" id="submitBtn" class="hidden btn-primary">
+                            <i class="fas fa-paper-plane mr-2"></i>Gönder
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Professional Idea Detail Modal -->
+<div id="ideaDetailModal" class="hidden fixed inset-0 z-50 professional-modal">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="modal-content w-full max-w-6xl slide-up">
+            <div id="ideaDetailContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modals %}

@@ -1,10 +1,1155 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<!-- Spectacular Header -->
+<header class="relative overflow-hidden">
+    <!-- Animated Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-blue-900 to-purple-900">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-20"></div>
+        <!-- Floating Particles -->
+        <div class="absolute inset-0">
+            <div class="floating-particle absolute top-20 left-10 w-2 h-2 bg-white/20 rounded-full"></div>
+            <div class="floating-particle absolute top-32 right-20 w-3 h-3 bg-blue-300/30 rounded-full" style="animation-delay: 1s;"></div>
+            <div class="floating-particle absolute top-48 left-1/4 w-1 h-1 bg-purple-300/40 rounded-full" style="animation-delay: 2s;"></div>
+            <div class="floating-particle absolute top-16 right-1/3 w-2 h-2 bg-indigo-300/30 rounded-full" style="animation-delay: 3s;"></div>
+            <div class="floating-particle absolute top-40 left-2/3 w-1 h-1 bg-white/30 rounded-full" style="animation-delay: 4s;"></div>
+        </div>
+        <!-- Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-6 py-12">
+        <!-- Spectacular Header Top -->
+        <div class="flex items-center justify-between mb-12">
+            <div class="flex items-center space-x-6">
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20 shadow-2xl">
+                        <i class="fas fa-lightbulb text-3xl text-white animate-pulse"></i>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-star text-white text-xs"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-black text-white mb-2 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                        İnovasyon Merkezi
+                    </h1>
+                    <p class="text-blue-100 text-lg font-medium flex items-center">
+                        <i class="fas fa-rocket mr-2 text-yellow-300"></i>
+                        Geleceği Şekillendiren Fikirler
+                    </p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-3xl md:text-4xl font-black text-white mb-1" id="totalBudget">₺2.450.000</div>
+                <div class="text-blue-200 text-sm font-medium flex items-center justify-end">
+                    <i class="fas fa-chart-line mr-2 text-green-300"></i>
+                    Toplam Yatırım Portföyü
+                </div>
+            </div>
+        </div>
+
+        <!-- Spectacular KPI Dashboard -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+            <div class="group relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-lightbulb text-white text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-black text-white mb-2" id="totalIdeas">24</div>
+                    <div class="text-blue-100 text-sm font-semibold">Toplam Fikir</div>
+                    <div class="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full animate-pulse" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-check-circle text-white text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-black text-white mb-2" id="approvedIdeas">8</div>
+                    <div class="text-green-100 text-sm font-semibold">Onaylanan</div>
+                    <div class="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-green-400 to-emerald-600 rounded-full animate-pulse" style="width: 65%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-clock text-white text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-black text-white mb-2" id="reviewIdeas">6</div>
+                    <div class="text-yellow-100 text-sm font-semibold">İncelemede</div>
+                    <div class="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-yellow-400 to-orange-600 rounded-full animate-pulse" style="width: 45%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-cogs text-white text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-black text-white mb-2" id="developmentIdeas">4</div>
+                    <div class="text-purple-100 text-sm font-semibold">Geliştirmede</div>
+                    <div class="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-purple-400 to-pink-600 rounded-full animate-pulse" style="width: 35%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+                <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-trophy text-white text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-black text-white mb-2">%68</div>
+                    <div class="text-indigo-100 text-sm font-semibold">Başarı Oranı</div>
+                    <div class="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-indigo-400 to-blue-600 rounded-full animate-pulse" style="width: 68%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spectacular Quick Actions -->
+        <div class="mt-12 flex flex-wrap items-center justify-center gap-4">
+            <button id="addIdeaBtn" class="group relative px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl font-bold text-white shadow-2xl hover:shadow-yellow-500/25 transition-all duration-300 hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+                <div class="relative flex items-center space-x-3">
+                    <i class="fas fa-plus-circle text-xl"></i>
+                    <span class="text-lg">Yeni Fikir Ekle</span>
+                </div>
+            </button>
+
+            <button class="group relative px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl font-semibold text-white hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-chart-bar text-lg"></i>
+                    <span>Analitik Rapor</span>
+                </div>
+            </button>
+        </div>
+    </div>
+
+
+</header>
+
+<!-- Professional Main Content -->
+<main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Professional Ideas Grid -->
+    <div id="ideasGrid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <!-- Ideas will be populated by JavaScript -->
+    </div>
+
+    <!-- Professional Empty State -->
+    <div id="emptyState" class="hidden text-center py-16">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-search text-3xl text-gray-400"></i>
+        </div>
+        <h3 class="heading-3 mb-2">Fikir bulunamadı</h3>
+        <p class="body-text mb-6">Arama kriterlerinizi değiştirmeyi deneyin veya yeni bir fikir ekleyin</p>
+        <button onclick="openModal()" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i>İlk Fikri Ekle
+        </button>
+    </div>
+</main>
+<script>
+    // Professional data structure
+    let ideas = [
+        {
+            id: 1,
+            title: "AI Destekli Müşteri Deneyimi Platformu",
+            category: "teknoloji",
+            priority: "critical",
+            status: "approved",
+            summary: "Yapay zeka teknolojileri kullanarak müşteri deneyimini kişiselleştiren ve otomatikleştiren kapsamlı platform geliştirme projesi.",
+            problemDescription: "Mevcut müşteri hizmetleri sistemimiz 7/24 destek sağlayamıyor ve müşteri sorularına geç yanıt veriliyor. Bu durum müşteri memnuniyetini %23 azaltıyor.",
+            solutionDescription: "AI chatbot, sentiment analizi, otomatik ticket yönlendirme ve kişiselleştirilmiş öneri sistemi içeren entegre platform.",
+            expectedBenefits: "• Müşteri memnuniyeti %40 artış\n• Operasyon maliyeti %30 azalma\n• Yanıt süresi %80 iyileşme\n• 7/24 destek kapasitesi",
+            targetAudience: "Tüm müşteri segmentleri, özellikle dijital kanalları kullanan 25-45 yaş arası kullanıcılar",
+            estimatedBudget: 450000,
+            estimatedDuration: 8,
+            teamSize: 12,
+            requiredResources: "• AI/ML uzmanı (2 kişi)\n• Backend geliştirici (3 kişi)\n• Frontend geliştirici (2 kişi)\n• UX/UI tasarımcı (2 kişi)\n• Proje yöneticisi (1 kişi)\n• QA uzmanı (2 kişi)",
+            potentialPartners: "• Microsoft Azure AI Services\n• Google Cloud AI Platform\n• IBM Watson\n• Lokal AI teknoloji firmaları",
+            internalStakeholders: "• IT Departmanı\n• Müşteri Hizmetleri\n• Pazarlama Ekibi\n• Üst Yönetim\n• Satış Ekibi",
+            externalStakeholders: "• Mevcut müşteriler\n• Potansiyel müşteriler\n• Teknoloji ortakları\n• Veri güvenliği düzenleyicileri",
+            partnershipType: "strategic",
+            phase1: "Gereksinim analizi, teknoloji araştırması, partner seçimi, proje planı hazırlama (2 ay)",
+            phase2: "AI model geliştirme, platform kodlama, entegrasyon testleri, güvenlik testleri (4 ay)",
+            phase3: "Beta testler, kullanıcı eğitimleri, aşamalı lansman, performans optimizasyonu (2 ay)",
+            kpis: "• Müşteri memnuniyet skoru: 4.5/5\n• Ortalama yanıt süresi: <2 dakika\n• Çözüm oranı: %85\n• Maliyet tasarrufu: ₺200,000/yıl",
+            measurementMethods: "• Customer satisfaction surveys\n• Response time analytics\n• Cost analysis reports\n• AI performance metrics dashboard",
+            roiEstimate: 180,
+            riskLevel: "medium",
+            createdDate: "2024-01-15",
+            lastUpdated: "2024-01-20",
+            createdBy: "Ahmet Yılmaz - CTO",
+            assignedTo: "Teknoloji Komitesi",
+            upvotes: 12,
+            downvotes: 2,
+            comments: [
+                {id: 1, author: "Elif Kaya", text: "Harika bir fikir! AI entegrasyonu için hangi platformu düşünüyorsunuz?", date: "2024-01-16"},
+                {id: 2, author: "Mehmet Özkan", text: "Maliyet analizi çok detaylı. Pazarlama perspektifinden de destekliyorum.", date: "2024-01-17"}
+            ],
+            teamMembers: [
+                {id: 1, name: "Ahmet Yılmaz", role: "Proje Lideri", avatar: "AY"},
+                {id: 2, name: "Zeynep Demir", role: "AI Uzmanı", avatar: "ZD"},
+                {id: 3, name: "Can Öztürk", role: "Backend Dev", avatar: "CÖ"},
+                {id: 4, name: "Selin Kara", role: "UX Designer", avatar: "SK"}
+            ],
+            isCollaborative: true
+        },
+        {
+            id: 2,
+            title: "Sürdürülebilir Tedarik Zinciri Dönüşümü",
+            category: "operasyon",
+            priority: "high",
+            status: "review",
+            summary: "Çevre dostu ve sürdürülebilir tedarik zinciri oluşturarak karbon ayak izini azaltma ve maliyet optimizasyonu projesi.",
+            problemDescription: "Mevcut tedarik zincirimiz yüksek karbon emisyonu üretiyor ve artan çevre düzenlemeleri nedeniyle risk oluşturuyor. Ayrıca lojistik maliyetler %15 artış gösteriyor.",
+            solutionDescription: "Yerel tedarikçiler ile ortaklık, elektrikli araç filosu, dijital tedarik zinciri yönetimi ve sürdürülebilirlik metrikleri takip sistemi.",
+            expectedBenefits: "• Karbon emisyonu %45 azalma\n• Lojistik maliyet %20 tasarruf\n• Marka imajı güçlendirme\n• Düzenleyici uyum sağlama",
+            targetAudience: "Çevre bilincine sahip müşteriler, kurumsal müşteriler, sürdürülebilirlik odaklı yatırımcılar",
+            estimatedBudget: 320000,
+            estimatedDuration: 12,
+            teamSize: 8,
+            requiredResources: "• Tedarik zinciri uzmanı (2 kişi)\n• Sürdürülebilirlik danışmanı (1 kişi)\n• Lojistik koordinatörü (2 kişi)\n• Veri analisti (1 kişi)\n• Proje yöneticisi (1 kişi)\n• Satın alma uzmanı (1 kişi)",
+            potentialPartners: "• Yerel organik üreticiler\n• Elektrikli araç kiralama firmaları\n• Sürdürülebilirlik sertifikasyon kuruluşları\n• Çevre teknolojisi firmaları",
+            internalStakeholders: "• Operasyon Departmanı\n• Satın Alma Ekibi\n• Lojistik Departmanı\n• Sürdürülebilirlik Komitesi\n• Finans Departmanı",
+            externalStakeholders: "• Tedarikçiler\n• Lojistik ortakları\n• Çevre düzenleyicileri\n• Sürdürülebilirlik yatırımcıları\n• Çevre kuruluşları",
+            partnershipType: "commercial",
+            phase1: "Mevcut durum analizi, tedarikçi değerlendirmesi, sürdürülebilirlik hedefleri belirleme (3 ay)",
+            phase2: "Yeni tedarikçi anlaşmaları, elektrikli filo kurulumu, dijital sistem entegrasyonu (6 ay)",
+            phase3: "Pilot uygulama, performans ölçümü, tam ölçekli geçiş, sertifikasyon süreçleri (3 ay)",
+            kpis: "• Karbon ayak izi azalması: %45\n• Tedarik maliyeti tasarrufu: %20\n• Tedarikçi sürdürülebilirlik skoru: 4.2/5\n• Müşteri memnuniyet artışı: %15",
+            measurementMethods: "• Karbon ayak izi hesaplama araçları\n• Maliyet analiz raporları\n• Tedarikçi değerlendirme anketleri\n• Müşteri geri bildirim sistemleri",
+            roiEstimate: 145,
+            riskLevel: "medium",
+            createdDate: "2024-01-12",
+            lastUpdated: "2024-01-18",
+            createdBy: "Elif Kaya - Operasyon Müdürü",
+            assignedTo: "Sürdürülebilirlik Komitesi",
+            upvotes: 8,
+            downvotes: 1,
+            comments: [
+                {id: 1, author: "Ahmet Yılmaz", text: "Sürdürülebilirlik konusunda çok önemli bir adım. Destekliyorum!", date: "2024-01-13"}
+            ],
+            teamMembers: [
+                {id: 1, name: "Elif Kaya", role: "Proje Lideri", avatar: "EK"},
+                {id: 2, name: "Murat Yıldız", role: "Tedarik Uzmanı", avatar: "MY"}
+            ],
+            isCollaborative: true
+        },
+        {
+            id: 3,
+            title: "Dijital Pazarlama Otomasyon Sistemi",
+            category: "pazarlama",
+            priority: "high",
+            status: "development",
+            summary: "Müşteri segmentasyonu, kişiselleştirilmiş kampanyalar ve otomatik pazarlama süreçleri için entegre dijital platform.",
+            problemDescription: "Manuel pazarlama süreçleri zaman alıyor ve kişiselleştirme eksikliği nedeniyle kampanya başarı oranımız %12 seviyesinde kalıyor.",
+            solutionDescription: "AI destekli müşteri segmentasyonu, otomatik e-mail kampanyaları, sosyal medya yönetimi ve real-time analytics dashboard.",
+            expectedBenefits: "• Kampanya ROI %300 artış\n• Pazarlama verimliliği %50 iyileşme\n• Müşteri etkileşimi %80 artış\n• Operasyon süresi %60 azalma",
+            targetAudience: "Tüm müşteri segmentleri, özellikle dijital platformları aktif kullanan 18-55 yaş arası kullanıcılar",
+            estimatedBudget: 280000,
+            estimatedDuration: 6,
+            teamSize: 10,
+            requiredResources: "• Marketing automation uzmanı (2 kişi)\n• Data scientist (2 kişi)\n• Frontend geliştirici (2 kişi)\n• Backend geliştirici (2 kişi)\n• UX/UI tasarımcı (1 kişi)\n• Proje yöneticisi (1 kişi)",
+            potentialPartners: "• HubSpot\n• Salesforce Marketing Cloud\n• Adobe Marketing Suite\n• Lokal pazarlama teknolojisi firmaları",
+            internalStakeholders: "• Pazarlama Departmanı\n• Satış Ekibi\n• IT Departmanı\n• Müşteri Hizmetleri\n• Üst Yönetim",
+            externalStakeholders: "• Mevcut müşteriler\n• Potansiyel müşteriler\n• Dijital ajanslar\n• Sosyal medya platformları\n• E-mail servis sağlayıcıları",
+            partnershipType: "technical",
+            phase1: "Platform seçimi, müşteri veri analizi, kampanya stratejisi geliştirme (2 ay)",
+            phase2: "Sistem kurulumu, entegrasyonlar, otomasyon kuralları oluşturma (3 ay)",
+            phase3: "Test kampanyaları, optimizasyon, tam ölçekli lansman (1 ay)",
+            kpis: "• E-mail açılma oranı: %35\n• Tıklama oranı: %8\n• Conversion rate: %15\n• Müşteri yaşam boyu değeri artışı: %25",
+            measurementMethods: "• Marketing automation analytics\n• Google Analytics\n• CRM entegrasyonu\n• A/B test sonuçları",
+            roiEstimate: 250,
+            riskLevel: "low",
+            createdDate: "2024-01-10",
+            lastUpdated: "2024-01-19",
+            createdBy: "Mehmet Özkan - Pazarlama Müdürü",
+            assignedTo: "Dijital Pazarlama Ekibi",
+            upvotes: 15,
+            downvotes: 0,
+            comments: [
+                {id: 1, author: "Selin Kara", text: "Pazarlama otomasyonu konusunda çok deneyimliyim, yardımcı olabilirim!", date: "2024-01-11"},
+                {id: 2, author: "Can Öztürk", text: "Teknik altyapı için backend desteği sağlayabilirim.", date: "2024-01-12"},
+                {id: 3, author: "Zeynep Demir", text: "AI segmentasyon algoritmaları için birlikte çalışalım.", date: "2024-01-13"}
+            ],
+            teamMembers: [
+                {id: 1, name: "Mehmet Özkan", role: "Proje Lideri", avatar: "MÖ"},
+                {id: 2, name: "Selin Kara", role: "Marketing Specialist", avatar: "SK"},
+                {id: 3, name: "Can Öztürk", role: "Developer", avatar: "CÖ"},
+                {id: 4, name: "Zeynep Demir", role: "Data Scientist", avatar: "ZD"},
+                {id: 5, name: "Ali Veli", role: "UX Designer", avatar: "AV"}
+            ],
+            isCollaborative: true
+        }
+    ];
+
+    // Professional step management
+    let currentStep = 1;
+    const totalSteps = 6;
+
+    // Professional DOM elements - will be initialized after DOM loads
+    let ideasGrid, addIdeaBtn, ideaModal, ideaDetailModal, closeModal, cancelBtn, saveDraftBtn, nextStepBtn, prevStepBtn, submitBtn, ideaForm, emptyState, progressBar, progressText, stepTitle;
+
+    // Professional step titles
+    const stepTitles = {
+        1: 'Temel Bilgiler',
+        2: 'Detaylı Açıklama',
+        3: 'Fayda & Etki Analizi',
+        4: 'Bütçe & Kaynak Planlaması',
+        5: 'İş Ortaklıkları & Paydaşlar',
+        6: 'Uygulama Planı'
+    };
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 transform translate-x-full`;
+
+        const colors = {
+            'success': 'bg-green-500',
+            'error': 'bg-red-500',
+            'info': 'bg-blue-500',
+            'warning': 'bg-yellow-500'
+        };
+
+        notification.classList.add(colors[type] || colors.info);
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+
+        // Animate out and remove
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    // Professional utility functions
+    function getStatusColor(status) {
+        const colors = {
+            'draft': 'bg-gray-100 text-gray-700 border-gray-200',
+            'review': 'bg-yellow-50 text-yellow-700 border-yellow-200',
+            'approved': 'bg-green-50 text-green-700 border-green-200',
+            'development': 'bg-blue-50 text-blue-700 border-blue-200',
+            'completed': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+            'rejected': 'bg-red-50 text-red-700 border-red-200'
+        };
+        return colors[status] || 'bg-gray-100 text-gray-700 border-gray-200';
+    }
+
+    function getStatusText(status) {
+        const texts = {
+            'draft': 'Taslak',
+            'review': 'İncelemede',
+            'approved': 'Onaylandı',
+            'development': 'Geliştirmede',
+            'completed': 'Tamamlandı',
+            'rejected': 'Reddedildi'
+        };
+        return texts[status] || status;
+    }
+
+    function getPriorityColor(priority) {
+        const colors = {
+            'critical': 'bg-red-50 text-red-700 border-red-200',
+            'high': 'bg-orange-50 text-orange-700 border-orange-200',
+            'medium': 'bg-blue-50 text-blue-700 border-blue-200',
+            'low': 'bg-green-50 text-green-700 border-green-200'
+        };
+        return colors[priority] || 'bg-gray-50 text-gray-700 border-gray-200';
+    }
+
+    function getPriorityText(priority) {
+        const texts = {
+            'critical': 'Kritik',
+            'high': 'Yüksek',
+            'medium': 'Orta',
+            'low': 'Düşük'
+        };
+        return texts[priority] || priority;
+    }
+
+    function getCategoryIcon(category) {
+        const icons = {
+            'teknoloji': 'fas fa-microchip',
+            'pazarlama': 'fas fa-bullhorn',
+            'urun': 'fas fa-box',
+            'operasyon': 'fas fa-cogs',
+            'finans': 'fas fa-chart-line'
+        };
+        return icons[category] || 'fas fa-lightbulb';
+    }
+
+    function getCategoryColor(category) {
+        const colors = {
+            'teknoloji': 'bg-blue-50 text-blue-600',
+            'pazarlama': 'bg-purple-50 text-purple-600',
+            'urun': 'bg-green-50 text-green-600',
+            'operasyon': 'bg-orange-50 text-orange-600',
+            'finans': 'bg-indigo-50 text-indigo-600'
+        };
+        return colors[category] || 'bg-gray-50 text-gray-600';
+    }
+
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('tr-TR', {
+            style: 'currency',
+            currency: 'TRY',
+            minimumFractionDigits: 0
+        }).format(amount);
+    }
+
+    function formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString('tr-TR');
+    }
+
+    function getBudgetRange(budget) {
+        if (budget < 50000) return 'low';
+        if (budget < 200000) return 'medium';
+        if (budget < 500000) return 'high';
+        return 'enterprise';
+    }
+
+    // Professional step management functions
+    function updateStepIndicators() {
+        const indicators = document.querySelectorAll('.step-indicator');
+        indicators.forEach((indicator, index) => {
+            const stepNum = index + 1;
+
+            if (stepNum < currentStep) {
+                indicator.classList.add('completed');
+                indicator.classList.remove('active');
+            } else if (stepNum === currentStep) {
+                indicator.classList.add('active');
+                indicator.classList.remove('completed');
+            } else {
+                indicator.classList.remove('active', 'completed');
+            }
+        });
+    }
+
+    function updateProgressBar() {
+        const progress = (currentStep / totalSteps) * 100;
+        progressBar.style.width = `${progress}%`;
+        progressText.textContent = `${currentStep} / ${totalSteps}`;
+        stepTitle.textContent = stepTitles[currentStep];
+    }
+
+    function showStep(stepNumber) {
+        // Hide all steps
+        document.querySelectorAll('.step-content').forEach(step => {
+            step.classList.remove('active');
+            step.style.display = 'none';
+        });
+
+        // Show current step
+        const currentStepElement = document.getElementById(`step${stepNumber}`);
+        if (currentStepElement) {
+            currentStepElement.classList.add('active');
+            currentStepElement.style.display = 'block';
+        }
+
+        // Update buttons
+        prevStepBtn.classList.toggle('hidden', stepNumber === 1);
+        nextStepBtn.classList.toggle('hidden', stepNumber === totalSteps);
+        submitBtn.classList.toggle('hidden', stepNumber !== totalSteps);
+
+        // Update button text for last step
+        if (stepNumber === totalSteps) {
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Fikri Gönder';
+        }
+
+        updateStepIndicators();
+        updateProgressBar();
+
+        // Scroll to top of modal content
+        const modalContent = document.querySelector('.modal-content .overflow-y-auto');
+        if (modalContent) {
+            modalContent.scrollTop = 0;
+        }
+    }
+
+    function validateStep(stepNumber) {
+        const requiredFields = {
+            1: ['ideaTitle', 'ideaCategory', 'ideaPriority', 'ideaSummary'],
+            2: ['problemDescription', 'solutionDescription'],
+            3: [],
+            4: [],
+            5: [],
+            6: []
+        };
+
+        const fields = requiredFields[stepNumber] || [];
+        let isValid = true;
+        let firstInvalidField = null;
+
+        fields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field && !field.value.trim()) {
+                field.classList.add('border-red-500', 'bg-red-50');
+                if (!firstInvalidField) {
+                    firstInvalidField = field;
+                }
+                isValid = false;
+            } else if (field) {
+                field.classList.remove('border-red-500', 'bg-red-50');
+            }
+        });
+
+        // Focus on first invalid field
+        if (firstInvalidField) {
+            firstInvalidField.focus();
+            firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        return isValid;
+    }
+
+    function nextStep() {
+        if (validateStep(currentStep)) {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+                showNotification(`${stepTitles[currentStep]} adımına geçildi`, 'success');
+            }
+        } else {
+            showNotification('Lütfen kırmızı işaretli zorunlu alanları doldurun.', 'warning');
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+            showNotification(`${stepTitles[currentStep]} adımına geri dönüldü`, 'info');
+        }
+    }
+
+
+
+    // Professional render ideas
+    function renderIdeas() {
+        if (ideas.length === 0) {
+            ideasGrid.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            return;
+        }
+
+        ideasGrid.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+
+        ideasGrid.innerHTML = ideas.map(idea => `
+                <div class="professional-card p-6 status-${idea.status} cursor-pointer fade-in" onclick="showIdeaDetail(${idea.id})">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg ${getCategoryColor(idea.category)} flex items-center justify-center">
+                                <i class="${getCategoryIcon(idea.category)}"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="heading-3 text-base mb-1">${idea.title}</h3>
+                                <p class="caption-text">${idea.category.charAt(0).toUpperCase() + idea.category.slice(1)}</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end space-y-2">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(idea.status)}">
+                                ${getStatusText(idea.status)}
+                            </span>
+                            <span class="px-2 py-1 rounded-md text-xs font-medium border ${getPriorityColor(idea.priority)}">
+                                ${getPriorityText(idea.priority)}
+                            </span>
+                        </div>
+                    </div>
+
+                    <p class="body-text mb-4 line-clamp-2">${idea.summary}</p>
+
+                    <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-money-bill-wave mr-2 text-green-500 text-xs"></i>
+                            <span class="caption-text font-medium">${formatCurrency(idea.estimatedBudget)}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-clock mr-2 text-blue-500 text-xs"></i>
+                            <span class="caption-text font-medium">${idea.estimatedDuration} ay</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-users mr-2 text-purple-500 text-xs"></i>
+                            <span class="caption-text font-medium">${idea.teamSize} kişi</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-chart-line mr-2 text-orange-500 text-xs"></i>
+                            <span class="caption-text font-medium">ROI: %${idea.roiEstimate}</span>
+                        </div>
+                    </div>
+
+                    <!-- Social & Collaboration Section -->
+                    <div class="flex items-center justify-between py-3 border-t border-gray-100">
+                        <div class="flex flex-wrap items-center gap-4">
+                            <!-- Vote Buttons -->
+                            <button onclick="event.stopPropagation(); voteIdea(${idea.id}, 'up')"
+                                    class="vote-button border border-gray-300 bg-white text-gray-600 hover:bg-green-50 hover:border-green-300 hover:text-green-600 ${idea.userVoted === 'up' ? 'voted bg-green-50 border-green-300 text-green-600' : ''}">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span>${idea.upvotes || 0}</span>
+                            </button>
+
+                            <!-- Comments -->
+                            <button onclick="event.stopPropagation(); showComments(${idea.id})"
+                                    class="vote-button border border-gray-300 bg-white text-gray-600 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600">
+                                <i class="fas fa-comment"></i>
+                                <span>${idea.comments?.length || 0}</span>
+                            </button>
+
+                            <!-- Team Members -->
+                            <div class="flex items-center space-x-1">
+                                ${(idea.teamMembers || []).slice(0, 3).map(member => `
+                                    <div class="team-member-avatar" title="${member.name}">
+                                        ${member.avatar || member.name.charAt(0).toUpperCase()}
+                                    </div>
+                                `).join('')}
+                                ${(idea.teamMembers || []).length > 3 ? `
+                                    <div class="team-member-avatar bg-gray-400">
+                                        +${(idea.teamMembers || []).length - 3}
+                                    </div>
+                                ` : ''}
+                                <button onclick="event.stopPropagation(); joinTeam(${idea.id})"
+                                        class="w-8 h-8 rounded-full border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center transition-colors"
+                                        title="Takıma Katıl">
+                                    <i class="fas fa-plus text-xs text-gray-400 hover:text-blue-500"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4">
+                            <!-- Collaboration Badge -->
+                            ${idea.isCollaborative ? `
+                                <div class="collaboration-badge">
+                                    <i class="fas fa-users"></i>
+                                    Takım
+                                </div>
+                            ` : ''}
+
+                            <!-- Action Buttons -->
+                            <button onclick="event.stopPropagation(); editIdea(${idea.id})"
+                                    class="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition-colors">
+                                <i class="fas fa-edit text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Creator Info -->
+                    <div class="pt-3 border-t border-gray-100">
+                        <div class="caption-text">
+                            <div class="font-medium text-gray-700">${idea.createdBy}</div>
+                            <div class="text-gray-500">${formatDate(idea.createdDate)}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    // Professional show idea detail
+    function showIdeaDetail(id) {
+        const idea = ideas.find(i => i.id === id);
+        if (!idea) return;
+
+        const content = `
+                <div class="px-8 py-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-xl ${getCategoryColor(idea.category)} flex items-center justify-center">
+                                <i class="${getCategoryIcon(idea.category)} text-lg"></i>
+                            </div>
+                            <div>
+                                <h2 class="heading-2">${idea.title}</h2>
+                                <div class="flex items-center space-x-3 mt-2">
+                                    <span class="px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(idea.status)}">
+                                        ${getStatusText(idea.status)}
+                                    </span>
+                                    <span class="px-2 py-1 rounded-md text-sm font-medium border ${getPriorityColor(idea.priority)}">
+                                        ${getPriorityText(idea.priority)}
+                                    </span>
+                                    <span class="caption-text">${idea.category.charAt(0).toUpperCase() + idea.category.slice(1)}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="closeIdeaDetail()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                            <i class="fas fa-times text-gray-500"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="px-8 py-6 space-y-8 max-h-96 overflow-y-auto">
+                    <!-- Professional Key Metrics -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stat-card">
+                            <div class="stat-number text-green-600">${formatCurrency(idea.estimatedBudget)}</div>
+                            <div class="stat-label">Tahmini Bütçe</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number text-blue-600">${idea.estimatedDuration}</div>
+                            <div class="stat-label">Süre (Ay)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number text-purple-600">${idea.teamSize}</div>
+                            <div class="stat-label">Ekip Büyüklüğü</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number text-orange-600">%${idea.roiEstimate}</div>
+                            <div class="stat-label">ROI Tahmini</div>
+                        </div>
+                    </div>
+
+                    <!-- Professional Content -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="heading-3 mb-3">Fikir Özeti</h3>
+                                <p class="body-text">${idea.summary}</p>
+                            </div>
+                            <div>
+                                <h3 class="heading-3 mb-3">Problem Tanımı</h3>
+                                <p class="body-text">${idea.problemDescription}</p>
+                            </div>
+                            <div>
+                                <h3 class="heading-3 mb-3">Çözüm Önerisi</h3>
+                                <p class="body-text">${idea.solutionDescription}</p>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="heading-3 mb-3">Beklenen Faydalar</h3>
+                                <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                                    <pre class="text-green-800 text-sm whitespace-pre-wrap font-medium">${idea.expectedBenefits}</pre>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="heading-3 mb-3">Hedef Kitle</h3>
+                                <p class="body-text">${idea.targetAudience}</p>
+                            </div>
+                            <div>
+                                <h3 class="heading-3 mb-3">Risk Seviyesi</h3>
+                                <span class="px-3 py-1 rounded-full text-sm font-medium border ${idea.riskLevel === 'high' ? 'bg-red-50 text-red-700 border-red-200' : idea.riskLevel === 'medium' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-green-50 text-green-700 border-green-200'}">
+                                    ${idea.riskLevel === 'high' ? 'Yüksek' : idea.riskLevel === 'medium' ? 'Orta' : 'Düşük'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-8 py-6 border-t border-gray-200 bg-gray-50">
+                    <div class="flex justify-end space-x-3">
+                        <button onclick="exportIdeaToPDF(${idea.id})" class="btn-secondary">
+                            <i class="fas fa-file-pdf mr-2"></i>PDF İndir
+                        </button>
+                        <button onclick="editIdea(${idea.id})" class="btn-primary">
+                            <i class="fas fa-edit mr-2"></i>Düzenle
+                        </button>
+                    </div>
+                </div>
+            `;
+
+        document.getElementById('ideaDetailContent').innerHTML = content;
+        ideaDetailModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeIdeaDetail() {
+        ideaDetailModal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Professional update stats
+    function updateStats() {
+        const totalIdeas = ideas.length;
+        const approvedIdeas = ideas.filter(idea => idea.status === 'approved').length;
+        const reviewIdeas = ideas.filter(idea => idea.status === 'review').length;
+        const developmentIdeas = ideas.filter(idea => idea.status === 'development').length;
+        const totalBudget = ideas.reduce((sum, idea) => sum + idea.estimatedBudget, 0);
+
+        document.getElementById('totalIdeas').textContent = totalIdeas;
+        document.getElementById('approvedIdeas').textContent = approvedIdeas;
+        document.getElementById('reviewIdeas').textContent = reviewIdeas;
+        document.getElementById('developmentIdeas').textContent = developmentIdeas;
+        document.getElementById('totalBudget').textContent = formatCurrency(totalBudget);
+    }
+
+    // Professional idea actions
+    function editIdea(id) {
+        const idea = ideas.find(i => i.id === id);
+        if (!idea) return;
+
+        document.getElementById('modalTitle').textContent = 'Fikir Düzenle';
+
+        // Populate form
+        document.getElementById('ideaTitle').value = idea.title;
+        document.getElementById('ideaCategory').value = idea.category;
+        document.getElementById('ideaPriority').value = idea.priority;
+        document.getElementById('ideaSummary').value = idea.summary;
+        document.getElementById('problemDescription').value = idea.problemDescription;
+        document.getElementById('solutionDescription').value = idea.solutionDescription;
+        document.getElementById('expectedBenefits').value = idea.expectedBenefits;
+        document.getElementById('targetAudience').value = idea.targetAudience;
+        document.getElementById('roiEstimate').value = idea.roiEstimate;
+        document.getElementById('riskLevel').value = idea.riskLevel;
+        document.getElementById('estimatedBudget').value = idea.estimatedBudget;
+        document.getElementById('estimatedDuration').value = idea.estimatedDuration;
+        document.getElementById('teamSize').value = idea.teamSize;
+        document.getElementById('requiredResources').value = idea.requiredResources;
+        document.getElementById('potentialPartners').value = idea.potentialPartners;
+        document.getElementById('internalStakeholders').value = idea.internalStakeholders;
+        document.getElementById('externalStakeholders').value = idea.externalStakeholders;
+        document.getElementById('partnershipType').value = idea.partnershipType;
+        document.getElementById('phase1').value = idea.phase1;
+        document.getElementById('phase2').value = idea.phase2;
+        document.getElementById('phase3').value = idea.phase3;
+        document.getElementById('kpis').value = idea.kpis;
+        document.getElementById('measurementMethods').value = idea.measurementMethods;
+
+        ideaForm.dataset.editId = id;
+        openModal();
+    }
+
+    function duplicateIdea(id) {
+        const idea = ideas.find(i => i.id === id);
+        if (!idea) return;
+
+        const newIdea = {
+            ...idea,
+            id: Math.max(...ideas.map(i => i.id)) + 1,
+            title: idea.title + ' (Kopya)',
+            status: 'draft',
+            createdDate: new Date().toISOString().split('T')[0],
+            lastUpdated: new Date().toISOString().split('T')[0],
+            createdBy: 'Mevcut Kullanıcı'
+        };
+
+        ideas.unshift(newIdea);
+        renderIdeas();
+        updateStats();
+    }
+
+    function deleteIdea(id) {
+        if (confirm('Bu fikri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+            ideas = ideas.filter(i => i.id !== id);
+            renderIdeas();
+            updateStats();
+        }
+    }
+
+    function exportIdeaToPDF(id) {
+        alert('PDF export özelliği yakında eklenecek!');
+    }
+
+    // Social & Collaboration Functions
+    function voteIdea(id, type) {
+        const idea = ideas.find(i => i.id === id);
+        if (!idea) return;
+
+        // Toggle vote
+        if (idea.userVoted === type) {
+            // Remove vote
+            if (type === 'up') {
+                idea.upvotes = Math.max(0, (idea.upvotes || 0) - 1);
+            }
+            idea.userVoted = null;
+        } else {
+            // Add vote (remove previous if exists)
+            if (idea.userVoted === 'up') {
+                idea.upvotes = Math.max(0, (idea.upvotes || 0) - 1);
+            }
+
+            if (type === 'up') {
+                idea.upvotes = (idea.upvotes || 0) + 1;
+            }
+            idea.userVoted = type;
+        }
+
+        renderIdeas();
+
+        // Show success message
+        const message = idea.userVoted === type ? 'Oy verildi! 👍' : 'Oy geri alındı';
+        showNotification(message, 'success');
+    }
+
+    function showComments(id) {
+        const idea = ideas.find(i => i.id === id);
+        if (!idea) return;
+
+        const commentsHtml = (idea.comments || []).map(comment => `
+                <div class="comment-bubble">
+                    <div class="flex items-start space-x-3">
+                        <div class="team-member-avatar">
+                            ${comment.author.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="font-semibold text-sm text-gray-800">${comment.author}</span>
+                                <span class="text-xs text-gray-500">${formatDate(comment.date)}</span>
+                            </div>
+                            <p class="text-sm text-gray-700">${comment.text}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+        const modalContent = `
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">Yorumlar - ${idea.title}</h3>
+                        <button onclick="closeComments()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-times text-gray-500"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="px-6 py-4 max-h-96 overflow-y-auto">
+                    ${commentsHtml || '<p class="text-gray-500 text-center py-8">Henüz yorum yapılmamış.</p>'}
+                </div>
+                <div class="px-6 py-4 border-t border-gray-200">
+                    <div class="flex space-x-3">
+                        <div class="team-member-avatar">
+                            MK
+                        </div>
+                        <div class="flex-1">
+                            <textarea id="newComment" rows="3" class="professional-input resize-none" placeholder="Yorumunuzu yazın..."></textarea>
+                            <div class="flex justify-end mt-2">
+                                <button onclick="addComment(${id})" class="btn-primary">
+                                    <i class="fas fa-paper-plane mr-2"></i>Gönder
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        document.getElementById('ideaDetailContent').innerHTML = modalContent;
+        ideaDetailModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeComments() {
+        ideaDetailModal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function addComment(id) {
+        const commentText = document.getElementById('newComment').value.trim();
+        if (!commentText) return;
+
+        const idea = ideas.find(i => i.id === id);
+        if (!idea) return;
+
+        if (!idea.comments) idea.comments = [];
+
+        const newComment = {
+            id: Math.max(...(idea.comments.map(c => c.id) || [0])) + 1,
+            author: "Mevcut Kullanıcı",
+            text: commentText,
+            date: new Date().toISOString().split('T')[0]
+        };
+
+        idea.comments.push(newComment);
+        renderIdeas();
+        showComments(id); // Refresh comments view
+    }
+
+    function joinTeam(id) {
+        const idea = ideas.find(i => i.id === id);
+        if (!idea) return;
+
+        if (!idea.teamMembers) idea.teamMembers = [];
+
+        const currentUser = {
+            id: Math.max(...(idea.teamMembers.map(m => m.id) || [0])) + 1,
+            name: "Mevcut Kullanıcı",
+            role: "Gönüllü",
+            avatar: "MK"
+        };
+
+        // Check if user already in team
+        const existingMember = idea.teamMembers.find(m => m.name === currentUser.name);
+
+        if (!existingMember) {
+            idea.teamMembers.push(currentUser);
+            idea.isCollaborative = true;
+            renderIdeas();
+            showNotification('Takıma katıldınız! 🎉', 'success');
+        } else {
+            showNotification('Zaten bu takımın üyesisiniz.', 'info');
+        }
+    }
+
+    // Professional modal functions
+    function openModal() {
+        currentStep = 1;
+        showStep(currentStep);
+        ideaModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModalFunc() {
+        ideaModal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        ideaForm.reset();
+        delete ideaForm.dataset.editId;
+        document.getElementById('modalTitle').textContent = 'Yeni Fikir Ekle';
+        document.getElementById('summaryCounter').textContent = '0/500';
+    }
+
+    // Professional save idea
+    function saveIdea(status = 'review') {
+        const formData = {
+            title: document.getElementById('ideaTitle').value,
+            category: document.getElementById('ideaCategory').value,
+            priority: document.getElementById('ideaPriority').value,
+            summary: document.getElementById('ideaSummary').value,
+            problemDescription: document.getElementById('problemDescription').value,
+            solutionDescription: document.getElementById('solutionDescription').value,
+            expectedBenefits: document.getElementById('expectedBenefits').value,
+            targetAudience: document.getElementById('targetAudience').value,
+            roiEstimate: parseInt(document.getElementById('roiEstimate').value) || 0,
+            riskLevel: document.getElementById('riskLevel').value,
+            estimatedBudget: parseInt(document.getElementById('estimatedBudget').value) || 0,
+            estimatedDuration: parseInt(document.getElementById('estimatedDuration').value) || 1,
+            teamSize: parseInt(document.getElementById('teamSize').value) || 1,
+            requiredResources: document.getElementById('requiredResources').value,
+            potentialPartners: document.getElementById('potentialPartners').value,
+            internalStakeholders: document.getElementById('internalStakeholders').value,
+            externalStakeholders: document.getElementById('externalStakeholders').value,
+            partnershipType: document.getElementById('partnershipType').value,
+            phase1: document.getElementById('phase1').value,
+            phase2: document.getElementById('phase2').value,
+            phase3: document.getElementById('phase3').value,
+            kpis: document.getElementById('kpis').value,
+            measurementMethods: document.getElementById('measurementMethods').value,
+            status: status
+        };
+
+        const editId = ideaForm.dataset.editId;
+
+        if (editId) {
+            const ideaIndex = ideas.findIndex(i => i.id === parseInt(editId));
+            if (ideaIndex !== -1) {
+                ideas[ideaIndex] = {
+                    ...ideas[ideaIndex],
+                    ...formData,
+                    lastUpdated: new Date().toISOString().split('T')[0]
+                };
+            }
+        } else {
+            const newIdea = {
+                id: Math.max(...ideas.map(i => i.id)) + 1,
+                ...formData,
+                createdDate: new Date().toISOString().split('T')[0],
+                lastUpdated: new Date().toISOString().split('T')[0],
+                createdBy: 'Mevcut Kullanıcı',
+                assignedTo: 'İnceleme Komitesi'
+            };
+            ideas.unshift(newIdea);
+        }
+
+        renderIdeas();
+        updateStats();
+        closeModalFunc();
+    }
+
+    // Professional initialize DOM elements
+    function initializeElements() {
+        ideasGrid = document.getElementById('ideasGrid');
+        addIdeaBtn = document.getElementById('addIdeaBtn');
+        ideaModal = document.getElementById('ideaModal');
+        ideaDetailModal = document.getElementById('ideaDetailModal');
+        closeModal = document.getElementById('closeModal');
+        cancelBtn = document.getElementById('cancelBtn');
+        saveDraftBtn = document.getElementById('saveDraftBtn');
+        nextStepBtn = document.getElementById('nextStepBtn');
+        prevStepBtn = document.getElementById('prevStepBtn');
+        submitBtn = document.getElementById('submitBtn');
+        ideaForm = document.getElementById('ideaForm');
+        emptyState = document.getElementById('emptyState');
+        progressBar = document.getElementById('progressBar');
+        progressText = document.getElementById('progressText');
+        stepTitle = document.getElementById('stepTitle');
+    }
+
+    // Professional initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeElements();
+        renderIdeas();
+        updateStats();
+
+        // Add event listeners
+        if (addIdeaBtn) addIdeaBtn.addEventListener('click', openModal);
+        if (closeModal) closeModal.addEventListener('click', closeModalFunc);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModalFunc);
+        if (nextStepBtn) nextStepBtn.addEventListener('click', nextStep);
+        if (prevStepBtn) prevStepBtn.addEventListener('click', prevStep);
+        if (saveDraftBtn) {
+            saveDraftBtn.addEventListener('click', () => {
+                saveIdea('draft');
+                showNotification('Taslak kaydedildi! 💾', 'info');
+            });
+        }
+
+        if (submitBtn) {
+            submitBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (validateStep(currentStep)) {
+                    saveIdea('review');
+                    showNotification('Fikir başarıyla gönderildi! 🎉', 'success');
+                } else {
+                    showNotification('Lütfen zorunlu alanları doldurun.', 'warning');
+                }
+            });
+        }
+
+        // Professional close modals on backdrop click
+        if (ideaModal) {
+            ideaModal.addEventListener('click', (e) => {
+                if (e.target === ideaModal) closeModalFunc();
+            });
+        }
+
+        if (ideaDetailModal) {
+            ideaDetailModal.addEventListener('click', (e) => {
+                if (e.target === ideaDetailModal) closeIdeaDetail();
+            });
+        }
+
+        // Character counter
+        const summaryField = document.getElementById('ideaSummary');
+        if (summaryField) {
+            summaryField.addEventListener('input', function() {
+                const counter = document.getElementById('summaryCounter');
+                if (counter) {
+                    const length = this.value.length;
+                    counter.textContent = `${length}/500`;
+
+                    if (length > 450) {
+                        counter.classList.add('text-red-500');
+                    } else {
+                        counter.classList.remove('text-red-500');
+                    }
+                }
+            });
+        }
+    });
+</script>
+<script>(function(){function c(){let b=a.contentDocument||a.contentWindow.document;if(b){let d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'974566eed3333776',t:'MTc1NjA2NTI3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>

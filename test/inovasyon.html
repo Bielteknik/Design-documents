@@ -483,11 +483,9 @@
                 <div class="floating-particle absolute top-16 right-1/3 w-2 h-2 bg-indigo-300/30 rounded-full" style="animation-delay: 3s;"></div>
                 <div class="floating-particle absolute top-40 left-2/3 w-1 h-1 bg-white/30 rounded-full" style="animation-delay: 4s;"></div>
             </div>
-            
             <!-- Gradient Overlay -->
             <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
         </div>
-
         <div class="relative max-w-7xl mx-auto px-6 py-12">
             <!-- Spectacular Header Top -->
             <div class="flex items-center justify-between mb-12">
@@ -1447,7 +1445,7 @@
                     
                     <!-- Social & Collaboration Section -->
                     <div class="flex items-center justify-between py-3 border-t border-gray-100">
-                        <div class="flex items-center space-x-4">
+                        <div class="flex flex-wrap items-center gap-4">
                             <!-- Vote Buttons -->
                             <button onclick="event.stopPropagation(); voteIdea(${idea.id}, 'up')" 
                                     class="vote-button border border-gray-300 bg-white text-gray-600 hover:bg-green-50 hover:border-green-300 hover:text-green-600 ${idea.userVoted === 'up' ? 'voted bg-green-50 border-green-300 text-green-600' : ''}">
@@ -1482,7 +1480,7 @@
                             </div>
                         </div>
                         
-                        <div class="flex items-center space-x-2">
+                        <div class="flex flex-wrap items-center gap-4">
                             <!-- Collaboration Badge -->
                             ${idea.isCollaborative ? `
                                 <div class="collaboration-badge">
@@ -1495,10 +1493,6 @@
                             <button onclick="event.stopPropagation(); editIdea(${idea.id})" 
                                     class="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition-colors">
                                 <i class="fas fa-edit text-xs"></i>
-                            </button>
-                            <button onclick="event.stopPropagation(); duplicateIdea(${idea.id})" 
-                                    class="w-8 h-8 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 flex items-center justify-center transition-colors">
-                                <i class="fas fa-copy text-xs"></i>
                             </button>
                         </div>
                     </div>
@@ -1624,8 +1618,6 @@
             ideaDetailModal.classList.add('hidden');
             document.body.style.overflow = 'auto';
         }
-
-
 
         // Professional update stats
         function updateStats() {
@@ -1921,10 +1913,6 @@
             closeModalFunc();
         }
 
-
-
-
-
         // Professional initialize DOM elements
         function initializeElements() {
             ideasGrid = document.getElementById('ideasGrid');
@@ -2007,5 +1995,8 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'974566eed3333776',t:'MTc1NjA2NTI3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){let b=a.contentDocument||a.contentWindow.document;if(b){let d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'974566eed3333776',t:'MTc1NjA2NTI3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+
+
 </html>

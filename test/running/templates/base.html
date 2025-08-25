@@ -1,0 +1,195 @@
+{% load static %}
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejder3200</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <!-- Kütüphaneler -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Çocuk şablonların kendi stillerini ekleyeceği alan -->
+    {% block extra_styles %}{% endblock extra_styles %}
+
+    <!-- Ana (Base) Stil Tanımlamaları -->
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+
+        /* --- DUYARLI TASARIM (RESPONSIVE) --- */
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar.mobile-open { transform: translateX(0); }
+            #main-content { margin-left: 0 !important; }
+            .mobile-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 35; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+            .mobile-overlay.show { opacity: 1; visibility: visible; }
+        }
+        @media (max-width: 768px) {
+            .top-bar { padding: 0 1rem; }
+            .search-input { width: 200px; }
+            .top-bar .flex.items-center.space-x-2 { display: none; }
+            .dropdown-menu { width: 280px; right: 0; }
+            #main-content { padding: 1rem; }
+        }
+        @media (max-width: 640px) {
+            .search-input { width: 150px; }
+            .top-bar h1 { font-size: 1.125rem; }
+            .top-bar p { display: none; }
+        }
+
+        /* --- ANİMASYONLAR --- */
+        .page-transition { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.6s ease forwards; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px); } 60% { transform: translateY(-4px); } }
+        @keyframes shimmer { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); } 50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6); } }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 25% { transform: scale(1.1); } 50% { transform: scale(1); } 75% { transform: scale(1.05); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+        /* --- BİLEŞEN STİLLERİ --- */
+        .sidebar { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-right: 1px solid #334155; animation: slideInLeft 0.5s ease; backdrop-filter: blur(10px); }
+        .nav-item { border-radius: 12px; margin: 3px 0; }
+        .nav-item:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); }
+        .nav-item.active { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; }
+        .card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4); transform: scaleX(0); transition: transform 0.3s ease; }
+        .card:hover::before { transform: scaleX(1); }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .dropdown-menu { opacity: 0; visibility: hidden; transform: translateY(-10px) scale(0.95); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(226, 232, 240, 0.5); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        .dropdown-menu.show { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .submenu-item { border-radius: 8px; margin: 2px 0; }
+        .submenu-item:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); color: #e2e8f0; }
+        .top-bar { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-bottom: 1px solid #334155; backdrop-filter: blur(20px); }
+        .search-input { background: rgba(248, 250, 252, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.5); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .search-input:focus { background: rgba(255, 255, 255, 0.95); border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); transform: scale(1.02); }
+
+        /* --- YARDIMCI STİLLER --- */
+        .progress-bar { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4); transition: width 0.3s ease; z-index: 9999; }
+        .toast-container { position: fixed; top: 100px; right: 20px; z-index: 9999; pointer-events: none; }
+        .toast { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(226, 232, 240, 0.5); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); transform: translateX(400px); opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: auto; min-width: 300px; }
+        .toast.show { transform: translateX(0); opacity: 1; }
+        .toast.success { border-left: 4px solid #10b981; }
+        .toast.error { border-left: 4px solid #ef4444; }
+        .toast.info { border-left: 4px solid #3b82f6; }
+        .toast.warning { border-left: 4px solid #f59e0b; }
+        .icon-bounce:hover { animation: bounce 0.6s; }
+        .scale-on-hover { transition: transform 0.2s ease; }
+        .scale-on-hover:hover { transform: scale(1.1); }
+        .glow-on-hover { transition: all 0.3s ease; }
+        .glow-on-hover:hover { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+        .heartbeat-animation { animation: heartbeat 1.5s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-gray-50">
+<div id="progress-bar" class="progress-bar"></div>
+<div id="toast-container" class="toast-container"></div>
+
+<!-- Top Bar -->
+<div class="fixed top-0 left-0 right-0 h-20 top-bar z-50 flex items-center justify-between px-6">
+    <div class="flex items-center space-x-4">
+        <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+        <a href="{% url 'dashboard' %}" class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center scale-on-hover glow-on-hover">
+                <svg class="w-7 h-7 text-white icon-bounce" fill="currentColor" viewBox="0 0 24 24"><path d="M14.12 4L12 2L9.88 4L8 6.5L12 10.5L16 6.5L14.12 4ZM8.5 7.5L12 11.5L15.5 7.5L18 10L12 16L6 10L8.5 7.5ZM4 12L8 16L12 20L16 16L20 12L18 14L12 20L6 14L4 12Z"/></svg>
+            </div>
+            <div>
+                <h1 class="text-white font-bold text-xl">Ejder3200</h1>
+                <p class="text-slate-300 text-sm">Kayak Merkezleri A.Ş</p>
+            </div>
+        </a>
+    </div>
+    <div class="flex items-center space-x-4">
+        <div class="relative">
+            <input type="text" placeholder="Ara..." class="search-input w-80 pl-10 pr-4 py-2 rounded-lg focus:outline-none">
+            <i class="fas fa-search absolute left-3 top-3 text-slate-400 text-sm"></i>
+        </div>
+        <div class="relative">
+            <button onclick="toggleDropdown('notifications')" class="relative p-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg scale-on-hover">
+                <i class="fas fa-bell icon-bounce"></i>
+                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center heartbeat-animation font-bold shadow-lg">3</span>
+            </button>
+            <div id="notifications" class="dropdown-menu absolute right-0 mt-2 w-80">
+                <div class="p-4 border-b border-slate-100"><h3 class="font-semibold text-slate-900">Bildirimler</h3></div>
+                <div class="max-h-64 overflow-y-auto"><p class="p-4 text-center text-slate-500">Yeni bildirim yok.</p></div>
+                <div class="p-3 border-t border-slate-100"><button class="w-full text-center text-blue-600 hover:text-blue-700 font-medium text-sm">Tümünü Görüntüle</button></div>
+            </div>
+        </div>
+        <div class="relative">
+            <button onclick="toggleDropdown('profile')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-700 scale-on-hover">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center glow-on-hover"><span class="text-white font-medium text-sm">AY</span></div>
+                <div class="text-left"><p class="font-medium text-white text-sm">Admin Yönetici</p><p class="text-slate-300 text-xs">Süper Admin</p></div>
+                <i class="fas fa-chevron-down text-slate-400 text-xs"></i>
+            </button>
+            <div id="profile" class="dropdown-menu absolute right-0 mt-2 w-56">
+                <div class="p-4 border-b border-slate-100"><p class="font-medium text-slate-900">Admin Yönetici</p><p class="text-slate-500 text-sm">admin@company.com</p></div>
+                <div class="p-2"><a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg"><i class="fas fa-user w-4"></i><span>Profil Ayarları</span></a></div>
+                <div class="p-2 border-t border-slate-100"><a href="#" class="flex items-center space-x-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"><i class="fas fa-sign-out-alt w-4"></i><span>Çıkış Yap</span></a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="mobile-overlay" class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+
+<!-- Sidebar -->
+<div id="sidebar" class="fixed left-0 top-20 w-72 sidebar z-40" style="height: calc(100vh - 80px);">
+    <nav class="mt-6 px-4">
+        <div class="space-y-1">
+            <div class="flex items-center space-x-4 mb-4">
+                <a href="#" class="p-2 rounded-lg hover:bg-slate-700" title="İletişim Merkezi"><div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center shadow-lg"><i class="fas fa-comments w-4 h-4 text-white"></i></div></a>
+                <a href="{% url 'ajanda' %}" class="p-2 rounded-lg hover:bg-slate-700" title="Asistan & Ajanda"><div class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg"><i class="fas fa-calendar-alt w-4 h-4 text-white"></i></div></a>
+                <a href="{% url 'inovasyon' %}" class="p-2 rounded-lg hover:bg-slate-700" title="İnovasyon Merkezi"><div class="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center shadow-lg"><i class="fas fa-lightbulb w-4 h-4 text-white"></i></div></a>
+                <a href="#" class="p-2 rounded-lg hover:bg-slate-700" title="Doküman Merkezi"><div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg"><i class="fas fa-folder-open w-4 h-4 text-white"></i></div></a>
+            </div>
+            <!-- Departmanlar -->
+            <div class="mt-4">
+                <button onclick="toggleSubmenu('departmanlar-menu')" class="nav-item w-full flex items-center justify-between px-4 py-3 text-slate-300">
+                    <div class="flex items-center"><i class="fas fa-building w-5 h-5 text-slate-400 mr-3"></i><span class="font-medium">Departmanlar</span></div>
+                    <i class="fas fa-chevron-down text-sm transition-transform duration-200" id="departmanlar-chevron" style="transform: rotate(180deg);"></i>
+                </button>
+                <div id="departmanlar-menu" class="ml-6 mt-1 space-y-1 overflow-hidden transition-all duration-300" style="max-height: 500px;">
+                    <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400"><i class="fas fa-user-tie w-4 mr-3"></i>İnsan Kaynakları</a>
+                    <a href="#" class="submenu-item block px-4 py-2 text-sm text-slate-400"><i class="fas fa-chart-pie w-4 mr-3"></i>Finansal Yönetim</a>
+                    <a href="{% url 'inovasyon' %}" class="submenu-item block px-4 py-2 text-sm text-slate-400"><i class="fas fa-lightbulb w-4 mr-3"></i>İnovasyon</a>
+                    <!-- Diğer menü elemanları -->
+                </div>
+            </div>
+            <!-- Diğer ana menü kategorileri... -->
+        </div>
+    </nav>
+    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-600">
+        <p class="text-slate-500 text-xs text-center">© 2024 Ejder3200</p>
+    </div>
+</div>
+
+<!-- Ana İçerik Alanı -->
+<div id="main-content" class="lg:ml-72 mt-20 page-transition">
+    <div class="px-6 py-3 bg-white border-b border-slate-200">
+        <nav class="flex items-center space-x-2 text-sm">
+            <a href="{% url 'dashboard' %}" class="text-blue-600 hover:text-blue-700">Ana Sayfa</a>
+            {% block breadcrumb %}{% endblock breadcrumb %}
+        </nav>
+        <p class="text-slate-500 text-xs mt-1">
+            {% block page_description %}Sistem yönetim paneli ve genel bakış{% endblock page_description %}
+        </p>
+    </div>
+    <main class="p-6">
+        {% block content %}
+        <div class="bg-white p-8 rounded-xl shadow-md">
+            <h1 class="text-2xl font-bold text-slate-800">Panele Hoş Geldiniz!</h1>
+            <p class="text-slate-600 mt-2">Sol menüden bir işlem seçerek başlayın.</p>
+        </div>
+        {% endblock content %}
+    </main>
+</div>
+<!-- Çocuk şablonların kendi script'lerini ekleyeceği alan -->
+{% block extra_scripts %}{% endblock extra_scripts %}
+{% block modals %}{% endblock modals %}
+</body>
+</html>

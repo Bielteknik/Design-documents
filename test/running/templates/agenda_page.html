@@ -1,0 +1,800 @@
+{% extends 'base.html' %}
+
+{% block title %}Yönetici Ajandası{% endblock title %}
+
+{% block breadcrumb %}
+<i class="fas fa-chevron-right text-slate-400 text-xs"></i>
+<span class="text-slate-600">Asistan & Ajanda</span>
+{% endblock breadcrumb %}
+
+{% block page_description %}Takvim, görevler ve iletişim yönetimi{% endblock page_description %}
+
+{% block extra_styles %}
+<!-- Orijinal agenda.html'den gelen <style> bloğunun tamamı -->
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    #main-content > main { padding: 0 !important; } /* base.html'in padding'ini sıfırla */
+
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background-color: #e5e7eb; }
+    .calendar-day { background-color: white; min-height: 120px; position: relative; cursor: pointer; transition: all 0.2s; }
+    .calendar-day:hover { background-color: #f8fafc; }
+    .event { font-size: 11px; padding: 2px 6px; margin: 1px 2px; border-radius: 3px; cursor: grab; transition: all 0.2s; user-select: none; }
+    .event:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .event:active { cursor: grabbing; }
+    .event.dragging { opacity: 0.5; transform: rotate(5deg) scale(1.05); z-index: 1000; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+    .calendar-day.drag-over { background-color: #dbeafe !important; border: 2px dashed #3b82f6; transform: scale(1.02); }
+    .event-high { background-color: #fee2e2; color: #dc2626; border-left: 3px solid #dc2626; }
+    .event-medium { background-color: #fef3c7; color: #d97706; border-left: 3px solid #d97706; }
+    .event-low { background-color: #dcfce7; color: #16a34a; border-left: 3px solid #16a34a; }
+    .event-meeting { background-color: #dbeafe; color: #2563eb; border-left: 3px solid #2563eb; }
+    .sidebar-item { transition: all 0.2s; }
+    .sidebar-item:hover { background-color: #f3f4f6; transform: translateX(2px); }
+    .today { background-color: #eff6ff; border: 2px solid #3b82f6; }
+    .other-month { color: #9ca3af; background-color: #f9fafb; }
+    .modal { backdrop-filter: blur(4px); }
+    .quick-action-btn { transition: all 0.3s ease; }
+    .quick-action-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+</style>
+{% endblock extra_styles %}
+
+{% block content %}
+<div class="flex flex-col">
+    <!-- Ana İçerik -->
+    <div class="flex-1 flex flex-col">
+        <!-- Üst Bar -->
+        <div class="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <!-- Hızlı Eylemler -->
+                <div class="grid grid-cols-6 gap-3">
+                    <!-- Üst sıra -->
+                    <button id="meetingBtn" class="quick-action-btn flex flex-col items-center justify-center p-3 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg transition-all duration-300" title="Yeni Toplantı">
+                        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span class="text-xs font-medium">Toplantı</span>
+                    </button>
+                    <button id="appointmentBtn" class="quick-action-btn flex flex-col items-center justify-center p-3 bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl shadow-lg transition-all duration-300" title="Randevu Oluştur">
+                        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-xs font-medium">Randevu</span>
+                    </button>
+                    <button id="noteBtn" class="quick-action-btn flex flex-col items-center justify-center p-3 bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl shadow-lg transition-all duration-300" title="Not Ekle">
+                        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        <span class="text-xs font-medium">Not</span>
+                    </button>
+
+                    <!-- Alt sıra -->
+                    <button id="taskBtn" class="quick-action-btn flex flex-col items-center justify-center p-3 bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl shadow-lg transition-all duration-300" title="Görev Ata">
+                        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                        </svg>
+                        <span class="text-xs font-medium">Görev</span>
+                    </button>
+                    <button id="reminderBtn" class="quick-action-btn flex flex-col items-center justify-center p-3 bg-gradient-to-br from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white rounded-xl shadow-lg transition-all duration-300" title="Hatırlatıcı Oluştur">
+                        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.828 4.828A4 4 0 015.5 4H9v1H5.5a3 3 0 00-2.121.879l-.707.707A1 1 0 012 7.414V11h1V7.414l.879-.879zM20 12a8 8 0 11-16 0 8 8 0 0116 0z"></path>
+                        </svg>
+                        <span class="text-xs font-medium">Hatırlatıcı</span>
+                    </button>
+                    <div class="relative">
+                        <button id="communicationBtn" onclick="toggleCommunicationMenu()" class="quick-action-btn flex flex-col items-center justify-center p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-xl shadow-lg transition-all duration-300 w-full" title="İletişim">
+                            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <span class="text-xs font-medium">İletişim</span>
+                        </button>
+                        <div id="communicationMenu" class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 py-2 w-48 hidden z-50">
+                            <button onclick="openChatModal(); closeCommunicationMenu();" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex items-center gap-3">
+                                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
+                                Sohbet
+                            </button>
+                            <button onclick="openSmsModal(); closeCommunicationMenu();" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex items-center gap-3">
+                                <svg class="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                </svg>
+                                SMS Gönder
+                            </button>
+                            <button onclick="openEmailModal(); closeCommunicationMenu();" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex items-center gap-3">
+                                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                                E-posta Gönder
+                            </button>
+                            <button onclick="openContactsModal(); closeCommunicationMenu();" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex items-center gap-3">
+                                <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                Kişiler
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <h2 id="mainCalendarTitle" class="text-xl font-semibold text-gray-900">Aralık 2024</h2>
+                <div class="flex gap-1">
+                    <button onclick="previousMonth()" class="p-2.5 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:shadow-md transform hover:-translate-y-0.5">
+                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <button onclick="nextMonth()" class="p-2.5 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:shadow-md transform hover:-translate-y-0.5">
+                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <button onclick="goToToday()" class="px-4 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:shadow-md transform hover:-translate-y-0.5 border border-blue-200 hover:border-blue-300">Bugün</button>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- Arama Kutusu -->
+                <div class="relative">
+                    <input type="text" id="searchEvents" placeholder="Etkinlik ara..." class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-48">
+                    <svg class="w-4 h-4 absolute left-2.5 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+
+                <!-- Dışa Aktarma -->
+                <div class="relative">
+                    <button onclick="toggleExportMenu()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Dışa Aktar">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </button>
+                    <div id="exportMenu" class="absolute right-0 top-12 bg-white rounded-lg shadow-xl border border-gray-200 py-2 w-48 hidden z-50">
+                        <button onclick="exportCalendar('pdf')" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                            PDF olarak indir
+                        </button>
+                        <button onclick="exportCalendar('excel')" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Excel olarak indir
+                        </button>
+                        <button onclick="exportCalendar('ical')" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            iCal olarak indir
+                        </button>
+                        <button onclick="exportCalendar('print')" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                            </svg>
+                            Yazdır
+                        </button>
+                    </div>
+                </div>
+                <!-- Görünüm Seçici - Sekme Stili -->
+                <div class="flex border-b border-gray-200">
+                    <button id="monthViewBtn" onclick="switchView('month')" class="px-6 py-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 bg-blue-50 transition-all duration-200 hover:bg-blue-100 relative">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            Ay
+                        </div>
+                    </button>
+                    <button id="weekViewBtn" onclick="switchView('week')" class="px-6 py-3 text-sm font-semibold text-gray-600 border-b-2 border-transparent hover:text-gray-900 hover:border-gray-300 transition-all duration-200">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            Hafta
+                        </div>
+                    </button>
+                    <button id="dayViewBtn" onclick="switchView('day')" class="px-6 py-3 text-sm font-semibold text-gray-600 border-b-2 border-transparent hover:text-gray-900 hover:border-gray-300 transition-all duration-200">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Gün
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Ayarlar Menüsü -->
+                <div class="relative">
+                    <button onclick="toggleSettingsMenu()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Ayarlar">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </button>
+                    <div id="settingsMenu" class="absolute right-0 top-12 bg-white rounded-lg shadow-xl border border-gray-200 py-2 w-56 hidden z-50">
+                        <div class="px-4 py-2 border-b border-gray-200">
+                            <div class="font-medium text-sm text-gray-900">Takvim Ayarları</div>
+                        </div>
+                        <label class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" id="showWeekends" checked class="mr-3">
+                            <span class="text-sm">Hafta sonlarını göster</span>
+                        </label>
+                        <label class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" id="show24Hour" class="mr-3">
+                            <span class="text-sm">24 saat formatı</span>
+                        </label>
+                        <label class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" id="showNotifications" checked class="mr-3">
+                            <span class="text-sm">Bildirimler</span>
+                        </label>
+                        <div class="border-t border-gray-200 mt-2 pt-2">
+                            <button onclick="resetCalendar()" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-red-600 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                Takvimi Sıfırla
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Takvim -->
+        <div class="flex-1 p-4" id="calendarContainer">
+            <!-- Ay Görünümü -->
+            <div id="monthView">
+                <!-- Gün Başlıkları -->
+                <div class="grid grid-cols-7 gap-1 mb-1">
+                    <div class="text-center font-semibold text-gray-700 py-3">Pazartesi</div>
+                    <div class="text-center font-semibold text-gray-700 py-3">Salı</div>
+                    <div class="text-center font-semibold text-gray-700 py-3">Çarşamba</div>
+                    <div class="text-center font-semibold text-gray-700 py-3">Perşembe</div>
+                    <div class="text-center font-semibold text-gray-700 py-3">Cuma</div>
+                    <div class="text-center font-semibold text-gray-700 py-3">Cumartesi</div>
+                    <div class="text-center font-semibold text-gray-700 py-3">Pazar</div>
+                </div>
+
+                <!-- Takvim Grid -->
+                <!-- Takvim Grid -->
+                <div class="calendar-grid rounded-lg overflow-hidden shadow-sm">
+                    <!-- 1. Hafta -->
+                    <div class="calendar-day other-month p-2" data-day="25">
+                        <div class="font-medium text-sm mb-1">25</div>
+                    </div>
+                    <div class="calendar-day other-month p-2" data-day="26">
+                        <div class="font-medium text-sm mb-1">26</div>
+                    </div>
+                    <div class="calendar-day other-month p-2" data-day="27">
+                        <div class="font-medium text-sm mb-1">27</div>
+                    </div>
+                    <div class="calendar-day other-month p-2" data-day="28">
+                        <div class="font-medium text-sm mb-1">28</div>
+                    </div>
+                    <div class="calendar-day other-month p-2" data-day="29">
+                        <div class="font-medium text-sm mb-1">29</div>
+                    </div>
+                    <div class="calendar-day other-month p-2" data-day="30">
+                        <div class="font-medium text-sm mb-1">30</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="1">
+                        <div class="font-medium text-sm mb-1">1</div>
+                    </div>
+
+                    <!-- 2. Hafta -->
+                    <div class="calendar-day p-2" data-day="2">
+                        <div class="font-medium text-sm mb-1">2</div>
+                        <div class="event event-meeting" onclick="showEventDetails('Ekip Toplantısı', '2 Aralık, 09:00', 'Toplantı Odası 1')">Ekip Toplantısı 09:00</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="3">
+                        <div class="font-medium text-sm mb-1">3</div>
+                        <div class="event event-medium" onclick="showEventDetails('Proje Değerlendirme', '3 Aralık, 14:00', 'Yönetim Kurulu Salonu')">Proje Değerlendirme 14:00</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="4">
+                        <div class="font-medium text-sm mb-1">4</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="5">
+                        <div class="font-medium text-sm mb-1">5</div>
+                        <div class="event event-high" onclick="showEventDetails('Müdürler Toplantısı', '5 Aralık, 11:00', 'Konferans Salonu')">Müdürler Toplantısı 11:00</div>
+                        <div class="event event-low" onclick="showEventDetails('Doktor Randevusu', '5 Aralık, 16:30', 'Özel Hastane')">Doktor Randevusu 16:30</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="6">
+                        <div class="font-medium text-sm mb-1">6</div>
+                        <div class="event event-meeting" onclick="showEventDetails('Müşteri Sunumu', '6 Aralık, 10:00', 'Sunum Salonu')">Müşteri Sunumu 10:00</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="7">
+                        <div class="font-medium text-sm mb-1">7</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="8">
+                        <div class="font-medium text-sm mb-1">8</div>
+                    </div>
+
+                    <!-- 3. Hafta -->
+                    <div class="calendar-day p-2" data-day="9">
+                        <div class="font-medium text-sm mb-1">9</div>
+                        <div class="event event-medium" onclick="showEventDetails('Bütçe Toplantısı', '9 Aralık, 13:00', 'Mali İşler Odası')">Bütçe Toplantısı 13:00</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="10">
+                        <div class="font-medium text-sm mb-1">10</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="11">
+                        <div class="font-medium text-sm mb-1">11</div>
+                        <div class="event event-meeting" onclick="showEventDetails('Strateji Toplantısı', '11 Aralık, 15:00', 'Yönetim Kurulu Salonu')">Strateji Toplantısı 15:00</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="12">
+                        <div class="font-medium text-sm mb-1">12</div>
+                        <div class="event event-high" onclick="showEventDetails('Yönetim Kurulu', '12 Aralık, 09:30', 'Yönetim Kurulu Salonu')">Yönetim Kurulu 09:30</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="13">
+                        <div class="font-medium text-sm mb-1">13</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="14">
+                        <div class="font-medium text-sm mb-1">14</div>
+                    </div>
+                    <div class="calendar-day today p-2" data-day="15">
+                        <div class="font-medium text-sm mb-1 text-blue-600">15</div>
+                        <div class="event event-meeting" onclick="showEventDetails('Yönetim Kurulu', '15 Aralık, 14:00', 'Yönetim Kurulu Salonu')">Yönetim Kurulu 14:00</div>
+                        <div class="event event-low" onclick="showEventDetails('Spor Salonu', '15 Aralık, 18:00', 'Fitness Center')">Spor Salonu 18:00</div>
+                    </div>
+
+                    <!-- 4. Hafta -->
+                    <div class="calendar-day p-2" data-day="16">
+                        <div class="font-medium text-sm mb-1">16</div>
+                        <div class="event event-medium" onclick="showEventDetails('Proje Sunumu', '16 Aralık, 10:30', 'Sunum Salonu')">Proje Sunumu 10:30</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="17">
+                        <div class="font-medium text-sm mb-1">17</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="18">
+                        <div class="font-medium text-sm mb-1">18</div>
+                        <div class="event event-meeting" onclick="showEventDetails('Müşteri Görüşmesi', '18 Aralık, 16:00', 'Online Toplantı')">Müşteri Görüşmesi 16:00</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="19">
+                        <div class="font-medium text-sm mb-1">19</div>
+                        <div class="event event-high" onclick="showEventDetails('Çeyrek Değerlendirme', '19 Aralık, 11:00', 'Yönetim Kurulu Salonu')">Çeyrek Değerlendirme 11:00</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="20">
+                        <div class="font-medium text-sm mb-1">20</div>
+                        <div class="event event-low" onclick="showEventDetails('Şirket Partisi', '20 Aralık, 19:00', 'Otel Ballroom')">Şirket Partisi 19:00</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="21">
+                        <div class="font-medium text-sm mb-1">21</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="22">
+                        <div class="font-medium text-sm mb-1">22</div>
+                    </div>
+
+                    <!-- 5. Hafta -->
+                    <div class="calendar-day p-2" data-day="23">
+                        <div class="font-medium text-sm mb-1">23</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="24">
+                        <div class="font-medium text-sm mb-1">24</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="25">
+                        <div class="font-medium text-sm mb-1">25</div>
+                        <div class="event event-low" onclick="showEventDetails('Noel Tatili', '25 Aralık', 'Ev')">Noel Tatili</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="26">
+                        <div class="font-medium text-sm mb-1">26</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="27">
+                        <div class="font-medium text-sm mb-1">27</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="28">
+                        <div class="font-medium text-sm mb-1">28</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="29">
+                        <div class="font-medium text-sm mb-1">29</div>
+                    </div>
+
+                    <!-- 6. Hafta -->
+                    <div class="calendar-day p-2" data-day="30">
+                        <div class="font-medium text-sm mb-1">30</div>
+                    </div>
+                    <div class="calendar-day p-2" data-day="31">
+                        <div class="font-medium text-sm mb-1">31</div>
+                        <div class="event event-low" onclick="showEventDetails('Yılbaşı Kutlaması', '31 Aralık, 20:00', 'Otel Ballroom')">Yılbaşı Kutlaması</div>
+                    </div>
+                    <div class="calendar-day other-month p-2" data-day="1">
+                        <div class="font-medium text-sm mb-1">1</div>
+                    </div>
+                    <div class="calendar-day other-month p-2" data-day="2">
+                        <div class="font-medium text-sm mb-1">2</div>
+                    </div>
+                    <div class="calendar-day other-month p-2" data-day="3">
+                        <div class="font-medium text-sm mb-1">3</div>
+                    </div>
+                    <div class="calendar-day other-month p-2" data-day="4">
+                        <div class="font-medium text-sm mb-1">4</div>
+                    </div>
+                    <div class="calendar-day other-month p-2" data-day="5">
+                        <div class="font-medium text-sm mb-1">5</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hafta Görünümü -->
+            <div id="weekView" class="hidden">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="grid grid-cols-8 border-b border-gray-200">
+                        <div class="p-3 text-center font-semibold text-gray-700 border-r border-gray-200">Saat</div>
+                        <div class="p-3 text-center font-semibold text-gray-700 border-r border-gray-200">Pazartesi<br><span class="text-xs text-gray-500">16 Ara</span></div>
+                        <div class="p-3 text-center font-semibold text-gray-700 border-r border-gray-200">Salı<br><span class="text-xs text-gray-500">17 Ara</span></div>
+                        <div class="p-3 text-center font-semibold text-gray-700 border-r border-gray-200">Çarşamba<br><span class="text-xs text-gray-500">18 Ara</span></div>
+                        <div class="p-3 text-center font-semibold text-gray-700 border-r border-gray-200">Perşembe<br><span class="text-xs text-gray-500">19 Ara</span></div>
+                        <div class="p-3 text-center font-semibold text-gray-700 border-r border-gray-200">Cuma<br><span class="text-xs text-gray-500">20 Ara</span></div>
+                        <div class="p-3 text-center font-semibold text-gray-700 border-r border-gray-200">Cumartesi<br><span class="text-xs text-gray-500">21 Ara</span></div>
+                        <div class="p-3 text-center font-semibold text-gray-700">Pazar<br><span class="text-xs text-gray-500">22 Ara</span></div>
+                    </div>
+                    <div id="weekTimeSlots" class="max-h-96 overflow-y-auto">
+                        <!-- Saat dilimleri buraya dinamik olarak eklenecek -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gün Görünümü -->
+            <div id="dayView" class="hidden">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="border-b border-gray-200 p-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">15 Aralık 2024, Pazar</h3>
+                            <div class="flex gap-2">
+                                <button onclick="previousDay()" class="p-2 hover:bg-gray-100 rounded-lg">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="nextDay()" class="p-2 hover:bg-gray-100 rounded-lg">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dayTimeSlots" class="max-h-96 overflow-y-auto">
+                        <!-- Günlük saat dilimleri buraya dinamik olarak eklenecek -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block modals %}
+<!-- 1. Ana Etkinlik Ekleme/Düzenleme Modalı (DÜZELTİLMİŞ YAPI) -->
+<div id="eventModal" class="fixed inset-0 bg-black bg-opacity-50 modal hidden z-[60] flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col">
+        <!-- Modal Başlığı -->
+        <div id="modalHeader" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-5 rounded-t-xl flex items-center justify-between">
+            <!-- Sol Taraf: İkon ve Başlıklar -->
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg id="modalIcon" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <div>
+                    <h3 id="modalTitle" class="text-lg font-semibold">Yeni Etkinlik Oluştur</h3>
+                    <p id="modalSubtitle" class="text-blue-100 text-sm">Adım <span id="currentStepNumber">1</span>/3: Temel Bilgiler</p>
+                </div>
+            </div>
+            <!-- Sağ Taraf: Kapat Butonu -->
+            <button onclick="closeEventModal()" class="p-2 rounded-full hover:bg-white/20 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <!-- Form İçeriği -->
+        <div class="p-8">
+            <form id="eventForm">
+                <!-- Adım 1 -->
+                <div id="step-1" class="step-content active space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label class="block text-sm font-medium text-gray-700 mb-2">Etkinlik Türü</label><select id="eventType" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></select></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-2">Öncelik Seviyesi</label><select id="eventPriority" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></select></div>
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Başlık</label><input type="text" id="eventTitle" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Etkinlik başlığını girin"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div><label class="block text-sm font-medium text-gray-700 mb-2">Tarih</label><input type="date" id="eventDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-2">Başlangıç Saati</label><input type="time" id="eventTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-2">Süre</label><select id="eventDuration" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></select></div>
+                    </div>
+                </div>
+                <!-- Adım 2 -->
+                <div id="step-2" class="step-content hidden space-y-6">
+                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Konum</label><select id="eventLocation" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></select></div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Katılımcılar</label><textarea id="eventParticipants" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="E-postaları virgülle ayırın"></textarea></div>
+                </div>
+                <!-- Adım 3 -->
+                <div id="step-3" class="step-content hidden space-y-6">
+                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Açıklama / Gündem</label><textarea id="eventDescription" rows="6" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Toplantı gündemi, notlar..."></textarea></div>
+                    <label class="flex items-center"><input type="checkbox" id="sendInvitations" class="w-5 h-5 text-blue-600 rounded" checked><span class="ml-3 text-sm text-gray-700">Katılımcılara davetiye gönder</span></label>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal Alt Bilgisi -->
+        <div class="bg-gray-50 border-t p-4 rounded-b-xl flex justify-between items-center">
+            <button id="prevStepBtn" onclick="changeStep(-1)" class="px-6 py-2 bg-white border rounded-lg hover:bg-gray-50 font-medium hidden">Geri</button>
+            <div id="placeholderDiv" class="flex-1"></div>
+            <div class="flex items-center gap-3">
+                <button onclick="closeEventModal()" class="px-6 py-2 bg-white border rounded-lg hover:bg-gray-50 font-medium">İptal</button>
+                <button id="nextStepBtn" onclick="changeStep(1)" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">İleri</button>
+                <button id="saveBtn" onclick="saveEvent()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium hidden">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 2. Hızlı Ekleme Menüsü (Sağ Tık Menüsü gibi) -->
+<div id="quickMenu" class="fixed bg-white rounded-lg shadow-xl border p-4 z-[70] hidden">
+    <!-- İçerik JavaScript ile doldurulacak -->
+</div>
+<!-- 3. Diğer Modallar (Contacts, Chat, SMS, Email, AI Assistant) -->
+<!-- Bu modalları da ana modal yapısına benzer şekilde, daha kompakt hale getirdim. -->
+<!-- Kişiler Modalı -->
+<div id="contactsModal" class="fixed inset-0 bg-black bg-opacity-50 modal hidden z-[60] flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-[80vh] flex flex-col">
+        <div class="bg-gradient-to-r from-teal-600 to-teal-700 text-white p-4 rounded-t-xl flex items-center justify-between">
+            <h3 class="font-semibold">Kişiler</h3>
+            <button onclick="closeContactsModal()" class="p-2 rounded-lg hover:bg-white/20">&times;</button>
+        </div>
+        <div class="flex-1 flex overflow-hidden">
+            <div class="w-1/3 border-r p-4 flex flex-col">
+                <h4 class="font-medium mb-4">Kişi Listesi</h4>
+                <div id="contactsList" class="space-y-2 overflow-y-auto"></div>
+            </div>
+            <div class="flex-1 p-4 overflow-y-auto">
+                <div id="contactDetails" class="text-center text-gray-500">Kişi seçin...</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sohbet Modalı -->
+<div id="chatModal" class="fixed inset-0 bg-black bg-opacity-50 modal hidden z-[60] flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl h-[70vh] flex flex-col">
+        <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white p-4 rounded-t-xl flex items-center justify-between">
+            <h3 class="font-semibold">Sohbet</h3>
+            <button onclick="closeChatModal()" class="p-2 rounded-lg hover:bg-white/20">&times;</button>
+        </div>
+        <div class="flex-1 flex overflow-hidden">
+            <div class="w-1/3 border-r p-4 overflow-y-auto"></div>
+            <div class="flex-1 flex flex-col">
+                <div id="chatMessages" class="flex-1 p-4 overflow-y-auto"></div>
+                <div class="border-t p-4"><input type="text" id="chatInput" class="w-full border rounded p-2" placeholder="Mesajınızı yazın..."></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- SMS Modalı -->
+<div id="smsModal" class="fixed inset-0 bg-black bg-opacity-50 modal hidden z-[60] flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md">
+        <div class="bg-gradient-to-r from-pink-600 to-pink-700 text-white p-4 rounded-t-xl flex items-center justify-between">
+            <h3 class="font-semibold">SMS Gönder</h3>
+            <button onclick="closeSmsModal()" class="p-2 rounded-lg hover:bg-white/20">&times;</button>
+        </div>
+        <div class="p-6 space-y-4">
+            <div><label>Alıcı Telefon</label><input type="tel" id="smsPhone" class="w-full border rounded p-2 mt-1"></div>
+            <div><label>Mesaj</label><textarea id="smsMessage" rows="4" class="w-full border rounded p-2 mt-1"></textarea></div>
+            <div class="flex justify-end"><button onclick="sendSms()" class="bg-pink-600 text-white px-4 py-2 rounded">Gönder</button></div>
+        </div>
+    </div>
+</div>
+<!-- E-posta Modalı -->
+<div id="emailModal" class="fixed inset-0 bg-black bg-opacity-50 modal hidden z-[60] flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+        <div class="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 rounded-t-xl flex items-center justify-between">
+            <h3 class="font-semibold">E-posta Gönder</h3>
+            <button onclick="closeEmailModal()" class="p-2 rounded-lg hover:bg-white/20">&times;</button>
+        </div>
+        <div class="p-6 space-y-4 overflow-y-auto">
+            <div class="grid grid-cols-2 gap-4">
+                <div><label>Kime</label><input type="email" id="emailTo" class="w-full border rounded p-2 mt-1"></div>
+                <div><label>Kopya (CC)</label><input type="email" id="emailCc" class="w-full border rounded p-2 mt-1"></div>
+            </div>
+            <div><label>Konu</label><input type="text" id="emailSubject" class="w-full border rounded p-2 mt-1"></div>
+            <div><label>Mesaj</label><textarea id="emailMessage" rows="8" class="w-full border rounded p-2 mt-1"></textarea></div>
+        </div>
+        <div class="bg-gray-50 border-t p-4 rounded-b-xl flex justify-end gap-3">
+            <button onclick="closeEmailModal()" class="px-4 py-2 bg-white border rounded">İptal</button>
+            <button onclick="sendEmail()" class="px-4 py-2 bg-red-600 text-white rounded">Gönder</button>
+        </div>
+    </div>
+</div>
+<!-- AI Asistan Modalı -->
+<div id="aiAssistantModal" class="fixed inset-0 bg-black bg-opacity-50 modal hidden z-[60] flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl h-[80vh] flex flex-col">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 rounded-t-xl flex items-center justify-between">
+            <h3 class="font-semibold">Akıllı Asistan</h3>
+            <button onclick="closeAIAssistant()" class="p-2 rounded-lg hover:bg-white/20">&times;</button>
+        </div>
+        <div id="aiChatMessages" class="flex-1 p-4 overflow-y-auto"></div>
+        <div class="border-t p-4"><input type="text" id="aiInput" class="w-full border rounded p-2" placeholder="Asistana bir şey sorun..."></div>
+    </div>
+</div>
+
+{% endblock modals %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- GLOBAL DEĞİŞKENLER ---
+        let currentView = 'month';
+        let currentStep = 1;
+        const totalSteps = 3;
+        // ... takvim için tarih değişkenleri ...
+        let currentDate = new Date();
+
+        // --- BAŞLANGIÇ ---
+        function initialize() {
+            renderCalendar();
+            setupEventListeners();
+            fillSelectOptions();
+            updateCalendarHeader();
+        }
+
+        // --- TAKVİM OLUŞTURMA VE GÜNCELLEME ---
+        function renderCalendar() {
+            if (currentView === 'month') {
+                document.getElementById('monthView').style.display = 'block';
+                document.getElementById('weekView').style.display = 'none';
+                document.getElementById('dayView').style.display = 'none';
+                // Ay görünümünü oluşturma mantığı buraya...
+            } else if (currentView === 'week') {
+                document.getElementById('monthView').style.display = 'none';
+                document.getElementById('weekView').style.display = 'block';
+                document.getElementById('dayView').style.display = 'none';
+                loadWeekView(); // Hafta görünümünü oluştur
+            } else if (currentView === 'day') {
+                document.getElementById('monthView').style.display = 'none';
+                document.getElementById('weekView').style.display = 'none';
+                document.getElementById('dayView').style.display = 'block';
+                loadDayView(); // Gün görünümünü oluştur
+            }
+        }
+
+        function updateCalendarHeader() {
+            const mainTitle = document.getElementById('mainCalendarTitle');
+            const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+
+            if (currentView === 'month') {
+                mainTitle.textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            } else if (currentView === 'week') {
+                mainTitle.textContent = "Bu Hafta";
+            } else if (currentView === 'day') {
+                mainTitle.textContent = currentDate.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', weekday: 'long' });
+            }
+        }
+
+        // --- BUTON VE ETKİLEŞİM YÖNETİMİ ---
+        function setupEventListeners() {
+            // Hızlı Eylem Butonları
+            document.getElementById('meetingBtn').addEventListener('click', () => openEventModal('meeting'));
+            document.getElementById('appointmentBtn').addEventListener('click', () => openEventModal('appointment'));
+            document.getElementById('noteBtn').addEventListener('click', () => openEventModal('note'));
+            document.getElementById('taskBtn').addEventListener('click', () => openEventModal('task'));
+            document.getElementById('reminderBtn').addEventListener('click', () => openEventModal('reminder'));
+
+            // Dışarıya tıklandığında menüleri kapatma
+            document.addEventListener('click', function(event) {
+                const communicationMenu = document.getElementById('communicationMenu');
+                if (communicationMenu && !event.target.closest('#communicationBtn')) {
+                    communicationMenu.classList.add('hidden');
+                }
+            });
+        }
+
+        function fillSelectOptions() {
+            // ... (Bu fonksiyon önceki cevapta mevcut, aynen kalsın) ...
+        }
+
+        // --- YENİ EKLENEN VEYA GÜNCELLENEN FONKSİYONLAR ---
+
+        // Görünüm Değiştirme (Ay/Hafta/Gün)
+        window.switchView = function(view) {
+            currentView = view;
+
+            const buttons = { month: 'monthViewBtn', week: 'weekViewBtn', day: 'dayViewBtn' };
+            for (const key in buttons) {
+                const btn = document.getElementById(buttons[key]);
+                if (btn) {
+                    if (key === view) {
+                        btn.className = 'px-6 py-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 bg-blue-50';
+                    } else {
+                        btn.className = 'px-6 py-3 text-sm font-semibold text-gray-600 border-b-2 border-transparent hover:text-gray-900';
+                    }
+                }
+            }
+
+            updateCalendarHeader();
+            renderCalendar();
+        }
+
+        // Hafta Görünümünü Yükle
+        function loadWeekView() {
+            const weekTimeSlots = document.getElementById('weekTimeSlots');
+            if (!weekTimeSlots) return;
+            weekTimeSlots.innerHTML = '<div class="p-4 text-center text-gray-500">Hafta görünümü içeriği buraya gelecek.</div>';
+        }
+
+        // Gün Görünümünü Yükle
+        function loadDayView() {
+            const dayTimeSlots = document.getElementById('dayTimeSlots');
+            if (!dayTimeSlots) return;
+            dayTimeSlots.innerHTML = '<div class="p-4 text-center text-gray-500">Gün görünümü içeriği buraya gelecek.</div>';
+        }
+
+        // İletişim Menüsünü Aç/Kapa
+        window.toggleCommunicationMenu = function() {
+            document.getElementById('communicationMenu').classList.toggle('hidden');
+        }
+
+        // İletişim Menüsündeki Butonların Fonksiyonları (Örnek)
+        window.openChatModal = function() { alert('Sohbet modali açılıyor...'); }
+        window.openSmsModal = function() { alert('SMS modali açılıyor...'); }
+        window.openEmailModal = function() { alert('E-posta modali açılıyor...'); }
+        window.openContactsModal = function() { alert('Kişiler modali açılıyor...'); }
+        window.closeCommunicationMenu = function() {
+            document.getElementById('communicationMenu').classList.add('hidden');
+        }
+
+        // Takvim Navigasyonu
+        window.previousMonth = function() { currentDate.setMonth(currentDate.getMonth() - 1); updateCalendarHeader(); renderCalendar(); }
+        window.nextMonth = function() { currentDate.setMonth(currentDate.getMonth() + 1); updateCalendarHeader(); renderCalendar(); }
+        window.goToToday = function() { currentDate = new Date(); updateCalendarHeader(); renderCalendar(); }
+
+        window.openEventModal = function(type = 'meeting') {
+            const modal = document.getElementById('eventModal');
+            if (modal) {
+                currentStep = 1;
+                for (let i = 1; i <= totalSteps; i++) {
+                    const stepEl = document.getElementById(`step-${i}`);
+                    if (stepEl) {
+                        stepEl.style.display = (i === 1) ? 'block' : 'none';
+                    }
+                }
+                updateStepUI();
+                modal.classList.remove('hidden');
+            }
+        }
+
+        window.closeEventModal = function() {
+            document.getElementById('eventModal').classList.add('hidden');
+        }
+
+        window.changeStep = function(direction) {
+            const newStep = currentStep + direction;
+            if (newStep > 0 && newStep <= totalSteps) {
+                document.getElementById(`step-${currentStep}`).style.display = 'none';
+                currentStep = newStep;
+                document.getElementById(`step-${currentStep}`).style.display = 'block';
+                updateStepUI();
+            }
+        }
+
+        function updateStepUI() {
+            document.getElementById('prevStepBtn').classList.toggle('hidden', currentStep === 1);
+            document.getElementById('nextStepBtn').classList.toggle('hidden', currentStep === totalSteps);
+            document.getElementById('saveBtn').classList.toggle('hidden', currentStep !== totalSteps);
+            document.getElementById('placeholderDiv').classList.toggle('hidden', currentStep === 1);
+            const stepTitles = ["Temel Bilgiler", "Detaylar", "Açıklama & Onay"];
+            const subtitle = document.getElementById('modalSubtitle');
+            if (subtitle) {
+                subtitle.innerHTML = `Adım <span>${currentStep}</span>/${totalSteps}: ${stepTitles[currentStep - 1]}`;
+            }
+        }
+
+        window.saveEvent = function() {
+            alert('Etkinlik Kaydedildi!');
+            closeEventModal();
+        }
+
+        // --- BAŞLAT ---
+        initialize();
+    });
+</script>
+{% endblock extra_scripts %}
