@@ -3,1653 +3,1488 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İnovasyon Havuzu - Etkileşimli Fikir Platformu</title>
+    <title>ModernCal - Akıllı Takvim Sistemi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            background-attachment: fixed;
         }
         
-        .wave-animation {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: url('image/svg+xml;utf8,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="%231e293b" fill-opacity="0.3" d="M0,192L48,197.3C96,203,192,213,288,208C384,203,480,181,576,181.3C672,181,768,203,864,202.7C960,203,1056,181,1152,165.3C1248,149,1344,139,1392,133.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
-            background-size: cover;
-            background-repeat: no-repeat;
-            animation: wave 15s linear infinite;
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
         }
         
-        @keyframes wave {
-            0% {
-                background-position-x: 0;
-            }
-            100% {
-                background-position-x: 1440px;
-            }
+        .calendar-day {
+            min-height: 140px;
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
         
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-5px);
+        .calendar-day:hover {
+            transform: translateY(-2px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         
-        .idea-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
+        .calendar-day.today {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
         }
         
-        .idea-card:hover {
+        .calendar-day.other-month {
+            opacity: 0.3;
+        }
+        
+        .event-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        
+        .event-item {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+            padding: 6px 8px;
+            margin: 4px 0;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: grab;
+            transition: all 0.2s;
+            user-select: none;
+            position: relative;
+        }
+        
+        .event-item:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateX(2px);
+        }
+        
+        .event-item:active {
+            cursor: grabbing;
+        }
+        
+        .event-item.dragging {
+            opacity: 0.7;
+            transform: rotate(5deg) scale(1.05);
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .calendar-day.drag-over {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px dashed #3b82f6;
             transform: scale(1.02);
         }
         
-        .step {
-            display: none;
+        .calendar-day.drag-over.today {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px dashed rgba(255, 255, 255, 0.8);
         }
         
-        .step.active {
-            display: block;
-        }
-        
-        .step-indicator {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem auto;
-            font-weight: bold;
-        }
-        
-        .step-completed {
-            background-color: #10b981;
-            color: white;
-        }
-        
-        .step-current {
-            background-color: #6366f1;
-            color: white;
-        }
-        
-        .step-pending {
-            background-color: #e5e7eb;
-            color: #6b7280;
-        }
-        
-        .form-section {
-            animation: fadeIn 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-secondary {
-            background-color: #f3f4f6;
-            color: #4b5563;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #e5e7eb;
-            transform: translateY(-2px);
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .status-new {
-            background-color: #fef3c7;
-            color: #d97706;
-        }
-        
-        .status-reviewed {
-            background-color: #dbeafe;
-            color: #2563eb;
-        }
-        
-        .status-accepted {
-            background-color: #dcfce7;
-            color: #16a34a;
-        }
-        
-        .status-rejected {
-            background-color: #fee2e2;
-            color: #dc2626;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #c7d2fe;
-            border-radius: 10px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #818cf8;
-        }
-        
-        .form-navigation {
-            position: sticky;
+        .drop-indicator {
+            position: absolute;
             top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px dashed #3b82f6;
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            justify-content: center;
             z-index: 10;
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #e5e7eb;
         }
         
-        .attachment-item {
-            border: 1px dashed #d1d5db;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .comment-item {
-            border-bottom: 1px solid #f3f4f6;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .evaluation-criteria {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .rating-scale {
+        .drop-indicator.active {
             display: flex;
-            justify-content: space-between;
-            margin: 0.5rem 0;
         }
         
-        .rating-point {
-            width: 30px;
-            height: 30px;
+        .drop-indicator-text {
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .event-high { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; }
+        .event-medium { background: rgba(245, 158, 11, 0.1); border-color: #f59e0b; }
+        .event-low { background: rgba(34, 197, 94, 0.1); border-color: #22c55e; }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.4);
             cursor: pointer;
-            font-weight: bold;
+            transition: all 0.3s;
+            z-index: 40;
         }
         
-        .rating-point:hover, .rating-point.selected {
+        .floating-action:hover {
             transform: scale(1.1);
+            box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.5);
         }
         
-        /* Brainstorming section */
-        .brainstorming-container {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .sidebar-item {
+            padding: 12px 16px;
             border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 4px 0;
         }
         
-        .brainstorming-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
+        .sidebar-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateX(4px);
         }
         
-        .brainstorming-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
+        .quick-stats {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px 0;
         }
         
-        .brainstorming-card {
-            background: white;
-            border-radius: 8px;
-            padding: 0.5rem;
+        .stat-card {
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 12px;
         }
         
-        .brainstorming-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        .stat-number {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 4px;
         }
         
-        .brainstorming-card.selected {
-            border: 2px solid #6366f1;
-            transform: scale(1.05);
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
         }
         
-        .brainstorming-add-btn {
-            background: #6366f1;
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .weather-widget {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            border-radius: 16px;
+            padding: 16px;
             color: white;
-            border: none;
-            padding: 0.5rem;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            bottom: 10px;
-        }
-        
-        .brainstorming-add-btn:hover {
-            background: #4f46e5;
-            transform: scale(1.1);
-        }
-        
-        .comment-input {
-            transition: all 0.3s ease;
-        }
-        
-        .comment-input:focus {
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
-            border-color: #6366f1;
-        }
-        
-        .discussion-thread {
-            border-left: 2px solid #e5e7eb;
-            padding-left: 1rem;
-            margin-left: 1rem;
-        }
-        
-        .thread-item {
-            margin-bottom: 1rem;
-        }
-        
-        .thread-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-        
-        .thread-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .thread-actions button {
-            background: none;
-            border: none;
-            color: #6b7280;
-            cursor: pointer;
-            font-size: 0.875rem;
-            padding: 0.25rem;
-            transition: color 0.2s ease;
-        }
-        
-        .thread-actions button:hover {
-            color: #6366f1;
-        }
-        
-        .reply-form {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f3f4f6;
-            border-radius: 8px;
-        }
-        
-        .reply-form input[type="text"] {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .reply-form textarea {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .reply-form button {
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .reply-form button:hover {
-            background: #4f46e5;
+            margin: 16px 0;
         }
     </style>
 </head>
-<body class="text-gray-800">
-    <div class="wave-animation"></div>
-    
-    <div class="container mx-auto px-4 py-8 relative z-10">
-        <!-- Header -->
-        <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">İnovasyon Havuzu</h1>
-            <p class="text-xl text-blue-100">Fikir değerlendirme ve geliştirme platformu</p>
-        </header>
-
-        <!-- Main Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column - Idea Cards -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 card-hover">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Fikir Listesi</h2>
-                    
-                    <!-- Search -->
-                    <div class="relative mb-6">
-                        <input type="text" id="searchIdeas" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikir ara...">
-                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+<body class="bg-gray-50">
+    <!-- Ana Container -->
+    <div class="min-h-screen flex">
+        <!-- Sol Sidebar -->
+        <div class="w-80 bg-white shadow-xl border-r border-gray-100">
+            <!-- Header -->
+            <div class="p-6 gradient-bg text-white">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
                     </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">ModernCal</h1>
+                        <p class="text-blue-100 text-sm">Akıllı Takvim Sistemi</p>
+                    </div>
+                </div>
+                
+                <!-- Hızlı Tarih Navigasyonu -->
+                <div class="flex items-center justify-between">
+                    <button onclick="previousMonth()" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="text-center">
+                        <div id="currentMonthYear" class="font-semibold text-lg">Aralık 2024</div>
+                        <div class="text-blue-100 text-sm">Bugün: 15 Aralık</div>
+                    </div>
+                    <button onclick="nextMonth()" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Hızlı Eylemler -->
+            <div class="p-6">
+                <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Hızlı Eylemler
+                </h3>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="openEventModal('meeting')" class="p-4 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 shadow-lg">
+                        <svg class="w-6 h-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <div class="text-sm font-medium">Toplantı</div>
+                    </button>
                     
-                    <!-- Filter -->
-                    <div class="mb-6">
-                        <select id="filterStatus" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            <option value="">Tüm Durumlar</option>
-                            <option value="new">Yeni</option>
-                            <option value="reviewed">Değerlendirildi</option>
-                            <option value="accepted">Kabul Edildi</option>
-                            <option value="rejected">Reddedildi</option>
-                        </select>
+                    <button onclick="openEventModal('appointment')" class="p-4 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all transform hover:scale-105 shadow-lg">
+                        <svg class="w-6 h-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div class="text-sm font-medium">Randevu</div>
+                    </button>
+                    
+                    <button onclick="openEventModal('task')" class="p-4 bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-xl hover:from-amber-600 hover:to-amber-700 transition-all transform hover:scale-105 shadow-lg">
+                        <svg class="w-6 h-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                        </svg>
+                        <div class="text-sm font-medium">Görev</div>
+                    </button>
+                    
+                    <button onclick="openEventModal('reminder')" class="p-4 bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg">
+                        <svg class="w-6 h-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.828 4.828A4 4 0 015.5 4H9v1H5.5a3 3 0 00-2.121.879l-.707.707A1 1 0 012 7.414V11h1V7.414l.879-.879z"></path>
+                        </svg>
+                        <div class="text-sm font-medium">Hatırlatıcı</div>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Hava Durumu Widget -->
+            <div class="px-6">
+                <div class="weather-widget">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <div class="text-lg font-semibold">İstanbul</div>
+                            <div class="text-blue-100 text-sm">Bugün</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold">18°C</div>
+                            <div class="text-blue-100 text-sm">Parçalı Bulutlu</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 text-sm text-blue-100">
+                        <div class="flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                            <span>Min: 12°C</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                            </svg>
+                            <span>Max: 22°C</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hızlı İstatistikler -->
+            <div class="px-6">
+                <div class="quick-stats">
+                    <h4 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Bu Hafta
+                    </h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="stat-card">
+                            <div class="stat-number text-blue-600">8</div>
+                            <div class="text-xs text-gray-600">Toplantı</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number text-emerald-600">5</div>
+                            <div class="text-xs text-gray-600">Randevu</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number text-amber-600">12</div>
+                            <div class="text-xs text-gray-600">Görev</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number text-purple-600">28h</div>
+                            <div class="text-xs text-gray-600">Toplam</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Yaklaşan Etkinlikler -->
+            <div class="px-6 pb-6 flex-1 overflow-y-auto">
+                <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Yaklaşan Etkinlikler
+                </h3>
+                
+                <div class="space-y-3">
+                    <div class="sidebar-item bg-red-50 border-l-4 border-red-500" onclick="showEventDetails('Yönetim Kurulu', 'Bugün 14:00', 'Toplantı Salonu')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 bg-red-500 rounded-full pulse-dot"></div>
+                            <div class="flex-1">
+                                <div class="font-medium text-sm text-red-900">Yönetim Kurulu</div>
+                                <div class="text-xs text-red-700">Bugün 14:00 - Toplantı Salonu</div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <!-- Ideas List -->
-                    <div id="ideasList" class="space-y-4 custom-scrollbar max-h-96 overflow-y-auto">
-                        <!-- Idea 1 -->
-                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="openIdeaForm('idea1')">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-semibold text-gray-800">Yapay Zeka Destekli Müşteri Hizmetleri</h3>
-                                <span class="status-badge status-accepted">Kabul Edildi</span>
+                    <div class="sidebar-item bg-blue-50 border-l-4 border-blue-500" onclick="showEventDetails('Proje Sunumu', 'Yarın 10:30', 'Online')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <div class="flex-1">
+                                <div class="font-medium text-sm text-blue-900">Proje Sunumu</div>
+                                <div class="text-xs text-blue-700">Yarın 10:30 - Online</div>
                             </div>
-                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Müşteri hizmetlerinde yapay zeka destekli chatbot sistemi geliştirilerek hizmet kalitesi artırılabilir...</p>
-                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                <span>Ahmet Yılmaz</span>
-                                <span>2 gün önce</span>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-item bg-emerald-50 border-l-4 border-emerald-500" onclick="showEventDetails('Müşteri Görüşmesi', '18 Ara 16:00', 'Ofis')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                            <div class="flex-1">
+                                <div class="font-medium text-sm text-emerald-900">Müşteri Görüşmesi</div>
+                                <div class="text-xs text-emerald-700">18 Ara 16:00 - Ofis</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-item bg-purple-50 border-l-4 border-purple-500" onclick="showEventDetails('Eğitim Semineri', '20 Ara 09:00', 'Konferans Salonu')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                            <div class="flex-1">
+                                <div class="font-medium text-sm text-purple-900">Eğitim Semineri</div>
+                                <div class="text-xs text-purple-700">20 Ara 09:00 - Konferans Salonu</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ana İçerik -->
+        <div class="flex-1 flex flex-col">
+            <!-- Üst Bar -->
+            <div class="bg-white shadow-sm border-b border-gray-100 p-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Takvim Görünümü</h2>
+                            <p class="text-gray-600 text-sm">Etkinliklerinizi yönetin ve planlayın</p>
+                        </div>
+                        
+                        <!-- Görünüm Seçici -->
+                        <div class="flex bg-gray-100 rounded-xl p-1">
+                            <button id="monthBtn" onclick="switchView('month')" class="px-4 py-2 text-sm font-medium rounded-lg bg-white text-blue-600 shadow-sm transition-all">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    Ay
+                                </div>
+                            </button>
+                            <button id="weekBtn" onclick="switchView('week')" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 transition-all">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                    </svg>
+                                    Hafta
+                                </div>
+                            </button>
+                            <button id="dayBtn" onclick="switchView('day')" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 transition-all">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Gün
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <!-- Arama -->
+                        <div class="relative">
+                            <input type="text" placeholder="Etkinlik ara..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64">
+                            <svg class="w-5 h-5 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        
+                        <!-- Ayarlar -->
+                        <button onclick="toggleSettings()" class="p-2 hover:bg-gray-100 rounded-xl transition-colors">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Profil -->
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-semibold">
+                                AY
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="font-medium text-gray-900">Ahmet Yılmaz</div>
+                                <div class="text-sm text-gray-600">Yönetici</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Takvim İçeriği -->
+            <div class="flex-1 p-6">
+                <!-- Ay Görünümü -->
+                <div id="monthView" class="h-full">
+                    <!-- Gün Başlıkları -->
+                    <div class="grid grid-cols-7 gap-2 mb-4">
+                        <div class="text-center font-semibold text-gray-700 py-4 bg-gray-50 rounded-xl">Pazartesi</div>
+                        <div class="text-center font-semibold text-gray-700 py-4 bg-gray-50 rounded-xl">Salı</div>
+                        <div class="text-center font-semibold text-gray-700 py-4 bg-gray-50 rounded-xl">Çarşamba</div>
+                        <div class="text-center font-semibold text-gray-700 py-4 bg-gray-50 rounded-xl">Perşembe</div>
+                        <div class="text-center font-semibold text-gray-700 py-4 bg-gray-50 rounded-xl">Cuma</div>
+                        <div class="text-center font-semibold text-gray-700 py-4 bg-gray-50 rounded-xl">Cumartesi</div>
+                        <div class="text-center font-semibold text-gray-700 py-4 bg-gray-50 rounded-xl">Pazar</div>
+                    </div>
+                    
+                    <!-- Takvim Grid -->
+                    <div class="calendar-grid h-full">
+                        <!-- 1. Hafta -->
+                        <div class="calendar-day other-month" data-day="25">
+                            <div class="font-semibold text-lg mb-2">25</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day other-month" data-day="26">
+                            <div class="font-semibold text-lg mb-2">26</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day other-month" data-day="27">
+                            <div class="font-semibold text-lg mb-2">27</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day other-month" data-day="28">
+                            <div class="font-semibold text-lg mb-2">28</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day other-month" data-day="29">
+                            <div class="font-semibold text-lg mb-2">29</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day other-month" data-day="30">
+                            <div class="font-semibold text-lg mb-2">30</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="1" onclick="showDayDetails(1)">
+                            <div class="font-semibold text-lg mb-2">1</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
                             </div>
                         </div>
                         
-                        <!-- Idea 2 -->
-                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="openIdeaForm('idea2')">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-semibold text-gray-800">Sürdürülebilir Ambalaj Çözümleri</h3>
-                                <span class="status-badge status-reviewed">Değerlendirildi</span>
+                        <!-- 2. Hafta -->
+                        <div class="calendar-day" data-day="2" onclick="showDayDetails(2)">
+                            <div class="font-semibold text-lg mb-2">2</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
                             </div>
-                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Şirketimizin ürün ambalajlarında tamamen biyolojik olarak parçalanabilen malzemeler kullanılması...</p>
-                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                <span>Elif Demir</span>
-                                <span>5 gün önce</span>
+                            <div class="event-item" draggable="true" data-event-id="event-1" data-event-date="2" onclick="event.stopPropagation(); showEventDetails('Ekip Toplantısı', '2 Ara 09:00', 'Toplantı Odası')">
+                                <span class="event-dot bg-blue-500"></span>Ekip Toplantısı
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="3" onclick="showDayDetails(3)">
+                            <div class="font-semibold text-lg mb-2">3</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item event-medium" draggable="true" data-event-id="event-2" data-event-date="3" onclick="event.stopPropagation(); showEventDetails('Proje Değerlendirme', '3 Ara 14:00', 'Yönetim Salonu')">
+                                <span class="event-dot bg-amber-500"></span>Proje Değerlendirme
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="4" onclick="showDayDetails(4)">
+                            <div class="font-semibold text-lg mb-2">4</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="5" onclick="showDayDetails(5)">
+                            <div class="font-semibold text-lg mb-2">5</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item event-high" draggable="true" data-event-id="event-3" data-event-date="5" onclick="event.stopPropagation(); showEventDetails('Müdürler Toplantısı', '5 Ara 11:00', 'Konferans Salonu')">
+                                <span class="event-dot bg-red-500"></span>Müdürler Toplantısı
+                            </div>
+                            <div class="event-item event-low" draggable="true" data-event-id="event-4" data-event-date="5" onclick="event.stopPropagation(); showEventDetails('Doktor Randevusu', '5 Ara 16:30', 'Hastane')">
+                                <span class="event-dot bg-green-500"></span>Doktor Randevusu
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="6" onclick="showDayDetails(6)">
+                            <div class="font-semibold text-lg mb-2">6</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item" draggable="true" data-event-id="event-5" data-event-date="6" onclick="event.stopPropagation(); showEventDetails('Müşteri Sunumu', '6 Ara 10:00', 'Sunum Salonu')">
+                                <span class="event-dot bg-blue-500"></span>Müşteri Sunumu
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="7" onclick="showDayDetails(7)">
+                            <div class="font-semibold text-lg mb-2">7</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="8" onclick="showDayDetails(8)">
+                            <div class="font-semibold text-lg mb-2">8</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
                             </div>
                         </div>
                         
-                        <!-- Idea 3 -->
-                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="openIdeaForm('idea3')">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-semibold text-gray-800">Çalışan İnovasyon Programı</h3>
-                                <span class="status-badge status-new">Yeni</span>
+                        <!-- 3. Hafta -->
+                        <div class="calendar-day" data-day="9" onclick="showDayDetails(9)">
+                            <div class="font-semibold text-lg mb-2">9</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
                             </div>
-                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Şirketimizde çalışanlara aylık inovasyon bütçesi tahsis edilerek, kendi iş süreçlerini iyileştirmek için...</p>
-                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                <span>Can Kaya</span>
-                                <span>Bugün</span>
+                            <div class="event-item event-medium" draggable="true" data-event-id="event-6" data-event-date="9" onclick="event.stopPropagation(); showEventDetails('Bütçe Toplantısı', '9 Ara 13:00', 'Mali İşler')">
+                                <span class="event-dot bg-amber-500"></span>Bütçe Toplantısı
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="10" onclick="showDayDetails(10)">
+                            <div class="font-semibold text-lg mb-2">10</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="11" onclick="showDayDetails(11)">
+                            <div class="font-semibold text-lg mb-2">11</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item" draggable="true" data-event-id="event-7" data-event-date="11" onclick="event.stopPropagation(); showEventDetails('Strateji Toplantısı', '11 Ara 15:00', 'Yönetim Salonu')">
+                                <span class="event-dot bg-blue-500"></span>Strateji Toplantısı
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="12" onclick="showDayDetails(12)">
+                            <div class="font-semibold text-lg mb-2">12</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item event-high" draggable="true" data-event-id="event-8" data-event-date="12" onclick="event.stopPropagation(); showEventDetails('Yönetim Kurulu', '12 Ara 09:30', 'Yönetim Salonu')">
+                                <span class="event-dot bg-red-500"></span>Yönetim Kurulu
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="13" onclick="showDayDetails(13)">
+                            <div class="font-semibold text-lg mb-2">13</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="14" onclick="showDayDetails(14)">
+                            <div class="font-semibold text-lg mb-2">14</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day today" data-day="15" onclick="showDayDetails(15)">
+                            <div class="font-semibold text-lg mb-2">15</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item bg-white bg-opacity-20 border-white" draggable="true" data-event-id="event-9" data-event-date="15" onclick="event.stopPropagation(); showEventDetails('Yönetim Kurulu', '15 Ara 14:00', 'Yönetim Salonu')">
+                                <span class="event-dot bg-white"></span>Yönetim Kurulu
+                            </div>
+                            <div class="event-item bg-white bg-opacity-20 border-white" draggable="true" data-event-id="event-10" data-event-date="15" onclick="event.stopPropagation(); showEventDetails('Spor Salonu', '15 Ara 18:00', 'Fitness Center')">
+                                <span class="event-dot bg-white"></span>Spor Salonu
                             </div>
                         </div>
                         
-                        <!-- Idea 4 -->
-                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="openIdeaForm('idea4')">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-semibold text-gray-800">Dijital Eğitim Platformu</h3>
-                                <span class="status-badge status-new">Yeni</span>
+                        <!-- 4. Hafta -->
+                        <div class="calendar-day" data-day="16" onclick="showDayDetails(16)">
+                            <div class="font-semibold text-lg mb-2">16</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
                             </div>
-                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Şirket içi eğitimlerin dijital platform üzerinden yapılması ve çalışanların kendi hızlarında...</p>
-                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                <span>Merve Şahin</span>
-                                <span>Dün</span>
+                            <div class="event-item event-medium" draggable="true" data-event-id="event-11" data-event-date="16" onclick="event.stopPropagation(); showEventDetails('Proje Sunumu', '16 Ara 10:30', 'Sunum Salonu')">
+                                <span class="event-dot bg-amber-500"></span>Proje Sunumu
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="17" onclick="showDayDetails(17)">
+                            <div class="font-semibold text-lg mb-2">17</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="18" onclick="showDayDetails(18)">
+                            <div class="font-semibold text-lg mb-2">18</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item" draggable="true" data-event-id="event-12" data-event-date="18" onclick="event.stopPropagation(); showEventDetails('Müşteri Görüşmesi', '18 Ara 16:00', 'Online')">
+                                <span class="event-dot bg-blue-500"></span>Müşteri Görüşmesi
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="19" onclick="showDayDetails(19)">
+                            <div class="font-semibold text-lg mb-2">19</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item event-high" draggable="true" data-event-id="event-13" data-event-date="19" onclick="event.stopPropagation(); showEventDetails('Çeyrek Değerlendirme', '19 Ara 11:00', 'Yönetim Salonu')">
+                                <span class="event-dot bg-red-500"></span>Çeyrek Değerlendirme
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="20" onclick="showDayDetails(20)">
+                            <div class="font-semibold text-lg mb-2">20</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item event-low" draggable="true" data-event-id="event-14" data-event-date="20" onclick="event.stopPropagation(); showEventDetails('Şirket Partisi', '20 Ara 19:00', 'Otel Ballroom')">
+                                <span class="event-dot bg-green-500"></span>Şirket Partisi
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="21" onclick="showDayDetails(21)">
+                            <div class="font-semibold text-lg mb-2">21</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="22" onclick="showDayDetails(22)">
+                            <div class="font-semibold text-lg mb-2">22</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
                             </div>
                         </div>
                         
-                        <!-- Idea 5 -->
-                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="openIdeaForm('idea5')">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-semibold text-gray-800">Akıllı Ofis Sistemleri</h3>
-                                <span class="status-badge status-reviewed">Değerlendirildi</span>
+                        <!-- 5. Hafta -->
+                        <div class="calendar-day" data-day="23" onclick="showDayDetails(23)">
+                            <div class="font-semibold text-lg mb-2">23</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
                             </div>
-                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Ofislerde enerji tasarrufu sağlayan akıllı sensör sistemleri kurularak elektrik tüketimi azaltılabilir...</p>
-                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                <span>Ali Çelik</span>
-                                <span>1 hafta önce</span>
+                        </div>
+                        <div class="calendar-day" data-day="24" onclick="showDayDetails(24)">
+                            <div class="font-semibold text-lg mb-2">24</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="25" onclick="showDayDetails(25)">
+                            <div class="font-semibold text-lg mb-2">25</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item event-low" draggable="true" data-event-id="event-15" data-event-date="25" onclick="event.stopPropagation(); showEventDetails('Noel Tatili', '25 Ara', 'Ev')">
+                                <span class="event-dot bg-green-500"></span>Noel Tatili
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="26" onclick="showDayDetails(26)">
+                            <div class="font-semibold text-lg mb-2">26</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="27" onclick="showDayDetails(27)">
+                            <div class="font-semibold text-lg mb-2">27</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="28" onclick="showDayDetails(28)">
+                            <div class="font-semibold text-lg mb-2">28</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="29" onclick="showDayDetails(29)">
+                            <div class="font-semibold text-lg mb-2">29</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 6. Hafta -->
+                        <div class="calendar-day" data-day="30" onclick="showDayDetails(30)">
+                            <div class="font-semibold text-lg mb-2">30</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day" data-day="31" onclick="showDayDetails(31)">
+                            <div class="font-semibold text-lg mb-2">31</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                            <div class="event-item event-low" draggable="true" data-event-id="event-16" data-event-date="31" onclick="event.stopPropagation(); showEventDetails('Yılbaşı Kutlaması', '31 Ara 20:00', 'Otel')">
+                                <span class="event-dot bg-green-500"></span>Yılbaşı Kutlaması
+                            </div>
+                        </div>
+                        <div class="calendar-day other-month" data-day="1">
+                            <div class="font-semibold text-lg mb-2">1</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day other-month" data-day="2">
+                            <div class="font-semibold text-lg mb-2">2</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day other-month" data-day="3">
+                            <div class="font-semibold text-lg mb-2">3</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day other-month" data-day="4">
+                            <div class="font-semibold text-lg mb-2">4</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
+                            </div>
+                        </div>
+                        <div class="calendar-day other-month" data-day="5">
+                            <div class="font-semibold text-lg mb-2">5</div>
+                            <div class="drop-indicator">
+                                <div class="drop-indicator-text">Buraya Bırak</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Quick Stats -->
-                <div class="bg-white rounded-2xl shadow-xl p-6 card-hover">
-                    <h3 class="text-xl font-bold text-gray-800 mb-6">Hızlı İstatistikler</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="text-center p-4 bg-indigo-50 rounded-xl">
-                            <div class="text-2xl font-bold text-indigo-600">247</div>
-                            <div class="text-sm text-gray-600">Toplam Fikir</div>
+                <!-- Hafta Görünümü -->
+                <div id="weekView" class="hidden h-full">
+                    <div class="bg-white rounded-2xl shadow-lg h-full overflow-hidden">
+                        <div class="p-6 border-b border-gray-100">
+                            <h3 class="text-xl font-semibold text-gray-900">16-22 Aralık 2024</h3>
+                            <p class="text-gray-600">Bu hafta</p>
                         </div>
-                        <div class="text-center p-4 bg-purple-50 rounded-xl">
-                            <div class="text-2xl font-bold text-purple-600">1,842</div>
-                            <div class="text-sm text-gray-600">Toplam Oy</div>
-                        </div>
-                        <div class="text-center p-4 bg-blue-50 rounded-xl">
-                            <div class="text-2xl font-bold text-blue-600">89</div>
-                            <div class="text-sm text-gray-600">Aktif Kullanıcı</div>
-                        </div>
-                        <div class="text-center p-4 bg-green-50 rounded-xl">
-                            <div class="text-2xl font-bold text-green-600">42</div>
-                            <div class="text-sm text-gray-600">Kabul Edilen</div>
+                        <div class="p-6">
+                            <div class="text-center text-gray-500">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <p class="text-lg font-medium">Hafta Görünümü</p>
+                                <p class="text-sm">Haftalık etkinliklerinizi görüntüleyin</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Right Column - Detailed Form with Interaction Features -->
-            <div class="lg:col-span-2">
-                <div id="ideaFormContainer" class="bg-white rounded-2xl shadow-xl overflow-hidden">
-                    <!-- Form Navigation -->
-                    <div class="form-navigation">
-                        <div class="flex justify-between items-center p-6 border-b border-gray-200">
-                            <h2 class="text-2xl font-bold text-gray-800" id="formTitle">Fikir Değerlendirme Formu</h2>
-                            <div class="flex items-center space-x-2">
-                                <span class="text-sm text-gray-500" id="statusDisplay">Yeni</span>
-                                <button id="saveBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200">
-                                    <i class="fas fa-save mr-1"></i> Kaydet
-                                </button>
-                            </div>
+                
+                <!-- Gün Görünümü -->
+                <div id="dayView" class="hidden h-full">
+                    <div class="bg-white rounded-2xl shadow-lg h-full overflow-hidden">
+                        <div class="p-6 border-b border-gray-100">
+                            <h3 class="text-xl font-semibold text-gray-900">15 Aralık 2024, Pazar</h3>
+                            <p class="text-gray-600">Bugün</p>
                         </div>
-                        
-                        <!-- Step Progress -->
-                        <div class="flex justify-between px-6 py-4 bg-gray-50">
-                            <div class="text-center flex-1">
-                                <div class="step-indicator step-current" id="step1Indicator">1</div>
-                                <div class="text-xs font-medium text-gray-700 mt-1">Temel Bilgiler</div>
-                            </div>
-                            <div class="text-center flex-1">
-                                <div class="step-indicator step-pending" id="step2Indicator">2</div>
-                                <div class="text-xs font-medium text-gray-500 mt-1">Detaylı Açıklama</div>
-                            </div>
-                            <div class="text-center flex-1">
-                                <div class="step-indicator step-pending" id="step3Indicator">3</div>
-                                <div class="text-xs font-medium text-gray-500 mt-1">Bütçe ve Süre</div>
-                            </div>
-                            <div class="text-center flex-1">
-                                <div class="step-indicator step-pending" id="step4Indicator">4</div>
-                                <div class="text-xs font-medium text-gray-500 mt-1">Değerlendirme</div>
-                            </div>
-                            <div class="text-center flex-1">
-                                <div class="step-indicator step-pending" id="step5Indicator">5</div>
-                                <div class="text-xs font-medium text-gray-500 mt-1">Sonuç</div>
+                        <div class="p-6">
+                            <div class="text-center text-gray-500">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <p class="text-lg font-medium">Gün Görünümü</p>
+                                <p class="text-sm">Günlük programınızı detaylı görüntüleyin</p>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Form Steps -->
-                    <form id="detailedForm" class="p-6">
-                        <!-- Step 1: Basic Information -->
-                        <div id="step1" class="step active form-section">
-                            <h3 class="text-xl font-bold text-gray-800 mb-6">Temel Bilgiler</h3>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Fikir Başlığı *</label>
-                                    <input type="text" id="ideaTitle" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikrinizin başlığını girin" required>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kategori *</label>
-                                    <select id="ideaCategory" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
-                                        <option value="">Kategori seçin</option>
-                                        <option value="teknoloji">Teknoloji</option>
-                                        <option value="ürün">Ürün Geliştirme</option>
-                                        <option value="hizmet">Hizmet İnovasyonu</option>
-                                        <option value="süreç">Süreç İyileştirme</option>
-                                        <option value="sürdürülebilirlik">Sürdürülebilirlik</option>
-                                        <option value="diğer">Diğer</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Kısa Açıklama *</label>
-                                <textarea id="ideaShortDesc" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikrinizi kısa bir şekilde açıklayın..." required></textarea>
-                            </div>
-                            
-                            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Gönderen</label>
-                                    <input type="text" id="ideaSubmitter" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" value="Ahmet Yılmaz" readonly>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Departman</label>
-                                    <input type="text" id="ideaDepartment" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" value="Teknoloji" readonly>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tarih</label>
-                                    <input type="text" id="ideaDate" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" value="15.03.2024" readonly>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-8 flex justify-between">
-                                <div></div>
-                                <button type="button" onclick="nextStep(1)" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                                    Devam Et <i class="fas fa-arrow-right ml-2"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 2: Detailed Description -->
-                        <div id="step2" class="step form-section">
-                            <h3 class="text-xl font-bold text-gray-800 mb-6">Detaylı Açıklama</h3>
-                            
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Problem Tanımı *</label>
-                                <textarea id="problemDescription" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Hangi problemi çözmeyi amaçlıyorsunuz? Mevcut durum nedir?" required></textarea>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Çözüm Önerisi *</label>
-                                <textarea id="solutionProposal" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikriniz detaylı olarak nasıl bir çözüm öneriyor?" required></textarea>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Hedeflenen Faydalar *</label>
-                                <textarea id="expectedBenefits" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Bu fikir uygulandığında hangi faydalar sağlanacak?" required></textarea>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Hedef Kitle</label>
-                                <textarea id="targetAudience" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Bu fikir kimler için faydalı olacak?"></textarea>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">İlgili Departmanlar</label>
-                                <div class="flex flex-wrap gap-2">
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="teknoloji">
-                                        <span class="ml-2 text-gray-700">Teknoloji</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="pazarlama">
-                                        <span class="ml-2 text-gray-700">Pazarlama</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="satış">
-                                        <span class="ml-2 text-gray-700">Satış</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="finans">
-                                        <span class="ml-2 text-gray-700">Finans</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="insan-kaynakları">
-                                        <span class="ml-2 text-gray-700">İnsan Kaynakları</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" value="üretim">
-                                        <span class="ml-2 text-gray-700">Üretim</span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Ek Dosyalar</label>
-                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
-                                    <p class="text-gray-600 mb-2">Dosyaları buraya sürükleyin veya yüklemek için tıklayın</p>
-                                    <p class="text-sm text-gray-500">PDF, DOC, JPG, PNG desteklenir</p>
-                                    <input type="file" class="hidden" id="fileUpload" multiple>
-                                </div>
-                                <div id="uploadedFiles" class="mt-4 space-y-2">
-                                    <!-- Uploaded files will be listed here -->
-                                </div>
-                            </div>
-                            
-                            <!-- Interactive Elements -->
-                            <div class="mt-8">
-                                <h4 class="font-semibold text-gray-800 mb-4">İletişim ve Etkileşim</h4>
-                                
-                                <!-- Comments Section -->
-                                <div class="mb-6">
-                                    <h5 class="font-medium text-gray-700 mb-3">Yorumlar</h5>
-                                    <div id="commentsSection" class="space-y-4">
-                                        <div class="comment-item">
-                                            <div class="flex items-start">
-                                                <div class="flex-shrink-0 mr-3">
-                                                    <div class="w-8 h-8 bg-indigo-200 rounded-full flex items-center justify-center">
-                                                        <span class="text-sm font-medium text-indigo-600">AY</span>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-1">
-                                                    <div class="flex items-center mb-1">
-                                                        <span class="font-medium text-gray-800">Ahmet Yılmaz</span>
-                                                        <span class="text-xs text-gray-500 ml-2">2 saat önce</span>
-                                                    </div>
-                                                    <p class="text-sm text-gray-700">Harika bir fikir! Özellikle müşteri hizmetlerinde zaman tasarrufu sağlayacak.</p>
-                                                    <div class="mt-2 flex items-center">
-                                                        <button class="text-xs text-gray-500 hover:text-indigo-600">Cevapla</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="comment-item">
-                                            <div class="flex items-start">
-                                                <div class="flex-shrink-0 mr-3">
-                                                    <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center">
-                                                        <span class="text-sm font-medium text-purple-600">ED</span>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-1">
-                                                    <div class="flex items-center mb-1">
-                                                        <span class="font-medium text-gray-800">Elif Demir</span>
-                                                        <span class="text-xs text-gray-500 ml-2">1 saat önce</span>
-                                                    </div>
-                                                    <p class="text-sm text-gray-700">Bu sistemle müşteri memnuniyeti çok artabilir. Ancak kullanıcı deneyimi açısından bazı testler yapılmalı.</p>
-                                                    <div class="mt-2 flex items-center">
-                                                        <button class="text-xs text-gray-500 hover:text-indigo-600">Cevapla</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Reply Form -->
-                                    <div class="reply-form">
-                                        <input type="text" id="replyTo" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Kimin yorumuna yanıt veriyorsunuz?" disabled>
-                                        <textarea id="commentText" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm comment-input" placeholder="Yorumunuzu yazın..."></textarea>
-                                        <button type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded" onclick="addComment()">
-                                            Gönder
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Questions Section -->
-                                <div class="mb-6">
-                                    <h5 class="font-medium text-gray-700 mb-3">Sorular</h5>
-                                    <div id="questionsSection" class="space-y-4">
-                                        <div class="comment-item">
-                                            <div class="flex items-start">
-                                                <div class="flex-shrink-0 mr-3">
-                                                    <div class="w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center">
-                                                        <span class="text-sm font-medium text-orange-600">AC</span>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-1">
-                                                    <div class="flex items-center mb-1">
-                                                        <span class="font-medium text-gray-800">Ali Çelik</span>
-                                                        <span class="text-xs text-gray-500 ml-2">3 saat önce</span>
-                                                    </div>
-                                                    <p class="text-sm text-gray-700">Bu sistemle mevcut müşteri hizmetleri ekibinin görev dağılımı nasıl değişecektir?</p>
-                                                    <div class="mt-2 flex items-center">
-                                                        <button class="text-xs text-gray-500 hover:text-indigo-600">Cevapla</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="comment-item">
-                                            <div class="flex items-start">
-                                                <div class="flex-shrink-0 mr-3">
-                                                    <div class="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center">
-                                                        <span class="text-sm font-medium text-green-600">MS</span>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-1">
-                                                    <div class="flex items-center mb-1">
-                                                        <span class="font-medium text-gray-800">Merve Şahin</span>
-                                                        <span class="text-xs text-gray-500 ml-2">2 saat önce</span>
-                                                    </div>
-                                                    <p class="text-sm text-gray-700">Sistemdeki sorunları nasıl izleyip çözüme ulaşacağız?</p>
-                                                    <div class="mt-2 flex items-center">
-                                                        <button class="text-xs text-gray-500 hover:text-indigo-600">Cevapla</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Question Form -->
-                                    <div class="reply-form">
-                                        <input type="text" id="questionTo" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Kimin sorusuna yanıt veriyorsunuz?" disabled>
-                                        <textarea id="questionText" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm comment-input" placeholder="Sorunuzu yazın..."></textarea>
-                                        <button type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded" onclick="addQuestion()">
-                                            Gönder
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Brainstorming Section -->
-                                <div class="mb-6">
-                                    <h5 class="font-medium text-gray-700 mb-3">Beyin Fırtınası</h5>
-                                    <div class="brainstorming-container">
-                                        <div class="brainstorming-header">
-                                            <h6 class="font-medium text-white">İyi fikirler üretelim!</h6>
-                                            <button class="bg-white text-indigo-600 px-3 py-1 rounded-lg text-sm font-medium hover:bg-indigo-50" onclick="startBrainstorming()">
-                                                Başlat
-                                            </button>
-                                        </div>
-                                        <div id="brainstormingGrid" class="brainstorming-grid hidden">
-                                            <div class="brainstorming-card" onclick="selectCard(this)">
-                                                <p class="text-sm font-medium text-gray-800">Kullanıcı dostu arayüz</p>
-                                            </div>
-                                            <div class="brainstorming-card" onclick="selectCard(this)">
-                                                <p class="text-sm font-medium text-gray-800">Çoklu dil desteği</p>
-                                            </div>
-                                            <div class="brainstorming-card" onclick="selectCard(this)">
-                                                <p class="text-sm font-medium text-gray-800">Anlık yanıt verme</p>
-                                            </div>
-                                            <div class="brainstorming-card" onclick="selectCard(this)">
-                                                <p class="text-sm font-medium text-gray-800">Mobil uyum</p>
-                                            </div>
-                                            <div class="brainstorming-card" onclick="selectCard(this)">
-                                                <p class="text-sm font-medium text-gray-800">Gelişmiş analitik raporlar</p>
-                                            </div>
-                                            <div class="brainstorming-card" onclick="selectCard(this)">
-                                                <p class="text-sm font-medium text-gray-800">Kullanıcı geri bildirimi</p>
-                                            </div>
-                                        </div>
-                                        <button class="brainstorming-add-btn" onclick="addNewIdea()">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-8 flex justify-between">
-                                <button type="button" onclick="prevStep(2)" class="btn-secondary font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                                    <i class="fas fa-arrow-left mr-2"></i> Geri
-                                </button>
-                                <button type="button" onclick="nextStep(2)" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                                    Devam Et <i class="fas fa-arrow-right ml-2"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 3: Budget and Timeline -->
-                        <div id="step3" class="step form-section">
-                            <h3 class="text-xl font-bold text-gray-800 mb-6">Bütçe ve Süre Planı</h3>
-                            
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                <div>
-                                    <h4 class="font-semibold text-gray-800 mb-4">Zaman Planı</h4>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tahmini Süre *</label>
-                                        <select id="timeline" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
-                                            <option value="">Süreyi seçin</option>
-                                            <option value="1-3-ay">1-3 Ay</option>
-                                            <option value="3-6-ay">3-6 Ay</option>
-                                            <option value="6-12-ay">6-12 Ay</option>
-                                            <option value="12-ay-ustu">12 Ay Üzeri</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Aşamalar</label>
-                                        <div id="timelineStages" class="space-y-3">
-                                            <div class="flex space-x-2">
-                                                <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Aşama adı">
-                                                <input type="text" class="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Süre">
-                                                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <button type="button" onclick="addTimelineStage()" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-                                            <i class="fas fa-plus mr-1"></i> Aşama Ekle
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Kritik Milestone'lar</label>
-                                        <textarea id="milestones" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Projenin kritik aşamaları ve hedef tarihleri"></textarea>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <h4 class="font-semibold text-gray-800 mb-4">Bütçe Planı</h4>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Toplam Bütçe *</label>
-                                        <div class="flex">
-                                            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                                                ₺
-                                            </span>
-                                            <input type="number" id="totalBudget" class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="0" required>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Bütçe Kalemleri</label>
-                                        <div id="budgetItems" class="space-y-3">
-                                            <div class="flex space-x-2">
-                                                <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Kalem adı">
-                                                <input type="number" class="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Tutar">
-                                                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <button type="button" onclick="addBudgetItem()" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-                                            <i class="fas fa-plus mr-1"></i> Kalem Ekle
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Finansman Kaynakları</label>
-                                        <textarea id="fundingSources" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Bütçenin hangi kaynaklardan karşılanacağı"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-8 flex justify-between">
-                                <button type="button" onclick="prevStep(3)" class="btn-secondary font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                                    <i class="fas fa-arrow-left mr-2"></i> Geri
-                                </button>
-                                <button type="button" onclick="nextStep(3)" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                                    Devam Et <i class="fas fa-arrow-right ml-2"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 4: Evaluation -->
-                        <div id="step4" class="step form-section">
-                            <h3 class="text-xl font-bold text-gray-800 mb-6">Değerlendirme</h3>
-                            
-                            <div class="mb-8">
-                                <h4 class="font-semibold text-gray-800 mb-4">Değerlendirme Kriterleri</h4>
-                                <p class="text-sm text-gray-600 mb-4">Her kriteri 1-5 arasında değerlendirin (1: Düşük, 5: Yüksek)</p>
-                                
-                                <div class="space-y-6">
-                                    <!-- Criterion 1 -->
-                                    <div class="evaluation-criteria">
-                                        <div class="flex justify-between mb-2">
-                                            <label class="font-medium text-gray-700">İnovasyon Düzeyi</label>
-                                            <span id="innovationScore" class="text-sm font-medium text-gray-500">0/5</span>
-                                        </div>
-                                        <p class="text-sm text-gray-600 mb-3">Fikrin orijinalliği ve yenilikçiliği</p>
-                                        <div class="rating-scale">
-                                            <div class="rating-point" data-value="1" onclick="selectRating(this, 'innovation')">1</div>
-                                            <div class="rating-point" data-value="2" onclick="selectRating(this, 'innovation')">2</div>
-                                            <div class="rating-point" data-value="3" onclick="selectRating(this, 'innovation')">3</div>
-                                            <div class="rating-point" data-value="4" onclick="selectRating(this, 'innovation')">4</div>
-                                            <div class="rating-point" data-value="5" onclick="selectRating(this, 'innovation')">5</div>
-                                        </div>
-                                        <input type="hidden" id="innovationRating" value="0">
-                                    </div>
-                                    
-                                    <!-- Criterion 2 -->
-                                    <div class="evaluation-criteria">
-                                        <div class="flex justify-between mb-2">
-                                            <label class="font-medium text-gray-700">Uygulanabilirlik</label>
-                                            <span id="feasibilityScore" class="text-sm font-medium text-gray-500">0/5</span>
-                                        </div>
-                                        <p class="text-sm text-gray-600 mb-3">Fikrin uygulanmasının kolaylığı ve pratikliği</p>
-                                        <div class="rating-scale">
-                                            <div class="rating-point" data-value="1" onclick="selectRating(this, 'feasibility')">1</div>
-                                            <div class="rating-point" data-value="2" onclick="selectRating(this, 'feasibility')">2</div>
-                                            <div class="rating-point" data-value="3" onclick="selectRating(this, 'feasibility')">3</div>
-                                            <div class="rating-point" data-value="4" onclick="selectRating(this, 'feasibility')">4</div>
-                                            <div class="rating-point" data-value="5" onclick="selectRating(this, 'feasibility')">5</div>
-                                        </div>
-                                        <input type="hidden" id="feasibilityRating" value="0">
-                                    </div>
-                                    
-                                    <!-- Criterion 3 -->
-                                    <div class="evaluation-criteria">
-                                        <div class="flex justify-between mb-2">
-                                            <label class="font-medium text-gray-700">Maliyet-Fayda Oranı</label>
-                                            <span id="costBenefitScore" class="text-sm font-medium text-gray-500">0/5</span>
-                                        </div>
-                                        <p class="text-sm text-gray-600 mb-3">Yatırılan maliyetin beklenen faydasına oranı</p>
-                                        <div class="rating-scale">
-                                            <div class="rating-point" data-value="1" onclick="selectRating(this, 'costBenefit')">1</div>
-                                            <div class="rating-point" data-value="2" onclick="selectRating(this, 'costBenefit')">2</div>
-                                            <div class="rating-point" data-value="3" onclick="selectRating(this, 'costBenefit')">3</div>
-                                            <div class="rating-point" data-value="4" onclick="selectRating(this, 'costBenefit')">4</div>
-                                            <div class="rating-point" data-value="5" onclick="selectRating(this, 'costBenefit')">5</div>
-                                        </div>
-                                        <input type="hidden" id="costBenefitRating" value="0">
-                                    </div>
-                                    
-                                    <!-- Criterion 4 -->
-                                    <div class="evaluation-criteria">
-                                        <div class="flex justify-between mb-2">
-                                            <label class="font-medium text-gray-700">Stratejik Uyum</label>
-                                            <span id="strategicFitScore" class="text-sm font-medium text-gray-500">0/5</span>
-                                        </div>
-                                        <p class="text-sm text-gray-600 mb-3">Fikrin şirket stratejisiyle uyumu</p>
-                                        <div class="rating-scale">
-                                            <div class="rating-point" data-value="1" onclick="selectRating(this, 'strategicFit')">1</div>
-                                            <div class="rating-point" data-value="2" onclick="selectRating(this, 'strategicFit')">2</div>
-                                            <div class="rating-point" data-value="3" onclick="selectRating(this, 'strategicFit')">3</div>
-                                            <div class="rating-point" data-value="4" onclick="selectRating(this, 'strategicFit')">4</div>
-                                            <div class="rating-point" data-value="5" onclick="selectRating(this, 'strategicFit')">5</div>
-                                        </div>
-                                        <input type="hidden" id="strategicFitRating" value="0">
-                                    </div>
-                                    
-                                    <!-- Criterion 5 -->
-                                    <div class="evaluation-criteria">
-                                        <div class="flex justify-between mb-2">
-                                            <label class="font-medium text-gray-700">Risk Düzeyi</label>
-                                            <span id="riskScore" class="text-sm font-medium text-gray-500">0/5</span>
-                                        </div>
-                                        <p class="text-sm text-gray-600 mb-3">Uygulanması sırasında karşılaşılacak risklerin düzeyi</p>
-                                        <div class="rating-scale">
-                                            <div class="rating-point" data-value="1" onclick="selectRating(this, 'risk')">1</div>
-                                            <div class="rating-point" data-value="2" onclick="selectRating(this, 'risk')">2</div>
-                                            <div class="rating-point" data-value="3" onclick="selectRating(this, 'risk')">3</div>
-                                            <div class="rating-point" data-value="4" onclick="selectRating(this, 'risk')">4</div>
-                                            <div class="rating-point" data-value="5" onclick="selectRating(this, 'risk')">5</div>
-                                        </div>
-                                        <input type="hidden" id="riskRating" value="0">
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                                    <div class="flex justify-between items-center">
-                                        <span class="font-semibold text-gray-700">Toplam Puan:</span>
-                                        <span id="totalScore" class="text-2xl font-bold text-indigo-600">0/25</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-8">
-                                <h4 class="font-semibold text-gray-800 mb-4">Değerlendirme Notları</h4>
-                                <textarea id="evaluationNotes" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikirle ilgili değerlendirmenizi detaylıca yazın..."></textarea>
-                            </div>
-                            
-                            <div class="mb-8">
-                                <h4 class="font-semibold text-gray-800 mb-4">Ekibin Görüşü</h4>
-                                <div class="space-y-4" id="teamReviews">
-                                    <div class="comment-item">
-                                        <div class="flex items-start">
-                                            <div class="flex-shrink-0 mr-3">
-                                                <div class="w-8 h-8 bg-indigo-200 rounded-full flex items-center justify-center">
-                                                    <span class="text-sm font-medium text-indigo-600">AY</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex-1">
-                                                <div class="flex items-center mb-1">
-                                                    <span class="font-medium text-gray-800">Ahmet Yılmaz</span>
-                                                    <span class="text-xs text-gray-500 ml-2">Değerlendirici</span>
-                                                    <span class="text-xs text-green-600 ml-2">Destekliyor</span>
-                                                </div>
-                                                <p class="text-sm text-gray-700">Fikir oldukça yenilikçi ve uygulanabilir. Özellikle maliyet-fayda oranı çok iyi görünüyor.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="comment-item">
-                                        <div class="flex items-start">
-                                            <div class="flex-shrink-0 mr-3">
-                                                <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center">
-                                                    <span class="text-sm font-medium text-purple-600">ED</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex-1">
-                                                <div class="flex items-center mb-1">
-                                                    <span class="font-medium text-gray-800">Elif Demir</span>
-                                                    <span class="text-xs text-gray-500 ml-2">Değerlendirici</span>
-                                                    <span class="text-xs text-yellow-600 ml-2">Nötr</span>
-                                                </div>
-                                                <p class="text-sm text-gray-700">İnovasyon düzeyi yüksek ancak uygulanabilirlik konusunda bazı teknik zorluklar olabilir.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex items-start mt-4">
-                                    <div class="flex-shrink-0 mr-3">
-                                        <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                                            <span class="text-sm font-medium text-gray-600">S</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex-1">
-                                        <textarea id="reviewComment" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Yorumunuzu yazın..."></textarea>
-                                        <div class="mt-2 flex justify-between items-center">
-                                            <div class="flex space-x-2">
-                                                <button type="button" class="text-green-600 hover:text-green-800 text-sm font-medium" onclick="setReviewStatus('support')">
-                                                    <i class="fas fa-thumbs-up mr-1"></i> Destekliyor
-                                                </button>
-                                                <button type="button" class="text-yellow-600 hover:text-yellow-800 text-sm font-medium" onclick="setReviewStatus('neutral')">
-                                                    <i class="fas fa-hand-paper mr-1"></i> Nötr
-                                                </button>
-                                                <button type="button" class="text-red-600 hover:text-red-800 text-sm font-medium" onclick="setReviewStatus('oppose')">
-                                                    <i class="fas fa-thumbs-down mr-1"></i> Karşı
-                                                </button>
-                                            </div>
-                                            <button type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-1 rounded">
-                                                Gönder
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-8 flex justify-between">
-                                <button type="button" onclick="prevStep(4)" class="btn-secondary font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                                    <i class="fas fa-arrow-left mr-2"></i> Geri
-                                </button>
-                                <button type="button" onclick="nextStep(4)" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                                    Devam Et <i class="fas fa-arrow-right ml-2"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 5: Final Review -->
-                        <div id="step5" class="step form-section">
-                            <h3 class="text-xl font-bold text-gray-800 mb-6">Sonuç ve Karar</h3>
-                            
-                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-                                <div class="flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-info-circle text-3xl text-blue-600"></i>
-                                    </div>
-                                    <div class="ml-4">
-                                        <h4 class="text-lg font-semibold text-blue-800">Değerlendirme Sonuçları</h4>
-                                        <p class="text-blue-700 mt-2">
-                                            Fikir tüm kriterlere göre değerlendirildi. Toplam puan 25 üzerinden 21 olarak hesaplandı. 
-                                            Bu puan, fikrin yüksek potansiyelli olduğunu göstermektedir.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                                <div>
-                                    <h4 class="font-semibold text-gray-800 mb-4">Fikir Özeti</h4>
-                                    <div class="bg-gray-50 rounded-lg p-4 space-y-3">
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Başlık:</span>
-                                            <span id="summaryTitle" class="font-medium text-gray-800">Yapay Zeka Destekli Müşteri Hizmetleri</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Kategori:</span>
-                                            <span id="summaryCategory" class="font-medium text-gray-800">Teknoloji</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Tahmini Süre:</span>
-                                            <span id="summaryTimeline" class="font-medium text-gray-800">3-6 Ay</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Toplam Bütçe:</span>
-                                            <span id="summaryBudget" class="font-medium text-gray-800">₺250.000</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Toplam Puan:</span>
-                                            <span id="summaryScore" class="font-bold text-indigo-600">21/25</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <h4 class="font-semibold text-gray-800 mb-4">Karar</h4>
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Karar Durumu *</label>
-                                            <select id="decisionStatus" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
-                                                <option value="">Karar seçin</option>
-                                                <option value="accepted">Kabul Edildi</option>
-                                                <option value="accepted-with-modifications">Kabul Edildi (Değişikliklerle)</option>
-                                                <option value="needs-more-info">Daha Fazla Bilgi Gerekli</option>
-                                                <option value="rejected">Reddedildi</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div id="modificationFields" class="space-y-4" style="display: none;">
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">Gerekli Değişiklikler</label>
-                                                <textarea id="requiredModifications" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Fikrin uygulanabilmesi için yapılması gereken değişiklikler"></textarea>
-                                            </div>
-                                            
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">Yeni Süre Planı</label>
-                                                <input type="text" id="newTimeline" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Güncellenmiş süre planı">
-                                            </div>
-                                            
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">Yeni Bütçe Planı</label>
-                                                <div class="flex">
-                                                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                                                        ₺
-                                                    </span>
-                                                    <input type="number" id="newBudget" class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="0">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-8">
-                                <h4 class="font-semibold text-gray-800 mb-4">Karar Gerekçesi</h4>
-                                <textarea id="decisionReason" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Kararınızın detaylı gerekçesini yazın..."></textarea>
-                            </div>
-                            
-                            <div class="mb-8">
-                                <h4 class="font-semibold text-gray-800 mb-4">İlerleme Planı</h4>
-                                <div id="actionPlan" class="space-y-3">
-                                    <div class="flex space-x-2">
-                                        <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Aksiyon adımı">
-                                        <input type="date" class="w-32 px-3 py-2 border border-gray-300 rounded-lg text-sm">
-                                        <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <button type="button" onclick="addActionStep()" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-                                    <i class="fas fa-plus mr-1"></i> Aksiyon Ekle
-                                </button>
-                            </div>
-                            
-                            <div class="mb-8">
-                                <h4 class="font-semibold text-gray-800 mb-4">Sorumlular</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Proje Sorumlusu</label>
-                                        <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                                            <option value="">Sorumlu seçin</option>
-                                            <option value="ahmet">Ahmet Yılmaz</option>
-                                            <option value="elif">Elif Demir</option>
-                                            <option value="can">Can Kaya</option>
-                                            <option value="merve">Merve Şahin</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Destek Ekibi</label>
-                                        <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" multiple>
-                                            <option value="teknoloji">Teknoloji Ekibi</option>
-                                            <option value="finans">Finans Ekibi</option>
-                                            <option value="pazarlama">Pazarlama Ekibi</option>
-                                            <option value="insan-kaynakları">İnsan Kaynakları</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-8 flex justify-between">
-                                <button type="button" onclick="prevStep(5)" class="btn-secondary font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                                    <i class="fas fa-arrow-left mr-2"></i> Geri
-                                </button>
-                                <button type="submit" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                                    <i class="fas fa-check mr-2"></i> Kararı Onayla
-                                </button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        // Current active idea
-        let currentIdea = null;
-        
-        // Open idea form
-        function openIdeaForm(ideaId) {
-            currentIdea = ideaId;
-            
-            // Update form title and status
-            const ideaTitle = document.querySelector(`#${ideaId} h3`).textContent;
-            document.getElementById('formTitle').textContent = ideaTitle;
-            
-            const statusBadge = document.querySelector(`#${ideaId} .status-badge`);
-            const statusText = statusBadge.textContent;
-            document.getElementById('statusDisplay').textContent = statusText;
-            document.getElementById('statusDisplay').className = statusBadge.className;
-            
-            // Reset form
-            resetForm();
-            
-            // Show first step
-            showStep(1);
-            
-            // Fill form with idea data (in a real app, this would be from API)
-            if (ideaId === 'idea1') {
-                document.getElementById('ideaTitle').value = 'Yapay Zeka Destekli Müşteri Hizmetleri';
-                document.getElementById('ideaCategory').value = 'teknoloji';
-                document.getElementById('ideaShortDesc').value = 'Müşteri hizmetlerinde yapay zeka destekli chatbot sistemi geliştirilerek hizmet kalitesi artırılabilir.';
-                document.getElementById('problemDescription').value = 'Müşteri hizmetlerimize gelen taleplerin %60\'ı tekrar eden sorularla ilgili. Bu soruların yanıtlanması için personel zamanı harcanıyor.';
-                document.getElementById('solutionProposal').value = 'Yapay zeka destekli bir chatbot sistemi geliştirilerek müşterilerin %80\'lik bir kısmına anında yanıt verilebilir. Karmaşık durumlarda ise insana yönlendirilebilir.';
-                document.getElementById('expectedBenefits').value = 'Müşteri memnuniyetinde %40 artış, müşteri hizmetleri personelinde %30 zaman tasarrufu, yıllık işletme giderlerinde %15 tasarruf.';
-                document.getElementById('targetAudience').value = 'Tüm müşteriler, müşteri hizmetleri personeli';
-                document.getElementById('timeline').value = '3-6-ay';
-                document.getElementById('totalBudget').value = '250000';
-                document.getElementById('fundingSources').value = 'İnovasyon bütçesi, teknoloji geliştirme fonu';
-                document.getElementById('evaluationNotes').value = 'Fikir oldukça yenilikçi ve uygulanabilir. Özellikle maliyet-fayda oranı çok iyi görünüyor. Teknik olarak uygulanabilirliği yüksek.';
-                
-                // Set ratings
-                selectRating(document.querySelector('#step4 .rating-point[data-value="5"]'), 'innovation');
-                selectRating(document.querySelector('#step4 .rating-point[data-value="4"]'), 'feasibility');
-                selectRating(document.querySelector('#step4 .rating-point[data-value="5"]'), 'costBenefit');
-                selectRating(document.querySelector('#step4 .rating-point[data-value="5"]'), 'strategicFit');
-                selectRating(document.querySelector('#step4 .rating-point[data-value="2"]'), 'risk');
-                
-                // Add timeline stage
-                addTimelineStage();
-                document.querySelectorAll('#timelineStages input')[0].value = 'Sistem Analizi';
-                document.querySelectorAll('#timelineStages input')[1].value = '1 Ay';
-                
-                // Add budget item
-                addBudgetItem();
-                document.querySelectorAll('#budgetItems input')[0].value = 'Yazılım Geliştirme';
-                document.querySelectorAll('#budgetItems input')[1].value = '150000';
-            }
-        }
-        
-        // Reset form
-        function resetForm() {
-            // Clear all inputs
-            document.querySelectorAll('input, textarea, select').forEach(input => {
-                if (input.type !== 'checkbox' && input.type !== 'radio') {
-                    input.value = '';
-                }
-            });
-            
-            // Reset checkboxes
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-            
-            // Reset ratings
-            document.querySelectorAll('.rating-point').forEach(rp => {
-                rp.classList.remove('selected');
-                rp.style.backgroundColor = '';
-                rp.style.color = '';
-            });
-            
-            // Hide modification fields
-            document.getElementById('modificationFields').style.display = 'none';
-            
-            // Reset total score
-            document.getElementById('totalScore').textContent = '0/25';
-            
-            // Reset status indicators
-            document.querySelectorAll('.step-indicator').forEach(indicator => {
-                indicator.classList.remove('step-current', 'step-completed', 'step-pending');
-                indicator.classList.add('step-pending');
-            });
-            document.getElementById('step1Indicator').classList.add('step-current');
-        }
-        
-        // Show specific step
-        function showStep(stepNum) {
-            // Hide all steps
-            document.querySelectorAll('.step').forEach(step => {
-                step.classList.remove('active');
-            });
-            
-            // Show current step
-            document.getElementById(`step${stepNum}`).classList.add('active');
-            
-            // Update step indicators
-            for (let i = 1; i <= 5; i++) {
-                const indicator = document.getElementById(`step${i}Indicator`);
-                indicator.classList.remove('step-current', 'step-completed', 'step-pending');
-                
-                if (i < stepNum) {
-                    indicator.classList.add('step-completed');
-                } else if (i === stepNum) {
-                    indicator.classList.add('step-current');
-                } else {
-                    indicator.classList.add('step-pending');
-                }
-            }
-            
-            // Update summary if on last step
-            if (stepNum === 5) {
-                updateSummary();
-            }
-        }
-        
-        // Navigate to next step
-        function nextStep(currentStep) {
-            if (currentStep < 5) {
-                showStep(currentStep + 1);
-            }
-        }
-        
-        // Navigate to previous step
-        function prevStep(currentStep) {
-            if (currentStep > 1) {
-                showStep(currentStep - 1);
-            }
-        }
-        
-        // Add timeline stage
-        function addTimelineStage() {
-            const container = document.getElementById('timelineStages');
-            const newStage = document.createElement('div');
-            newStage.className = 'flex space-x-2';
-            newStage.innerHTML = `
-                <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Aşama adı">
-                <input type="text" class="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Süre">
-                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm" onclick="removeElement(this)">
-                    <i class="fas fa-trash"></i>
-                </button>
-            `;
-            container.appendChild(newStage);
-        }
-        
-        // Add budget item
-        function addBudgetItem() {
-            const container = document.getElementById('budgetItems');
-            const newItem = document.createElement('div');
-            newItem.className = 'flex space-x-2';
-            newItem.innerHTML = `
-                <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Kalem adı">
-                <input type="number" class="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Tutar">
-                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm" onclick="removeElement(this)">
-                    <i class="fas fa-trash"></i>
-                </button>
-            `;
-            container.appendChild(newItem);
-        }
-        
-        // Add action step
-        function addActionStep() {
-            const container = document.getElementById('actionPlan');
-            const newStep = document.createElement('div');
-            newStep.className = 'flex space-x-2';
-            newStep.innerHTML = `
-                <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Aksiyon adımı">
-                <input type="date" class="w-32 px-3 py-2 border border-gray-300 rounded-lg text-sm">
-                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm" onclick="removeElement(this)">
-                    <i class="fas fa-trash"></i>
-                </button>
-            `;
-            container.appendChild(newStep);
-        }
-        
-        // Remove element
-        function removeElement(button) {
-            button.parentElement.remove();
-        }
-        
-        // Select rating
-        function selectRating(element, criterion) {
-            // Remove selected class from all points in this criterion
-            const points = document.querySelectorAll(`.rating-point[data-value]`);
-            points.forEach(point => {
-                if (point.parentElement.parentElement.querySelector('input').id.includes(criterion)) {
-                    point.classList.remove('selected');
-                    point.style.backgroundColor = '';
-                    point.style.color = '';
-                }
-            });
-            
-            // Add selected class to clicked point
-            element.classList.add('selected');
-            element.style.backgroundColor = '#6366f1';
-            element.style.color = 'white';
-            
-            // Update hidden input
-            document.getElementById(`${criterion}Rating`).value = element.getAttribute('data-value');
-            
-            // Update score display
-            document.getElementById(`${criterion}Score`).textContent = `${element.getAttribute('data-value')}/5`;
-            
-            // Update total score
-            updateTotalScore();
-        }
-        
-        // Update total score
-        function updateTotalScore() {
-            const innovation = parseInt(document.getElementById('innovationRating').value) || 0;
-            const feasibility = parseInt(document.getElementById('feasibilityRating').value) || 0;
-            const costBenefit = parseInt(document.getElementById('costBenefitRating').value) || 0;
-            const strategicFit = parseInt(document.getElementById('strategicFitRating').value) || 0;
-            const risk = parseInt(document.getElementById('riskRating').value) || 0;
-            
-            const total = innovation + feasibility + costBenefit + strategicFit + risk;
-            document.getElementById('totalScore').textContent = `${total}/25`;
-        }
-        
-        // Set review status
-        function setReviewStatus(status) {
-            const buttons = document.querySelectorAll('#reviewComment ~ div button');
-            buttons.forEach(btn => {
-                if (btn.textContent.includes(status.charAt(0).toUpperCase() + status.slice(1))) {
-                    btn.classList.add('font-bold');
-                } else {
-                    btn.classList.remove('font-bold');
-                }
-            });
-        }
-        
-        // Update summary
-        function updateSummary() {
-            document.getElementById('summaryTitle').textContent = document.getElementById('ideaTitle').value;
-            document.getElementById('summaryCategory').textContent = document.getElementById('ideaCategory').options[document.getElementById('ideaCategory').selectedIndex].text;
-            document.getElementById('summaryTimeline').textContent = document.getElementById('timeline').options[document.getElementById('timeline').selectedIndex].text;
-            document.getElementById('summaryBudget').textContent = '₺' + (document.getElementById('totalBudget').value || '0');
-            document.getElementById('summaryScore').textContent = document.getElementById('totalScore').textContent;
-        }
-        
-        // Handle decision status change
-        document.getElementById('decisionStatus').addEventListener('change', function() {
-            const modificationFields = document.getElementById('modificationFields');
-            if (this.value === 'accepted-with-modifications') {
-                modificationFields.style.display = 'block';
-            } else {
-                modificationFields.style.display = 'none';
-            }
-        });
-        
-        // Form submission
-        document.getElementById('detailedForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validate form
-            let isValid = true;
-            const requiredFields = this.querySelectorAll('[required]');
-            
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    isValid = false;
-                    field.classList.add('border-red-500');
-                } else {
-                    field.classList.remove('border-red-500');
-                }
-            });
-            
-            if (!isValid) {
-                alert('Lütfen tüm zorunlu alanları doldurun.');
-                return;
-            }
-            
-            // In a real app, this would save to database
-            alert('Fikir başarıyla kaydedildi ve karar onaylandı!');
-            
-            // Close form or redirect
-            // window.location.href = 'dashboard.html';
-        });
-        
-        // File upload
-        document.querySelector('.border-dashed').addEventListener('click', function() {
-            document.getElementById('fileUpload').click();
-        });
-        
-        document.getElementById('fileUpload').addEventListener('change', function(e) {
-            const files = e.target.files;
-            const container = document.getElementById('uploadedFiles');
-            
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const fileItem = document.createElement('div');
-                fileItem.className = 'attachment-item';
-                fileItem.innerHTML = `
-                    <div class="flex items-center">
-                        <i class="fas fa-file-alt text-gray-400 mr-3"></i>
-                        <div class="flex-1">
-                            <div class="font-medium text-gray-800">${file.name}</div>
-                            <div class="text-sm text-gray-500">${formatFileSize(file.size)}</div>
+    
+    <!-- Floating Action Button -->
+    <div class="floating-action" onclick="openEventModal('meeting')">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+    </div>
+    
+    <!-- Event Modal -->
+    <div id="eventModal" class="fixed inset-0 modal-overlay hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl slide-up">
+                <!-- Modal Header -->
+                <div class="gradient-bg text-white p-6 rounded-t-2xl">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 id="modalTitle" class="text-xl font-bold">Yeni Etkinlik Oluştur</h3>
+                                <p class="text-blue-100">Etkinlik detaylarını girin</p>
+                            </div>
                         </div>
-                        <button type="button" class="text-red-500 hover:text-red-700" onclick="removeElement(this.parentElement.parentElement)">
-                            <i class="fas fa-times"></i>
+                        <button onclick="closeEventModal()" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-xl transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
                         </button>
                     </div>
-                `;
-                container.appendChild(fileItem);
-            }
-        });
-        
-        // Format file size
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-        
-        // Add comment
-        function addComment() {
-            const commentText = document.getElementById('commentText').value;
-            if (!commentText.trim()) {
-                alert('Lütfen bir yorum yazın.');
-                return;
-            }
-            
-            const commentsSection = document.getElementById('commentsSection');
-            const commentItem = document.createElement('div');
-            commentItem.className = 'comment-item';
-            commentItem.innerHTML = `
-                <div class="flex items-start">
-                    <div class="flex-shrink-0 mr-3">
-                        <div class="w-8 h-8 bg-indigo-200 rounded-full flex items-center justify-center">
-                            <span class="text-sm font-medium text-indigo-600">S</span>
+                </div>
+                
+                <!-- Modal Content -->
+                <div class="p-6 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Etkinlik Türü</label>
+                            <select id="eventType" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="meeting">Toplantı</option>
+                                <option value="appointment">Randevu</option>
+                                <option value="task">Görev</option>
+                                <option value="reminder">Hatırlatıcı</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Öncelik</label>
+                            <select id="eventPriority" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="low">Düşük</option>
+                                <option value="medium" selected>Orta</option>
+                                <option value="high">Yüksek</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="flex-1">
-                        <div class="flex items-center mb-1">
-                            <span class="font-medium text-gray-800">Siz</span>
-                            <span class="text-xs text-gray-500 ml-2">Şimdi</span>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">Başlık</label>
+                        <input type="text" id="eventTitle" placeholder="Etkinlik başlığını girin" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Tarih</label>
+                            <input type="date" id="eventDate" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
-                        <p class="text-sm text-gray-700">${commentText}</p>
-                        <div class="mt-2 flex items-center">
-                            <button class="text-xs text-gray-500 hover:text-indigo-600">Cevapla</button>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Saat</label>
+                            <input type="time" id="eventTime" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Süre</label>
+                            <select id="eventDuration" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="30">30 dakika</option>
+                                <option value="60" selected>1 saat</option>
+                                <option value="90">1.5 saat</option>
+                                <option value="120">2 saat</option>
+                                <option value="240">4 saat</option>
+                                <option value="480">Tüm gün</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">Konum</label>
+                        <input type="text" id="eventLocation" placeholder="Etkinlik konumunu girin" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">Açıklama</label>
+                        <textarea id="eventDescription" rows="4" placeholder="Etkinlik detayları, gündem maddeleri..." class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"></textarea>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="sendNotification" checked class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm font-medium text-gray-700">Bildirim gönder</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" id="addToCalendar" checked class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-sm font-medium text-gray-700">Takvime ekle</span>
+                        </label>
                     </div>
                 </div>
-            `;
-            commentsSection.insertBefore(commentItem, commentsSection.firstChild);
-            
-            document.getElementById('commentText').value = '';
-        }
-        
-        // Add question
-        function addQuestion() {
-            const questionText = document.getElementById('questionText').value;
-            if (!questionText.trim()) {
-                alert('Lütfen bir soru yazın.');
-                return;
-            }
-            
-            const questionsSection = document.getElementById('questionsSection');
-            const questionItem = document.createElement('div');
-            questionItem.className = 'comment-item';
-            questionItem.innerHTML = `
-                <div class="flex items-start">
-                    <div class="flex-shrink-0 mr-3">
-                        <div class="w-8 h-8 bg-indigo-200 rounded-full flex items-center justify-center">
-                            <span class="text-sm font-medium text-indigo-600">S</span>
-                        </div>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center mb-1">
-                            <span class="font-medium text-gray-800">Siz</span>
-                            <span class="text-xs text-gray-500 ml-2">Şimdi</span>
-                        </div>
-                        <p class="text-sm text-gray-700">${questionText}</p>
-                        <div class="mt-2 flex items-center">
-                            <button class="text-xs text-gray-500 hover:text-indigo-600">Cevapla</button>
-                        </div>
-                    </div>
+                
+                <!-- Modal Footer -->
+                <div class="bg-gray-50 px-6 py-4 rounded-b-2xl flex items-center justify-end gap-3">
+                    <button onclick="closeEventModal()" class="px-6 py-3 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-xl transition-all font-medium">
+                        İptal
+                    </button>
+                    <button onclick="saveEvent()" class="px-6 py-3 gradient-bg text-white rounded-xl hover:shadow-lg transition-all font-medium">
+                        Kaydet
+                    </button>
                 </div>
-            `;
-            questionsSection.insertBefore(questionItem, questionsSection.firstChild);
-            
-            document.getElementById('questionText').value = '';
-        }
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="fixed top-6 right-6 z-50 space-y-3"></div>
+
+    <script>
+        // Global değişkenler
+        let currentMonth = 11; // Aralık
+        let currentYear = 2024;
+        let currentView = 'month';
+        let draggedEvent = null;
+        let draggedEventOriginalParent = null;
         
-        // Start brainstorming
-        function startBrainstorming() {
-            const brainstormingGrid = document.getElementById('brainstormingGrid');
-            brainstormingGrid.classList.toggle('hidden');
-            
-            const startButton = document.querySelector('#brainstormingGrid + button');
-            if (brainstormingGrid.classList.contains('hidden')) {
-                startButton.textContent = 'Başlat';
-            } else {
-                startButton.textContent = 'Dur';
-            }
-        }
+        const months = [
+            'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+            'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+        ];
         
-        // Select brainstorming card
-        function selectCard(card) {
-            card.classList.toggle('selected');
-        }
-        
-        // Add new idea to brainstorming
-        function addNewIdea() {
-            const brainstormingGrid = document.getElementById('brainstormingGrid');
-            const newCard = document.createElement('div');
-            newCard.className = 'brainstorming-card';
-            newCard.innerHTML = '<p class="text-sm font-medium text-gray-800">Yeni fikir</p>';
-            newCard.onclick = function() { selectCard(this); };
-            brainstormingGrid.appendChild(newCard);
-        }
-        
-        // Initialize with first idea
+        // Sayfa yüklendiğinde
         document.addEventListener('DOMContentLoaded', function() {
-            openIdeaForm('idea1');
+            initializeApp();
+            setupEventListeners();
+            updateCalendarHeader();
+            showWelcomeNotification();
         });
+        
+        function initializeApp() {
+            // Bugünün tarihini form alanlarına ayarla
+            const today = new Date();
+            const dateString = today.toISOString().split('T')[0];
+            const timeString = today.toTimeString().slice(0, 5);
+            
+            const dateInput = document.getElementById('eventDate');
+            const timeInput = document.getElementById('eventTime');
+            
+            if (dateInput) dateInput.value = dateString;
+            if (timeInput) timeInput.value = timeString;
+        }
+        
+        function setupEventListeners() {
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeEventModal();
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                    e.preventDefault();
+                    openEventModal('meeting');
+                }
+            });
+            
+            // Drag and drop event listeners
+            setupDragAndDrop();
+        }
+        
+        function setupDragAndDrop() {
+            // Event items drag start
+            document.addEventListener('dragstart', function(e) {
+                if (e.target.classList.contains('event-item')) {
+                    draggedEvent = e.target;
+                    draggedEventOriginalParent = e.target.parentElement;
+                    e.target.classList.add('dragging');
+                    
+                    // Set drag data
+                    e.dataTransfer.setData('text/plain', e.target.dataset.eventId);
+                    e.dataTransfer.effectAllowed = 'move';
+                    
+                    showNotification('Etkinlik taşınıyor... 📅', 'info', 2000);
+                }
+            });
+            
+            // Event items drag end
+            document.addEventListener('dragend', function(e) {
+                if (e.target.classList.contains('event-item')) {
+                    e.target.classList.remove('dragging');
+                    
+                    // Remove all drag over effects and hide drop indicators
+                    document.querySelectorAll('.calendar-day').forEach(day => {
+                        day.classList.remove('drag-over');
+                        const dropIndicator = day.querySelector('.drop-indicator');
+                        if (dropIndicator) {
+                            dropIndicator.classList.remove('active');
+                        }
+                    });
+                }
+            });
+            
+            // Calendar days drag over
+            document.addEventListener('dragover', function(e) {
+                if (e.target.closest('.calendar-day') && draggedEvent) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    
+                    const calendarDay = e.target.closest('.calendar-day');
+                    
+                    // Remove drag-over from all days and hide their indicators
+                    document.querySelectorAll('.calendar-day').forEach(day => {
+                        day.classList.remove('drag-over');
+                        const dropIndicator = day.querySelector('.drop-indicator');
+                        if (dropIndicator) {
+                            dropIndicator.classList.remove('active');
+                        }
+                    });
+                    
+                    // Add drag-over to current day and show its indicator
+                    calendarDay.classList.add('drag-over');
+                    const currentDropIndicator = calendarDay.querySelector('.drop-indicator');
+                    if (currentDropIndicator) {
+                        currentDropIndicator.classList.add('active');
+                    }
+                }
+            });
+            
+            // Calendar days drag enter
+            document.addEventListener('dragenter', function(e) {
+                if (e.target.closest('.calendar-day') && draggedEvent) {
+                    e.preventDefault();
+                }
+            });
+            
+            // Calendar days drag leave
+            document.addEventListener('dragleave', function(e) {
+                if (e.target.closest('.calendar-day') && draggedEvent) {
+                    const calendarDay = e.target.closest('.calendar-day');
+                    const rect = calendarDay.getBoundingClientRect();
+                    
+                    // Check if mouse is really outside the element
+                    if (e.clientX < rect.left || e.clientX > rect.right || 
+                        e.clientY < rect.top || e.clientY > rect.bottom) {
+                        calendarDay.classList.remove('drag-over');
+                        const dropIndicator = calendarDay.querySelector('.drop-indicator');
+                        if (dropIndicator) {
+                            dropIndicator.classList.remove('active');
+                        }
+                    }
+                }
+            });
+            
+            // Calendar days drop
+            document.addEventListener('drop', function(e) {
+                if (e.target.closest('.calendar-day') && draggedEvent) {
+                    e.preventDefault();
+                    
+                    const targetDay = e.target.closest('.calendar-day');
+                    const targetDayNumber = targetDay.dataset.day;
+                    const originalDayNumber = draggedEventOriginalParent.dataset.day;
+                    
+                    // Don't move if dropped on the same day
+                    if (targetDayNumber === originalDayNumber) {
+                        showNotification('Etkinlik aynı günde bırakıldı', 'info', 2000);
+                        return;
+                    }
+                    
+                    // Move the event
+                    moveEventToDay(draggedEvent, targetDay, targetDayNumber);
+                    
+                    // Clean up
+                    targetDay.classList.remove('drag-over');
+                    const dropIndicator = targetDay.querySelector('.drop-indicator');
+                    if (dropIndicator) {
+                        dropIndicator.classList.remove('active');
+                    }
+                    draggedEvent = null;
+                    draggedEventOriginalParent = null;
+                }
+            });
+        }
+        
+        function moveEventToDay(eventElement, targetDay, newDayNumber) {
+            // Clone the event element
+            const clonedEvent = eventElement.cloneNode(true);
+            
+            // Update the event's data attributes
+            clonedEvent.dataset.eventDate = newDayNumber;
+            
+            // Remove the original event
+            eventElement.remove();
+            
+            // Add the event to the new day (after the drop indicator)
+            const dropIndicator = targetDay.querySelector('.drop-indicator');
+            if (dropIndicator) {
+                dropIndicator.insertAdjacentElement('afterend', clonedEvent);
+            } else {
+                targetDay.appendChild(clonedEvent);
+            }
+            
+            // Show success notification
+            const eventTitle = clonedEvent.textContent.trim();
+            showNotification(`"${eventTitle}" ${newDayNumber} ${months[currentMonth]} tarihine taşındı! ✅`, 'success', 3000);
+            
+            // Add a subtle animation to the moved event
+            clonedEvent.style.animation = 'slideUp 0.5s ease-out';
+            setTimeout(() => {
+                clonedEvent.style.animation = '';
+            }, 500);
+            
+            // Clear any modal form data that might be cached
+            clearForm();
+        }
+        
+        function updateCalendarHeader() {
+            const headerElement = document.getElementById('currentMonthYear');
+            if (headerElement) {
+                headerElement.textContent = `${months[currentMonth]} ${currentYear}`;
+            }
+        }
+        
+        // Modal işlemleri
+        function openEventModal(type = 'meeting') {
+            // Önce formu temizle
+            clearForm();
+            
+            const modal = document.getElementById('eventModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const eventTypeSelect = document.getElementById('eventType');
+            
+            const titles = {
+                'meeting': 'Yeni Toplantı Oluştur',
+                'appointment': 'Yeni Randevu Oluştur',
+                'task': 'Yeni Görev Oluştur',
+                'reminder': 'Yeni Hatırlatıcı Oluştur'
+            };
+            
+            if (modalTitle) modalTitle.textContent = titles[type] || titles['meeting'];
+            if (eventTypeSelect) eventTypeSelect.value = type;
+            if (modal) modal.classList.remove('hidden');
+        }
+        
+        function closeEventModal() {
+            const modal = document.getElementById('eventModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                clearForm();
+            }
+        }
+        
+        function clearForm() {
+            // Tüm text input alanlarını temizle
+            const textFields = ['eventTitle', 'eventDescription', 'eventLocation'];
+            textFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) field.value = '';
+            });
+            
+            // Select alanlarını varsayılan değerlere döndür
+            const eventTypeSelect = document.getElementById('eventType');
+            if (eventTypeSelect) eventTypeSelect.value = 'meeting';
+            
+            const eventPrioritySelect = document.getElementById('eventPriority');
+            if (eventPrioritySelect) eventPrioritySelect.value = 'medium';
+            
+            const eventDurationSelect = document.getElementById('eventDuration');
+            if (eventDurationSelect) eventDurationSelect.value = '60';
+            
+            // Tarih ve saat alanlarını bugünün değerleriyle doldur
+            const today = new Date();
+            const dateString = today.toISOString().split('T')[0];
+            const timeString = today.toTimeString().slice(0, 5);
+            
+            const dateInput = document.getElementById('eventDate');
+            const timeInput = document.getElementById('eventTime');
+            
+            if (dateInput) dateInput.value = dateString;
+            if (timeInput) timeInput.value = timeString;
+            
+            // Checkboxları varsayılan duruma getir
+            const checkboxes = ['sendNotification', 'addToCalendar'];
+            checkboxes.forEach(checkboxId => {
+                const checkbox = document.getElementById(checkboxId);
+                if (checkbox) checkbox.checked = true;
+            });
+            
+            // Modal başlığını varsayılan haline getir
+            const modalTitle = document.getElementById('modalTitle');
+            if (modalTitle) modalTitle.textContent = 'Yeni Etkinlik Oluştur';
+        }
+        
+        function saveEvent() {
+            const title = document.getElementById('eventTitle').value.trim();
+            const date = document.getElementById('eventDate').value;
+            const time = document.getElementById('eventTime').value;
+            const type = document.getElementById('eventType').value;
+            
+            if (!title || !date || !time) {
+                showNotification('Lütfen tüm gerekli alanları doldurun!', 'error');
+                return;
+            }
+            
+            // Etkinliği kaydet (simülasyon)
+            const eventData = {
+                title,
+                date,
+                time,
+                type,
+                id: Date.now()
+            };
+            
+            // LocalStorage'a kaydet
+            const events = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+            events.push(eventData);
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
+            
+            showNotification('Etkinlik başarıyla oluşturuldu!', 'success');
+            closeEventModal();
+        }
+        
+        // Görünüm değiştirme
+        function switchView(view) {
+            currentView = view;
+            
+            // Tüm görünümleri gizle
+            const views = ['monthView', 'weekView', 'dayView'];
+            views.forEach(viewId => {
+                const viewElement = document.getElementById(viewId);
+                if (viewElement) {
+                    viewElement.classList.add('hidden');
+                }
+            });
+            
+            // Seçilen görünümü göster
+            const selectedView = document.getElementById(view + 'View');
+            if (selectedView) {
+                selectedView.classList.remove('hidden');
+            }
+            
+            // Buton stillerini güncelle
+            const buttons = ['monthBtn', 'weekBtn', 'dayBtn'];
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.className = 'px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 transition-all';
+                }
+            });
+            
+            // Aktif butonu vurgula
+            const activeBtn = document.getElementById(view + 'Btn');
+            if (activeBtn) {
+                activeBtn.className = 'px-4 py-2 text-sm font-medium rounded-lg bg-white text-blue-600 shadow-sm transition-all';
+            }
+            
+            showNotification(`${view === 'month' ? 'Ay' : view === 'week' ? 'Hafta' : 'Gün'} görünümüne geçildi`, 'info');
+        }
+        
+        // Takvim navigasyonu
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendarHeader();
+            showNotification(`${months[currentMonth]} ${currentYear}`, 'info');
+        }
+        
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendarHeader();
+            showNotification(`${months[currentMonth]} ${currentYear}`, 'info');
+        }
+        
+        // Etkinlik detayları
+        function showEventDetails(title, time, location) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 modal-overlay flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 slide-up">
+                    <div class="gradient-bg text-white p-6 rounded-t-2xl">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="font-bold">Etkinlik Detayları</h3>
+                            </div>
+                            <button onclick="this.closest('.fixed').remove()" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-xl">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <div class="text-sm font-semibold text-gray-700 mb-1">Başlık</div>
+                            <div class="text-lg font-bold text-gray-900">${title}</div>
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold text-gray-700 mb-1">Zaman</div>
+                            <div class="text-gray-900">${time}</div>
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold text-gray-700 mb-1">Konum</div>
+                            <div class="text-gray-900">${location}</div>
+                        </div>
+                        <div class="flex gap-3 pt-4">
+                            <button onclick="editEvent('${title}'); this.closest('.fixed').remove();" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl transition-all font-medium">
+                                Düzenle
+                            </button>
+                            <button onclick="deleteEvent('${title}'); this.closest('.fixed').remove();" class="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-xl transition-all font-medium">
+                                Sil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function showDayDetails(day) {
+            showNotification(`${day} ${months[currentMonth]} ${currentYear} günü seçildi`, 'info');
+        }
+        
+        function editEvent(title) {
+            openEventModal('meeting');
+            const titleInput = document.getElementById('eventTitle');
+            if (titleInput) {
+                titleInput.value = title;
+            }
+        }
+        
+        function deleteEvent(title) {
+            if (confirm(`"${title}" etkinliğini silmek istediğinizden emin misiniz?`)) {
+                showNotification('Etkinlik silindi!', 'success');
+            }
+        }
+        
+        // Ayarlar
+        function toggleSettings() {
+            showNotification('Ayarlar menüsü açıldı', 'info');
+        }
+        
+        // Bildirim sistemi
+        function showNotification(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('notificationContainer');
+            if (!container) return;
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            const icons = {
+                'success': '✅',
+                'error': '❌',
+                'warning': '⚠️',
+                'info': 'ℹ️'
+            };
+            
+            const colors = {
+                'success': 'border-l-4 border-green-500 bg-green-50',
+                'error': 'border-l-4 border-red-500 bg-red-50',
+                'warning': 'border-l-4 border-yellow-500 bg-yellow-50',
+                'info': 'border-l-4 border-blue-500 bg-blue-50'
+            };
+            
+            notification.className += ` ${colors[type]}`;
+            notification.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <span class="text-lg">${icons[type]}</span>
+                    <span class="font-medium text-gray-900">${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-auto text-gray-400 hover:text-gray-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Animasyon
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // Otomatik kaldırma
+            if (duration > 0) {
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, duration);
+            }
+        }
+        
+        function showWelcomeNotification() {
+            setTimeout(() => {
+                showNotification('ModernCal\'a hoş geldiniz! 🎉', 'success', 5000);
+            }, 1000);
+        }
     </script>
 </body>
 </html>

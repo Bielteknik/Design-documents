@@ -120,10 +120,10 @@
 
     <!-- Fikir Ekleme Modal -->
     <div id="ideaModal" class="fixed inset-0 modal-backdrop hidden z-50 overflow-y-auto">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-screen overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white shadow-2xl w-screen h-screen overflow-y-auto">
                 <!-- Modal Header -->
-                <div class="gradient-bg text-white p-6 rounded-t-2xl">
+                <div class="gradient-bg text-white p-6">
                     <div class="flex justify-between items-center">
                         <h2 class="text-3xl font-bold">🚀 Yeni İnovasyon Projesi</h2>
                         <button onclick="closeIdeaModal()" class="text-white hover:text-gray-200 text-2xl">&times;</button>
@@ -519,6 +519,7 @@
         </div>
     </div>
 
+    
     <script>
         // Örnek veriler
         let ideas = [
@@ -894,5 +895,6 @@
         // Sayfa yüklendiğinde
         renderIdeas();
     </script>
+
 </body>
 </html>
