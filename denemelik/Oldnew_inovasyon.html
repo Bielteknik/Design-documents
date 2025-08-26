@@ -909,34 +909,33 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            
-
+            </div>          
         </div>
-        
-
     </header>
 
     <!-- Professional Main Content -->
     <main class="max-w-7xl mx-auto px-6 py-8">
-        <!-- Enhanced Navigation Tabs -->
+        <!-- Modern Navigation -->
         <div class="mb-8">
-            <div class="w-full">
-                <div class="flex items-center bg-white rounded-2xl p-1.5 shadow-xl border border-slate-200/50 backdrop-blur-sm">
-                    <button id="ideasTab" class="relative flex-1 px-8 py-4 rounded-xl font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30">
-                        <div class="flex items-center justify-center space-x-3">
-                            <i class="fas fa-lightbulb text-xl"></i>
-                            <span class="text-lg font-bold">Fikirler</span>
+            <div class="flex items-center space-x-2">
+                <button id="ideasTab" class="group relative px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-lg">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-lightbulb text-lg"></i>                        
+                        <span>Fikirler</span>
+                        <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">
+                            <!--${ideas.length} Django-->
                         </div>
-                        <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-                    </button>
-                    <button id="projectsTab" class="relative flex-1 px-8 py-4 rounded-xl font-semibold text-sm transition-all duration-300 text-slate-600 hover:text-slate-800 hover:bg-slate-100/80">
-                        <div class="flex items-center justify-center space-x-3">
-                            <i class="fas fa-project-diagram text-xl"></i>
-                            <span class="text-lg font-bold">Projeler</span>
+                    </div>
+                </button>
+                
+                <button id="projectsTab" class="group relative px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-lg">
+                    <div class="flex items-center space-x-3">
+                        <span class="group-hover:text-orange-600 transition-colors">Projeler</span>
+                        <div class="w-6 h-6 bg-gray-100 group-hover:bg-orange-100 rounded-full flex items-center justify-center text-sm font-bold group-hover:text-orange-600 transition-colors">
+                            <!--${projects.length} Django-->
                         </div>
-                    </button>
-                </div>
+                    </div>
+                </button>
             </div>
         </div>
 
@@ -2550,27 +2549,31 @@
             stepTitle = document.getElementById('stepTitle');
         }
 
-        // Enhanced Tab switching functions
+        // Modern Tab switching functions
         function showIdeasView() {
             document.getElementById('ideasView').classList.remove('hidden');
             document.getElementById('projectsView').classList.add('hidden');
             
-            document.getElementById('ideasTab').classList.add('bg-gradient-to-r', 'from-blue-500', 'to-indigo-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
-            document.getElementById('ideasTab').classList.remove('text-slate-600', 'hover:text-slate-800', 'hover:bg-slate-100/80');
+            // Fikirler tab aktif
+            const ideasTab = document.getElementById('ideasTab');
+            ideasTab.className = 'group relative px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105';
             
-            document.getElementById('projectsTab').classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-indigo-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
-            document.getElementById('projectsTab').classList.add('text-slate-600', 'hover:text-slate-800', 'hover:bg-slate-100/80');
+            // Projeler tab pasif
+            const projectsTab = document.getElementById('projectsTab');
+            projectsTab.className = 'group relative px-6 py-3 bg-white text-gray-700 rounded-2xl font-bold text-lg shadow-lg border-2 border-gray-200 hover:border-orange-300 hover:shadow-xl transition-all duration-300 hover:scale-105';
         }
 
         function showProjectsView() {
             document.getElementById('ideasView').classList.add('hidden');
             document.getElementById('projectsView').classList.remove('hidden');
             
-            document.getElementById('projectsTab').classList.add('bg-gradient-to-r', 'from-blue-500', 'to-indigo-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
-            document.getElementById('projectsTab').classList.remove('text-slate-600', 'hover:text-slate-800', 'hover:bg-slate-100/80');
+            // Projeler tab aktif
+            const projectsTab = document.getElementById('projectsTab');
+            projectsTab.className = 'group relative px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105';
             
-            document.getElementById('ideasTab').classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-indigo-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
-            document.getElementById('ideasTab').classList.add('text-slate-600', 'hover:text-slate-800', 'hover:bg-slate-100/80');
+            // Fikirler tab pasif
+            const ideasTab = document.getElementById('ideasTab');
+            ideasTab.className = 'group relative px-6 py-3 bg-white text-gray-700 rounded-2xl font-bold text-lg shadow-lg border-2 border-gray-200 hover:border-orange-300 hover:shadow-xl transition-all duration-300 hover:scale-105';
             
             renderProjects();
         }

@@ -3,948 +3,509 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İnovasyon Havuzu - Proje Takip ve Etkileşim</title>
+    <title>Fikir Havuzu - Kurumsal İnovasyon Merkezi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/8a6a55e40d.js" crossorigin="anonymous"></script>
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            background-attachment: fixed;
+            font-family: 'Inter', sans-serif;
         }
-        
-        .wave-animation {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: url('image/svg+xml;utf8,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="%231e293b" fill-opacity="0.3" d="M0,192L48,197.3C96,203,192,213,288,208C384,203,480,181,576,181.3C672,181,768,203,864,202.7C960,203,1056,181,1152,165.3C1248,149,1344,139,1392,133.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
-            background-size: cover;
-            background-repeat: no-repeat;
-            animation: wave 15s linear infinite;
-        }
-        
-        @keyframes wave {
-            0% {
-                background-position-x: 0;
-            }
-            100% {
-                background-position-x: 1440px;
-            }
-        }
-        
-        .card-hover {
+        .transition-all-custom {
             transition: all 0.3s ease;
         }
-        
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .status-new {
-            background-color: #fef3c7;
-            color: #d97706;
-        }
-        
-        .status-reviewed {
-            background-color: #dbeafe;
-            color: #2563eb;
-        }
-        
-        .status-accepted {
-            background-color: #dcfce7;
-            color: #16a34a;
-        }
-        
-        .status-rejected {
-            background-color: #fee2e2;
-            color: #dc2626;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background-color: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 0.5rem 0;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 4px;
-            transition: width 1s ease;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #c7d2fe;
-            border-radius: 10px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #818cf8;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-secondary {
-            background-color: #f3f4f6;
-            color: #4b5563;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #e5e7eb;
-            transform: translateY(-2px);
-        }
-        
-        .metric-card {
-            transition: all 0.3s ease;
-        }
-        
-        .metric-card:hover {
-            transform: translateY(-8px);
-        }
-        
-        .timeline-item {
-            position: relative;
-            padding-left: 2rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .timeline-item:before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0.5rem;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #6366f1;
-        }
-        
-        .milestone {
-            background-color: #f0f9ff;
-            border-left: 4px solid #3b82f6;
-            padding: 0.75rem;
-            border-radius: 0 4px 4px 0;
-            margin-bottom: 1rem;
-        }
-        
-        .discussion-thread {
-            border-left: 2px solid #e5e7eb;
-            padding-left: 1rem;
-            margin-left: 1rem;
-        }
-        
-        .thread-item {
-            margin-bottom: 1rem;
-        }
-        
-        .thread-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-        
-        .thread-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .thread-actions button {
-            background: none;
-            border: none;
-            color: #6b7280;
-            cursor: pointer;
-            font-size: 0.875rem;
-            padding: 0.25rem;
-            transition: color 0.2s ease;
-        }
-        
-        .thread-actions button:hover {
-            color: #6366f1;
-        }
-        
-        .reply-form {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f3f4f6;
-            border-radius: 8px;
-        }
-        
-        .reply-form input[type="text"] {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .reply-form textarea {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .reply-form button {
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .reply-form button:hover {
-            background: #4f46e5;
-        }
-        
-        .project-section {
-            border-top: 1px solid #e5e7eb;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1f2937;
-        }
-        
-        .section-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .section-actions button {
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-        }
-        
-        .section-actions button:hover {
-            transform: translateY(-1px);
-        }
-        
-        .task-item {
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .task-title {
-            font-weight: 500;
-            color: #1f2937;
-        }
-        
-        .task-status {
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .task-progress {
-            display: flex;
-            align-items: center;
-            margin-top: 0.5rem;
-        }
-        
-        .task-progress-text {
-            margin-left: 0.5rem;
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-        
-        .task-description {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-bottom: 0.5rem;
-        }
-        
-        .task-details {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-        
-        .task-details span {
-            margin-right: 0.5rem;
-        }
-        
-        .task-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .task-actions button {
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            transition: all 0.2s ease;
-        }
-        
-        .task-actions button:hover {
-            transform: translateY(-1px);
-        }
-        
-        .comment-item {
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-        
-        .comment-author {
-            display: flex;
-            align-items: center;
-        }
-        
-        .comment-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #6366f1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 0.5rem;
-        }
-        
-        .comment-author-name {
-            font-weight: 500;
-            color: #1f2937;
-        }
-        
-        .comment-time {
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-        
-        .comment-content {
-            font-size: 0.875rem;
-            color: #1f2937;
-            margin-bottom: 0.5rem;
-        }
-        
-        .comment-actions {
-            display: flex;
-            gap: 0.5rem;
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-        
-        .comment-actions a {
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-        
-        .comment-actions a:hover {
-            color: #6366f1;
-        }
-        
-        .reply-form {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f3f4f6;
-            border-radius: 8px;
-        }
-        
-        .reply-form input[type="text"] {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .reply-form textarea {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .reply-form button {
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .reply-form button:hover {
-            background: #4f46e5;
-        }
-        
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #1f2937;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 0.875rem;
-        }
-        
-        .form-textarea {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            min-height: 100px;
-        }
-        
-        .form-select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 0.875rem;
-        }
-        
-        .form-button {
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-        }
-        
-        .form-button:hover {
-            background: #4f46e5;
-            transform: translateY(-1px);
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-up {
+            animation: slideUp 0.4s ease-out;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="text-gray-800">
-    <div class="wave-animation"></div>
-    
-    <div class="container mx-auto px-4 py-8 relative z-10">
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+    <div id="app" class="min-h-screen">
         <!-- Header -->
-        <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">İnovasyon Havuzu</h1>
-            <p class="text-xl text-blue-100">Proje takip ve etkileşim platformu</p>
-        </header>
-
-        <!-- Main Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column - Project List -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 card-hover">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Projelerim</h2>
-                    
-                    <!-- Search -->
-                    <div class="relative mb-6">
-                        <input type="text" id="searchProjects" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Proje ara...">
-                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </div>
-                    
-                    <!-- Filter -->
-                    <div class="mb-6">
-                        <select id="filterStatus" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            <option value="">Tüm Durumlar</option>
-                            <option value="active">Aktif</option>
-                            <option value="completed">Tamamlanan</option>
-                            <option value="on-hold">Beklemede</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Projects List -->
-                    <div id="projectsList" class="space-y-4 custom-scrollbar max-h-96 overflow-y-auto">
-                        <!-- Project 1 -->
-                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="showProjectDetails('project1')">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-semibold text-gray-800">Yapay Zeka Destekli Müşteri Hizmetleri</h3>
-                                <span class="status-badge status-accepted">Aktif</span>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Müşteri hizmetlerinde yapay zeka destekli chatbot sistemi geliştirilerek hizmet kalitesi artırılabilir...</p>
-                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                <span>Ahmet Yılmaz</span>
-                                <span>2 gün önce</span>
-                            </div>
-                            <div class="mt-2">
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-indigo-600 h-2 rounded-full" style="width: 45%"></div>
-                                </div>
-                                <div class="text-xs text-gray-500 mt-1">İlerleme: %45</div>
-                            </div>
+        <header class="bg-white shadow-lg border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-3 rounded-xl shadow-md">
+                            <i class="fas fa-lightbulb text-white text-2xl"></i>
                         </div>
-                        
-                        <!-- Project 2 -->
-                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="showProjectDetails('project2')">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-semibold text-gray-800">Sürdürülebilir Ambalaj Çözümleri</h3>
-                                <span class="status-badge status-accepted">Aktif</span>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Şirketimizin ürün ambalajlarında tamamen biyolojik olarak parçalanabilen malzemeler kullanılması...</p>
-                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                <span>Elif Demir</span>
-                                <span>5 gün önce</span>
-                            </div>
-                            <div class="mt-2">
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-indigo-600 h-2 rounded-full" style="width: 30%"></div>
-                                </div>
-                                <div class="text-xs text-gray-500 mt-1">İlerleme: %30</div>
-                            </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-slate-800">Fikir Havuzu</h1>
+                            <p class="text-sm text-slate-600">Kurumsal İnovasyon Merkezi</p>
                         </div>
-                        
-                        <!-- Project 3 -->
-                        <div class="idea-card p-4 border border-gray-200 rounded-lg hover:border-indigo-300" onclick="showProjectDetails('project3')">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-semibold text-gray-800">Çalışan İnovasyon Programı</h3>
-                                <span class="status-badge status-accepted">Aktif</span>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">Şirketimizde çalışanlara aylık inovasyon bütçesi tahsis edilerek, kendi iş süreçlerini iyileştirmek için...</p>
-                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                <span>Can Kaya</span>
-                                <span>Bugün</span>
-                            </div>
-                            <div class="mt-2">
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-indigo-600 h-2 rounded-full" style="width: 10%"></div>
-                                </div>
-                                <div class="text-xs text-gray-500 mt-1">İlerleme: %10</div>
-                            </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-slate-700">Ahmet Yılmaz</p>
+                            <p class="text-xs text-slate-500">Üretim Müdürü</p>
+                        </div>
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold shadow-md">
+                            AY
                         </div>
                     </div>
                 </div>
-                
-                <!-- Quick Stats -->
-                <div class="bg-white rounded-2xl shadow-xl p-6 card-hover">
-                    <h3 class="text-xl font-bold text-gray-800 mb-6">Hızlı İstatistikler</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="text-center p-4 bg-indigo-50 rounded-xl">
-                            <div class="text-2xl font-bold text-indigo-600">42</div>
-                            <div class="text-sm text-gray-600">Kabul Edilen</div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Hero Section -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
+                <div class="px-8 py-12">
+                    <div class="flex flex-col lg:flex-row items-center justify-between">
+                        <div class="lg:w-1/2 mb-8 lg:mb-0">
+                            <h2 class="text-4xl font-bold text-slate-800 mb-4">İnovasyonun Gücü, Fikirlerinizde</h2>
+                            <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                                Her çalışanın sesi değerlidir. Yeni fikirlerinizle şirketimizi birlikte şekillendirelim. 
+                                Fikirlerinizi paylaşın, projelerimize katkıda bulunun ve kurumsal gelişime ortak olun.
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="flex items-center text-sm text-slate-600">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span>Profesyonel değerlendirme</span>
+                                </div>
+                                <div class="flex items-center text-sm text-slate-600">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span>Hızlı geri bildirim</span>
+                                </div>
+                                <div class="flex items-center text-sm text-slate-600">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span>Kurul onayı süreci</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-center p-4 bg-purple-50 rounded-xl">
-                            <div class="text-2xl font-bold text-purple-600">28</div>
-                            <div class="text-sm text-gray-600">Aktif Projeler</div>
-                        </div>
-                        <div class="text-center p-4 bg-blue-50 rounded-xl">
-                            <div class="text-2xl font-bold text-blue-600">12</div>
-                            <div class="text-sm text-gray-600">Tamamlanan</div>
-                        </div>
-                        <div class="text-center p-4 bg-green-50 rounded-xl">
-                            <div class="text-2xl font-bold text-green-600">2</div>
-                            <div class="text-sm text-gray-600">Beklemede</div>
+                        <div class="lg:w-1/2 flex justify-center">
+                            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl shadow-lg">
+                                <i class="fas fa-rocket text-6xl text-blue-600 opacity-20"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column - Project Details -->
-            <div class="lg:col-span-2">
-                <div id="projectDetails" class="bg-white rounded-2xl shadow-xl overflow-hidden">
-                    <!-- Project Header -->
-                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h2 id="projectTitle" class="text-3xl font-bold mb-2">Yapay Zeka Destekli Müşteri Hizmetleri</h2>
-                                <p id="projectCategory" class="text-indigo-100">Teknoloji • Süreç İyileştirme</p>
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                <div class="flex items-center space-x-2 bg-white px-6 py-3 rounded-xl shadow-md">
+                    <i class="fas fa-chart-line text-blue-600"></i>
+                    <span class="text-sm text-slate-600">Toplam <strong class="text-slate-800">24</strong> aktif fikir</span>
+                </div>
+                <button id="addIdeaBtn" class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all-custom flex items-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Yeni Fikir Ekle</span>
+                </button>
+            </div>
+
+            <!-- Ideas Grid -->
+            <div id="ideasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Idea Card 1 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom">
+                    <div class="h-2 bg-gradient-to-r from-green-500 to-emerald-600"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">Yeni Fikir</span>
+                            <div class="flex space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="far fa-star text-gray-300"></i>
                             </div>
-                            <span class="status-badge status-accepted text-white bg-green-600">AKTIF PROJE</span>
                         </div>
-                        <div class="mt-4 flex items-center text-sm">
-                            <div class="flex items-center mr-6">
-                                <i class="fas fa-user mr-2"></i>
-                                <span>Ahmet Yılmaz</span>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Akıllı Enerji Yönetim Sistemi</h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-3">
+                            Üretim hattında enerji tüketimini optimize eden akıllı sensör sistemi ile yıllık %15 enerji tasarrufu hedeflenmektedir.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-4">
+                            <span><i class="far fa-user"></i> Mehmet Kaya</span>
+                            <span><i class="far fa-clock"></i> 2 gün önce</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                            <div class="text-sm">
+                                <span class="font-semibold text-slate-700">ROI:</span>
+                                <span class="text-green-600"> %32</span>
                             </div>
-                            <div class="flex items-center mr-6">
-                                <i class="fas fa-calendar mr-2"></i>
-                                <span>15.03.2024</span>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center">
+                                <span>Detaylar</span>
+                                <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Idea Card 2 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom">
+                    <div class="h-2 bg-gradient-to-r from-purple-500 to-pink-600"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">Değerlendiriliyor</span>
+                            <div class="flex space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
                             </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-clock mr-2"></i>
-                                <span>3-6 Ay</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Çalışan İnovasyon Programı</h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-3">
+                            Aylık inovasyon yarışması ile çalışanların fikirlerini teşvik ederek kurumsal kültürümüzü güçlendirmek.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-4">
+                            <span><i class="far fa-user"></i> Ayşe Demir</span>
+                            <span><i class="far fa-clock"></i> 5 gün önce</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                            <div class="text-sm">
+                                <span class="font-semibold text-slate-700">Bütçe:</span>
+                                <span class="text-blue-600"> 250.000₺</span>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center">
+                                <span>Detaylar</span>
+                                <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Idea Card 3 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom">
+                    <div class="h-2 bg-gradient-to-r from-orange-500 to-red-600"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full">Onay Bekliyor</span>
+                            <div class="flex space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="far fa-star text-gray-300"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Dijital Eğitim Platformu</h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-3">
+                            İçerik yönetim sistemi ile çalışanlara özelleştirilmiş eğitim programları sunulması ve beceri gelişimi.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-4">
+                            <span><i class="far fa-user"></i> Can Aksoy</span>
+                            <span><i class="far fa-clock"></i> 1 hafta önce</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                            <div class="text-sm">
+                                <span class="font-semibold text-slate-700">ROI:</span>
+                                <span class="text-green-600"> %45</span>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center">
+                                <span>Detaylar</span>
+                                <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Idea Submission Form (Hidden by default) -->
+            <div id="ideaForm" class="hidden bg-white rounded-2xl shadow-2xl p-8 mb-8 fade-in">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800">Yeni Fikir Ekle</h2>
+                    <button id="closeFormBtn" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+
+                <form id="submitIdeaForm" class="space-y-6">
+                    <!-- Fikir Temeli -->
+                    <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center">
+                            <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                            Fikir Temeli ve Amaç
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Fikir Başlığı *</label>
+                                <input type="text" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all-custom" placeholder="Örn: Akıllı Depo Yönetim Sistemi">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Kategori *</label>
+                                <select required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all-custom">
+                                    <option>Üretim</option>
+                                    <option>Pazarlama</option>
+                                    <option>İnsan Kaynakları</option>
+                                    <option>Bilgi Teknolojileri</option>
+                                    <option>Müşteri Hizmetleri</option>
+                                    <option>Lojistik</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Fikir Açıklaması *</label>
+                            <textarea rows="4" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all-custom" placeholder="Fikrinizi detaylı olarak açıklayın..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Maliyet ve ROI -->
+                    <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center">
+                            <span class="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                            Maliyet ve Finansal Analiz
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Tahmini Bütçe *</label>
+                                <input type="number" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all-custom" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Beklenen ROI *</label>
+                                <input type="number" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all-custom" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Geri Dönüş Süresi</label>
+                                <input type="text" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all-custom" placeholder="Örn: 18 ay">
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Project Content -->
+
+                    <!-- Ekip ve Departmanlar -->
+                    <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center">
+                            <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                            Ekip ve Katılımcı Departmanlar
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Proje Lideri</label>
+                                <input type="text" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all-custom" value="Ahmet Yılmaz" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">İlgili Departmanlar *</label>
+                                <select multiple required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all-custom h-32">
+                                    <option selected>Üretim</option>
+                                    <option>Bilgi Teknolojileri</option>
+                                    <option>Mühendislik</option>
+                                    <option>Finans</option>
+                                    <option>İnsan Kaynakları</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Zaman Çizelgesi -->
+                    <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center">
+                            <span class="bg-orange-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">4</span>
+                            Zaman Çizelgesi ve Aşamalar
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                                <input type="text" class="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all-custom" placeholder="Aşama adı (Örn: Araştırma)">
+                                <input type="date" class="w-40 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all-custom">
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                                <input type="text" class="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all-custom" placeholder="Aşama adı (Örn: Geliştirme)">
+                                <input type="date" class="w-40 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all-custom">
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                                <input type="text" class="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all-custom" placeholder="Aşama adı (Örn: Test)">
+                                <input type="date" class="w-40 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all-custom">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dosya Yükleme -->
+                    <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center">
+                            <span class="bg-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">5</span>
+                            Destekleyici Belgeler
+                        </h3>
+                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-blue-400 transition-all-custom">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-slate-400 mb-4"></i>
+                            <p class="text-slate-600 mb-2">Belgeleri buraya sürükleyin veya yüklemek için tıklayın</p>
+                            <p class="text-sm text-slate-500">PDF, DOC, XLS, JPG desteklenir (max. 10MB)</p>
+                            <input type="file" class="hidden" id="fileUpload">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-end pt-6">
+                        <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all-custom flex items-center space-x-2">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Fikri Gönder</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Statistics Section -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-blue-600 mb-2">24</div>
+                    <div class="text-slate-600 text-sm">Toplam Fikir</div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-green-600 mb-2">8</div>
+                    <div class="text-slate-600 text-sm">Onaylanan</div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-orange-600 mb-2">12</div>
+                    <div class="text-slate-600 text-sm">Değerlendiriliyor</div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-purple-600 mb-2">4</div>
+                    <div class="text-slate-600 text-sm">Reddedilen</div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-slate-800 text-white py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-2 rounded-lg">
+                            <i class="fas fa-lightbulb text-white"></i>
+                        </div>
+                        <span class="font-semibold">Fikir Havuzu - Kurumsal İnovasyon Merkezi</span>
+                    </div>
+                    <div class="text-sm text-slate-400">
+                        © 2023 Tüm hakları saklıdır. Her fikir değerlidir.
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addIdeaBtn = document.getElementById('addIdeaBtn');
+            const closeFormBtn = document.getElementById('closeFormBtn');
+            const ideaForm = document.getElementById('ideaForm');
+            const submitIdeaForm = document.getElementById('submitIdeaForm');
+            const ideasContainer = document.getElementById('ideasContainer');
+            const fileUploadArea = ideaForm.querySelector('.border-dashed');
+
+            // Show form
+            addIdeaBtn.addEventListener('click', function() {
+                ideaForm.classList.remove('hidden');
+                ideaForm.classList.add('fade-in');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Hide form
+            closeFormBtn.addEventListener('click', function() {
+                ideaForm.classList.add('hidden');
+                ideaForm.classList.remove('fade-in');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Form submission
+            submitIdeaForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Create new idea card
+                const formData = new FormData(submitIdeaForm);
+                const title = formData.get('fikir-basligi') || 'Yeni Fikir';
+                const description = formData.get('fikir-aciklamasi') || 'Fikir açıklaması';
+                const category = formData.get('kategori') || 'Üretim';
+                const budget = formData.get('butce') || '0';
+                const roi = formData.get('roi') || '0';
+                
+                const newIdeaCard = document.createElement('div');
+                newIdeaCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom slide-up';
+                newIdeaCard.innerHTML = `
+                    <div class="h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
                     <div class="p-6">
-                        <!-- Project Overview -->
-                        <div class="mb-8">
-                            <h3 class="text-xl font-bold text-gray-800 mb-4">Proje Özeti</h3>
-                            <p class="text-gray-600 mb-4">
-                                Müşteri hizmetlerinde yapay zeka destekli chatbot sistemi geliştirilerek hizmet kalitesi artırılabilir. 
-                                Sistem, müşterinin sorununu anlayıp en uygun çözümü sunacak ve karmaşık durumlarda insana yönlendirecek.
-                            </p>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <div class="flex items-center mb-2">
-                                        <i class="fas fa-bullseye text-indigo-600 mr-2"></i>
-                                        <h4 class="font-semibold text-gray-800">Hedef</h4>
-                                    </div>
-                                    <p class="text-sm text-gray-600">Müşteri memnuniyetinde %40 artış, müşteri hizmetleri personelinde %30 zaman tasarrufu</p>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <div class="flex items-center mb-2">
-                                        <i class="fas fa-wallet text-indigo-600 mr-2"></i>
-                                        <h4 class="font-semibold text-gray-800">Bütçe</h4>
-                                    </div>
-                                    <p class="text-sm text-gray-600">₺250.000</p>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <div class="flex items-center mb-2">
-                                        <i class="fas fa-chart-line text-indigo-600 mr-2"></i>
-                                        <h4 class="font-semibold text-gray-800">Beklenen Getiri</h4>
-                                    </div>
-                                    <p class="text-sm text-gray-600">Yıllık ₺1.2M tasarruf</p>
-                                </div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">Yeni Gönderim</span>
+                            <div class="flex space-x-1">
+                                <i class="far fa-star text-gray-300"></i>
+                                <i class="far fa-star text-gray-300"></i>
+                                <i class="far fa-star text-gray-300"></i>
+                                <i class="far fa-star text-gray-300"></i>
+                                <i class="far fa-star text-gray-300"></i>
                             </div>
                         </div>
-                        
-                        <!-- Progress and Timeline -->
-                        <div class="mb-8">
-                            <h3 class="text-xl font-bold text-gray-800 mb-4">İlerleme Durumu</h3>
-                            
-                            <div class="bg-gray-50 p-6 rounded-lg">
-                                <div class="flex justify-between items-center mb-4">
-                                    <span class="font-semibold text-gray-700">Genel İlerleme</span>
-                                    <span class="font-bold text-indigo-600">45%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 45%"></div>
-                                </div>
-                                
-                                <div class="mt-6">
-                                    <h4 class="font-semibold text-gray-800 mb-3">Zaman Planı</h4>
-                                    <div class="space-y-4">
-                                        <div class="timeline-item">
-                                            <div class="flex justify-between">
-                                                <span class="font-medium text-gray-800">Sistem Analizi</span>
-                                                <span class="text-sm text-green-600">Tamamlandı</span>
-                                            </div>
-                                            <div class="text-sm text-gray-600">Hedef: 15.04.2024 • Gerçekleşen: 10.04.2024</div>
-                                        </div>
-                                        <div class="timeline-item">
-                                            <div class="flex justify-between">
-                                                <span class="font-medium text-gray-800">Yazılım Geliştirme</span>
-                                                <span class="text-sm text-blue-600">Devam Ediyor</span>
-                                            </div>
-                                            <div class="text-sm text-gray-600">Hedef: 15.05.2024 • Şu an %60 tamamlandı</div>
-                                        </div>
-                                        <div class="timeline-item">
-                                            <div class="flex justify-between">
-                                                <span class="font-medium text-gray-800">Test ve Entegrasyon</span>
-                                                <span class="text-sm text-gray-600">Beklemede</span>
-                                            </div>
-                                            <div class="text-sm text-gray-600">Hedef: 15.06.2024</div>
-                                        </div>
-                                        <div class="timeline-item">
-                                            <div class="flex justify-between">
-                                                <span class="font-medium text-gray-800">Genel Uygulama</span>
-                                                <span class="text-sm text-gray-600">Beklemede</span>
-                                            </div>
-                                            <div class="text-sm text-gray-600">Hedef: 15.07.2024</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">${title}</h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-3">${description}</p>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-4">
+                            <span><i class="far fa-user"></i> ${formData.get('proje-lideri') || 'Siz'}</span>
+                            <span><i class="far fa-clock"></i> Şimdi</span>
                         </div>
-                        
-                        <!-- Key Milestones -->
-                        <div class="mb-8">
-                            <h3 class="text-xl font-bold text-gray-800 mb-4">Kritik Milestone'lar</h3>
-                            <div class="space-y-4">
-                                <div class="milestone">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <h4 class="font-semibold text-blue-800">Sistem Analizi Tamamlandı</h4>
-                                            <p class="text-sm text-blue-700 mt-1">Tüm ihtiyaçlar belirlendi ve sistem mimarisi hazırlandı.</p>
-                                        </div>
-                                        <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">10.04.2024</span>
-                                    </div>
-                                </div>
-                                <div class="milestone">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <h4 class="font-semibold text-blue-800">İlk Beta Sürümü</h4>
-                                            <p class="text-sm text-blue-700 mt-1">İlk beta sürümü test ekibine dağıtıldı.</p>
-                                        </div>
-                                        <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">05.05.2024</span>
-                                    </div>
-                                </div>
-                                <div class="milestone">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <h4 class="font-semibold text-blue-800">Kullanıcı Testleri Başladı</h4>
-                                            <p class="text-sm text-blue-700 mt-1">Pilot kullanıcı grubu ile testler başladı.</p>
-                                        </div>
-                                        <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">12.05.2024</span>
-                                    </div>
-                                </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                            <div class="text-sm">
+                                <span class="font-semibold text-slate-700">Bütçe:</span>
+                                <span class="text-blue-600"> ${budget}₺</span>
                             </div>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center">
+                                <span>Detaylar</span>
+                                <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                            </button>
                         </div>
-                        
-                        <!-- Project Team -->
-                        <div class="mb-8">
-                            <h3 class="text-xl font-bold text-gray-800 mb-4">Proje Ekibi</h3>
-                            <div class="flex flex-wrap gap-4">
-                                <div class="text-center">
-                                    <div class="w-16 h-16 bg-indigo-200 rounded-full flex items-center justify-center mb-2">
-                                        <span class="text-lg font-medium text-indigo-600">AY</span>
-                                    </div>
-                                    <div class="font-medium text-gray-800">Ahmet Yılmaz</div>
-                                    <div class="text-sm text-gray-600">Proje Sorumlusu</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="w-16 h-16 bg-purple-200 rounded-full flex items-center justify-center mb-2">
-                                        <span class="text-lg font-medium text-purple-600">ED</span>
-                                    </div>
-                                    <div class="font-medium text-gray-800">Elif Demir</div>
-                                    <div class="text-sm text-gray-600">Teknik Lider</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center mb-2">
-                                        <span class="text-lg font-medium text-blue-600">CK</span>
-                                    </div>
-                                    <div class="font-medium text-gray-800">Can Kaya</div>
-                                    <div class="text-sm text-gray-600">Geliştirici</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mb-2">
-                                        <span class="text-lg font-medium text-green-600">MS</span>
-                                    </div>
-                                    <div class="font-medium text-gray-800">Merve Şahin</div>
-                                    <div class="text-sm text-gray-600">UX Tasarımcı</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="w-16 h-16 bg-orange-200 rounded-full flex items-center justify-center mb-2">
-                                        <span class="text-lg font-medium text-orange-600">AC</span>
-                                    </div>
-                                    <div class="font-medium text-gray-800">Ali Çelik</div>
-                                    <div class="text-sm text-gray-600">Test Uzmanı</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Tasks Section -->
-                        <div class="project-section">
-                            <div class="section-header">
-                                <h3 class="section-title">Görevler</h3>
-                                <div class="section-actions">
-                                    <button class="btn-secondary px-4 py-2 rounded-lg">Yeni Görev</button>
-                                </div>
-                            </div>
-                            
-                            <div class="space-y-4">
-                                <div class="task-item">
-                                    <div class="task-header">
-                                        <div class="task-title">Sistem analizi raporu hazırlama</div>
-                                        <div class="task-status bg-green-100 text-green-800">Tamamlandı</div>
-                                    </div>
-                                    <div class="task-description">
-                                        Tüm ihtiyaçlar belirlendi ve sistem mimarisi hazırlandı.
-                                    </div>
-                                    <div class="task-details">
-                                        <span><i class="fas fa-calendar"></i> 10.04.2024</span>
-                                        <span><i class="fas fa-user"></i> Ahmet Yılmaz</span>
-                                        <span><i class="fas fa-hourglass-half"></i> 2 gün</span>
-                                    </div>
-                                    <div class="task-progress">
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 100%"></div>
-                                        </div>
-                                        <span class="task-progress-text">100%</span>
-                                    </div>
-                                    <div class="task-actions">
-                                        <button class="btn-secondary px-3 py-1 rounded">Düzenle</button>
-                                        <button class="btn-secondary px-3 py-1 rounded">Sil</button>
-                                    </div>
-                                </div>
-                                
-                                <div class="task-item">
-                                    <div class="task-header">
-                                        <div class="task-title">Yazılım geliştirme - Arayüz tasarımı</div>
-                                        <div class="task-status bg-blue-100 text-blue-800">Devam Ediyor</div>
-                                    </div>
-                                    <div class="task-description">
-                                        Kullanıcı arayüzü tasarımı tamamlandı, geliştiriciler tarafından entegre ediliyor.
-                                    </div>
-                                    <div class="task-details">
-                                        <span><i class="fas fa-calendar"></i> 01.05.2024</span>
-                                        <span><i class="fas fa-user"></i> Merve Şahin</span>
-                                        <span><i class="fas fa-hourglass-half"></i> 15 gün</span>
-                                    </div>
-                                    <div class="task-progress">
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 60%"></div>
-                                        </div>
-                                        <span class="task-progress-text">60%</span>
-                                    </div>
-                                    <div class="task-actions">
-                                        <button class="btn-secondary px-3 py-1 rounded">Düzenle</button>
-                                        <button class="btn-secondary px-3 py-1 rounded">Sil</button>
-                                    </div>
-                                </div>
-                                
-                                <div class="task-item">
-                                    <div class="task-header">
-                                        <div class="task-title">Yazılım geliştirme - Backend entegrasyonu</div>
-                                        <div class="task-status bg-yellow-100 text-yellow-800">Beklemede</div>
-                                    </div>
-                                    <div class="task-description">
-                                        Backend entegrasyonu için gereken API'lerin tanımlanması ve geliştirilmesi.
-                                    </div>
-                                    <div class="task-details">
-                                        <span><i class="fas fa-calendar"></i> 15.05.2024</span>
-                                        <span><i class="fas fa-user"></i> Can Kaya</span>
-                                        <span><i class="fas fa-hourglass-half"></i> 10 gün</span>
-                                    </div>
-                                    <div class="task-progress">
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 0%"></div>
-                                        </div>
-                                        <span class="task-progress-text">0%</span>
-                                    </div>
-                                    <div class="task-actions">
-                                        <button class="btn-secondary px-3 py-1 rounded">Düzenle</button>
-                                        <button class="btn-secondary px-3 py-1 rounded">Sil</button>
-                                    </div>
-                                </div>
-                                
-                                <div class="task-item">
-                                    <div class="task-header">
-                                        <div class="task-title">Test planı hazırlama</div>
-                                        <div class="task-status bg-gray-100 text-gray-800">Planlanıyor</div>
-                                    </div>
-                                    <div class="task-description">
-                                        Test senaryolarının oluşturulması ve test planının hazırlanması.
-                                    </div>
-                                    <div class="task-details">
-                                        <span><i class="fas fa-calendar"></i> 20.05.2024</span>
-                                        <span><i class="fas fa-user"></i> Ali Çelik</span>
-                                        <span><i class="fas fa-hourglass-half"></i> 5 gün</span>
-                                    </div>
-                                    <div class="task-progress">
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 0%"></div>
-                                        </div>
-                                        <span class="task-progress-text">0%</span>
-                                    </div>
-                                    <div class="task-actions">
-                                        <button class="btn-secondary px-3 py-1 rounded">Düzenle</button>
-                                        <button class="btn-secondary px-3 py-1 rounded">Sil</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Communication and Interaction Section -->
-                        <div class="project-section">
-                            <div class="section-header">
-                                <h3 class="section-title">İletişim ve Etkileşim</h3>
-                                <div class="section-actions">
-                                    <button class="btn-secondary px-4 py-2 rounded-lg">Yeni Mesaj</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Comments Section -->
-                            <div class="mb-8">
-                                <h4 class="font-semibold text-gray-800 mb-4">Yorumlar</h4>
-                                <div id="commentsSection" class="space-y-4">
-                                    <div class="comment-item">
-                                        <div class="comment-header">
-                                            <div class="comment-author">
-                                                <div class="comment-avatar">AY</div>
-                                                <div class="comment-author-name">Ahmet Yılmaz</div>
-                                            </div>
-                                            <div class="comment-time">Bugün, 10:30</div>
-                                        </div>
-                                        <div class="comment-content">
-                                            Yazılım geliştirme aşamasında bazı teknik zorluklarla karşılaştık, ancak ekibimiz hızlıca çözüm üretti. Şu an %60 tamamladık.
-                                        </div>
-                                        <div class="comment-actions">
-                                            <a href="#"><i class="fas fa-thumbs-up"></i> Beğen</a>
-                                            <a href="#"><i class="fas fa-reply"></i> Yanıtla</a>
-                                        </div>
-                                        
-                                        <!-- Reply Thread -->
-                                        <div class="discussion-thread">
-                                            <div class="thread-item">
-                                                <div class="comment-header">
-                                                    <div class="comment-author">
-                                                        <div class="comment-avatar">ED</div>
-                                                        <div class="comment-author-name">Elif Demir</div>
-                                                    </div>
-                                                    <div class="comment-time">Bugün, 11:15</div>
-                                                </div>
-                                                <div class="comment-content">
-                                                    Evet, özellikle doğal dil işleme modülünde bazı zor
+                    </div>
+                `;
+                
+                ideasContainer.prepend(newIdeaCard);
+                
+                // Reset form and hide
+                submitIdeaForm.reset();
+                ideaForm.classList.add('hidden');
+                ideaForm.classList.remove('fade-in');
+                document.body.style.overflow = 'auto';
+                
+                // Show success message (simulated)
+                alert('Fikriniz başarıyla gönderildi! İlgili kurul tarafından değerlendirilecektir.');
+            });
+
+            // File upload area click
+            fileUploadArea.addEventListener('click', function() {
+                document.getElementById('fileUpload').click();
+            });
+
+            // Drag and drop functionality
+            fileUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                fileUploadArea.classList.add('border-blue-400', 'bg-blue-50');
+            });
+
+            fileUploadArea.addEventListener('dragleave', function() {
+                fileUploadArea.classList.remove('border-blue-400', 'bg-blue-50');
+            });
+
+            fileUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                fileUploadArea.classList.remove('border-blue-400', 'bg-blue-50');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const fileNames = Array.from(files).map(file => file.name).join(', ');
+                    alert(`Dosyalar yüklendi: ${fileNames}`);
+                }
+            });
+
+            // Close form when clicking outside
+            ideaForm.addEventListener('click', function(e) {
+                if (e.target === ideaForm) {
+                    ideaForm.classList.add('hidden');
+                    ideaForm.classList.remove('fade-in');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

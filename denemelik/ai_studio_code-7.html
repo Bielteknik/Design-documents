@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Spark v3.0 - İnteraktif İnovasyon Platformu</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; /* slate-100 */ }
+        .hidden { display: none !important; }
+        .card-link { cursor: pointer; }
+        /* Slider'ların görünümünü iyileştirmek için */
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #4f46e5; /* indigo-600 */ cursor: pointer; border-radius: 50%; }
+        input[type=range]::-moz-range-thumb { width: 20px; height: 20px; background: #4f46e5; cursor: pointer; border-radius: 50%; }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- ANA GÖRÜNÜM: Fikir Listesi -->
+    <div id="main-view">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <header class="flex flex-col sm:flex-row justify-between items-center mb-10 pb-5 border-b border-slate-200">
+                <div>
+                    <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Project Spark</h1>
+                    <p class="text-lg text-slate-500 mt-1">Geleceği şekillendirecek bir sonraki büyük fikri ateşleyin.</p>
+                </div>
+                <button id="addIdeaBtn" class="w-full sm:w-auto mt-4 sm:mt-0 flex items-center justify-center gap-2 bg-indigo-600 text-white font-semibold py-2.5 px-6 rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105">
+                    <!-- SVG ikonu -->
+                    <span>Yeni Fikir Ekle</span>
+                </button>
+            </header>
+            <main id="ideasContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"></main>
+        </div>
+    </div>
+
+    <!-- DETAY GÖRÜNÜMÜ: Tek bir fikrin tüm detayları -->
+    <div id="detail-view" class="hidden">
+        <!-- Detay içeriği JavaScript ile buraya eklenecek -->
+    </div>
+
+    <!-- MODAL: Yeni Fikir Ekleme Formu -->
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+        <!-- Modal içeriği önceki kodla aynı, buraya eklenmedi -->
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        const mainView = document.getElementById('main-view');
+        const detailView = document.getElementById('detail-view');
+        const ideasContainer = document.getElementById('ideasContainer');
+        // Modal elemanları... (önceki koddan)
+
+        let currentIdeaId = null; // Hangi detayın görüntülendiğini takip etmek için
+
+        // --- VERİ MODELİ ---
+        let ideas = [
+            {
+                id: 1,
+                title: "Akıllı Atık Yönetim Sistemi",
+                submitter: "Ayşe Yılmaz",
+                description: "Şehirlerdeki çöp konteynerlerine doluluk sensörleri yerleştirerek toplama rotalarını optimize eden ve yakıt tasarrufu sağlayan bir sistem.",
+                tags: ["Sürdürülebilirlik", "IoT", "Akıllı Şehir"],
+                impact: "Yıllık %15 yakıt tasarrufu, daha temiz şehirler, karbon emisyonunda azalma.",
+                budget: "250.000 TL (Sensörler + Yazılım Geliştirme)",
+                resources: "1 Gömülü Sistem Müh., 2 Backend Dev., 1 Mobil Geliştirici",
+                evaluations: [
+                    { user: "Ali V.", criteria: { strategicFit: 5, innovation: 4, feasibility: 4 } },
+                    { user: "Zeynep S.", criteria: { strategicFit: 5, innovation: 5, feasibility: 4 } },
+                ],
+                discussion: [
+                    { user: "Mehmet B.", text: "Harika fikir! Peki sensörlerin enerji ihtiyacını nasıl karşılayacağız?", timestamp: "2 saat önce" },
+                    { user: "Ayşe Yılmaz", text: "Güneş enerjili küçük panellerle kendi enerjilerini üretecek şekilde tasarlamayı düşünüyoruz.", timestamp: "1 saat önce" },
+                ]
+            },
+        ];
+        // ... Diğer fikirler eklenebilir
+
+        // --- YARDIMCI FONKSİYONLAR ---
+        const calculateAverageScore = (idea) => {
+            if (idea.evaluations.length === 0) return 0;
+            let totalScore = 0;
+            idea.evaluations.forEach(ev => {
+                totalScore += ev.criteria.strategicFit + ev.criteria.innovation + ev.criteria.feasibility;
+            });
+            // Toplam puanı, değerlendirme sayısı * kriter sayısına bölüp 5 üzerinden normalize et
+            return (totalScore / (idea.evaluations.length * 3)) * 5;
+        };
+
+        // --- GÖRÜNÜM KONTROLÜ ---
+        const showMainView = () => {
+            currentIdeaId = null;
+            detailView.classList.add('hidden');
+            mainView.classList.remove('hidden');
+            renderIdeas();
+        };
+
+        const showDetailView = (ideaId) => {
+            currentIdeaId = ideaId;
+            mainView.classList.add('hidden');
+            detailView.classList.remove('hidden');
+            renderIdeaDetail(ideaId);
+        };
+
+        // --- RENDER FONKSİYONLARI ---
+        const renderIdeas = () => {
+            ideasContainer.innerHTML = '';
+            ideas.forEach(idea => {
+                const ideaCard = document.createElement('div');
+                ideaCard.className = 'bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 card-link';
+                ideaCard.dataset.id = idea.id;
+                
+                const avgScore = calculateAverageScore(idea);
+                // ... (Kart içeriği önceki kodla aynı, sadece puan dinamik hale getirildi)
+                ideaCard.innerHTML = `
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-3">
+                            <h2 class="text-xl font-bold text-slate-900">${idea.title}</h2>
+                            <div class="flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-sm font-semibold px-3 py-1 rounded-full">
+                                <span>⭐ ${avgScore.toFixed(1)}</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-600">${idea.description}</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 border-t"><p class="text-sm text-slate-500 font-medium">Sunan: <span class="font-bold">${idea.submitter}</span></p></div>`;
+                ideaCard.addEventListener('click', () => showDetailView(idea.id));
+                ideasContainer.appendChild(ideaCard);
+            });
+        };
+        
+        const renderIdeaDetail = (ideaId) => {
+            const idea = ideas.find(i => i.id === ideaId);
+            if (!idea) { showMainView(); return; }
+            
+            const avgScore = calculateAverageScore(idea);
+            const evaluationsHTML = idea.evaluations.map(ev => `...`).join(''); // Önceki koddan alınabilir
+            const discussionHTML = idea.discussion.map(d => `...`).join(''); // Önceki koddan alınabilir
+
+            detailView.innerHTML = `
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                    <button id="backBtn" class="bg-white text-slate-700 font-semibold py-2 px-5 rounded-lg hover:bg-slate-200 transition-colors mb-6">&larr; Geri Dön</button>
+                    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                        <!-- BAŞLIK VE ÖZET BİLGİLER -->
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900">${idea.title}</h1>
+                        <p class="text-lg text-slate-500 mt-1">Sunan: ${idea.submitter}</p>
+                        <div class="my-4 text-2xl font-bold text-emerald-600">Ortalama Puan: ${avgScore.toFixed(1)} / 5.0</div>
+                        
+                        <!-- İŞ DETAYLARI -->
+                        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 border-t pt-8">
+                            <div><h4 class="font-bold text-slate-800">Potansiyel Etki</h4><p class="text-slate-600 mt-1">${idea.impact}</p></div>
+                            <div><h4 class="font-bold text-slate-800">Tahmini Bütçe</h4><p class="text-slate-600 mt-1">${idea.budget}</p></div>
+                            <div><h4 class="font-bold text-slate-800">Gerekli Kaynaklar</h4><p class="text-slate-600 mt-1">${idea.resources}</p></div>
+                        </div>
+
+                        <!-- DEĞERLENDİRME BÖLÜMÜ (İNTERAKTİF) -->
+                        <div class="mt-10 border-t pt-8">
+                            <h3 class="text-2xl font-bold mb-4">Değerlendirmeler (${idea.evaluations.length})</h3>
+                            <div class="mt-6 p-6 bg-slate-50 rounded-lg">
+                                <h4 class="font-semibold text-lg mb-4 text-slate-800">Bu Fikri Değerlendir</h4>
+                                <form id="evaluationForm" class="space-y-4">
+                                    <div>
+                                        <label for="strategicFit" class="flex justify-between font-medium text-sm"><span>Stratejik Uyum</span><span id="strategicFitValue" class="font-bold text-indigo-600">3</span></label>
+                                        <input type="range" id="strategicFit" min="1" max="5" value="3" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                                    </div>
+                                    <div>
+                                        <label for="innovation" class="flex justify-between font-medium text-sm"><span>Yenilikçilik</span><span id="innovationValue" class="font-bold text-indigo-600">3</span></label>
+                                        <input type="range" id="innovation" min="1" max="5" value="3" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                                    </div>
+                                    <div>
+                                        <label for="feasibility" class="flex justify-between font-medium text-sm"><span>Uygulanabilirlik</span><span id="feasibilityValue" class="font-bold text-indigo-600">3</span></label>
+                                        <input type="range" id="feasibility" min="1" max="5" value="3" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                                    </div>
+                                    <button type="submit" class="bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700">Değerlendirmeyi Gönder</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- TARTIŞMA BÖLÜMÜ (İNTERAKTİF) -->
+                        <div class="mt-10 border-t pt-8">
+                            <h3 class="text-2xl font-bold mb-4">Beyin Fırtınası ve Sorular (${idea.discussion.length})</h3>
+                            <div id="discussionContainer" class="mt-4 space-y-4 divide-y divide-slate-200">${discussionHTML}</div>
+                            <form id="commentForm" class="mt-6">
+                                <textarea id="commentText" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500" rows="3" placeholder="Soru sor veya fikrini paylaş..." required></textarea>
+                                <button type="submit" class="mt-2 bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700">Yorum Yap</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>`;
+
+            document.getElementById('backBtn').addEventListener('click', showMainView);
+            
+            // Slider değerlerini anlık gösteren event listener'lar
+            document.getElementById('strategicFit').addEventListener('input', e => document.getElementById('strategicFitValue').textContent = e.target.value);
+            document.getElementById('innovation').addEventListener('input', e => document.getElementById('innovationValue').textContent = e.target.value);
+            document.getElementById('feasibility').addEventListener('input', e => document.getElementById('feasibilityValue').textContent = e.target.value);
+        };
+        
+        // --- OLAY YÖNETİMİ (EVENT HANDLING) ---
+        detailView.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const idea = ideas.find(i => i.id === currentIdeaId);
+            if (!idea) return;
+
+            // Değerlendirme Formu Gönderildiğinde
+            if (e.target.id === 'evaluationForm') {
+                const newEvaluation = {
+                    user: "Kullanıcı " + Math.floor(Math.random() * 100), // Gerçek projede giriş yapmış kullanıcı alınır
+                    criteria: {
+                        strategicFit: parseInt(document.getElementById('strategicFit').value),
+                        innovation: parseInt(document.getElementById('innovation').value),
+                        feasibility: parseInt(document.getElementById('feasibility').value)
+                    }
+                };
+                idea.evaluations.push(newEvaluation);
+                renderIdeaDetail(currentIdeaId); // Sayfayı anında güncelle
+            }
+
+            // Yorum Formu Gönderildiğinde
+            if (e.target.id === 'commentForm') {
+                const commentText = document.getElementById('commentText').value;
+                const newComment = {
+                    user: "Kullanıcı " + Math.floor(Math.random() * 100),
+                    text: commentText,
+                    timestamp: "şimdi"
+                };
+                idea.discussion.push(newComment);
+                renderIdeaDetail(currentIdeaId); // Sayfayı anında güncelle
+                document.getElementById('commentText').value = ''; // Textarea'yı temizle
+            }
+        });
+
+        // --- İLK ÇALIŞTIRMA ---
+        showMainView();
+        
+        // Modal ile ilgili event listener'lar önceki koddan alınabilir...
+    });
+    </script>
+</body>
+</html>

@@ -3,2822 +3,666 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kurumsal İnovasyon Yönetim Sistemi</title>
+    <title>Kurumsal İnovasyon Merkezi - Fikir Yönetim Sistemi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            color: #0f172a;
-            min-height: 100vh;
-        }
-        
-        /* Enhanced Corporate Color Palette */
-        :root {
-            --primary-50: #eff6ff;
-            --primary-100: #dbeafe;
-            --primary-500: #3b82f6;
-            --primary-600: #2563eb;
-            --primary-700: #1d4ed8;
-            --primary-800: #1e40af;
-            --primary-900: #1e3a8a;
-            
-            --slate-50: #f8fafc;
-            --slate-100: #f1f5f9;
-            --slate-200: #e2e8f0;
-            --slate-300: #cbd5e1;
-            --slate-400: #94a3b8;
-            --slate-500: #64748b;
-            --slate-600: #475569;
-            --slate-700: #334155;
-            --slate-800: #1e293b;
-            --slate-900: #0f172a;
-            
-            --success-50: #f0fdf4;
-            --success-500: #22c55e;
-            --success-600: #16a34a;
-            --success-700: #15803d;
-            
-            --warning-50: #fefce8;
-            --warning-500: #eab308;
-            --warning-600: #ca8a04;
-            
-            --error-50: #fef2f2;
-            --error-500: #ef4444;
-            --error-600: #dc2626;
-            
-            --indigo-50: #eef2ff;
-            --indigo-500: #6366f1;
-            --indigo-600: #4f46e5;
-            
-            --emerald-50: #ecfdf5;
-            --emerald-500: #10b981;
-            --emerald-600: #059669;
-            
-            --violet-50: #f5f3ff;
-            --violet-500: #8b5cf6;
-            --violet-600: #7c3aed;
-        }
-        
-        /* Enhanced Corporate Header */
-        .professional-header {
-            background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 25%, var(--primary-900) 50%, var(--indigo-900) 75%, var(--violet-900) 100%);
-            box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.3), 0 4px 6px -2px rgba(15, 23, 42, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .professional-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            opacity: 0.3;
-        }
-        
-        /* Enhanced Corporate Cards */
-        .professional-card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            border-radius: 24px;
-            box-shadow: 
-                0 4px 6px -1px rgba(15, 23, 42, 0.05),
-                0 2px 4px -1px rgba(15, 23, 42, 0.03),
-                0 0 0 1px rgba(255, 255, 255, 0.8);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .professional-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, 
-                var(--primary-500) 0%, 
-                var(--indigo-500) 25%, 
-                var(--violet-500) 50%, 
-                var(--emerald-500) 75%, 
-                var(--primary-500) 100%);
-            opacity: 0;
-            transition: all 0.4s ease;
-            background-size: 200% 100%;
-            animation: gradientShift 3s ease-in-out infinite;
-        }
-        
-        .professional-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.03) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-        
-        .professional-card:hover {
-            border-color: rgba(59, 130, 246, 0.2);
-            box-shadow: 
-                0 20px 25px -5px rgba(15, 23, 42, 0.08),
-                0 10px 10px -5px rgba(15, 23, 42, 0.04),
-                0 0 0 1px rgba(59, 130, 246, 0.1),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
-            transform: translateY(-4px) scale(1.01);
-        }
-        
-        .professional-card:hover::before {
-            opacity: 1;
-        }
-        
-        .professional-card:hover::after {
-            opacity: 1;
-        }
-        
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        /* Enhanced Status Indicators */
-        .status-draft { 
-            border-left: 4px solid var(--slate-400);
-            background: linear-gradient(135deg, var(--slate-50), rgba(248, 250, 252, 0.5));
-        }
-        .status-review { 
-            border-left: 4px solid var(--warning-500);
-            background: linear-gradient(135deg, var(--warning-50), rgba(254, 252, 232, 0.5));
-        }
-        .status-approved { 
-            border-left: 4px solid var(--success-500);
-            background: linear-gradient(135deg, var(--success-50), rgba(240, 253, 244, 0.5));
-        }
-        .status-development { 
-            border-left: 4px solid var(--primary-500);
-            background: linear-gradient(135deg, var(--primary-50), rgba(239, 246, 255, 0.5));
-        }
-        .status-completed { 
-            border-left: 4px solid var(--emerald-600);
-            background: linear-gradient(135deg, var(--emerald-50), rgba(236, 253, 245, 0.5));
-        }
-        .status-rejected { 
-            border-left: 4px solid var(--error-500);
-            background: linear-gradient(135deg, var(--error-50), rgba(254, 242, 242, 0.5));
-        }
-        
-        /* Enhanced Corporate Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, 
-                var(--primary-600) 0%, 
-                var(--primary-700) 50%, 
-                var(--indigo-600) 100%);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            padding: 16px 32px;
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 0.025em;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-                0 8px 16px -4px rgba(59, 130, 246, 0.3),
-                0 4px 8px -2px rgba(59, 130, 246, 0.2),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.3), 
-                transparent);
-            transition: left 0.6s ease;
-        }
-        
-        .btn-primary::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            padding: 1px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.3), 
-                transparent, 
-                rgba(255, 255, 255, 0.1));
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: xor;
-            pointer-events: none;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, 
-                var(--primary-700) 0%, 
-                var(--primary-800) 50%, 
-                var(--indigo-700) 100%);
-            box-shadow: 
-                0 16px 24px -4px rgba(59, 130, 246, 0.4),
-                0 8px 16px -4px rgba(59, 130, 246, 0.3),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px) scale(1.02);
-        }
-        
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-        
-        .btn-primary:active {
-            transform: translateY(-1px) scale(1.01);
-            transition: all 0.1s ease;
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            color: var(--slate-700);
-            border: 1px solid var(--slate-300);
-            border-radius: 12px;
-            padding: 14px 28px;
-            font-weight: 500;
-            font-size: 14px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.1);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(248, 250, 252, 0.95);
-            border-color: var(--slate-400);
-            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1);
-            transform: translateY(-1px);
-        }
-        
-        /* Enhanced Corporate Inputs */
-        .professional-input {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--slate-300);
-            border-radius: 12px;
-            padding: 14px 18px;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 100%;
-            box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
-        }
-        
-        .professional-input:focus {
-            outline: none;
-            border-color: var(--primary-500);
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1), 0 4px 6px -1px rgba(15, 23, 42, 0.1);
-            transform: translateY(-1px);
-        }
-        
-        .professional-input::placeholder {
-            color: var(--slate-400);
-            font-weight: 400;
-        }
-        
-        /* Enhanced Corporate Modal */
-        .professional-modal {
-            backdrop-filter: blur(12px);
-            background: rgba(15, 23, 42, 0.8);
-        }
-        
-        .modal-content {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--slate-200);
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
-            max-height: 90vh;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .modal-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary-500), var(--indigo-500), var(--violet-500), transparent);
-        }
-        
-        /* Enhanced Corporate Typography */
-        .heading-1 {
-            font-size: 32px;
-            font-weight: 800;
-            line-height: 1.2;
-            color: var(--slate-900);
-            letter-spacing: -0.025em;
-        }
-        
-        .heading-2 {
-            font-size: 24px;
-            font-weight: 700;
-            line-height: 1.3;
-            color: var(--slate-900);
-            letter-spacing: -0.02em;
-        }
-        
-        .heading-3 {
-            font-size: 20px;
-            font-weight: 600;
-            line-height: 1.4;
-            color: var(--slate-800);
-            letter-spacing: -0.015em;
-        }
-        
-        .body-text {
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1.6;
-            color: var(--slate-600);
-        }
-        
-        .caption-text {
-            font-size: 12px;
-            font-weight: 500;
-            line-height: 1.4;
-            color: var(--slate-500);
-            letter-spacing: 0.025em;
-        }
-        
-        /* Professional Animations */
-        .fade-in {
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .slide-up {
-            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        
-        /* Spectacular Floating Particles */
-        .floating-particle {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            25% { transform: translateY(-20px) rotate(90deg); }
-            50% { transform: translateY(-10px) rotate(180deg); }
-            75% { transform: translateY(-30px) rotate(270deg); }
-        }
-        
-        /* Professional Progress */
-        .progress-container {
-            background: var(--gray-200);
-            border-radius: 8px;
-            height: 8px;
-            overflow: hidden;
-        }
-        
-        .progress-bar {
-            background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
-            height: 100%;
-            border-radius: 8px;
-            transition: width 0.3s ease;
-        }
-        
-        /* Professional Step Indicators */
-        .step-indicator {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-        
-        /* Step Content Visibility */
-        .step-content {
-            display: none;
-        }
-        
-        .step-content.active {
-            display: block;
-            animation: fadeInStep 0.3s ease-in-out;
-        }
-        
-        @keyframes fadeInStep {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        .step-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            border: 2px solid var(--gray-300);
-            background: white;
-            color: var(--gray-500);
-        }
-        
-        .step-indicator.active .step-circle {
-            border-color: var(--primary-500);
-            background: var(--primary-500);
-            color: white;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-        }
-        
-        .step-indicator.completed .step-circle {
-            border-color: var(--success-500);
-            background: var(--success-500);
-            color: white;
-        }
-        
-        .step-label {
-            margin-top: 8px;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--gray-500);
-            text-align: center;
-        }
-        
-        .step-indicator.active .step-label {
-            color: var(--primary-600);
-            font-weight: 600;
-        }
-        
-        .step-indicator.completed .step-label {
-            color: var(--success-600);
-            font-weight: 600;
-        }
-        
-        /* Professional Floating Action Button */
-        .fab {
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, 
-                var(--primary-600) 0%, 
-                var(--primary-700) 50%, 
-                var(--indigo-600) 100%);
-            color: white;
-            border: none;
-            box-shadow: 
-                0 12px 24px -4px rgba(59, 130, 246, 0.4),
-                0 8px 16px -4px rgba(59, 130, 246, 0.3),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            position: fixed;
-            overflow: hidden;
-        }
-        
-        .fab::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.2), 
-                transparent, 
-                rgba(255, 255, 255, 0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .fab:hover {
-            transform: scale(1.15) rotate(5deg);
-            box-shadow: 
-                0 20px 32px -4px rgba(59, 130, 246, 0.5),
-                0 12px 24px -4px rgba(59, 130, 246, 0.4),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
-        }
-        
-        .fab:hover::before {
-            opacity: 1;
-        }
-        
-        .fab:active {
-            transform: scale(1.05) rotate(2deg);
-            transition: all 0.1s ease;
-        }
-        
-        /* Icon Animation Classes */
-        .icon-bounce {
-            animation: iconBounce 2s ease-in-out infinite;
-        }
-        
-        .icon-pulse {
-            animation: iconPulse 2s ease-in-out infinite;
-        }
-        
-        .icon-rotate {
-            animation: iconRotate 3s linear infinite;
-        }
-        
-        .icon-glow {
-            filter: drop-shadow(0 0 8px currentColor);
-            animation: iconGlow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes iconBounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-8px); }
-            60% { transform: translateY(-4px); }
-        }
-        
-        @keyframes iconPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-        
-        @keyframes iconRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        @keyframes iconGlow {
-            from { filter: drop-shadow(0 0 4px currentColor); }
-            to { filter: drop-shadow(0 0 12px currentColor); }
-        }
-        
-        /* Professional Filters */
-        .filter-container {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Enhanced Corporate Stats Cards */
-        .stat-card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            border-radius: 20px;
-            padding: 32px;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(135deg, 
-                var(--primary-500) 0%, 
-                var(--indigo-500) 25%, 
-                var(--violet-500) 50%, 
-                var(--emerald-500) 75%, 
-                var(--primary-500) 100%);
-            opacity: 0;
-            transition: all 0.4s ease;
-            background-size: 200% 100%;
-            animation: gradientShift 3s ease-in-out infinite;
-        }
-        
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-        
-        .stat-card:hover {
-            border-color: rgba(59, 130, 246, 0.2);
-            box-shadow: 
-                0 20px 25px -5px rgba(15, 23, 42, 0.08),
-                0 10px 10px -5px rgba(15, 23, 42, 0.04),
-                0 0 0 1px rgba(59, 130, 246, 0.1),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
-            transform: translateY(-4px) scale(1.02);
-        }
-        
-        .stat-card:hover::before {
-            opacity: 1;
-        }
-        
-        .stat-card:hover::after {
-            opacity: 1;
-        }
-        
-        .stat-number {
-            font-size: 36px;
-            font-weight: 800;
-            line-height: 1;
-            margin-bottom: 12px;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, var(--slate-900), var(--slate-700));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .stat-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--slate-600);
-            letter-spacing: 0.025em;
-            text-transform: uppercase;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .heading-1 { font-size: 24px; }
-            .heading-2 { font-size: 20px; }
-            .heading-3 { font-size: 18px; }
-            
-            .fab {
-                bottom: 24px;
-                right: 24px;
-                width: 56px;
-                height: 56px;
-            }
-        }
-        
-        /* Professional Loading States */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-        
-        .skeleton {
-            background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-        
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        /* Social & Collaboration Features */
-        .vote-button {
-            transition: all 0.2s ease;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .vote-button.voted {
-            background: var(--primary-50);
-            color: var(--primary-700);
-            border-color: var(--primary-200);
-        }
-        
-        .vote-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .comment-bubble {
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
-            position: relative;
-        }
-        
-        .comment-bubble::before {
-            content: '';
-            position: absolute;
-            top: 12px;
-            left: -6px;
-            width: 0;
-            height: 0;
-            border-top: 6px solid transparent;
-            border-bottom: 6px solid transparent;
-            border-right: 6px solid var(--gray-200);
-        }
-        
-        .comment-bubble::after {
-            content: '';
-            position: absolute;
-            top: 12px;
-            left: -5px;
-            width: 0;
-            height: 0;
-            border-top: 6px solid transparent;
-            border-bottom: 6px solid transparent;
-            border-right: 6px solid var(--gray-50);
-        }
-        
-        .team-member-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 12px;
-        }
-        
-        .collaboration-badge {
-            background: linear-gradient(135deg, var(--success-500), var(--success-600));
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #581c87 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .step-indicator { background: linear-gradient(45deg, #3b82f6, #8b5cf6); }
+        .progress-bar { background: linear-gradient(90deg, #10b981, #3b82f6); }
+        .modal-backdrop { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
+        .form-section { border-left: 4px solid #3b82f6; }
+        .priority-high { background: linear-gradient(45deg, #ef4444, #dc2626); }
+        .priority-medium { background: linear-gradient(45deg, #f59e0b, #d97706); }
+        .priority-low { background: linear-gradient(45deg, #10b981, #059669); }
+        .status-draft { background: linear-gradient(45deg, #6b7280, #4b5563); }
+        .status-review { background: linear-gradient(45deg, #f59e0b, #d97706); }
+        .status-approved { background: linear-gradient(45deg, #10b981, #059669); }
+        .status-rejected { background: linear-gradient(45deg, #ef4444, #dc2626); }
+        .department-tag { background: linear-gradient(45deg, #8b5cf6, #7c3aed); }
     </style>
 </head>
-<body>
-    <!-- Spectacular Header -->
-    <header class="relative overflow-hidden">
-        <!-- Animated Background -->
-        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-blue-900 to-purple-900">
-            <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
-            
-            <!-- Floating Particles -->
-            <div class="absolute inset-0">
-                <div class="floating-particle absolute top-20 left-10 w-2 h-2 bg-white/20 rounded-full"></div>
-                <div class="floating-particle absolute top-32 right-20 w-3 h-3 bg-blue-300/30 rounded-full" style="animation-delay: 1s;"></div>
-                <div class="floating-particle absolute top-48 left-1/4 w-1 h-1 bg-purple-300/40 rounded-full" style="animation-delay: 2s;"></div>
-                <div class="floating-particle absolute top-16 right-1/3 w-2 h-2 bg-indigo-300/30 rounded-full" style="animation-delay: 3s;"></div>
-                <div class="floating-particle absolute top-40 left-2/3 w-1 h-1 bg-white/30 rounded-full" style="animation-delay: 4s;"></div>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-2xl">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-5xl font-bold mb-3 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                        🚀 Kurumsal İnovasyon Merkezi
+                    </h1>
+                    <p class="text-blue-100 text-xl font-medium">Stratejik Fikir Yönetim & Değerlendirme Platformu</p>
+                </div>
+                <div class="flex gap-6">
+                    <div class="glass-effect rounded-xl px-6 py-4 text-center">
+                        <p class="text-sm text-gray-600 font-medium">Aktif Projeler</p>
+                        <p class="text-3xl font-bold text-blue-600" id="activeProjects">8</p>
+                    </div>
+                    <div class="glass-effect rounded-xl px-6 py-4 text-center">
+                        <p class="text-sm text-gray-600 font-medium">Toplam ROI</p>
+                        <p class="text-3xl font-bold text-green-600">₺2.4M</p>
+                    </div>
+                    <div class="glass-effect rounded-xl px-6 py-4 text-center">
+                        <p class="text-sm text-gray-600 font-medium">Değerlendirmede</p>
+                        <p class="text-3xl font-bold text-orange-600" id="pendingIdeas">5</p>
+                    </div>
+                </div>
             </div>
-            
-            <!-- Gradient Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
         </div>
-
-        <div class="relative max-w-7xl mx-auto px-6 py-12">
-            <!-- Spectacular Header Top -->
-            <div class="flex items-center justify-between mb-12">
-                <div class="flex items-center space-x-6">
-                    <div class="relative group">
-                        <div class="w-20 h-20 bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-lg rounded-3xl flex items-center justify-center border border-white/30 shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-                            <i class="fas fa-lightbulb text-4xl text-white icon-glow"></i>
-                        </div>
-                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 rounded-full flex items-center justify-center shadow-lg animate-pulse">
-                            <i class="fas fa-star text-white text-sm icon-bounce"></i>
-                        </div>
-                        <div class="absolute -bottom-1 -left-1 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-md">
-                            <i class="fas fa-check text-white text-xs"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <h1 class="text-4xl md:text-5xl font-black text-white mb-2 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                            İnovasyon Merkezi
-                        </h1>
-                        <p class="text-blue-100 text-lg font-medium flex items-center">
-                            <i class="fas fa-rocket mr-2 text-yellow-300"></i>
-                            Geleceği Şekillendiren Fikirler
-                        </p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <div class="text-3xl md:text-4xl font-black text-white mb-1" id="totalBudget">₺2.450.000</div>
-                    <div class="text-blue-200 text-sm font-medium flex items-center justify-end">
-                        <i class="fas fa-chart-line mr-2 text-green-300"></i>
-                        Toplam Yatırım Portföyü
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Spectacular KPI Dashboard -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
-                <div class="group relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                    <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-blue-500/30 group-hover:shadow-2xl group-hover:shadow-blue-500/40 transition-all duration-300">
-                            <i class="fas fa-lightbulb text-white text-2xl icon-pulse"></i>
-                        </div>
-                        <div class="text-3xl font-black text-white mb-2" id="totalIdeas">24</div>
-                        <div class="text-blue-100 text-sm font-semibold">Toplam Fikir</div>
-                        <div class="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full animate-pulse" style="width: 85%"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="group relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                    <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 via-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-emerald-500/30 group-hover:shadow-2xl group-hover:shadow-emerald-500/40 transition-all duration-300">
-                            <i class="fas fa-check-circle text-white text-2xl icon-bounce"></i>
-                        </div>
-                        <div class="text-3xl font-black text-white mb-2" id="approvedIdeas">8</div>
-                        <div class="text-green-100 text-sm font-semibold">Onaylanan</div>
-                        <div class="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-green-400 to-emerald-600 rounded-full animate-pulse" style="width: 65%"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="group relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                    <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 via-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-orange-500/30 group-hover:shadow-2xl group-hover:shadow-orange-500/40 transition-all duration-300">
-                            <i class="fas fa-clock text-white text-2xl icon-rotate"></i>
-                        </div>
-                        <div class="text-3xl font-black text-white mb-2" id="reviewIdeas">6</div>
-                        <div class="text-yellow-100 text-sm font-semibold">İncelemede</div>
-                        <div class="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-yellow-400 to-orange-600 rounded-full animate-pulse" style="width: 45%"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="group relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                    <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                        <div class="w-16 h-16 bg-gradient-to-br from-purple-400 via-violet-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-purple-500/30 group-hover:shadow-2xl group-hover:shadow-purple-500/40 transition-all duration-300">
-                            <i class="fas fa-cogs text-white text-2xl icon-rotate"></i>
-                        </div>
-                        <div class="text-3xl font-black text-white mb-2" id="developmentIdeas">4</div>
-                        <div class="text-purple-100 text-sm font-semibold">Geliştirmede</div>
-                        <div class="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-purple-400 to-pink-600 rounded-full animate-pulse" style="width: 35%"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="group relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                    <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-400 via-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-indigo-500/30 group-hover:shadow-2xl group-hover:shadow-indigo-500/40 transition-all duration-300">
-                            <i class="fas fa-trophy text-white text-2xl icon-glow"></i>
-                        </div>
-                        <div class="text-3xl font-black text-white mb-2">%68</div>
-                        <div class="text-indigo-100 text-sm font-semibold">Başarı Oranı</div>
-                        <div class="mt-2 h-1 bg-white/20 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-indigo-400 to-blue-600 rounded-full animate-pulse" style="width: 68%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-
-        </div>
-        
-
     </header>
 
-    <!-- Professional Main Content -->
-    <main class="max-w-7xl mx-auto px-6 py-8">
-        <!-- Modern Navigation -->
-        <div class="mb-8">
-            <div class="flex items-center space-x-2">
-                <button id="ideasTab" class="group relative px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-lightbulb text-lg"></i>
-                        </div>
-                        <span>Fikirler</span>
-                        <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">
-                            ${ideas.length}
-                        </div>
-                    </div>
-                    <div class="absolute inset-0 bg-gradient-to-r from-orange-400 to-pink-400 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </button>
-                
-                <button id="projectsTab" class="group relative px-6 py-3 bg-white text-gray-700 rounded-2xl font-bold text-lg shadow-lg border-2 border-gray-200 hover:border-orange-300 hover:shadow-xl transition-all duration-300 hover:scale-105">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-gray-100 group-hover:bg-orange-100 rounded-xl flex items-center justify-center transition-colors">
-                            <i class="fas fa-project-diagram text-lg group-hover:text-orange-600"></i>
-                        </div>
-                        <span class="group-hover:text-orange-600 transition-colors">Projeler</span>
-                        <div class="w-6 h-6 bg-gray-100 group-hover:bg-orange-100 rounded-full flex items-center justify-center text-sm font-bold group-hover:text-orange-600 transition-colors">
-                            ${projects.length}
-                        </div>
-                    </div>
-                </button>
+    <div class="container mx-auto px-6 py-8">
+        <!-- Ana Kontrol Paneli -->
+        <div class="grid lg:grid-cols-4 gap-8 mb-8">
+            <button onclick="openIdeaModal()" class="bg-gradient-to-br from-blue-600 to-purple-700 text-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+                <div class="text-4xl mb-4">💡</div>
+                <h3 class="text-xl font-bold mb-2">Yeni Fikir Öner</h3>
+                <p class="text-blue-100">Detaylı fikir haritası oluştur</p>
+            </button>
+            
+            <div class="bg-white p-8 rounded-2xl shadow-xl">
+                <div class="text-4xl mb-4">📊</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Analitik Dashboard</h3>
+                <p class="text-gray-600">Performans metrikleri</p>
+            </div>
+            
+            <div class="bg-white p-8 rounded-2xl shadow-xl">
+                <div class="text-4xl mb-4">👥</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Ekip Yönetimi</h3>
+                <p class="text-gray-600">Proje ekipleri</p>
+            </div>
+            
+            <div class="bg-white p-8 rounded-2xl shadow-xl">
+                <div class="text-4xl mb-4">📈</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">ROI Analizi</h3>
+                <p class="text-gray-600">Yatırım getirisi</p>
             </div>
         </div>
 
-        <!-- Ideas View -->
-        <div id="ideasView">
-            <!-- Professional Ideas Grid -->
-            <div id="ideasGrid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                <!-- Ideas will be populated by JavaScript -->
-            </div>
-
-            <!-- Professional Empty State -->
-            <div id="emptyState" class="hidden text-center py-16">
-                <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-search text-3xl text-gray-400"></i>
+        <!-- Filtre ve Arama -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+            <div class="flex flex-wrap gap-4 items-center justify-between">
+                <div class="flex flex-wrap gap-3">
+                    <button class="filter-btn px-6 py-3 rounded-full font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-all" data-filter="all">
+                        Tüm Fikirler
+                    </button>
+                    <button class="filter-btn px-6 py-3 rounded-full font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all" data-filter="draft">
+                        Taslak
+                    </button>
+                    <button class="filter-btn px-6 py-3 rounded-full font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all" data-filter="review">
+                        Değerlendirmede
+                    </button>
+                    <button class="filter-btn px-6 py-3 rounded-full font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all" data-filter="approved">
+                        Onaylandı
+                    </button>
                 </div>
-                <h3 class="heading-3 mb-2">Fikir bulunamadı</h3>
-                <p class="body-text mb-6">Arama kriterlerinizi değiştirmeyi deneyin veya yeni bir fikir ekleyin</p>
-                <button onclick="openModal()" class="btn-primary">
-                    <i class="fas fa-plus mr-2"></i>İlk Fikri Ekle
-                </button>
+                <div class="flex gap-4">
+                    <select id="sortSelect" class="px-4 py-3 border border-gray-300 rounded-xl font-medium">
+                        <option value="newest">En Yeni</option>
+                        <option value="roi">En Yüksek ROI</option>
+                        <option value="budget">Bütçe (Düşük-Yüksek)</option>
+                        <option value="priority">Öncelik</option>
+                    </select>
+                    <input type="text" placeholder="Fikir ara..." class="px-4 py-3 border border-gray-300 rounded-xl w-64" id="searchInput">
+                </div>
             </div>
         </div>
 
-        <!-- Projects View -->
-        <div id="projectsView" class="hidden">
-            <!-- Enhanced Project Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="stat-card group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary-500/25 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-tasks text-white text-2xl"></i>
-                    </div>
-                    <div class="stat-number text-primary-600">12</div>
-                    <div class="stat-label">Aktif Proje</div>
-                    <div class="mt-3 w-full bg-slate-200 rounded-full h-1">
-                        <div class="bg-gradient-to-r from-primary-500 to-primary-600 h-1 rounded-full" style="width: 75%"></div>
-                    </div>
-                </div>
-                <div class="stat-card group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/25 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-check-circle text-white text-2xl"></i>
-                    </div>
-                    <div class="stat-number text-emerald-600">8</div>
-                    <div class="stat-label">Tamamlanan</div>
-                    <div class="mt-3 w-full bg-slate-200 rounded-full h-1">
-                        <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-1 rounded-full" style="width: 100%"></div>
-                    </div>
-                </div>
-                <div class="stat-card group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-warning-500 to-warning-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-warning-500/25 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-clock text-white text-2xl"></i>
-                    </div>
-                    <div class="stat-number text-warning-600">3</div>
-                    <div class="stat-label">Geciken</div>
-                    <div class="mt-3 w-full bg-slate-200 rounded-full h-1">
-                        <div class="bg-gradient-to-r from-warning-500 to-warning-600 h-1 rounded-full" style="width: 25%"></div>
-                    </div>
-                </div>
-                <div class="stat-card group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-violet-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-violet-500/25 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-users text-white text-2xl"></i>
-                    </div>
-                    <div class="stat-number text-violet-600">45</div>
-                    <div class="stat-label">Takım Üyesi</div>
-                    <div class="mt-3 w-full bg-slate-200 rounded-full h-1">
-                        <div class="bg-gradient-to-r from-violet-500 to-violet-600 h-1 rounded-full" style="width: 90%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Projects Grid -->
-            <div id="projectsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Projects will be populated by JavaScript -->
-            </div>
-        </div>
-    </main>
-
-    <!-- Modern Floating Action Button -->
-    <button id="fabAddIdea" class="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-full shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 hover:scale-110 z-50 flex items-center justify-center group" title="Yeni Fikir Ekle">
-        <i class="fas fa-plus text-xl group-hover:rotate-90 transition-transform duration-300"></i>
-    </button>
-
-    <!-- Modern Add/Edit Idea Modal -->
-    <div id="ideaModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
-                <!-- Modal Header -->
-                <div class="bg-gradient-to-r from-orange-500 to-pink-500 px-8 py-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h2 class="text-2xl font-bold" id="modalTitle">✨ Yeni Fikir Ekle</h2>
-                            <p class="text-orange-100 mt-1">Hayal gücünü gerçeğe dönüştür</p>
-                        </div>
-                        <button id="closeModal" class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors">
-                            <i class="fas fa-times text-white"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Modal Content -->
-                <div class="p-8 overflow-y-auto max-h-[calc(90vh-140px)]">
-                    <form id="ideaForm" class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-800 mb-3">
-                                🎯 Fikir Başlığı *
-                            </label>
-                            <input type="text" id="ideaTitle" required 
-                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors" 
-                                   placeholder="Muhteşem fikrinizin başlığını yazın...">
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-800 mb-3">
-                                    📂 Kategori *
-                                </label>
-                                <select id="ideaCategory" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors">
-                                    <option value="">Kategori seçin</option>
-                                    <option value="teknoloji">🚀 Teknoloji</option>
-                                    <option value="pazarlama">📢 Pazarlama</option>
-                                    <option value="urun">📦 Ürün Geliştirme</option>
-                                    <option value="operasyon">⚙️ Operasyon</option>
-                                    <option value="finans">💰 Finans</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-bold text-gray-800 mb-3">
-                                    ⚡ Öncelik *
-                                </label>
-                                <select id="ideaPriority" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors">
-                                    <option value="">Öncelik seçin</option>
-                                    <option value="critical">🔥 Kritik</option>
-                                    <option value="high">⬆️ Yüksek</option>
-                                    <option value="medium">➡️ Orta</option>
-                                    <option value="low">⬇️ Düşük</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-bold text-gray-800 mb-3">
-                                📝 Fikir Özeti *
-                            </label>
-                            <textarea id="ideaSummary" rows="4" required maxlength="500"
-                                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors resize-none"
-                                      placeholder="Fikrinizi kısaca ve etkileyici şekilde özetleyin..."></textarea>
-                            <div class="flex justify-end mt-2">
-                                <span class="text-sm text-gray-500" id="summaryCounter">0/500</span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-gray-800 mb-3">
-                                🎯 Problem Tanımı *
-                            </label>
-                            <textarea id="problemDescription" rows="3" required
-                                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors resize-none"
-                                      placeholder="Hangi problemi çözmeyi hedefliyorsunuz?"></textarea>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-bold text-gray-800 mb-3">
-                                💡 Çözüm Önerisi *
-                            </label>
-                            <textarea id="solutionDescription" rows="4" required
-                                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors resize-none"
-                                      placeholder="Önerdiğiniz çözümü detaylandırın..."></textarea>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-800 mb-3">
-                                    💰 Tahmini Bütçe (₺)
-                                </label>
-                                <input type="number" id="estimatedBudget" min="0"
-                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors"
-                                       placeholder="0">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-bold text-gray-800 mb-3">
-                                    ⏱️ Süre (Ay)
-                                </label>
-                                <input type="number" id="estimatedDuration" min="1" max="60"
-                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors"
-                                       placeholder="1">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-bold text-gray-800 mb-3">
-                                    👥 Ekip Büyüklüğü
-                                </label>
-                                <input type="number" id="teamSize" min="1" max="50"
-                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-colors"
-                                       placeholder="1">
-                            </div>
-                        </div>
-
-                        <!-- Hidden fields for compatibility -->
-                        <input type="hidden" id="targetAudience" value="">
-                        <input type="hidden" id="expectedBenefits" value="">
-                        <input type="hidden" id="roiEstimate" value="0">
-                        <input type="hidden" id="riskLevel" value="medium">
-                        <input type="hidden" id="requiredResources" value="">
-                        <input type="hidden" id="potentialPartners" value="">
-                        <input type="hidden" id="internalStakeholders" value="">
-                        <input type="hidden" id="externalStakeholders" value="">
-                        <input type="hidden" id="partnershipType" value="">
-                        <input type="hidden" id="phase1" value="">
-                        <input type="hidden" id="phase2" value="">
-                        <input type="hidden" id="phase3" value="">
-                        <input type="hidden" id="kpis" value="">
-                        <input type="hidden" id="measurementMethods" value="">
-                    </form>
-                </div>
-
-                <!-- Modal Footer -->
-                <div class="px-8 py-6 bg-gray-50 border-t border-gray-200">
-                    <div class="flex justify-end space-x-4">
-                        <button type="button" id="cancelBtn" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-colors">
-                            İptal
-                        </button>
-                        <button type="button" id="saveDraftBtn" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-medium transition-colors">
-                            💾 Taslak Kaydet
-                        </button>
-                        <button type="submit" id="submitBtn" class="px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-xl font-bold transition-all duration-300 hover:scale-105">
-                            🚀 Fikri Gönder
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <!-- Fikirler Listesi -->
+        <div id="ideasContainer" class="space-y-6">
+            <!-- Fikirler buraya JavaScript ile eklenecek -->
         </div>
     </div>
 
-    <!-- Modern Idea Detail Modal -->
-    <div id="ideaDetailModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
+    <!-- Fikir Ekleme Modal -->
+    <div id="ideaModal" class="fixed inset-0 modal-backdrop hidden z-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
-                <div id="ideaDetailContent">
-                    <!-- Content will be populated by JavaScript -->
+            <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-screen overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="gradient-bg text-white p-6 rounded-t-2xl">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-3xl font-bold">🚀 Yeni İnovasyon Projesi</h2>
+                        <button onclick="closeIdeaModal()" class="text-white hover:text-gray-200 text-2xl">&times;</button>
+                    </div>
+                    <p class="text-blue-100 mt-2">Detaylı fikir haritası ve proje planı oluşturun</p>
                 </div>
+
+                <!-- Progress Indicator -->
+                <div class="p-6 border-b">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="step-indicator text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">1</div>
+                            <span class="font-medium text-gray-700">Temel Bilgiler</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-gray-200 text-gray-600 rounded-full w-10 h-10 flex items-center justify-center font-bold">2</div>
+                            <span class="font-medium text-gray-400">Teknik Detaylar</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-gray-200 text-gray-600 rounded-full w-10 h-10 flex items-center justify-center font-bold">3</div>
+                            <span class="font-medium text-gray-400">Finansal Analiz</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-gray-200 text-gray-600 rounded-full w-10 h-10 flex items-center justify-center font-bold">4</div>
+                            <span class="font-medium text-gray-400">Ekip & Zaman</span>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="progress-bar h-2 rounded-full w-1/4"></div>
+                    </div>
+                </div>
+
+                <!-- Form Content -->
+                <form id="ideaForm" class="p-6">
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <!-- Sol Kolon -->
+                        <div class="space-y-6">
+                            <!-- Temel Bilgiler -->
+                            <div class="form-section pl-6">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">📋 Temel Bilgiler</h3>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Başlığı *</label>
+                                        <input type="text" id="projectTitle" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Projenizin çarpıcı başlığı...">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori *</label>
+                                        <select id="projectCategory" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
+                                            <option value="">Kategori seçin...</option>
+                                            <option value="dijital-donusum">🔄 Dijital Dönüşüm</option>
+                                            <option value="sureciyilestirme">⚡ Süreç İyileştirme</option>
+                                            <option value="musteri-deneyimi">👥 Müşteri Deneyimi</option>
+                                            <option value="maliyet-optimizasyonu">💰 Maliyet Optimizasyonu</option>
+                                            <option value="yeni-urun">🆕 Yeni Ürün/Hizmet</option>
+                                            <option value="surdurulebilirlik">🌱 Sürdürülebilirlik</option>
+                                            <option value="calisan-deneyimi">😊 Çalışan Deneyimi</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Öncelik Seviyesi *</label>
+                                        <select id="priorityLevel" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
+                                            <option value="low">🟢 Düşük - Uzun vadeli</option>
+                                            <option value="medium">🟡 Orta - 6-12 ay</option>
+                                            <option value="high">🔴 Yüksek - Acil (0-6 ay)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Problem Tanımı -->
+                            <div class="form-section pl-6">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">🎯 Problem & Çözüm</h3>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Mevcut Problem *</label>
+                                        <textarea id="problemDescription" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="Hangi problemi çözüyorsunuz? Mevcut durumun olumsuz etkileri neler?"></textarea>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Önerilen Çözüm *</label>
+                                        <textarea id="solutionDescription" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="Çözüm önerinizi detaylı açıklayın. Nasıl çalışacak?"></textarea>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Beklenen Faydalar</label>
+                                        <textarea id="expectedBenefits" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="Bu çözümün sağlayacağı faydalar neler olacak?"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sağ Kolon -->
+                        <div class="space-y-6">
+                            <!-- Finansal Analiz -->
+                            <div class="form-section pl-6">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">💰 Finansal Analiz</h3>
+                                
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-2">Başlangıç Yatırımı (₺)</label>
+                                            <input type="number" id="initialInvestment" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="0">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-2">Yıllık İşletme Maliyeti (₺)</label>
+                                            <input type="number" id="operationalCost" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="0">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-2">Yıllık Tasarruf (₺)</label>
+                                            <input type="number" id="annualSavings" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="0">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-2">Yıllık Gelir Artışı (₺)</label>
+                                            <input type="number" id="revenueIncrease" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="0">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-blue-50 p-4 rounded-xl">
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-semibold text-gray-700">Tahmini ROI:</span>
+                                            <span id="calculatedROI" class="text-2xl font-bold text-blue-600">-%</span>
+                                        </div>
+                                        <div class="flex justify-between items-center mt-2">
+                                            <span class="font-semibold text-gray-700">Geri Ödeme Süresi:</span>
+                                            <span id="paybackPeriod" class="text-lg font-bold text-green-600">- ay</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Departman ve Ekip -->
+                            <div class="form-section pl-6">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">👥 Departman & Ekip</h3>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Sorumlu Departmanlar *</label>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="departments" value="it" class="rounded">
+                                                <span>💻 IT</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="departments" value="hr" class="rounded">
+                                                <span>👥 İK</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="departments" value="finance" class="rounded">
+                                                <span>💰 Finans</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="departments" value="operations" class="rounded">
+                                                <span>⚙️ Operasyon</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="departments" value="marketing" class="rounded">
+                                                <span>📢 Pazarlama</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="checkbox" name="departments" value="sales" class="rounded">
+                                                <span>💼 Satış</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Gerekli Ekip Büyüklüğü</label>
+                                        <select id="teamSize" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
+                                            <option value="1-3">1-3 kişi</option>
+                                            <option value="4-7">4-7 kişi</option>
+                                            <option value="8-15">8-15 kişi</option>
+                                            <option value="15+">15+ kişi</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Süresi</label>
+                                        <select id="projectDuration" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
+                                            <option value="1-3">1-3 ay</option>
+                                            <option value="3-6">3-6 ay</option>
+                                            <option value="6-12">6-12 ay</option>
+                                            <option value="12+">12+ ay</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ek Bilgiler -->
+                            <div class="form-section pl-6">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">📎 Ek Bilgiler</h3>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Risk Analizi</label>
+                                        <textarea id="riskAnalysis" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="Potansiyel riskler ve önleme stratejileri..."></textarea>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Başarı Metrikleri</label>
+                                        <textarea id="successMetrics" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="Projenin başarısını nasıl ölçeceğiz?"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Footer -->
+                    <div class="flex justify-between items-center mt-8 pt-6 border-t">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Öneren Kişi</label>
+                            <input type="text" id="proposerName" class="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="Adınız Soyadınız">
+                        </div>
+                        <div class="flex gap-4">
+                            <button type="button" onclick="closeIdeaModal()" class="px-8 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-medium">
+                                İptal
+                            </button>
+                            <button type="button" onclick="saveDraft()" class="px-8 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 font-medium">
+                                Taslak Kaydet
+                            </button>
+                            <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 font-medium">
+                                Değerlendirmeye Gönder 🚀
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <script>
-        // Professional data structure
-        let projects = [
-            {
-                id: 1,
-                name: "AI Müşteri Deneyimi Platformu",
-                description: "Yapay zeka destekli müşteri hizmetleri ve kişiselleştirme platformu geliştirme projesi",
-                status: "active",
-                priority: "high",
-                progress: 75,
-                startDate: "2024-01-15",
-                endDate: "2024-09-15",
-                budget: 450000,
-                spent: 337500,
-                teamSize: 12,
-                manager: "Ahmet Yılmaz",
-                category: "teknoloji",
-                milestones: [
-                    { name: "Gereksinim Analizi", completed: true, date: "2024-02-15" },
-                    { name: "Sistem Tasarımı", completed: true, date: "2024-03-30" },
-                    { name: "AI Model Geliştirme", completed: true, date: "2024-05-15" },
-                    { name: "Platform Entegrasyonu", completed: false, date: "2024-07-30" },
-                    { name: "Test & Optimizasyon", completed: false, date: "2024-08-30" },
-                    { name: "Canlı Yayın", completed: false, date: "2024-09-15" }
-                ],
-                risks: [
-                    { level: "medium", description: "AI model performans optimizasyonu" },
-                    { level: "low", description: "Mevcut sistemlerle entegrasyon" }
-                ],
-                teamMembers: [
-                    { name: "Ahmet Yılmaz", role: "Proje Yöneticisi", avatar: "AY" },
-                    { name: "Zeynep Demir", role: "AI Uzmanı", avatar: "ZD" },
-                    { name: "Can Öztürk", role: "Backend Developer", avatar: "CÖ" },
-                    { name: "Selin Kara", role: "UX Designer", avatar: "SK" },
-                    { name: "Murat Yıldız", role: "DevOps", avatar: "MY" }
-                ],
-                kpis: {
-                    "Müşteri Memnuniyeti": { current: 4.2, target: 4.5, unit: "/5" },
-                    "Yanıt Süresi": { current: 3.2, target: 2.0, unit: "dk" },
-                    "Çözüm Oranı": { current: 78, target: 85, unit: "%" },
-                    "Maliyet Tasarrufu": { current: 150000, target: 200000, unit: "₺" }
-                }
-            },
-            {
-                id: 2,
-                name: "Sürdürülebilir Tedarik Zinciri",
-                description: "Çevre dostu tedarik zinciri dönüşümü ve karbon ayak izi azaltma projesi",
-                status: "active",
-                priority: "high",
-                progress: 45,
-                startDate: "2024-02-01",
-                endDate: "2025-02-01",
-                budget: 320000,
-                spent: 144000,
-                teamSize: 8,
-                manager: "Elif Kaya",
-                category: "operasyon",
-                milestones: [
-                    { name: "Mevcut Durum Analizi", completed: true, date: "2024-03-15" },
-                    { name: "Tedarikçi Değerlendirmesi", completed: true, date: "2024-04-30" },
-                    { name: "Sürdürülebilirlik Stratejisi", completed: false, date: "2024-06-30" },
-                    { name: "Pilot Uygulama", completed: false, date: "2024-10-30" },
-                    { name: "Tam Ölçekli Geçiş", completed: false, date: "2025-01-30" }
-                ],
-                risks: [
-                    { level: "high", description: "Tedarikçi uyum süreci" },
-                    { level: "medium", description: "Maliyet artışı riski" }
-                ],
-                teamMembers: [
-                    { name: "Elif Kaya", role: "Proje Yöneticisi", avatar: "EK" },
-                    { name: "Murat Yıldız", role: "Tedarik Uzmanı", avatar: "MY" },
-                    { name: "Ayşe Çelik", role: "Sürdürülebilirlik Uzmanı", avatar: "AÇ" }
-                ],
-                kpis: {
-                    "Karbon Azalması": { current: 25, target: 45, unit: "%" },
-                    "Maliyet Tasarrufu": { current: 8, target: 20, unit: "%" },
-                    "Tedarikçi Uyumu": { current: 65, target: 90, unit: "%" },
-                    "Sürdürülebilirlik Skoru": { current: 3.8, target: 4.2, unit: "/5" }
-                }
-            },
-            {
-                id: 3,
-                name: "Dijital Pazarlama Otomasyonu",
-                description: "AI destekli pazarlama otomasyonu ve müşteri segmentasyonu platformu",
-                status: "completed",
-                priority: "medium",
-                progress: 100,
-                startDate: "2023-10-01",
-                endDate: "2024-04-01",
-                budget: 280000,
-                spent: 275000,
-                teamSize: 10,
-                manager: "Mehmet Özkan",
-                category: "pazarlama",
-                milestones: [
-                    { name: "Platform Seçimi", completed: true, date: "2023-11-15" },
-                    { name: "Sistem Kurulumu", completed: true, date: "2023-12-30" },
-                    { name: "Entegrasyonlar", completed: true, date: "2024-02-15" },
-                    { name: "Test Kampanyaları", completed: true, date: "2024-03-15" },
-                    { name: "Tam Ölçekli Lansman", completed: true, date: "2024-04-01" }
-                ],
-                risks: [],
-                teamMembers: [
-                    { name: "Mehmet Özkan", role: "Proje Yöneticisi", avatar: "MÖ" },
-                    { name: "Selin Kara", role: "Marketing Specialist", avatar: "SK" },
-                    { name: "Can Öztürk", role: "Developer", avatar: "CÖ" }
-                ],
-                kpis: {
-                    "E-mail Açılma Oranı": { current: 38, target: 35, unit: "%" },
-                    "Tıklama Oranı": { current: 9.2, target: 8.0, unit: "%" },
-                    "Conversion Rate": { current: 16.5, target: 15.0, unit: "%" },
-                    "ROI": { current: 285, target: 250, unit: "%" }
-                }
-            },
-            {
-                id: 4,
-                name: "Mobil Uygulama Geliştirme",
-                description: "iOS ve Android platformları için kurumsal mobil uygulama geliştirme",
-                status: "active",
-                priority: "high",
-                progress: 60,
-                startDate: "2024-03-01",
-                endDate: "2024-10-01",
-                budget: 380000,
-                spent: 228000,
-                teamSize: 15,
-                manager: "Fatma Şahin",
-                category: "teknoloji",
-                milestones: [
-                    { name: "UI/UX Tasarım", completed: true, date: "2024-04-15" },
-                    { name: "Backend API", completed: true, date: "2024-05-30" },
-                    { name: "iOS Geliştirme", completed: false, date: "2024-07-30" },
-                    { name: "Android Geliştirme", completed: false, date: "2024-08-15" },
-                    { name: "Test & QA", completed: false, date: "2024-09-15" },
-                    { name: "App Store Yayını", completed: false, date: "2024-10-01" }
-                ],
-                risks: [
-                    { level: "medium", description: "App Store onay süreci" },
-                    { level: "low", description: "Performans optimizasyonu" }
-                ],
-                teamMembers: [
-                    { name: "Fatma Şahin", role: "Proje Yöneticisi", avatar: "FŞ" },
-                    { name: "Ali Veli", role: "iOS Developer", avatar: "AV" },
-                    { name: "Ayşe Yılmaz", role: "Android Developer", avatar: "AY" },
-                    { name: "Emre Kaya", role: "Backend Developer", avatar: "EK" }
-                ],
-                kpis: {
-                    "Geliştirme İlerlemesi": { current: 60, target: 100, unit: "%" },
-                    "Bug Sayısı": { current: 23, target: 10, unit: "adet" },
-                    "Performans Skoru": { current: 85, target: 95, unit: "/100" },
-                    "Kullanıcı Testi Skoru": { current: 4.1, target: 4.5, unit: "/5" }
-                }
-            },
-            {
-                id: 5,
-                name: "Veri Analitik Dashboard",
-                description: "İş zekası ve veri görselleştirme dashboard platformu geliştirme",
-                status: "planning",
-                priority: "medium",
-                progress: 15,
-                startDate: "2024-06-01",
-                endDate: "2024-12-01",
-                budget: 220000,
-                spent: 33000,
-                teamSize: 6,
-                manager: "Oğuz Demir",
-                category: "teknoloji",
-                milestones: [
-                    { name: "Gereksinim Toplama", completed: true, date: "2024-06-30" },
-                    { name: "Veri Modelleme", completed: false, date: "2024-08-15" },
-                    { name: "Dashboard Tasarımı", completed: false, date: "2024-09-30" },
-                    { name: "Geliştirme", completed: false, date: "2024-11-15" },
-                    { name: "Test & Lansman", completed: false, date: "2024-12-01" }
-                ],
-                risks: [
-                    { level: "medium", description: "Veri kalitesi ve entegrasyon" },
-                    { level: "low", description: "Performans gereksinimleri" }
-                ],
-                teamMembers: [
-                    { name: "Oğuz Demir", role: "Proje Yöneticisi", avatar: "OD" },
-                    { name: "Zeynep Demir", role: "Data Scientist", avatar: "ZD" },
-                    { name: "Burak Yıldız", role: "Frontend Developer", avatar: "BY" }
-                ],
-                kpis: {
-                    "Veri Kalitesi": { current: 75, target: 95, unit: "%" },
-                    "Dashboard Performansı": { current: 0, target: 90, unit: "/100" },
-                    "Kullanıcı Memnuniyeti": { current: 0, target: 4.0, unit: "/5" },
-                    "Raporlama Hızı": { current: 0, target: 5, unit: "sn" }
-                }
-            },
-            {
-                id: 6,
-                name: "Siber Güvenlik Altyapısı",
-                description: "Kurumsal siber güvenlik sistemlerinin güçlendirilmesi ve modernizasyonu",
-                status: "delayed",
-                priority: "critical",
-                progress: 30,
-                startDate: "2024-01-01",
-                endDate: "2024-08-01",
-                budget: 500000,
-                spent: 200000,
-                teamSize: 8,
-                manager: "Kemal Arslan",
-                category: "teknoloji",
-                milestones: [
-                    { name: "Güvenlik Denetimi", completed: true, date: "2024-02-15" },
-                    { name: "Risk Analizi", completed: true, date: "2024-03-30" },
-                    { name: "Güvenlik Araçları Seçimi", completed: false, date: "2024-05-15" },
-                    { name: "Sistem Kurulumu", completed: false, date: "2024-06-30" },
-                    { name: "Test & Doğrulama", completed: false, date: "2024-07-30" }
-                ],
-                risks: [
-                    { level: "high", description: "Sistem kesintisi riski" },
-                    { level: "high", description: "Bütçe aşımı" },
-                    { level: "medium", description: "Personel eğitimi süresi" }
-                ],
-                teamMembers: [
-                    { name: "Kemal Arslan", role: "Güvenlik Uzmanı", avatar: "KA" },
-                    { name: "Deniz Kaya", role: "Network Uzmanı", avatar: "DK" },
-                    { name: "Cem Özkan", role: "Sistem Yöneticisi", avatar: "CÖ" }
-                ],
-                kpis: {
-                    "Güvenlik Skoru": { current: 65, target: 95, unit: "/100" },
-                    "Olay Tespit Süresi": { current: 45, target: 15, unit: "dk" },
-                    "Sistem Uptime": { current: 98.5, target: 99.9, unit: "%" },
-                    "Güvenlik Eğitimi": { current: 40, target: 100, unit: "%" }
-                }
-            }
-        ];
-
+        // Örnek veriler
         let ideas = [
             {
                 id: 1,
-                title: "AI Destekli Müşteri Deneyimi Platformu",
-                category: "teknoloji",
-                priority: "critical",
-                status: "approved",
-                summary: "Yapay zeka teknolojileri kullanarak müşteri deneyimini kişiselleştiren ve otomatikleştiren kapsamlı platform geliştirme projesi.",
-                problemDescription: "Mevcut müşteri hizmetleri sistemimiz 7/24 destek sağlayamıyor ve müşteri sorularına geç yanıt veriliyor. Bu durum müşteri memnuniyetini %23 azaltıyor.",
-                solutionDescription: "AI chatbot, sentiment analizi, otomatik ticket yönlendirme ve kişiselleştirilmiş öneri sistemi içeren entegre platform.",
-                expectedBenefits: "• Müşteri memnuniyeti %40 artış\n• Operasyon maliyeti %30 azalma\n• Yanıt süresi %80 iyileşme\n• 7/24 destek kapasitesi",
-                targetAudience: "Tüm müşteri segmentleri, özellikle dijital kanalları kullanan 25-45 yaş arası kullanıcılar",
-                estimatedBudget: 450000,
-                estimatedDuration: 8,
-                teamSize: 12,
-                requiredResources: "• AI/ML uzmanı (2 kişi)\n• Backend geliştirici (3 kişi)\n• Frontend geliştirici (2 kişi)\n• UX/UI tasarımcı (2 kişi)\n• Proje yöneticisi (1 kişi)\n• QA uzmanı (2 kişi)",
-                potentialPartners: "• Microsoft Azure AI Services\n• Google Cloud AI Platform\n• IBM Watson\n• Lokal AI teknoloji firmaları",
-                internalStakeholders: "• IT Departmanı\n• Müşteri Hizmetleri\n• Pazarlama Ekibi\n• Üst Yönetim\n• Satış Ekibi",
-                externalStakeholders: "• Mevcut müşteriler\n• Potansiyel müşteriler\n• Teknoloji ortakları\n• Veri güvenliği düzenleyicileri",
-                partnershipType: "strategic",
-                phase1: "Gereksinim analizi, teknoloji araştırması, partner seçimi, proje planı hazırlama (2 ay)",
-                phase2: "AI model geliştirme, platform kodlama, entegrasyon testleri, güvenlik testleri (4 ay)",
-                phase3: "Beta testler, kullanıcı eğitimleri, aşamalı lansman, performans optimizasyonu (2 ay)",
-                kpis: "• Müşteri memnuniyet skoru: 4.5/5\n• Ortalama yanıt süresi: <2 dakika\n• Çözüm oranı: %85\n• Maliyet tasarrufu: ₺200,000/yıl",
-                measurementMethods: "• Customer satisfaction surveys\n• Response time analytics\n• Cost analysis reports\n• AI performance metrics dashboard",
-                roiEstimate: 180,
-                riskLevel: "medium",
-                createdDate: "2024-01-15",
-                lastUpdated: "2024-01-20",
-                createdBy: "Ahmet Yılmaz - CTO",
-                assignedTo: "Teknoloji Komitesi",
-                upvotes: 12,
-                downvotes: 2,
-                comments: [
-                    {id: 1, author: "Elif Kaya", text: "Harika bir fikir! AI entegrasyonu için hangi platformu düşünüyorsunuz?", date: "2024-01-16"},
-                    {id: 2, author: "Mehmet Özkan", text: "Maliyet analizi çok detaylı. Pazarlama perspektifinden de destekliyorum.", date: "2024-01-17"}
-                ],
-                teamMembers: [
-                    {id: 1, name: "Ahmet Yılmaz", role: "Proje Lideri", avatar: "AY"},
-                    {id: 2, name: "Zeynep Demir", role: "AI Uzmanı", avatar: "ZD"},
-                    {id: 3, name: "Can Öztürk", role: "Backend Dev", avatar: "CÖ"},
-                    {id: 4, name: "Selin Kara", role: "UX Designer", avatar: "SK"}
-                ],
-                isCollaborative: true
+                title: "AI Destekli Müşteri Hizmetleri Chatbot Sistemi",
+                category: "dijital-donusum",
+                problem: "Müşteri hizmetleri departmanımız günde ortalama 500 çağrı alıyor ve %60'ı tekrarlanan sorular. Bu durum hem maliyetleri artırıyor hem de müşteri memnuniyetini düşürüyor.",
+                solution: "7/24 çalışan, doğal dil işleme teknolojisi kullanan AI chatbot sistemi. İlk seviye soruları otomatik çözecek, karmaşık durumları insan ajanlarına yönlendirecek.",
+                benefits: "Müşteri memnuniyeti %40 artış, operasyonel maliyet %35 azalış, 7/24 hizmet imkanı",
+                initialInvestment: 250000,
+                operationalCost: 50000,
+                annualSavings: 180000,
+                revenueIncrease: 120000,
+                departments: ["it", "operations", "marketing"],
+                teamSize: "4-7",
+                duration: "6-12",
+                priority: "high",
+                status: "review",
+                proposer: "Ahmet Yılmaz - IT Müdürü",
+                date: new Date('2024-01-15'),
+                votes: 23,
+                comments: 8,
+                roi: 120,
+                payback: 10
             },
             {
                 id: 2,
-                title: "Sürdürülebilir Tedarik Zinciri Dönüşümü",
-                category: "operasyon",
-                priority: "high",
-                status: "review",
-                summary: "Çevre dostu ve sürdürülebilir tedarik zinciri oluşturarak karbon ayak izini azaltma ve maliyet optimizasyonu projesi.",
-                problemDescription: "Mevcut tedarik zincirimiz yüksek karbon emisyonu üretiyor ve artan çevre düzenlemeleri nedeniyle risk oluşturuyor. Ayrıca lojistik maliyetler %15 artış gösteriyor.",
-                solutionDescription: "Yerel tedarikçiler ile ortaklık, elektrikli araç filosu, dijital tedarik zinciri yönetimi ve sürdürülebilirlik metrikleri takip sistemi.",
-                expectedBenefits: "• Karbon emisyonu %45 azalma\n• Lojistik maliyet %20 tasarruf\n• Marka imajı güçlendirme\n• Düzenleyici uyum sağlama",
-                targetAudience: "Çevre bilincine sahip müşteriler, kurumsal müşteriler, sürdürülebilirlik odaklı yatırımcılar",
-                estimatedBudget: 320000,
-                estimatedDuration: 12,
-                teamSize: 8,
-                requiredResources: "• Tedarik zinciri uzmanı (2 kişi)\n• Sürdürülebilirlik danışmanı (1 kişi)\n• Lojistik koordinatörü (2 kişi)\n• Veri analisti (1 kişi)\n• Proje yöneticisi (1 kişi)\n• Satın alma uzmanı (1 kişi)",
-                potentialPartners: "• Yerel organik üreticiler\n• Elektrikli araç kiralama firmaları\n• Sürdürülebilirlik sertifikasyon kuruluşları\n• Çevre teknolojisi firmaları",
-                internalStakeholders: "• Operasyon Departmanı\n• Satın Alma Ekibi\n• Lojistik Departmanı\n• Sürdürülebilirlik Komitesi\n• Finans Departmanı",
-                externalStakeholders: "• Tedarikçiler\n• Lojistik ortakları\n• Çevre düzenleyicileri\n• Sürdürülebilirlik yatırımcıları\n• Çevre kuruluşları",
-                partnershipType: "commercial",
-                phase1: "Mevcut durum analizi, tedarikçi değerlendirmesi, sürdürülebilirlik hedefleri belirleme (3 ay)",
-                phase2: "Yeni tedarikçi anlaşmaları, elektrikli filo kurulumu, dijital sistem entegrasyonu (6 ay)",
-                phase3: "Pilot uygulama, performans ölçümü, tam ölçekli geçiş, sertifikasyon süreçleri (3 ay)",
-                kpis: "• Karbon ayak izi azalması: %45\n• Tedarik maliyeti tasarrufu: %20\n• Tedarikçi sürdürülebilirlik skoru: 4.2/5\n• Müşteri memnuniyet artışı: %15",
-                measurementMethods: "• Karbon ayak izi hesaplama araçları\n• Maliyet analiz raporları\n• Tedarikçi değerlendirme anketleri\n• Müşteri geri bildirim sistemleri",
-                roiEstimate: 145,
-                riskLevel: "medium",
-                createdDate: "2024-01-12",
-                lastUpdated: "2024-01-18",
-                createdBy: "Elif Kaya - Operasyon Müdürü",
-                assignedTo: "Sürdürülebilirlik Komitesi",
-                upvotes: 8,
-                downvotes: 1,
-                comments: [
-                    {id: 1, author: "Ahmet Yılmaz", text: "Sürdürülebilirlik konusunda çok önemli bir adım. Destekliyorum!", date: "2024-01-13"}
-                ],
-                teamMembers: [
-                    {id: 1, name: "Elif Kaya", role: "Proje Lideri", avatar: "EK"},
-                    {id: 2, name: "Murat Yıldız", role: "Tedarik Uzmanı", avatar: "MY"}
-                ],
-                isCollaborative: true
+                title: "Hibrit Çalışma Modeli Optimizasyon Platformu",
+                category: "calisan-deneyimi",
+                problem: "Hibrit çalışma modelinde ofis kapasitesi planlaması, toplantı odası rezervasyonları ve ekip koordinasyonu sorunları yaşanıyor.",
+                solution: "Akıllı ofis yönetim sistemi: Masa rezervasyonu, kapasite takibi, otomatik iklim kontrolü, akıllı toplantı odası yönetimi",
+                benefits: "Ofis maliyetlerinde %25 tasarruf, çalışan memnuniyeti artışı, verimlilik %15 artış",
+                initialInvestment: 180000,
+                operationalCost: 30000,
+                annualSavings: 150000,
+                revenueIncrease: 0,
+                departments: ["hr", "it", "operations"],
+                teamSize: "4-7",
+                duration: "3-6",
+                priority: "medium",
+                status: "approved",
+                proposer: "Zeynep Kaya - İK Direktörü",
+                date: new Date('2024-01-14'),
+                votes: 31,
+                comments: 12,
+                roi: 400,
+                payback: 14
             },
             {
                 id: 3,
-                title: "Dijital Pazarlama Otomasyon Sistemi",
-                category: "pazarlama",
-                priority: "high",
-                status: "development",
-                summary: "Müşteri segmentasyonu, kişiselleştirilmiş kampanyalar ve otomatik pazarlama süreçleri için entegre dijital platform.",
-                problemDescription: "Manuel pazarlama süreçleri zaman alıyor ve kişiselleştirme eksikliği nedeniyle kampanya başarı oranımız %12 seviyesinde kalıyor.",
-                solutionDescription: "AI destekli müşteri segmentasyonu, otomatik e-mail kampanyaları, sosyal medya yönetimi ve real-time analytics dashboard.",
-                expectedBenefits: "• Kampanya ROI %300 artış\n• Pazarlama verimliliği %50 iyileşme\n• Müşteri etkileşimi %80 artış\n• Operasyon süresi %60 azalma",
-                targetAudience: "Tüm müşteri segmentleri, özellikle dijital platformları aktif kullanan 18-55 yaş arası kullanıcılar",
-                estimatedBudget: 280000,
-                estimatedDuration: 6,
-                teamSize: 10,
-                requiredResources: "• Marketing automation uzmanı (2 kişi)\n• Data scientist (2 kişi)\n• Frontend geliştirici (2 kişi)\n• Backend geliştirici (2 kişi)\n• UX/UI tasarımcı (1 kişi)\n• Proje yöneticisi (1 kişi)",
-                potentialPartners: "• HubSpot\n• Salesforce Marketing Cloud\n• Adobe Marketing Suite\n• Lokal pazarlama teknolojisi firmaları",
-                internalStakeholders: "• Pazarlama Departmanı\n• Satış Ekibi\n• IT Departmanı\n• Müşteri Hizmetleri\n• Üst Yönetim",
-                externalStakeholders: "• Mevcut müşteriler\n• Potansiyel müşteriler\n• Dijital ajanslar\n• Sosyal medya platformları\n• E-mail servis sağlayıcıları",
-                partnershipType: "technical",
-                phase1: "Platform seçimi, müşteri veri analizi, kampanya stratejisi geliştirme (2 ay)",
-                phase2: "Sistem kurulumu, entegrasyonlar, otomasyon kuralları oluşturma (3 ay)",
-                phase3: "Test kampanyaları, optimizasyon, tam ölçekli lansman (1 ay)",
-                kpis: "• E-mail açılma oranı: %35\n• Tıklama oranı: %8\n• Conversion rate: %15\n• Müşteri yaşam boyu değeri artışı: %25",
-                measurementMethods: "• Marketing automation analytics\n• Google Analytics\n• CRM entegrasyonu\n• A/B test sonuçları",
-                roiEstimate: 250,
-                riskLevel: "low",
-                createdDate: "2024-01-10",
-                lastUpdated: "2024-01-19",
-                createdBy: "Mehmet Özkan - Pazarlama Müdürü",
-                assignedTo: "Dijital Pazarlama Ekibi",
-                upvotes: 15,
-                downvotes: 0,
-                comments: [
-                    {id: 1, author: "Selin Kara", text: "Pazarlama otomasyonu konusunda çok deneyimliyim, yardımcı olabilirim!", date: "2024-01-11"},
-                    {id: 2, author: "Can Öztürk", text: "Teknik altyapı için backend desteği sağlayabilirim.", date: "2024-01-12"},
-                    {id: 3, author: "Zeynep Demir", text: "AI segmentasyon algoritmaları için birlikte çalışalım.", date: "2024-01-13"}
-                ],
-                teamMembers: [
-                    {id: 1, name: "Mehmet Özkan", role: "Proje Lideri", avatar: "MÖ"},
-                    {id: 2, name: "Selin Kara", role: "Marketing Specialist", avatar: "SK"},
-                    {id: 3, name: "Can Öztürk", role: "Developer", avatar: "CÖ"},
-                    {id: 4, name: "Zeynep Demir", role: "Data Scientist", avatar: "ZD"},
-                    {id: 5, name: "Ali Veli", role: "UX Designer", avatar: "AV"}
-                ],
-                isCollaborative: true
+                title: "Sürdürülebilir Tedarik Zinciri Blockchain Sistemi",
+                category: "surdurulebilirlik",
+                problem: "Tedarik zincirinde şeffaflık eksikliği, sürdürülebilirlik raporlama zorlukları ve tedarikçi doğrulama süreçlerinin uzunluğu",
+                solution: "Blockchain tabanlı tedarik zinciri takip sistemi. Her ürünün üretimden teslimata kadar tüm aşamalarının şeffaf takibi",
+                benefits: "Sürdürülebilirlik skorunda %50 iyileşme, tedarikçi onay sürecinde %60 hızlanma, marka değeri artışı",
+                initialInvestment: 400000,
+                operationalCost: 80000,
+                annualSavings: 200000,
+                revenueIncrease: 300000,
+                departments: ["operations", "it", "finance"],
+                teamSize: "8-15",
+                duration: "12+",
+                priority: "medium",
+                status: "draft",
+                proposer: "Mehmet Demir - Operasyon Müdürü",
+                date: new Date('2024-01-13'),
+                votes: 18,
+                comments: 5,
+                roi: 125,
+                payback: 19
             }
         ];
 
-        // Professional step management
-        let currentStep = 1;
-        const totalSteps = 6;
+        let currentFilter = 'all';
+        let currentSort = 'newest';
 
-        // Professional DOM elements - will be initialized after DOM loads
-        let ideasGrid, ideaModal, ideaDetailModal, closeModal, cancelBtn, saveDraftBtn, nextStepBtn, prevStepBtn, submitBtn, ideaForm, emptyState, progressBar, progressText, stepTitle;
-
-        // Professional step titles
-        const stepTitles = {
-            1: 'Temel Bilgiler',
-            2: 'Detaylı Açıklama',
-            3: 'Fayda & Etki Analizi',
-            4: 'Bütçe & Kaynak Planlaması',
-            5: 'İş Ortaklıkları & Paydaşlar',
-            6: 'Uygulama Planı'
-        };
-
-        // Notification system
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 transform translate-x-full`;
-            
-            const colors = {
-                'success': 'bg-green-500',
-                'error': 'bg-red-500',
-                'info': 'bg-blue-500',
-                'warning': 'bg-yellow-500'
-            };
-            
-            notification.classList.add(colors[type] || colors.info);
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            // Animate in
-            setTimeout(() => {
-                notification.classList.remove('translate-x-full');
-            }, 100);
-            
-            // Animate out and remove
-            setTimeout(() => {
-                notification.classList.add('translate-x-full');
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
+        // Modal açma/kapama
+        function openIdeaModal() {
+            document.getElementById('ideaModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
-        // Professional utility functions
-        function getStatusColor(status) {
-            const colors = {
-                'draft': 'bg-slate-100 text-slate-700 border-slate-200 shadow-sm',
-                'review': 'bg-gradient-to-r from-warning-50 to-warning-100 text-warning-700 border-warning-200 shadow-sm shadow-warning-500/10',
-                'approved': 'bg-gradient-to-r from-success-50 to-emerald-50 text-success-700 border-success-200 shadow-sm shadow-success-500/10',
-                'development': 'bg-gradient-to-r from-primary-50 to-indigo-50 text-primary-700 border-primary-200 shadow-sm shadow-primary-500/10',
-                'completed': 'bg-gradient-to-r from-emerald-50 to-emerald-100 text-emerald-700 border-emerald-200 shadow-sm shadow-emerald-500/10',
-                'rejected': 'bg-gradient-to-r from-error-50 to-red-50 text-error-700 border-error-200 shadow-sm shadow-error-500/10'
-            };
-            return colors[status] || 'bg-slate-100 text-slate-700 border-slate-200 shadow-sm';
+        function closeIdeaModal() {
+            document.getElementById('ideaModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('ideaForm').reset();
         }
 
-        function getStatusText(status) {
-            const texts = {
-                'draft': 'Taslak',
-                'review': 'İncelemede',
-                'approved': 'Onaylandı',
-                'development': 'Geliştirmede',
-                'completed': 'Tamamlandı',
-                'rejected': 'Reddedildi'
-            };
-            return texts[status] || status;
+        // ROI hesaplama
+        function calculateROI() {
+            const investment = parseFloat(document.getElementById('initialInvestment').value) || 0;
+            const operationalCost = parseFloat(document.getElementById('operationalCost').value) || 0;
+            const savings = parseFloat(document.getElementById('annualSavings').value) || 0;
+            const revenue = parseFloat(document.getElementById('revenueIncrease').value) || 0;
+
+            const annualBenefit = savings + revenue - operationalCost;
+            const roi = investment > 0 ? ((annualBenefit / investment) * 100) : 0;
+            const payback = annualBenefit > 0 ? (investment / annualBenefit * 12) : 0;
+
+            document.getElementById('calculatedROI').textContent = roi.toFixed(1) + '%';
+            document.getElementById('paybackPeriod').textContent = payback.toFixed(1) + ' ay';
         }
 
-        function getPriorityColor(priority) {
-            const colors = {
-                'critical': 'bg-gradient-to-r from-red-50 to-red-100 text-red-700 border-red-200 shadow-sm shadow-red-500/10',
-                'high': 'bg-gradient-to-r from-orange-50 to-warning-50 text-orange-700 border-orange-200 shadow-sm shadow-orange-500/10',
-                'medium': 'bg-gradient-to-r from-primary-50 to-indigo-50 text-primary-700 border-primary-200 shadow-sm shadow-primary-500/10',
-                'low': 'bg-gradient-to-r from-emerald-50 to-success-50 text-emerald-700 border-emerald-200 shadow-sm shadow-emerald-500/10'
-            };
-            return colors[priority] || 'bg-slate-50 text-slate-700 border-slate-200 shadow-sm';
-        }
+        // ROI hesaplama için event listener'lar
+        ['initialInvestment', 'operationalCost', 'annualSavings', 'revenueIncrease'].forEach(id => {
+            document.getElementById(id).addEventListener('input', calculateROI);
+        });
 
-        function getPriorityText(priority) {
-            const texts = {
-                'critical': 'Kritik',
-                'high': 'Yüksek',
-                'medium': 'Orta',
-                'low': 'Düşük'
-            };
-            return texts[priority] || priority;
-        }
-
-        function getCategoryIcon(category) {
-            const icons = {
-                'teknoloji': 'fas fa-microchip',
-                'pazarlama': 'fas fa-bullhorn',
-                'urun': 'fas fa-cube',
-                'operasyon': 'fas fa-cogs',
-                'finans': 'fas fa-chart-line'
-            };
-            return icons[category] || 'fas fa-lightbulb';
-        }
-        
-        function getStatusIcon(status) {
-            const icons = {
-                'draft': 'fas fa-file-alt',
-                'review': 'fas fa-search',
-                'approved': 'fas fa-check-circle',
-                'development': 'fas fa-code',
-                'completed': 'fas fa-trophy',
-                'rejected': 'fas fa-times-circle'
-            };
-            return icons[status] || 'fas fa-question-circle';
-        }
-        
-        function getPriorityIcon(priority) {
-            const icons = {
-                'critical': 'fas fa-exclamation-triangle',
-                'high': 'fas fa-arrow-up',
-                'medium': 'fas fa-minus',
-                'low': 'fas fa-arrow-down'
-            };
-            return icons[priority] || 'fas fa-minus';
-        }
-
-        function getCategoryColor(category) {
-            const colors = {
-                'teknoloji': 'bg-gradient-to-br from-primary-50 to-indigo-50 text-primary-600 shadow-sm shadow-primary-500/10',
-                'pazarlama': 'bg-gradient-to-br from-violet-50 to-purple-50 text-violet-600 shadow-sm shadow-violet-500/10',
-                'urun': 'bg-gradient-to-br from-emerald-50 to-success-50 text-emerald-600 shadow-sm shadow-emerald-500/10',
-                'operasyon': 'bg-gradient-to-br from-warning-50 to-orange-50 text-warning-600 shadow-sm shadow-warning-500/10',
-                'finans': 'bg-gradient-to-br from-indigo-50 to-slate-50 text-indigo-600 shadow-sm shadow-indigo-500/10'
-            };
-            return colors[category] || 'bg-gradient-to-br from-slate-50 to-slate-100 text-slate-600 shadow-sm';
-        }
-
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('tr-TR', {
-                style: 'currency',
-                currency: 'TRY',
-                minimumFractionDigits: 0
-            }).format(amount);
-        }
-
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('tr-TR');
-        }
-
-        function getBudgetRange(budget) {
-            if (budget < 50000) return 'low';
-            if (budget < 200000) return 'medium';
-            if (budget < 500000) return 'high';
-            return 'enterprise';
-        }
-
-        // Professional step management functions
-        function updateStepIndicators() {
-            const indicators = document.querySelectorAll('.step-indicator');
-            indicators.forEach((indicator, index) => {
-                const stepNum = index + 1;
-                
-                if (stepNum < currentStep) {
-                    indicator.classList.add('completed');
-                    indicator.classList.remove('active');
-                } else if (stepNum === currentStep) {
-                    indicator.classList.add('active');
-                    indicator.classList.remove('completed');
-                } else {
-                    indicator.classList.remove('active', 'completed');
-                }
-            });
-        }
-
-        function updateProgressBar() {
-            const progress = (currentStep / totalSteps) * 100;
-            progressBar.style.width = `${progress}%`;
-            progressText.textContent = `${currentStep} / ${totalSteps}`;
-            stepTitle.textContent = stepTitles[currentStep];
-        }
-
-        function showStep(stepNumber) {
-            // Hide all steps
-            document.querySelectorAll('.step-content').forEach(step => {
-                step.classList.remove('active');
-                step.style.display = 'none';
-            });
-            
-            // Show current step
-            const currentStepElement = document.getElementById(`step${stepNumber}`);
-            if (currentStepElement) {
-                currentStepElement.classList.add('active');
-                currentStepElement.style.display = 'block';
-            }
-            
-            // Update buttons
-            prevStepBtn.classList.toggle('hidden', stepNumber === 1);
-            nextStepBtn.classList.toggle('hidden', stepNumber === totalSteps);
-            submitBtn.classList.toggle('hidden', stepNumber !== totalSteps);
-            
-            // Update button text for last step
-            if (stepNumber === totalSteps) {
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Fikri Gönder';
-            }
-            
-            updateStepIndicators();
-            updateProgressBar();
-            
-            // Scroll to top of modal content
-            const modalContent = document.querySelector('.modal-content .overflow-y-auto');
-            if (modalContent) {
-                modalContent.scrollTop = 0;
-            }
-        }
-
-        function validateStep(stepNumber) {
-            const requiredFields = {
-                1: ['ideaTitle', 'ideaCategory', 'ideaPriority', 'ideaSummary'],
-                2: ['problemDescription', 'solutionDescription'],
-                3: [],
-                4: [],
-                5: [],
-                6: []
-            };
-
-            const fields = requiredFields[stepNumber] || [];
-            let isValid = true;
-            let firstInvalidField = null;
-
-            fields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (field && !field.value.trim()) {
-                    field.classList.add('border-red-500', 'bg-red-50');
-                    if (!firstInvalidField) {
-                        firstInvalidField = field;
-                    }
-                    isValid = false;
-                } else if (field) {
-                    field.classList.remove('border-red-500', 'bg-red-50');
-                }
-            });
-
-            // Focus on first invalid field
-            if (firstInvalidField) {
-                firstInvalidField.focus();
-                firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-
-            return isValid;
-        }
-
-        function nextStep() {
-            if (validateStep(currentStep)) {
-                if (currentStep < totalSteps) {
-                    currentStep++;
-                    showStep(currentStep);
-                    showNotification(`${stepTitles[currentStep]} adımına geçildi`, 'success');
-                }
-            } else {
-                showNotification('Lütfen kırmızı işaretli zorunlu alanları doldurun.', 'warning');
-            }
-        }
-
-        function prevStep() {
-            if (currentStep > 1) {
-                currentStep--;
-                showStep(currentStep);
-                showNotification(`${stepTitles[currentStep]} adımına geri dönüldü`, 'info');
-            }
-        }
-
-
-
-        // Professional project status functions
-        function getProjectStatusColor(status) {
-            const colors = {
-                'active': 'bg-blue-50 text-blue-700 border-blue-200',
-                'completed': 'bg-green-50 text-green-700 border-green-200',
-                'delayed': 'bg-red-50 text-red-700 border-red-200',
-                'planning': 'bg-yellow-50 text-yellow-700 border-yellow-200',
-                'paused': 'bg-gray-50 text-gray-700 border-gray-200'
-            };
-            return colors[status] || 'bg-gray-50 text-gray-700 border-gray-200';
-        }
-
-        function getProjectStatusText(status) {
-            const texts = {
-                'active': 'Aktif',
-                'completed': 'Tamamlandı',
-                'delayed': 'Gecikmiş',
-                'planning': 'Planlama',
-                'paused': 'Duraklatıldı'
-            };
-            return texts[status] || status;
-        }
-
-        function getProgressColor(progress) {
-            if (progress >= 80) return 'bg-green-500';
-            if (progress >= 60) return 'bg-blue-500';
-            if (progress >= 40) return 'bg-yellow-500';
-            return 'bg-red-500';
-        }
-
-        function getRiskColor(level) {
-            const colors = {
-                'low': 'bg-green-100 text-green-800',
-                'medium': 'bg-yellow-100 text-yellow-800',
-                'high': 'bg-red-100 text-red-800'
-            };
-            return colors[level] || 'bg-gray-100 text-gray-800';
-        }
-
-        // Professional render projects
-        function renderProjects() {
-            const projectsGrid = document.getElementById('projectsGrid');
-            if (!projectsGrid) return;
-
-            projectsGrid.innerHTML = projects.map(project => `
-                <div class="professional-card p-6 cursor-pointer fade-in hover:shadow-lg transition-all duration-300" onclick="showProjectDetail(${project.id})">
-                    <!-- Project Header -->
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 rounded-xl ${getCategoryColor(project.category)} flex items-center justify-center">
-                                <i class="${getCategoryIcon(project.category)} text-lg"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-gray-900 text-lg mb-1">${project.name}</h3>
-                                <p class="text-sm text-gray-600">${project.manager}</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-col items-end space-y-2">
-                            <span class="px-3 py-1 rounded-full text-xs font-medium border ${getProjectStatusColor(project.status)}">
-                                ${getProjectStatusText(project.status)}
-                            </span>
-                            <span class="px-2 py-1 rounded-md text-xs font-medium border ${getPriorityColor(project.priority)}">
-                                ${getPriorityText(project.priority)}
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Project Description -->
-                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">${project.description}</p>
-
-                    <!-- Progress Bar -->
-                    <div class="mb-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700">İlerleme</span>
-                            <span class="text-sm font-bold text-gray-900">${project.progress}%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="${getProgressColor(project.progress)} h-2 rounded-full transition-all duration-300" style="width: ${project.progress}%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Project Stats -->
-                    <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-calendar mr-2 text-blue-500 text-xs"></i>
-                            <span class="text-xs font-medium">${formatDate(project.endDate)}</span>
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-money-bill-wave mr-2 text-green-500 text-xs"></i>
-                            <span class="text-xs font-medium">${formatCurrency(project.budget)}</span>
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-users mr-2 text-purple-500 text-xs"></i>
-                            <span class="text-xs font-medium">${project.teamSize} kişi</span>
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-chart-pie mr-2 text-orange-500 text-xs"></i>
-                            <span class="text-xs font-medium">${Math.round((project.spent / project.budget) * 100)}% harcanmış</span>
-                        </div>
-                    </div>
-
-                    <!-- Milestones -->
-                    <div class="mb-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700">Kilometre Taşları</span>
-                            <span class="text-xs text-gray-500">${project.milestones.filter(m => m.completed).length}/${project.milestones.length}</span>
-                        </div>
-                        <div class="flex space-x-1">
-                            ${project.milestones.map(milestone => `
-                                <div class="flex-1 h-2 rounded-full ${milestone.completed ? 'bg-green-500' : 'bg-gray-200'}"></div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- Risks -->
-                    ${project.risks.length > 0 ? `
-                        <div class="mb-4">
-                            <span class="text-sm font-medium text-gray-700 mb-2 block">Riskler</span>
-                            <div class="flex flex-wrap gap-1">
-                                ${project.risks.slice(0, 2).map(risk => `
-                                    <span class="px-2 py-1 rounded-md text-xs font-medium ${getRiskColor(risk.level)}">
-                                        ${risk.level === 'high' ? 'Yüksek' : risk.level === 'medium' ? 'Orta' : 'Düşük'}
-                                    </span>
-                                `).join('')}
-                                ${project.risks.length > 2 ? `<span class="text-xs text-gray-500">+${project.risks.length - 2}</span>` : ''}
-                            </div>
-                        </div>
-                    ` : ''}
-
-                    <!-- Team Members -->
-                    <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-xs text-gray-500 font-medium">Takım:</span>
-                            <div class="flex items-center space-x-1">
-                                ${project.teamMembers.slice(0, 4).map(member => `
-                                    <div class="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold text-xs" title="${member.name} - ${member.role}">
-                                        ${member.avatar}
-                                    </div>
-                                `).join('')}
-                                ${project.teamMembers.length > 4 ? `
-                                    <div class="w-6 h-6 rounded-full bg-gray-400 flex items-center justify-center text-white font-semibold text-xs">
-                                        +${project.teamMembers.length - 4}
-                                    </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center space-x-1">
-                            <button onclick="event.stopPropagation(); editProject(${project.id})" 
-                                    class="w-7 h-7 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition-colors">
-                                <i class="fas fa-edit text-xs"></i>
-                            </button>
-                            <button onclick="event.stopPropagation(); showProjectTimeline(${project.id})" 
-                                    class="w-7 h-7 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 flex items-center justify-center transition-colors">
-                                <i class="fas fa-calendar-alt text-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Professional render ideas
+        // Fikirleri render etme
         function renderIdeas() {
-            if (ideas.length === 0) {
-                ideasGrid.classList.add('hidden');
-                emptyState.classList.remove('hidden');
-                return;
+            const container = document.getElementById('ideasContainer');
+            let filteredIdeas = ideas;
+
+            // Filtrele
+            if (currentFilter !== 'all') {
+                filteredIdeas = ideas.filter(idea => idea.status === currentFilter);
             }
-            
-            ideasGrid.classList.remove('hidden');
-            emptyState.classList.add('hidden');
-            
-            ideasGrid.innerHTML = ideas.map(idea => `
-                <div class="professional-card p-6 status-${idea.status} cursor-pointer fade-in" onclick="showIdeaDetail(${idea.id})">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 rounded-xl ${getCategoryColor(idea.category)} flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 hover:rotate-3">
-                                <i class="${getCategoryIcon(idea.category)} text-lg"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="heading-3 text-base mb-1">${idea.title}</h3>
-                                <p class="caption-text">${idea.category.charAt(0).toUpperCase() + idea.category.slice(1)}</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-col items-end space-y-2">
-                            <span class="px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(idea.status)} flex items-center space-x-1">
-                                <i class="${getStatusIcon(idea.status)} text-xs"></i>
-                                <span>${getStatusText(idea.status)}</span>
-                            </span>
-                            <span class="px-2 py-1 rounded-md text-xs font-medium border ${getPriorityColor(idea.priority)} flex items-center space-x-1">
-                                <i class="${getPriorityIcon(idea.priority)} text-xs"></i>
-                                <span>${getPriorityText(idea.priority)}</span>
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <p class="body-text mb-4 line-clamp-2">${idea.summary}</p>
-                    
-                    <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-money-bill-wave mr-2 text-green-500 text-xs"></i>
-                            <span class="caption-text font-medium">${formatCurrency(idea.estimatedBudget)}</span>
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-clock mr-2 text-blue-500 text-xs"></i>
-                            <span class="caption-text font-medium">${idea.estimatedDuration} ay</span>
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-users mr-2 text-purple-500 text-xs"></i>
-                            <span class="caption-text font-medium">${idea.teamSize} kişi</span>
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-chart-line mr-2 text-orange-500 text-xs"></i>
-                            <span class="caption-text font-medium">ROI: %${idea.roiEstimate}</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Social & Collaboration Section -->
-                    <div class="py-3 border-t border-gray-100 space-y-3">
-                        <!-- Top Row: Vote & Comments -->
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2 sm:space-x-3">
-                                <!-- Vote Buttons -->
-                                <button onclick="event.stopPropagation(); voteIdea(${idea.id}, 'up')" 
-                                        class="flex items-center space-x-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-green-50 hover:border-green-300 hover:text-green-600 transition-all text-xs sm:text-sm font-medium ${idea.userVoted === 'up' ? 'bg-green-50 border-green-300 text-green-600' : ''}">
-                                    <i class="fas fa-thumbs-up text-xs"></i>
-                                    <span>${idea.upvotes || 0}</span>
-                                </button>
-                                
-                                <!-- Comments -->
-                                <button onclick="event.stopPropagation(); showComments(${idea.id})" 
-                                        class="flex items-center space-x-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600 transition-all text-xs sm:text-sm font-medium">
-                                    <i class="fas fa-comment text-xs"></i>
-                                    <span>${idea.comments?.length || 0}</span>
-                                </button>
-                            </div>
-                            
-                            <!-- Action Buttons -->
-                            <div class="flex items-center space-x-1 sm:space-x-2">
-                                ${idea.isCollaborative ? `
-                                    <div class="hidden sm:flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-semibold">
-                                        <i class="fas fa-users text-xs"></i>
-                                        <span>Takım</span>
+
+            // Sırala
+            filteredIdeas.sort((a, b) => {
+                if (currentSort === 'newest') return b.date - a.date;
+                if (currentSort === 'roi') return b.roi - a.roi;
+                if (currentSort === 'budget') return a.initialInvestment - b.initialInvestment;
+                if (currentSort === 'priority') {
+                    const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+                    return priorityOrder[b.priority] - priorityOrder[a.priority];
+                }
+            });
+
+            container.innerHTML = filteredIdeas.map(idea => {
+                const statusClass = `status-${idea.status}`;
+                const priorityClass = `priority-${idea.priority}`;
+                const departmentTags = idea.departments.map(dept => {
+                    const deptNames = {
+                        'it': '💻 IT',
+                        'hr': '👥 İK', 
+                        'finance': '💰 Finans',
+                        'operations': '⚙️ Operasyon',
+                        'marketing': '📢 Pazarlama',
+                        'sales': '💼 Satış'
+                    };
+                    return `<span class="department-tag text-white px-2 py-1 rounded-full text-xs">${deptNames[dept]}</span>`;
+                }).join('');
+
+                const statusNames = {
+                    'draft': 'Taslak',
+                    'review': 'Değerlendirmede', 
+                    'approved': 'Onaylandı',
+                    'rejected': 'Reddedildi'
+                };
+
+                return `
+                    <div class="bg-white rounded-2xl shadow-xl card-hover border border-gray-100 overflow-hidden">
+                        <div class="p-8">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <span class="${statusClass} text-white px-4 py-2 rounded-full text-sm font-bold">
+                                            ${statusNames[idea.status]}
+                                        </span>
+                                        <span class="${priorityClass} text-white px-3 py-1 rounded-full text-xs font-bold">
+                                            ${idea.priority.toUpperCase()}
+                                        </span>
+                                        <span class="text-gray-500 text-sm">${idea.date.toLocaleDateString('tr-TR')}</span>
                                     </div>
-                                ` : ''}
+                                    <h3 class="text-2xl font-bold text-gray-800 mb-3">${idea.title}</h3>
+                                    <p class="text-gray-600 leading-relaxed mb-4">${idea.solution}</p>
+                                    
+                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                        <div class="bg-blue-50 p-4 rounded-xl text-center">
+                                            <div class="text-2xl font-bold text-blue-600">₺${(idea.initialInvestment/1000).toFixed(0)}K</div>
+                                            <div class="text-sm text-gray-600">Yatırım</div>
+                                        </div>
+                                        <div class="bg-green-50 p-4 rounded-xl text-center">
+                                            <div class="text-2xl font-bold text-green-600">${idea.roi}%</div>
+                                            <div class="text-sm text-gray-600">ROI</div>
+                                        </div>
+                                        <div class="bg-purple-50 p-4 rounded-xl text-center">
+                                            <div class="text-2xl font-bold text-purple-600">${idea.payback}</div>
+                                            <div class="text-sm text-gray-600">Ay GÖS</div>
+                                        </div>
+                                        <div class="bg-orange-50 p-4 rounded-xl text-center">
+                                            <div class="text-2xl font-bold text-orange-600">${idea.teamSize}</div>
+                                            <div class="text-sm text-gray-600">Ekip</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex flex-wrap gap-2">
+                                            ${departmentTags}
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            👤 ${idea.proposer}
+                                        </div>
+                                    </div>
+                                </div>
                                 
-                                <button onclick="event.stopPropagation(); editIdea(${idea.id})" 
-                                        class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition-colors">
-                                    <i class="fas fa-edit text-xs"></i>
-                                </button>
-                                <button onclick="event.stopPropagation(); duplicateIdea(${idea.id})" 
-                                        class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 flex items-center justify-center transition-colors">
-                                    <i class="fas fa-copy text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Bottom Row: Team Members -->
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-1 sm:space-x-2">
-                                <span class="text-xs text-gray-500 font-medium">Takım:</span>
-                                <div class="flex items-center space-x-1">
-                                    ${(idea.teamMembers || []).slice(0, 4).map(member => `
-                                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold text-xs" title="${member.name}">
-                                            ${member.avatar || member.name.charAt(0).toUpperCase()}
-                                        </div>
-                                    `).join('')}
-                                    ${(idea.teamMembers || []).length > 4 ? `
-                                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gray-400 flex items-center justify-center text-white font-semibold text-xs">
-                                            +${(idea.teamMembers || []).length - 4}
-                                        </div>
-                                    ` : ''}
-                                    <button onclick="event.stopPropagation(); joinTeam(${idea.id})" 
-                                            class="w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center transition-colors" 
-                                            title="Takıma Katıl">
-                                        <i class="fas fa-plus text-xs text-gray-400 hover:text-blue-500"></i>
+                                <div class="ml-8 text-center">
+                                    <button class="vote-btn bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl font-bold hover:from-green-600 hover:to-emerald-600 mb-3 transform hover:scale-105 transition-all">
+                                        👍 Destekle
+                                    </button>
+                                    <div class="text-3xl font-bold text-gray-700">${idea.votes}</div>
+                                    <div class="text-sm text-gray-500 mb-3">destek</div>
+                                    
+                                    <button class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors">
+                                        💬 ${idea.comments} Yorum
                                     </button>
                                 </div>
                             </div>
-                            
-                            <!-- Mobile Collaboration Badge -->
-                            ${idea.isCollaborative ? `
-                                <div class="sm:hidden flex items-center space-x-1 px-2 py-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-xs font-semibold">
-                                    <i class="fas fa-users text-xs"></i>
-                                    <span>Takım</span>
-                                </div>
-                            ` : ''}
                         </div>
                     </div>
-                    
-                    <!-- Creator Info -->
-                    <div class="pt-3 border-t border-gray-100">
-                        <div class="caption-text">
-                            <div class="font-medium text-gray-700">${idea.createdBy}</div>
-                            <div class="text-gray-500">${formatDate(idea.createdDate)}</div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+
+            // İstatistikleri güncelle
+            document.getElementById('activeProjects').textContent = ideas.filter(i => i.status === 'approved').length;
+            document.getElementById('pendingIdeas').textContent = ideas.filter(i => i.status === 'review').length;
         }
 
-        // Professional show idea detail
-        function showIdeaDetail(id) {
-            const idea = ideas.find(i => i.id === id);
-            if (!idea) return;
-
-            const content = `
-                <div class="px-8 py-6 border-b border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-12 h-12 rounded-xl ${getCategoryColor(idea.category)} flex items-center justify-center">
-                                <i class="${getCategoryIcon(idea.category)} text-lg"></i>
-                            </div>
-                            <div>
-                                <h2 class="heading-2">${idea.title}</h2>
-                                <div class="flex items-center space-x-3 mt-2">
-                                    <span class="px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(idea.status)}">
-                                        ${getStatusText(idea.status)}
-                                    </span>
-                                    <span class="px-2 py-1 rounded-md text-sm font-medium border ${getPriorityColor(idea.priority)}">
-                                        ${getPriorityText(idea.priority)}
-                                    </span>
-                                    <span class="caption-text">${idea.category.charAt(0).toUpperCase() + idea.category.slice(1)}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <button onclick="closeIdeaDetail()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
-                            <i class="fas fa-times text-gray-500"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="px-8 py-6 space-y-8 max-h-96 overflow-y-auto">
-                    <!-- Professional Key Metrics -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="stat-card">
-                            <div class="stat-number text-green-600">${formatCurrency(idea.estimatedBudget)}</div>
-                            <div class="stat-label">Tahmini Bütçe</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number text-blue-600">${idea.estimatedDuration}</div>
-                            <div class="stat-label">Süre (Ay)</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number text-purple-600">${idea.teamSize}</div>
-                            <div class="stat-label">Ekip Büyüklüğü</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number text-orange-600">%${idea.roiEstimate}</div>
-                            <div class="stat-label">ROI Tahmini</div>
-                        </div>
-                    </div>
-
-                    <!-- Professional Content -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="space-y-6">
-                            <div>
-                                <h3 class="heading-3 mb-3">Fikir Özeti</h3>
-                                <p class="body-text">${idea.summary}</p>
-                            </div>
-                            <div>
-                                <h3 class="heading-3 mb-3">Problem Tanımı</h3>
-                                <p class="body-text">${idea.problemDescription}</p>
-                            </div>
-                            <div>
-                                <h3 class="heading-3 mb-3">Çözüm Önerisi</h3>
-                                <p class="body-text">${idea.solutionDescription}</p>
-                            </div>
-                        </div>
-                        <div class="space-y-6">
-                            <div>
-                                <h3 class="heading-3 mb-3">Beklenen Faydalar</h3>
-                                <div class="bg-green-50 rounded-lg p-4 border border-green-200">
-                                    <pre class="text-green-800 text-sm whitespace-pre-wrap font-medium">${idea.expectedBenefits}</pre>
-                                </div>
-                            </div>
-                            <div>
-                                <h3 class="heading-3 mb-3">Hedef Kitle</h3>
-                                <p class="body-text">${idea.targetAudience}</p>
-                            </div>
-                            <div>
-                                <h3 class="heading-3 mb-3">Risk Seviyesi</h3>
-                                <span class="px-3 py-1 rounded-full text-sm font-medium border ${idea.riskLevel === 'high' ? 'bg-red-50 text-red-700 border-red-200' : idea.riskLevel === 'medium' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-green-50 text-green-700 border-green-200'}">
-                                    ${idea.riskLevel === 'high' ? 'Yüksek' : idea.riskLevel === 'medium' ? 'Orta' : 'Düşük'}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="px-8 py-6 border-t border-gray-200 bg-gray-50">
-                    <div class="flex justify-end space-x-3">
-                        <button onclick="exportIdeaToPDF(${idea.id})" class="btn-secondary">
-                            <i class="fas fa-file-pdf mr-2"></i>PDF İndir
-                        </button>
-                        <button onclick="editIdea(${idea.id})" class="btn-primary">
-                            <i class="fas fa-edit mr-2"></i>Düzenle
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('ideaDetailContent').innerHTML = content;
-            ideaDetailModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeIdeaDetail() {
-            ideaDetailModal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-
-
-        // Professional update stats
-        function updateStats() {
-            const totalIdeas = ideas.length;
-            const approvedIdeas = ideas.filter(idea => idea.status === 'approved').length;
-            const reviewIdeas = ideas.filter(idea => idea.status === 'review').length;
-            const developmentIdeas = ideas.filter(idea => idea.status === 'development').length;
-            const totalBudget = ideas.reduce((sum, idea) => sum + idea.estimatedBudget, 0);
-
-            document.getElementById('totalIdeas').textContent = totalIdeas;
-            document.getElementById('approvedIdeas').textContent = approvedIdeas;
-            document.getElementById('reviewIdeas').textContent = reviewIdeas;
-            document.getElementById('developmentIdeas').textContent = developmentIdeas;
-            document.getElementById('totalBudget').textContent = formatCurrency(totalBudget);
-        }
-
-        // Professional idea actions
-        function editIdea(id) {
-            const idea = ideas.find(i => i.id === id);
-            if (!idea) return;
-
-            document.getElementById('modalTitle').textContent = 'Fikir Düzenle';
+        // Form gönderimi
+        document.getElementById('ideaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // Populate form
-            document.getElementById('ideaTitle').value = idea.title;
-            document.getElementById('ideaCategory').value = idea.category;
-            document.getElementById('ideaPriority').value = idea.priority;
-            document.getElementById('ideaSummary').value = idea.summary;
-            document.getElementById('problemDescription').value = idea.problemDescription;
-            document.getElementById('solutionDescription').value = idea.solutionDescription;
-            document.getElementById('expectedBenefits').value = idea.expectedBenefits;
-            document.getElementById('targetAudience').value = idea.targetAudience;
-            document.getElementById('roiEstimate').value = idea.roiEstimate;
-            document.getElementById('riskLevel').value = idea.riskLevel;
-            document.getElementById('estimatedBudget').value = idea.estimatedBudget;
-            document.getElementById('estimatedDuration').value = idea.estimatedDuration;
-            document.getElementById('teamSize').value = idea.teamSize;
-            document.getElementById('requiredResources').value = idea.requiredResources;
-            document.getElementById('potentialPartners').value = idea.potentialPartners;
-            document.getElementById('internalStakeholders').value = idea.internalStakeholders;
-            document.getElementById('externalStakeholders').value = idea.externalStakeholders;
-            document.getElementById('partnershipType').value = idea.partnershipType;
-            document.getElementById('phase1').value = idea.phase1;
-            document.getElementById('phase2').value = idea.phase2;
-            document.getElementById('phase3').value = idea.phase3;
-            document.getElementById('kpis').value = idea.kpis;
-            document.getElementById('measurementMethods').value = idea.measurementMethods;
+            const title = document.getElementById('projectTitle').value.trim();
+            const category = document.getElementById('projectCategory').value;
+            const problem = document.getElementById('problemDescription').value.trim();
+            const solution = document.getElementById('solutionDescription').value.trim();
+            const proposer = document.getElementById('proposerName').value.trim();
 
-            ideaForm.dataset.editId = id;
-            openModal();
-        }
+            if (!title || !category || !problem || !solution || !proposer) {
+                alert('Lütfen zorunlu alanları (*) doldurun!');
+                return;
+            }
 
-        function duplicateIdea(id) {
-            const idea = ideas.find(i => i.id === id);
-            if (!idea) return;
+            // Seçili departmanları al
+            const selectedDepartments = Array.from(document.querySelectorAll('input[name="departments"]:checked'))
+                .map(cb => cb.value);
 
             const newIdea = {
-                ...idea,
-                id: Math.max(...ideas.map(i => i.id)) + 1,
-                title: idea.title + ' (Kopya)',
-                status: 'draft',
-                createdDate: new Date().toISOString().split('T')[0],
-                lastUpdated: new Date().toISOString().split('T')[0],
-                createdBy: 'Mevcut Kullanıcı'
+                id: ideas.length + 1,
+                title,
+                category,
+                problem,
+                solution,
+                benefits: document.getElementById('expectedBenefits').value,
+                initialInvestment: parseFloat(document.getElementById('initialInvestment').value) || 0,
+                operationalCost: parseFloat(document.getElementById('operationalCost').value) || 0,
+                annualSavings: parseFloat(document.getElementById('annualSavings').value) || 0,
+                revenueIncrease: parseFloat(document.getElementById('revenueIncrease').value) || 0,
+                departments: selectedDepartments,
+                teamSize: document.getElementById('teamSize').value,
+                duration: document.getElementById('projectDuration').value,
+                priority: document.getElementById('priorityLevel').value,
+                status: 'review',
+                proposer: proposer,
+                date: new Date(),
+                votes: 0,
+                comments: 0,
+                roi: 0,
+                payback: 0
             };
+
+            // ROI hesapla
+            const annualBenefit = newIdea.annualSavings + newIdea.revenueIncrease - newIdea.operationalCost;
+            newIdea.roi = newIdea.initialInvestment > 0 ? Math.round((annualBenefit / newIdea.initialInvestment) * 100) : 0;
+            newIdea.payback = annualBenefit > 0 ? Math.round(newIdea.initialInvestment / annualBenefit * 12) : 0;
 
             ideas.unshift(newIdea);
             renderIdeas();
-            updateStats();
-        }
-
-        function deleteIdea(id) {
-            if (confirm('Bu fikri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
-                ideas = ideas.filter(i => i.id !== id);
-                renderIdeas();
-                updateStats();
-            }
-        }
-
-        function exportIdeaToPDF(id) {
-            alert('PDF export özelliği yakında eklenecek!');
-        }
-
-        // Social & Collaboration Functions
-        function voteIdea(id, type) {
-            const idea = ideas.find(i => i.id === id);
-            if (!idea) return;
-
-            // Toggle vote
-            if (idea.userVoted === type) {
-                // Remove vote
-                if (type === 'up') {
-                    idea.upvotes = Math.max(0, (idea.upvotes || 0) - 1);
-                }
-                idea.userVoted = null;
-            } else {
-                // Add vote (remove previous if exists)
-                if (idea.userVoted === 'up') {
-                    idea.upvotes = Math.max(0, (idea.upvotes || 0) - 1);
-                }
-                
-                if (type === 'up') {
-                    idea.upvotes = (idea.upvotes || 0) + 1;
-                }
-                idea.userVoted = type;
-            }
-
-            renderIdeas();
+            closeIdeaModal();
             
-            // Show success message
-            const message = idea.userVoted === type ? 'Oy verildi! 👍' : 'Oy geri alındı';
-            showNotification(message, 'success');
-        }
-
-        function showComments(id) {
-            const idea = ideas.find(i => i.id === id);
-            if (!idea) return;
-
-            const commentsHtml = (idea.comments || []).map(comment => `
-                <div class="comment-bubble">
-                    <div class="flex items-start space-x-3">
-                        <div class="team-member-avatar">
-                            ${comment.author.charAt(0).toUpperCase()}
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-2 mb-1">
-                                <span class="font-semibold text-sm text-gray-800">${comment.author}</span>
-                                <span class="text-xs text-gray-500">${formatDate(comment.date)}</span>
-                            </div>
-                            <p class="text-sm text-gray-700">${comment.text}</p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            const modalContent = `
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-900">Yorumlar - ${idea.title}</h3>
-                        <button onclick="closeComments()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">
-                            <i class="fas fa-times text-gray-500"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="px-6 py-4 max-h-96 overflow-y-auto">
-                    ${commentsHtml || '<p class="text-gray-500 text-center py-8">Henüz yorum yapılmamış.</p>'}
-                </div>
-                <div class="px-6 py-4 border-t border-gray-200">
-                    <div class="flex space-x-3">
-                        <div class="team-member-avatar">
-                            MK
-                        </div>
-                        <div class="flex-1">
-                            <textarea id="newComment" rows="3" class="professional-input resize-none" placeholder="Yorumunuzu yazın..."></textarea>
-                            <div class="flex justify-end mt-2">
-                                <button onclick="addComment(${id})" class="btn-primary">
-                                    <i class="fas fa-paper-plane mr-2"></i>Gönder
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('ideaDetailContent').innerHTML = modalContent;
-            ideaDetailModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeComments() {
-            ideaDetailModal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        function addComment(id) {
-            const commentText = document.getElementById('newComment').value.trim();
-            if (!commentText) return;
-
-            const idea = ideas.find(i => i.id === id);
-            if (!idea) return;
-
-            if (!idea.comments) idea.comments = [];
-
-            const newComment = {
-                id: Math.max(...(idea.comments.map(c => c.id) || [0])) + 1,
-                author: "Mevcut Kullanıcı",
-                text: commentText,
-                date: new Date().toISOString().split('T')[0]
-            };
-
-            idea.comments.push(newComment);
-            renderIdeas();
-            showComments(id); // Refresh comments view
-        }
-
-        function joinTeam(id) {
-            const idea = ideas.find(i => i.id === id);
-            if (!idea) return;
-
-            if (!idea.teamMembers) idea.teamMembers = [];
-
-            const currentUser = {
-                id: Math.max(...(idea.teamMembers.map(m => m.id) || [0])) + 1,
-                name: "Mevcut Kullanıcı",
-                role: "Gönüllü",
-                avatar: "MK"
-            };
-
-            // Check if user already in team
-            const existingMember = idea.teamMembers.find(m => m.name === currentUser.name);
-            
-            if (!existingMember) {
-                idea.teamMembers.push(currentUser);
-                idea.isCollaborative = true;
-                renderIdeas();
-                showNotification('Takıma katıldınız! 🎉', 'success');
-            } else {
-                showNotification('Zaten bu takımın üyesisiniz.', 'info');
-            }
-        }
-
-        // Professional modal functions
-        function openModal() {
-            currentStep = 1;
-            showStep(currentStep);
-            ideaModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModalFunc() {
-            ideaModal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-            ideaForm.reset();
-            delete ideaForm.dataset.editId;
-            document.getElementById('modalTitle').textContent = 'Yeni Fikir Ekle';
-            document.getElementById('summaryCounter').textContent = '0/500';
-        }
-
-        // Professional save idea
-        function saveIdea(status = 'review') {
-            const formData = {
-                title: document.getElementById('ideaTitle').value,
-                category: document.getElementById('ideaCategory').value,
-                priority: document.getElementById('ideaPriority').value,
-                summary: document.getElementById('ideaSummary').value,
-                problemDescription: document.getElementById('problemDescription').value,
-                solutionDescription: document.getElementById('solutionDescription').value,
-                expectedBenefits: document.getElementById('expectedBenefits').value,
-                targetAudience: document.getElementById('targetAudience').value,
-                roiEstimate: parseInt(document.getElementById('roiEstimate').value) || 0,
-                riskLevel: document.getElementById('riskLevel').value,
-                estimatedBudget: parseInt(document.getElementById('estimatedBudget').value) || 0,
-                estimatedDuration: parseInt(document.getElementById('estimatedDuration').value) || 1,
-                teamSize: parseInt(document.getElementById('teamSize').value) || 1,
-                requiredResources: document.getElementById('requiredResources').value,
-                potentialPartners: document.getElementById('potentialPartners').value,
-                internalStakeholders: document.getElementById('internalStakeholders').value,
-                externalStakeholders: document.getElementById('externalStakeholders').value,
-                partnershipType: document.getElementById('partnershipType').value,
-                phase1: document.getElementById('phase1').value,
-                phase2: document.getElementById('phase2').value,
-                phase3: document.getElementById('phase3').value,
-                kpis: document.getElementById('kpis').value,
-                measurementMethods: document.getElementById('measurementMethods').value,
-                status: status
-            };
-
-            const editId = ideaForm.dataset.editId;
-            
-            if (editId) {
-                const ideaIndex = ideas.findIndex(i => i.id === parseInt(editId));
-                if (ideaIndex !== -1) {
-                    ideas[ideaIndex] = {
-                        ...ideas[ideaIndex],
-                        ...formData,
-                        lastUpdated: new Date().toISOString().split('T')[0]
-                    };
-                }
-            } else {
-                const newIdea = {
-                    id: Math.max(...ideas.map(i => i.id)) + 1,
-                    ...formData,
-                    createdDate: new Date().toISOString().split('T')[0],
-                    lastUpdated: new Date().toISOString().split('T')[0],
-                    createdBy: 'Mevcut Kullanıcı',
-                    assignedTo: 'İnceleme Komitesi'
-                };
-                ideas.unshift(newIdea);
-            }
-
-            renderIdeas();
-            updateStats();
-            closeModalFunc();
-        }
-
-
-
-
-
-        // Professional initialize DOM elements
-        function initializeElements() {
-            ideasGrid = document.getElementById('ideasGrid');
-            ideaModal = document.getElementById('ideaModal');
-            ideaDetailModal = document.getElementById('ideaDetailModal');
-            closeModal = document.getElementById('closeModal');
-            cancelBtn = document.getElementById('cancelBtn');
-            saveDraftBtn = document.getElementById('saveDraftBtn');
-            nextStepBtn = document.getElementById('nextStepBtn');
-            prevStepBtn = document.getElementById('prevStepBtn');
-            submitBtn = document.getElementById('submitBtn');
-            ideaForm = document.getElementById('ideaForm');
-            emptyState = document.getElementById('emptyState');
-            progressBar = document.getElementById('progressBar');
-            progressText = document.getElementById('progressText');
-            stepTitle = document.getElementById('stepTitle');
-        }
-
-        // Modern Tab switching functions
-        function showIdeasView() {
-            document.getElementById('ideasView').classList.remove('hidden');
-            document.getElementById('projectsView').classList.add('hidden');
-            
-            // Fikirler tab aktif
-            const ideasTab = document.getElementById('ideasTab');
-            ideasTab.className = 'group relative px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105';
-            
-            // Projeler tab pasif
-            const projectsTab = document.getElementById('projectsTab');
-            projectsTab.className = 'group relative px-6 py-3 bg-white text-gray-700 rounded-2xl font-bold text-lg shadow-lg border-2 border-gray-200 hover:border-orange-300 hover:shadow-xl transition-all duration-300 hover:scale-105';
-        }
-
-        function showProjectsView() {
-            document.getElementById('ideasView').classList.add('hidden');
-            document.getElementById('projectsView').classList.remove('hidden');
-            
-            // Projeler tab aktif
-            const projectsTab = document.getElementById('projectsTab');
-            projectsTab.className = 'group relative px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105';
-            
-            // Fikirler tab pasif
-            const ideasTab = document.getElementById('ideasTab');
-            ideasTab.className = 'group relative px-6 py-3 bg-white text-gray-700 rounded-2xl font-bold text-lg shadow-lg border-2 border-gray-200 hover:border-orange-300 hover:shadow-xl transition-all duration-300 hover:scale-105';
-            
-            renderProjects();
-        }
-
-        // Project functions
-        function showProjectDetail(id) {
-            const project = projects.find(p => p.id === id);
-            if (!project) return;
-
-            const kpiCards = Object.entries(project.kpis).map(([key, value]) => `
-                <div class="bg-white rounded-lg p-4 border border-gray-200">
-                    <div class="text-sm text-gray-600 mb-1">${key}</div>
-                    <div class="flex items-center justify-between">
-                        <div class="text-lg font-bold text-gray-900">${value.current}${value.unit}</div>
-                        <div class="text-xs text-gray-500">Hedef: ${value.target}${value.unit}</div>
-                    </div>
-                    <div class="mt-2 w-full bg-gray-200 rounded-full h-1">
-                        <div class="bg-blue-500 h-1 rounded-full" style="width: ${Math.min((value.current / value.target) * 100, 100)}%"></div>
-                    </div>
-                </div>
-            `).join('');
-
-            const content = `
-                <div class="px-8 py-6 border-b border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-12 h-12 rounded-xl ${getCategoryColor(project.category)} flex items-center justify-center">
-                                <i class="${getCategoryIcon(project.category)} text-lg"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-2xl font-bold text-gray-900">${project.name}</h2>
-                                <div class="flex items-center space-x-3 mt-2">
-                                    <span class="px-3 py-1 rounded-full text-sm font-medium border ${getProjectStatusColor(project.status)}">
-                                        ${getProjectStatusText(project.status)}
-                                    </span>
-                                    <span class="px-2 py-1 rounded-md text-sm font-medium border ${getPriorityColor(project.priority)}">
-                                        ${getPriorityText(project.priority)}
-                                    </span>
-                                    <span class="text-sm text-gray-600">${project.manager}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <button onclick="closeIdeaDetail()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
-                            <i class="fas fa-times text-gray-500"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="px-8 py-6 space-y-8 max-h-96 overflow-y-auto">
-                    <!-- Progress Overview -->
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900">Proje İlerlemesi</h3>
-                            <span class="text-2xl font-bold text-blue-600">${project.progress}%</span>
-                        </div>
-                        <div class="w-full bg-white rounded-full h-3 mb-4">
-                            <div class="${getProgressColor(project.progress)} h-3 rounded-full transition-all duration-500" style="width: ${project.progress}%"></div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-4 text-center">
-                            <div>
-                                <div class="text-lg font-bold text-gray-900">${formatDate(project.startDate)}</div>
-                                <div class="text-sm text-gray-600">Başlangıç</div>
-                            </div>
-                            <div>
-                                <div class="text-lg font-bold text-gray-900">${formatCurrency(project.spent)}</div>
-                                <div class="text-sm text-gray-600">Harcanan</div>
-                            </div>
-                            <div>
-                                <div class="text-lg font-bold text-gray-900">${formatDate(project.endDate)}</div>
-                                <div class="text-sm text-gray-600">Bitiş</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- KPIs -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Performans Göstergeleri</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            ${kpiCards}
-                        </div>
-                    </div>
-
-                    <!-- Milestones -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Kilometre Taşları</h3>
-                        <div class="space-y-3">
-                            ${project.milestones.map(milestone => `
-                                <div class="flex items-center space-x-3 p-3 rounded-lg ${milestone.completed ? 'bg-green-50 border border-green-200' : 'bg-gray-50 border border-gray-200'}">
-                                    <div class="w-6 h-6 rounded-full ${milestone.completed ? 'bg-green-500' : 'bg-gray-300'} flex items-center justify-center">
-                                        ${milestone.completed ? '<i class="fas fa-check text-white text-xs"></i>' : '<i class="fas fa-clock text-gray-500 text-xs"></i>'}
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="font-medium ${milestone.completed ? 'text-green-800' : 'text-gray-700'}">${milestone.name}</div>
-                                        <div class="text-sm ${milestone.completed ? 'text-green-600' : 'text-gray-500'}">${formatDate(milestone.date)}</div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- Team & Risks -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Takım Üyeleri</h3>
-                            <div class="space-y-3">
-                                ${project.teamMembers.map(member => `
-                                    <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold">
-                                            ${member.avatar}
-                                        </div>
-                                        <div>
-                                            <div class="font-medium text-gray-900">${member.name}</div>
-                                            <div class="text-sm text-gray-600">${member.role}</div>
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        ${project.risks.length > 0 ? `
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Risk Analizi</h3>
-                                <div class="space-y-3">
-                                    ${project.risks.map(risk => `
-                                        <div class="p-3 rounded-lg border ${risk.level === 'high' ? 'bg-red-50 border-red-200' : risk.level === 'medium' ? 'bg-yellow-50 border-yellow-200' : 'bg-green-50 border-green-200'}">
-                                            <div class="flex items-center space-x-2 mb-1">
-                                                <span class="px-2 py-1 rounded-md text-xs font-medium ${getRiskColor(risk.level)}">
-                                                    ${risk.level === 'high' ? 'Yüksek' : risk.level === 'medium' ? 'Orta' : 'Düşük'}
-                                                </span>
-                                            </div>
-                                            <div class="text-sm ${risk.level === 'high' ? 'text-red-700' : risk.level === 'medium' ? 'text-yellow-700' : 'text-green-700'}">${risk.description}</div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-
-                <div class="px-8 py-6 border-t border-gray-200 bg-gray-50">
-                    <div class="flex justify-end space-x-3">
-                        <button onclick="exportProjectToPDF(${project.id})" class="btn-secondary">
-                            <i class="fas fa-file-pdf mr-2"></i>Rapor İndir
-                        </button>
-                        <button onclick="editProject(${project.id})" class="btn-primary">
-                            <i class="fas fa-edit mr-2"></i>Düzenle
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('ideaDetailContent').innerHTML = content;
-            ideaDetailModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function editProject(id) {
-            showNotification('Proje düzenleme özelliği yakında eklenecek!', 'info');
-        }
-
-        function showProjectTimeline(id) {
-            showNotification('Proje zaman çizelgesi özelliği yakında eklenecek!', 'info');
-        }
-
-        function exportProjectToPDF(id) {
-            showNotification('PDF rapor özelliği yakında eklenecek!', 'info');
-        }
-
-        // Professional initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeElements();
-            renderIdeas();
-            renderProjects();
-            updateStats();
-            
-            // Add event listeners
-            document.getElementById('fabAddIdea').addEventListener('click', openModal);
-            if (closeModal) closeModal.addEventListener('click', closeModalFunc);
-            if (cancelBtn) cancelBtn.addEventListener('click', closeModalFunc);
-            if (nextStepBtn) nextStepBtn.addEventListener('click', nextStep);
-            if (prevStepBtn) prevStepBtn.addEventListener('click', prevStep);
-            
-            // Tab event listeners
-            document.getElementById('ideasTab').addEventListener('click', showIdeasView);
-            document.getElementById('projectsTab').addEventListener('click', showProjectsView);
-            if (saveDraftBtn) {
-                saveDraftBtn.addEventListener('click', () => {
-                    saveIdea('draft');
-                    showNotification('Taslak kaydedildi! 💾', 'info');
-                });
-            }
-
-            if (submitBtn) {
-                submitBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (validateStep(currentStep)) {
-                        saveIdea('review');
-                        showNotification('Fikir başarıyla gönderildi! 🎉', 'success');
-                    } else {
-                        showNotification('Lütfen zorunlu alanları doldurun.', 'warning');
-                    }
-                });
-            }
-
-            // Professional close modals on backdrop click
-            if (ideaModal) {
-                ideaModal.addEventListener('click', (e) => {
-                    if (e.target === ideaModal) closeModalFunc();
-                });
-            }
-
-            if (ideaDetailModal) {
-                ideaDetailModal.addEventListener('click', (e) => {
-                    if (e.target === ideaDetailModal) closeIdeaDetail();
-                });
-            }
-
-            // Character counter
-            const summaryField = document.getElementById('ideaSummary');
-            if (summaryField) {
-                summaryField.addEventListener('input', function() {
-                    const counter = document.getElementById('summaryCounter');
-                    if (counter) {
-                        const length = this.value.length;
-                        counter.textContent = `${length}/500`;
-                        
-                        if (length > 450) {
-                            counter.classList.add('text-red-500');
-                        } else {
-                            counter.classList.remove('text-red-500');
-                        }
-                    }
-                });
-            }
+            alert('🎉 Fikriniz başarıyla değerlendirmeye gönderildi! Yönetim kurulu 3-5 iş günü içinde değerlendirecek.');
         });
+
+        // Taslak kaydetme
+        function saveDraft() {
+            alert('💾 Taslak kaydedildi! Daha sonra düzenleyebilirsiniz.');
+            closeIdeaModal();
+        }
+
+        // Filtre butonları
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-blue-100', 'text-blue-700');
+                    b.classList.add('bg-gray-100', 'text-gray-700');
+                });
+                this.classList.remove('bg-gray-100', 'text-gray-700');
+                this.classList.add('bg-blue-100', 'text-blue-700');
+
+                currentFilter = this.dataset.filter;
+                renderIdeas();
+            });
+        });
+
+        // Sıralama
+        document.getElementById('sortSelect').addEventListener('change', function() {
+            currentSort = this.value;
+            renderIdeas();
+        });
+
+        // Sayfa yüklendiğinde
+        renderIdeas();
     </script>
-</body>
 </html>

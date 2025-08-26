@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnovasyon Hub - Fikir Platformu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc;
+        }
+        
+        .form-section {
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        
+        .form-section.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .step-indicator.completed .step-number {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .step-indicator.active .step-number {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .progress-bar {
+            background-color: #3b82f6;
+            transition: width 0.5s ease;
+        }
+        
+        .form-input {
+            border: 2px solid #e5e7eb;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: #3b82f6;
+            transition: background-color 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        
+        .btn-secondary {
+            border: 2px solid #d1d5db;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #9ca3af;
+            background-color: #f9fafb;
+        }
+        
+        .idea-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        
+        .idea-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200">
+        <div class="container mx-auto px-6 py-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">İnovasyon Hub</h1>
+                <p class="text-xl text-gray-600 mb-6">Fikirlerinizi paylaşın, geliştirin ve hayata geçirin</p>
+                <div class="flex justify-center gap-8 text-sm text-gray-500">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Detaylı Analiz
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Uzman Değerlendirme
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Topluluk Desteği
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-6 py-12">
+        <!-- Progress Indicator -->
+        <div class="mb-12">
+            <div class="flex justify-center items-center space-x-8 mb-8">
+                <div class="step-indicator active flex items-center space-x-3">
+                    <div class="step-number w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold">1</div>
+                    <div>
+                        <div class="font-semibold text-gray-900">Temel Bilgiler</div>
+                        <div class="text-sm text-gray-500">Fikir tanımı ve kategori</div>
+                    </div>
+                </div>
+                <div class="w-16 h-0.5 bg-gray-300"></div>
+                <div class="step-indicator flex items-center space-x-3" id="step2">
+                    <div class="step-number w-10 h-10 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center font-semibold">2</div>
+                    <div>
+                        <div class="font-semibold text-gray-500">Detaylı Planlama</div>
+                        <div class="text-sm text-gray-400">Analiz ve kaynak planlaması</div>
+                    </div>
+                </div>
+                <div class="w-16 h-0.5 bg-gray-300"></div>
+                <div class="step-indicator flex items-center space-x-3" id="step3">
+                    <div class="step-number w-10 h-10 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center font-semibold">3</div>
+                    <div>
+                        <div class="font-semibold text-gray-500">Sunum & Değerlendirme</div>
+                        <div class="text-sm text-gray-400">Final kontrol ve gönderim</div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="progress-bar h-2 rounded-full" style="width: 33%"></div>
+            </div>
+            <div class="flex justify-between text-sm text-gray-500 mt-2">
+                <span>Başlangıç</span>
+                <span id="progressText">1/3 Tamamlandı</span>
+                <span>Tamamlandı</span>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-blue-600 p-6">
+                <h2 class="text-2xl font-bold text-white mb-2">Fikir Geliştirme Süreci</h2>
+                <p class="text-blue-100">Fikrininizi adım adım geliştirin ve profesyonel bir sunum hazırlayın</p>
+            </div>
+
+            <form id="ideaForm" class="p-8">
+                <!-- Adım 1: Temel Bilgiler -->
+                <div id="section1" class="form-section active">
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-6">Fikir Tanımı ve Temel Bilgiler</h3>
+                        
+                        <div class="grid lg:grid-cols-2 gap-8">
+                            <!-- Sol Kolon -->
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Fikir Başlığı *</label>
+                                    <input type="text" id="ideaTitle" class="form-input w-full px-4 py-3 rounded-lg" placeholder="Fikrininizin açıklayıcı başlığını yazın...">
+                                    <div class="mt-2 flex justify-between items-center">
+                                        <p class="text-xs text-gray-500">Örnek: "Yapay Zeka Destekli Enerji Yönetim Sistemi"</p>
+                                        <span class="text-xs text-gray-400" id="titleCount">0/100</span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ana Kategori *</label>
+                                    <select id="ideaCategory" class="form-input w-full px-4 py-3 rounded-lg">
+                                        <option value="">Kategori seçiniz...</option>
+                                        <option value="teknoloji">Teknoloji & Dijital Dönüşüm</option>
+                                        <option value="süreç">Süreç İyileştirme & Optimizasyon</option>
+                                        <option value="ürün">Ürün Geliştirme & İnovasyon</option>
+                                        <option value="hizmet">Hizmet İnovasyonu & Müşteri Deneyimi</option>
+                                        <option value="çevre">Çevre & Sürdürülebilirlik</option>
+                                        <option value="organizasyon">Organizasyonel İnovasyon</option>
+                                        <option value="pazarlama">Pazarlama & Satış İnovasyonu</option>
+                                        <option value="finans">Fintech & Finansal İnovasyon</option>
+                                        <option value="eğitim">Eğitim & Öğrenme Teknolojileri</option>
+                                        <option value="sağlık">Sağlık & Yaşam Bilimleri</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Öncelik Seviyesi</label>
+                                    <div class="space-y-3">
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                            <input type="radio" name="priority" value="kritik" class="mr-3">
+                                            <div>
+                                                <div class="font-medium text-red-600">Kritik Öncelik</div>
+                                                <div class="text-sm text-gray-500">Acil uygulama gerekli (0-3 ay)</div>
+                                            </div>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                            <input type="radio" name="priority" value="yüksek" class="mr-3">
+                                            <div>
+                                                <div class="font-medium text-orange-600">Yüksek Öncelik</div>
+                                                <div class="text-sm text-gray-500">Kısa vadeli hedef (3-6 ay)</div>
+                                            </div>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                            <input type="radio" name="priority" value="orta" class="mr-3" checked>
+                                            <div>
+                                                <div class="font-medium text-blue-600">Orta Öncelik</div>
+                                                <div class="text-sm text-gray-500">Orta vadeli planlama (6-12 ay)</div>
+                                            </div>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                            <input type="radio" name="priority" value="düşük" class="mr-3">
+                                            <div>
+                                                <div class="font-medium text-green-600">Düşük Öncelik</div>
+                                                <div class="text-sm text-gray-500">Uzun vadeli vizyon (12+ ay)</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sağ Kolon -->
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Detaylı Fikir Açıklaması *</label>
+                                    <textarea id="ideaDescription" rows="8" class="form-input w-full px-4 py-3 rounded-lg resize-none" placeholder="Fikrininizi detaylı bir şekilde açıklayın:
+
+• Ana problem nedir?
+• Çözümünüz nasıl çalışacak?
+• Hangi teknolojiler kullanılacak?
+• Hedef kitle kimler?
+• Beklenen sonuçlar nelerdir?
+
+Minimum 100 karakter..."></textarea>
+                                    <div class="flex justify-between text-xs text-gray-500 mt-2">
+                                        <span>Detaylı açıklama fikrininizin değerlendirilmesinde kritik öneme sahiptir</span>
+                                        <span id="descriptionCount">0/1000</span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Hedef Kitle & Paydaşlar</label>
+                                    <div class="space-y-3">
+                                        <input type="text" id="primaryTarget" class="form-input w-full px-4 py-3 rounded-lg" placeholder="Birincil hedef kitle">
+                                        <input type="text" id="secondaryTarget" class="form-input w-full px-4 py-3 rounded-lg" placeholder="İkincil hedef kitle">
+                                        <input type="text" id="stakeholders" class="form-input w-full px-4 py-3 rounded-lg" placeholder="Ana paydaşlar">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Anahtar Kelimeler & Etiketler</label>
+                                    <input type="text" id="tags" class="form-input w-full px-4 py-3 rounded-lg" placeholder="Virgülle ayırarak etiket ekleyin (AI, otomasyon, sürdürülebilirlik...)">
+                                    <div class="mt-3">
+                                        <div class="text-xs text-gray-500 mb-2">Popüler etiketler:</div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <button type="button" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs hover:bg-gray-200" onclick="addTag('AI')">AI</button>
+                                            <button type="button" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs hover:bg-gray-200" onclick="addTag('Otomasyon')">Otomasyon</button>
+                                            <button type="button" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs hover:bg-gray-200" onclick="addTag('Sürdürülebilirlik')">Sürdürülebilirlik</button>
+                                            <button type="button" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs hover:bg-gray-200" onclick="addTag('Dijital Dönüşüm')">Dijital Dönüşüm</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Fikir Değerlendirme Skoru</label>
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <div class="text-center mb-4">
+                                            <div class="text-3xl font-bold text-blue-600" id="currentScore">15</div>
+                                            <div class="text-sm text-gray-500">Mevcut Skor</div>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <div>
+                                                <label class="block text-xs text-gray-600 mb-1">Yenilikçilik (1-10)</label>
+                                                <input type="range" min="1" max="10" value="5" class="w-full" onchange="updateScore()" id="innovationSlider">
+                                                <div class="text-center text-xs text-gray-500">Puan: <span id="innovationValue">5</span></div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 mb-1">Uygulanabilirlik (1-10)</label>
+                                                <input type="range" min="1" max="10" value="5" class="w-full" onchange="updateScore()" id="feasibilitySlider">
+                                                <div class="text-center text-xs text-gray-500">Puan: <span id="feasibilityValue">5</span></div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 mb-1">Potansiyel Etki (1-10)</label>
+                                                <input type="range" min="1" max="10" value="5" class="w-full" onchange="updateScore()" id="impactSlider">
+                                                <div class="text-center text-xs text-gray-500">Puan: <span id="impactValue">5</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button type="button" onclick="nextStep(2)" class="btn-primary text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2">
+                            Devam Et
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Adım 2: Detaylı Planlama -->
+                <div id="section2" class="form-section hidden">
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-6">Detaylı Analiz ve Stratejik Planlama</h3>
+                        
+                        <div class="grid lg:grid-cols-2 gap-8">
+                            <!-- Sol Kolon -->
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Mevcut Durum Analizi *</label>
+                                    <textarea id="currentSituation" rows="6" class="form-input w-full px-4 py-3 rounded-lg resize-none" placeholder="Detaylı mevcut durum analizi:
+
+• Hangi problemler mevcut?
+• Mevcut çözümler neden yetersiz?
+• Pazar durumu nasıl?
+• Rakip analizi
+• Fırsatlar ve tehditler"></textarea>
+                                    <div class="text-xs text-gray-500 mt-2" id="currentSituationCount">0/800</div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Önerilen Çözüm & Metodoloji *</label>
+                                    <textarea id="proposedSolution" rows="6" class="form-input w-full px-4 py-3 rounded-lg resize-none" placeholder="Detaylı çözüm açıklaması:
+
+• Çözüm nasıl çalışacak?
+• Hangi teknolojiler kullanılacak?
+• Uygulama metodolojisi
+• Aşamalı yaklaşım planı"></textarea>
+                                    <div class="text-xs text-gray-500 mt-2" id="proposedSolutionCount">0/800</div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Beklenen Faydalar & ROI *</label>
+                                    <textarea id="expectedBenefits" rows="5" class="form-input w-full px-4 py-3 rounded-lg resize-none" placeholder="Detaylı fayda analizi:
+
+• Finansal faydalar
+• Operasyonel faydalar
+• Stratejik faydalar
+• Ölçülebilir hedefler"></textarea>
+                                    
+                                    <div class="grid grid-cols-2 gap-4 mt-4">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Tahmini ROI (%)</label>
+                                            <input type="number" id="estimatedROI" class="form-input w-full px-3 py-2 rounded-lg" placeholder="15" min="0" max="1000">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Geri Ödeme Süresi (Ay)</label>
+                                            <input type="number" id="paybackPeriod" class="form-input w-full px-3 py-2 rounded-lg" placeholder="12" min="1" max="120">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sağ Kolon -->
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kaynak Gereksinimleri</label>
+                                    <div class="space-y-4">
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-xs text-gray-600 mb-1">Tahmini Bütçe</label>
+                                                <select id="budgetRange" class="form-input w-full px-3 py-2 rounded-lg">
+                                                    <option value="">Seçiniz...</option>
+                                                    <option value="0-25k">0 - 25.000 TL</option>
+                                                    <option value="25k-50k">25.000 - 50.000 TL</option>
+                                                    <option value="50k-100k">50.000 - 100.000 TL</option>
+                                                    <option value="100k-250k">100.000 - 250.000 TL</option>
+                                                    <option value="250k-500k">250.000 - 500.000 TL</option>
+                                                    <option value="500k+">500.000 TL+</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 mb-1">Proje Süresi</label>
+                                                <select id="projectDuration" class="form-input w-full px-3 py-2 rounded-lg">
+                                                    <option value="">Seçiniz...</option>
+                                                    <option value="1-3ay">1-3 Ay</option>
+                                                    <option value="3-6ay">3-6 Ay</option>
+                                                    <option value="6-12ay">6-12 Ay</option>
+                                                    <option value="12-18ay">12-18 Ay</option>
+                                                    <option value="18ay+">18+ Ay</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Teknoloji & Altyapı Gereksinimleri</label>
+                                            <textarea id="techRequirements" rows="3" class="form-input w-full px-3 py-2 rounded-lg resize-none" placeholder="• Donanım gereksinimleri&#10;• Yazılım lisansları&#10;• Cloud/sunucu ihtiyaçları"></textarea>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">İnsan Kaynağı İhtiyaçları</label>
+                                            <textarea id="humanResources" rows="3" class="form-input w-full px-3 py-2 rounded-lg resize-none" placeholder="• Tam zamanlı çalışan sayısı&#10;• Uzman danışman ihtiyacı&#10;• Eğitim gereksinimleri"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Risk Analizi</label>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Teknik Riskler</label>
+                                            <textarea id="technicalRisks" rows="3" class="form-input w-full px-3 py-2 rounded-lg resize-none" placeholder="Teknik zorluklar, teknoloji riskleri..."></textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">İş Riskleri</label>
+                                            <textarea id="businessRisks" rows="3" class="form-input w-full px-3 py-2 rounded-lg resize-none" placeholder="Pazar riskleri, rekabet, bütçe aşımı..."></textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Risk Seviyesi</label>
+                                            <div class="flex gap-4">
+                                                <label class="flex items-center">
+                                                    <input type="radio" name="riskLevel" value="düşük" class="mr-2">
+                                                    <span class="text-green-600">Düşük</span>
+                                                </label>
+                                                <label class="flex items-center">
+                                                    <input type="radio" name="riskLevel" value="orta" class="mr-2" checked>
+                                                    <span class="text-yellow-600">Orta</span>
+                                                </label>
+                                                <label class="flex items-center">
+                                                    <input type="radio" name="riskLevel" value="yüksek" class="mr-2">
+                                                    <span class="text-red-600">Yüksek</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Başarı Metrikleri</label>
+                                    <textarea id="successMetrics" rows="4" class="form-input w-full px-3 py-2 rounded-lg resize-none" placeholder="Ölçülebilir başarı kriterleri:
+
+• Finansal metrikler
+• Operasyonel metrikler
+• Müşteri metrikleri
+• Süreç metrikleri"></textarea>
+                                    
+                                    <div class="grid grid-cols-2 gap-4 mt-4">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Hedef Başarı Oranı (%)</label>
+                                            <input type="number" id="successTarget" class="form-input w-full px-3 py-2 rounded-lg" placeholder="85" min="0" max="100">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Ölçüm Periyodu</label>
+                                            <select id="measurementPeriod" class="form-input w-full px-3 py-2 rounded-lg">
+                                                <option value="haftalık">Haftalık</option>
+                                                <option value="aylık" selected>Aylık</option>
+                                                <option value="çeyreklik">Çeyreklik</option>
+                                                <option value="yıllık">Yıllık</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button type="button" onclick="prevStep(1)" class="btn-secondary px-8 py-3 rounded-lg font-medium flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                            </svg>
+                            Geri
+                        </button>
+                        <button type="button" onclick="nextStep(3)" class="btn-primary text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2">
+                            Devam Et
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Adım 3: Sunum & Değerlendirme -->
+                <div id="section3" class="form-section hidden">
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-6">Sunum & Final Değerlendirme</h3>
+                        
+                        <div class="grid lg:grid-cols-2 gap-8">
+                            <!-- Sol Kolon - Önizleme -->
+                            <div>
+                                <h4 class="font-semibold text-lg text-gray-700 mb-4">Fikir Sunum Önizlemesi</h4>
+                                <div id="ideaPreview" class="idea-card p-6 rounded-lg">
+                                    <div class="mb-4">
+                                        <h5 class="font-bold text-xl text-gray-800 mb-2" id="previewTitle">Fikir Başlığı</h5>
+                                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium" id="previewCategory">Kategori</span>
+                                            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium" id="previewPriority">Öncelik</span>
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-xl font-bold text-blue-600" id="previewScore">15</span>
+                                                <span class="text-sm text-gray-500">/30</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="space-y-3">
+                                        <div>
+                                            <h6 class="font-medium text-gray-700 mb-1">Açıklama</h6>
+                                            <p class="text-gray-600 text-sm" id="previewDescription">Fikir açıklaması burada görünecek...</p>
+                                        </div>
+                                        
+                                        <div>
+                                            <h6 class="font-medium text-gray-700 mb-1">Beklenen Faydalar</h6>
+                                            <p class="text-gray-600 text-sm" id="previewBenefits">Faydalar burada listelenecek...</p>
+                                        </div>
+                                        
+                                        <div>
+                                            <h6 class="font-medium text-gray-700 mb-1">Bütçe & Süre</h6>
+                                            <div class="flex gap-3 text-sm">
+                                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded" id="previewBudget">Bütçe</span>
+                                                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded" id="previewDuration">Süre</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div id="previewTagsContainer">
+                                            <h6 class="font-medium text-gray-700 mb-1">Etiketler</h6>
+                                            <div class="flex flex-wrap gap-1" id="previewTags">
+                                                <!-- Etiketler buraya eklenecek -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sağ Kolon - Ek Bilgiler -->
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Sunum Notları & Özel Vurgular</label>
+                                    <textarea id="presentationNotes" rows="6" class="form-input w-full px-4 py-3 rounded-lg resize-none" placeholder="Fikrinizi sunarken vurgulamak istediğiniz özel noktalar:
+
+• Ana değer önerisi
+• Rekabet avantajları  
+• Kritik başarı faktörleri
+• Özel dikkat edilmesi gerekenler"></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">İletişim Tercihleri</label>
+                                    <div class="space-y-3">
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                            <input type="checkbox" class="mr-3" checked>
+                                            <div>
+                                                <div class="font-medium">E-posta Bildirimleri</div>
+                                                <div class="text-sm text-gray-500">Değerlendirme sürecindeki güncellemeler</div>
+                                            </div>
+                                        </label>
+                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                            <input type="checkbox" class="mr-3" checked>
+                                            <div>
+                                                <div class="font-medium">Değerlendirme Toplantısı</div>
+                                                <div class="text-sm text-gray-500">Uzmanlarla birebir görüşme</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4 mt-4">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Tercih Edilen İletişim</label>
+                                            <select class="form-input w-full px-3 py-2 rounded-lg">
+                                                <option>E-posta</option>
+                                                <option>Telefon</option>
+                                                <option>Video Konferans</option>
+                                                <option>Yüz Yüze Toplantı</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Uygun Zaman Dilimi</label>
+                                            <select class="form-input w-full px-3 py-2 rounded-lg">
+                                                <option>09:00 - 12:00</option>
+                                                <option>13:00 - 17:00</option>
+                                                <option>18:00 - 20:00</option>
+                                                <option>Esnek</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kendi Değerlendirmeniz</label>
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-2">Güven Seviyesi (1-5 yıldız)</label>
+                                            <div class="flex gap-1" id="selfRating">
+                                                <span class="rating-star text-2xl cursor-pointer text-gray-300" onclick="setRating(1)">★</span>
+                                                <span class="rating-star text-2xl cursor-pointer text-gray-300" onclick="setRating(2)">★</span>
+                                                <span class="rating-star text-2xl cursor-pointer text-gray-300" onclick="setRating(3)">★</span>
+                                                <span class="rating-star text-2xl cursor-pointer text-gray-300" onclick="setRating(4)">★</span>
+                                                <span class="rating-star text-2xl cursor-pointer text-gray-300" onclick="setRating(5)">★</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-blue-50 rounded-lg p-4">
+                                    <h5 class="font-semibold text-blue-800 mb-3">Sonraki Adımlar</h5>
+                                    <div class="space-y-2 text-sm text-blue-700">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                                            <span>24 saat içinde ilk geri bildirim</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                                            <span>3-5 iş günü içinde detaylı analiz</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                                            <span>Uygun fikirler için sunum davet</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button type="button" onclick="prevStep(2)" class="btn-secondary px-8 py-3 rounded-lg font-medium flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                            </svg>
+                            Geri
+                        </button>
+                        <button type="submit" class="btn-primary text-white px-12 py-3 rounded-lg font-medium flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                            Fikri Gönder
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- İstatistikler ve Fikirler Bölümü -->
+        <div class="mt-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Topluluk Fikirleri</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Topluluk tarafından paylaşılan fikirler ve değerlendirme sürecindeki projeler
+                </p>
+            </div>
+
+            <!-- İstatistik Kartları -->
+            <div class="grid md:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
+                    <div class="text-3xl font-bold text-blue-600 mb-2" id="totalIdeas">3</div>
+                    <div class="text-gray-600 font-medium">Toplam Fikir</div>
+                    <div class="text-gray-400 text-sm mt-1">Bu ay +3</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
+                    <div class="text-3xl font-bold text-green-600 mb-2" id="activeIdeas">2</div>
+                    <div class="text-gray-600 font-medium">Değerlendirmede</div>
+                    <div class="text-gray-400 text-sm mt-1">Aktif süreç</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
+                    <div class="text-3xl font-bold text-purple-600 mb-2" id="totalVotes">135</div>
+                    <div class="text-gray-600 font-medium">Toplam Oy</div>
+                    <div class="text-gray-400 text-sm mt-1">Topluluk desteği</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
+                    <div class="text-3xl font-bold text-orange-600 mb-2" id="implementedCount">1</div>
+                    <div class="text-gray-600 font-medium">Uygulanan</div>
+                    <div class="text-gray-400 text-sm mt-1">Başarı oranı</div>
+                </div>
+            </div>
+
+            <!-- Filtreler -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+                <div class="flex flex-wrap justify-between items-center gap-4">
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="filterIdeas('all')" class="filter-btn px-4 py-2 rounded-lg bg-blue-600 text-white font-medium">
+                            Tümü
+                        </button>
+                        <button onclick="filterIdeas('teknoloji')" class="filter-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200">
+                            Teknoloji
+                        </button>
+                        <button onclick="filterIdeas('süreç')" class="filter-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200">
+                            Süreç
+                        </button>
+                        <button onclick="filterIdeas('ürün')" class="filter-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200">
+                            Ürün
+                        </button>
+                        <button onclick="filterIdeas('çevre')" class="filter-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200">
+                            Çevre
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <select class="form-input px-4 py-2 rounded-lg">
+                            <option>En Yeni</option>
+                            <option>En Popüler</option>
+                            <option>En Yüksek Puan</option>
+                        </select>
+                        <div class="form-input px-4 py-2 rounded-lg flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <input type="text" placeholder="Fikir ara..." class="bg-transparent focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fikirler Listesi -->
+            <div id="ideasContainer" class="space-y-6">
+                <!-- Fikirler buraya dinamik olarak eklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="ideaModal" class="modal-overlay fixed inset-0 hidden items-center justify-center z-50 p-6">
+        <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="modalTitle" class="text-2xl font-bold text-gray-800"></h2>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div>
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="font-semibold text-gray-700 mb-2">Detaylı Açıklama</h3>
+                                <p id="modalDescription" class="text-gray-600"></p>
+                            </div>
+                            
+                            <div>
+                                <h3 class="font-semibold text-gray-700 mb-2">Beklenen Faydalar</h3>
+                                <p id="modalBenefit" class="text-gray-600"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="font-semibold text-gray-700 mb-3">Değerlendirme Kriterleri</h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="bg-gray-50 p-3 rounded-lg text-center">
+                                        <div class="text-xl font-bold text-blue-600">8.5</div>
+                                        <div class="text-sm text-gray-600">Yenilikçilik</div>
+                                    </div>
+                                    <div class="bg-gray-50 p-3 rounded-lg text-center">
+                                        <div class="text-xl font-bold text-green-600">7.2</div>
+                                        <div class="text-sm text-gray-600">Uygulanabilirlik</div>
+                                    </div>
+                                    <div class="bg-gray-50 p-3 rounded-lg text-center">
+                                        <div class="text-xl font-bold text-purple-600">9.1</div>
+                                        <div class="text-sm text-gray-600">Etki</div>
+                                    </div>
+                                    <div class="bg-gray-50 p-3 rounded-lg text-center">
+                                        <div class="text-xl font-bold text-orange-600">8.3</div>
+                                        <div class="text-sm text-gray-600">Genel</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 class="font-semibold text-gray-700 mb-3">Topluluk Yorumları</h3>
+                                <div class="space-y-2 mb-3 max-h-32 overflow-y-auto" id="commentsContainer">
+                                    <!-- Yorumlar buraya eklenecek -->
+                                </div>
+                                <div class="flex gap-2">
+                                    <input type="text" id="newComment" placeholder="Yorumunuzu ekleyin..." class="form-input flex-1 px-3 py-2 rounded-lg">
+                                    <button onclick="addComment()" class="btn-primary px-4 py-2 rounded-lg text-white font-medium">
+                                        Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ideas = [];
+        let currentIdeaId = null;
+        let currentStep = 1;
+        let selfRatingValue = 0;
+
+        // Örnek fikirler
+        const sampleIdeas = [
+            {
+                id: 1,
+                title: "Yapay Zeka Destekli Enerji Yönetim Sistemi",
+                category: "teknoloji",
+                description: "IoT sensörleri ve makine öğrenmesi kullanarak endüstriyel tesislerin enerji tüketimini optimize eden sistem.",
+                expectedBenefits: "• %30 enerji tasarrufu\n• %25 karbon emisyon azalması\n• Gerçek zamanlı monitoring",
+                author: "Ahmet Yılmaz",
+                date: "2024-01-15",
+                votes: 45,
+                score: 25,
+                status: "Pilot Uygulama",
+                priority: "kritik",
+                tags: ["AI", "IoT", "Sürdürülebilirlik"],
+                budget: "500k+",
+                duration: "12-18ay"
+            },
+            {
+                id: 2,
+                title: "Blockchain Tabanlı Tedarik Zinciri Platformu",
+                category: "teknoloji",
+                description: "Tedarik zincirindeki tüm süreçleri blockchain ile kayıt altına alan şeffaflık platformu.",
+                expectedBenefits: "• %100 ürün izlenebilirliği\n• %50 sahte ürün riski azalması\n• Otomatik ödeme sistemleri",
+                author: "Zeynep Kaya",
+                date: "2024-01-14",
+                votes: 38,
+                score: 23,
+                status: "Değerlendirmede",
+                priority: "yüksek",
+                tags: ["Blockchain", "Tedarik Zinciri"],
+                budget: "250k-500k",
+                duration: "6-12ay"
+            },
+            {
+                id: 3,
+                title: "AR/VR Destekli Uzaktan Eğitim Platformu",
+                category: "eğitim",
+                description: "Artırılmış ve sanal gerçeklik teknolojileri ile immersive uzaktan eğitim deneyimi.",
+                expectedBenefits: "• %60 öğrenme verimliliği artışı\n• Sanal laboratuvar imkanları\n• Global işbirliği",
+                author: "Mehmet Demir",
+                date: "2024-01-13",
+                votes: 52,
+                score: 22,
+                status: "Prototip Geliştirme",
+                priority: "yüksek",
+                tags: ["AR", "VR", "Eğitim"],
+                budget: "100k-250k",
+                duration: "6-12ay"
+            }
+        ];
+
+        // Sayfa yüklendiğinde
+        window.onload = function() {
+            ideas = [...sampleIdeas];
+            updateStats();
+            renderIdeas();
+            setupFormValidation();
+        };
+
+        function getCategoryName(category) {
+            const categories = {
+                'teknoloji': 'Teknoloji',
+                'süreç': 'Süreç',
+                'ürün': 'Ürün',
+                'hizmet': 'Hizmet',
+                'çevre': 'Çevre',
+                'organizasyon': 'Organizasyon',
+                'pazarlama': 'Pazarlama',
+                'finans': 'Finans',
+                'eğitim': 'Eğitim',
+                'sağlık': 'Sağlık'
+            };
+            return categories[category] || 'Kategori';
+        }
+
+        function updateStats() {
+            document.getElementById('totalIdeas').textContent = ideas.length;
+            document.getElementById('activeIdeas').textContent = ideas.filter(idea => 
+                idea.status === 'Değerlendirmede' || idea.status === 'Pilot Uygulama'
+            ).length;
+            
+            const totalVotes = ideas.reduce((sum, idea) => sum + idea.votes, 0);
+            document.getElementById('totalVotes').textContent = totalVotes;
+            
+            const implemented = ideas.filter(idea => 
+                idea.status === 'Uygulanan' || idea.status === 'Pilot Uygulama'
+            ).length;
+            document.getElementById('implementedCount').textContent = implemented;
+        }
+
+        function renderIdeas(filter = 'all') {
+            const container = document.getElementById('ideasContainer');
+            const filteredIdeas = filter === 'all' ? ideas : ideas.filter(idea => idea.category === filter);
+            
+            if (filteredIdeas.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-6xl mb-4">💡</div>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-2">Henüz fikir bulunmuyor</h3>
+                        <p class="text-gray-500">İlk fikri siz paylaşın!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filteredIdeas.map(idea => `
+                <div class="idea-card rounded-lg p-6 cursor-pointer" onclick="openIdeaModal(${idea.id})">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="text-xl font-semibold text-gray-800">${idea.title}</h3>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm font-medium">${idea.status}</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                    </svg>
+                                    ${idea.author}
+                                </span>
+                                <span>${idea.date}</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">${getCategoryName(idea.category)}</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-blue-600 mb-1">${idea.score}</div>
+                            <div class="text-sm text-gray-500">Puan</div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-4">${idea.description.substring(0, 150)}...</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex flex-wrap gap-2">
+                            ${idea.tags.slice(0, 3).map(tag => 
+                                `<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">#${tag}</span>`
+                            ).join('')}
+                        </div>
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/>
+                                </svg>
+                                ${idea.votes}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterIdeas(category) {
+            // Filtre butonlarını güncelle
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = 'filter-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200';
+            });
+            
+            event.target.className = 'filter-btn px-4 py-2 rounded-lg bg-blue-600 text-white font-medium';
+            
+            renderIdeas(category);
+        }
+
+        function openIdeaModal(id) {
+            const idea = ideas.find(i => i.id === id);
+            if (!idea) return;
+            
+            currentIdeaId = id;
+            
+            document.getElementById('modalTitle').textContent = idea.title;
+            document.getElementById('modalDescription').textContent = idea.description;
+            document.getElementById('modalBenefit').textContent = idea.expectedBenefits || 'Faydalar belirtilmemiş';
+            
+            document.getElementById('ideaModal').classList.remove('hidden');
+            document.getElementById('ideaModal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('ideaModal').classList.add('hidden');
+            document.getElementById('ideaModal').classList.remove('flex');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-6 right-6 p-4 rounded-lg shadow-lg z-50 max-w-md ${
+                type === 'success' ? 'bg-green-100 border border-green-200 text-green-800' : 'bg-red-100 border border-red-200 text-red-800'
+            }`;
+            
+            notification.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="flex-1">
+                        <p class="font-medium">${message}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Form adım geçişleri
+        function nextStep(step) {
+            if (validateCurrentStep()) {
+                document.getElementById(`section${currentStep}`).classList.add('hidden');
+                document.getElementById(`section${currentStep}`).classList.remove('active');
+                
+                currentStep = step;
+                
+                setTimeout(() => {
+                    document.getElementById(`section${step}`).classList.remove('hidden');
+                    document.getElementById(`section${step}`).classList.add('active');
+                }, 150);
+                
+                updateStepIndicators();
+                updateProgressBar();
+                
+                if (step === 3) {
+                    updatePreview();
+                }
+                
+                // Sayfanın üstüne scroll
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function prevStep(step) {
+            document.getElementById(`section${currentStep}`).classList.add('hidden');
+            document.getElementById(`section${currentStep}`).classList.remove('active');
+            
+            currentStep = step;
+            
+            setTimeout(() => {
+                document.getElementById(`section${step}`).classList.remove('hidden');
+                document.getElementById(`section${step}`).classList.add('active');
+            }, 150);
+            
+            updateStepIndicators();
+            updateProgressBar();
+            
+            // Sayfanın üstüne scroll
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateStepIndicators() {
+            for (let i = 1; i <= 3; i++) {
+                const stepElement = document.querySelector(`#step${i} .step-number`) || 
+                                 document.querySelector(`.step-indicator:nth-child(${i*2-1}) .step-number`);
+                const stepContainer = stepElement?.parentElement.parentElement;
+                
+                if (stepContainer) {
+                    stepContainer.classList.remove('completed', 'active');
+                    
+                    if (i < currentStep) {
+                        stepContainer.classList.add('completed');
+                        stepElement.textContent = '✓';
+                    } else if (i === currentStep) {
+                        stepContainer.classList.add('active');
+                        stepElement.textContent = i;
+                    } else {
+                        stepElement.textContent = i;
+                    }
+                }
+            }
+        }
+
+        function updateProgressBar() {
+            const progress = (currentStep / 3) * 100;
+            document.querySelector('.progress-bar').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${currentStep}/3 Tamamlandı`;
+        }
+
+        function validateCurrentStep() {
+            if (currentStep === 1) {
+                const title = document.getElementById('ideaTitle').value;
+                const category = document.getElementById('ideaCategory').value;
+                const description = document.getElementById('ideaDescription').value;
+                
+                if (!title || !category || !description || description.length < 100) {
+                    showNotification('Lütfen tüm zorunlu alanları doldurun ve açıklama en az 100 karakter olsun!', 'error');
+                    return false;
+                }
+            } else if (currentStep === 2) {
+                const currentSituation = document.getElementById('currentSituation').value;
+                const proposedSolution = document.getElementById('proposedSolution').value;
+                const expectedBenefits = document.getElementById('expectedBenefits').value;
+                
+                if (!currentSituation || !proposedSolution || !expectedBenefits) {
+                    showNotification('Lütfen tüm zorunlu alanları doldurun!', 'error');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function updatePreview() {
+            const title = document.getElementById('ideaTitle').value;
+            const category = document.getElementById('ideaCategory').value;
+            const description = document.getElementById('ideaDescription').value;
+            const benefits = document.getElementById('expectedBenefits').value;
+            const priority = document.querySelector('input[name="priority"]:checked')?.value || 'orta';
+            const budget = document.getElementById('budgetRange').value;
+            const duration = document.getElementById('projectDuration').value;
+            const tags = document.getElementById('tags').value;
+            const score = document.getElementById('currentScore').textContent;
+            
+            document.getElementById('previewTitle').textContent = title || 'Fikir Başlığı';
+            document.getElementById('previewCategory').textContent = getCategoryName(category);
+            document.getElementById('previewPriority').textContent = priority.charAt(0).toUpperCase() + priority.slice(1) + ' Öncelik';
+            document.getElementById('previewDescription').textContent = description || 'Fikir açıklaması burada görünecek...';
+            document.getElementById('previewBenefits').textContent = benefits || 'Faydalar burada listelenecek...';
+            document.getElementById('previewBudget').textContent = budget || 'Bütçe';
+            document.getElementById('previewDuration').textContent = duration || 'Süre';
+            document.getElementById('previewScore').textContent = score;
+            
+            // Etiketleri güncelle
+            const tagsContainer = document.getElementById('previewTags');
+            if (tags) {
+                const tagArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+                tagsContainer.innerHTML = tagArray.map(tag => 
+                    `<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">#${tag}</span>`
+                ).join('');
+            } else {
+                tagsContainer.innerHTML = '<span class="text-gray-400 text-sm">Etiket eklenmedi</span>';
+            }
+        }
+
+        function setupFormValidation() {
+            // Karakter sayaçları
+            document.getElementById('ideaTitle').addEventListener('input', function() {
+                document.getElementById('titleCount').textContent = `${this.value.length}/100`;
+            });
+            
+            document.getElementById('ideaDescription').addEventListener('input', function() {
+                document.getElementById('descriptionCount').textContent = `${this.value.length}/1000`;
+            });
+            
+            document.getElementById('currentSituation').addEventListener('input', function() {
+                document.getElementById('currentSituationCount').textContent = `${this.value.length}/800`;
+            });
+            
+            document.getElementById('proposedSolution').addEventListener('input', function() {
+                document.getElementById('proposedSolutionCount').textContent = `${this.value.length}/800`;
+            });
+        }
+
+        function updateScore() {
+            const innovation = parseInt(document.getElementById('innovationSlider').value);
+            const feasibility = parseInt(document.getElementById('feasibilitySlider').value);
+            const impact = parseInt(document.getElementById('impactSlider').value);
+            
+            document.getElementById('innovationValue').textContent = innovation;
+            document.getElementById('feasibilityValue').textContent = feasibility;
+            document.getElementById('impactValue').textContent = impact;
+            
+            const total = innovation + feasibility + impact;
+            document.getElementById('currentScore').textContent = total;
+        }
+
+        function addTag(tag) {
+            const input = document.getElementById('tags');
+            const currentTags = input.value ? input.value.split(',').map(t => t.trim()) : [];
+            if (!currentTags.includes(tag)) {
+                currentTags.push(tag);
+                input.value = currentTags.join(', ');
+            }
+        }
+
+        function setRating(rating) {
+            selfRatingValue = rating;
+            const stars = document.querySelectorAll('#selfRating .rating-star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('text-gray-300');
+                    star.classList.add('text-yellow-400');
+                } else {
+                    star.classList.remove('text-yellow-400');
+                    star.classList.add('text-gray-300');
+                }
+            });
+        }
+
+        function addComment() {
+            const commentText = document.getElementById('newComment').value.trim();
+            if (!commentText) return;
+            
+            const commentsContainer = document.getElementById('commentsContainer');
+            const newComment = document.createElement('div');
+            newComment.className = 'bg-gray-50 p-3 rounded-lg';
+            newComment.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-sm">S</div>
+                    <div class="flex-1">
+                        <div class="font-medium text-sm">Siz</div>
+                        <div class="text-gray-600 text-sm">${commentText}</div>
+                    </div>
+                </div>
+            `;
+            
+            commentsContainer.appendChild(newComment);
+            document.getElementById('newComment').value = '';
+        }
+
+        // Form gönderimi
+        document.getElementById('ideaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateCurrentStep()) return;
+            
+            const formData = {
+                title: document.getElementById('ideaTitle').value,
+                category: document.getElementById('ideaCategory').value,
+                description: document.getElementById('ideaDescription').value,
+                currentSituation: document.getElementById('currentSituation').value,
+                proposedSolution: document.getElementById('proposedSolution').value,
+                expectedBenefits: document.getElementById('expectedBenefits').value,
+                priority: document.querySelector('input[name="priority"]:checked')?.value || 'orta',
+                primaryTarget: document.getElementById('primaryTarget').value,
+                secondaryTarget: document.getElementById('secondaryTarget').value,
+                stakeholders: document.getElementById('stakeholders').value,
+                tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                budget: document.getElementById('budgetRange').value,
+                duration: document.getElementById('projectDuration').value,
+                roi: document.getElementById('estimatedROI').value,
+                paybackPeriod: document.getElementById('paybackPeriod').value,
+                techRequirements: document.getElementById('techRequirements').value,
+                humanResources: document.getElementById('humanResources').value,
+                technicalRisks: document.getElementById('technicalRisks').value,
+                businessRisks: document.getElementById('businessRisks').value,
+                riskLevel: document.querySelector('input[name="riskLevel"]:checked')?.value || 'orta',
+                successMetrics: document.getElementById('successMetrics').value,
+                successTarget: document.getElementById('successTarget').value,
+                measurementPeriod: document.getElementById('measurementPeriod').value,
+                presentationNotes: document.getElementById('presentationNotes').value,
+                selfRating: selfRatingValue
+            };
+            
+            const newIdea = {
+                id: Date.now(),
+                ...formData,
+                author: "Siz",
+                date: new Date().toISOString().split('T')[0],
+                votes: 0,
+                score: parseInt(document.getElementById('currentScore').textContent),
+                status: "Yeni Gönderim"
+            };
+            
+            ideas.unshift(newIdea);
+            updateStats();
+            renderIdeas();
+            
+            // Formu sıfırla
+            document.getElementById('ideaForm').reset();
+            currentStep = 1;
+            updateStepIndicators();
+            updateProgressBar();
+            
+            // İlk adıma dön
+            document.getElementById('section3').classList.add('hidden');
+            document.getElementById('section3').classList.remove('active');
+            document.getElementById('section1').classList.remove('hidden');
+            document.getElementById('section1').classList.add('active');
+            
+            // Başarı mesajı
+            showNotification('Fikriniz başarıyla gönderildi! Değerlendirme sürecine alınacak.', 'success');
+            
+            // Gönderilen fikirler bölümüne scroll
+            setTimeout(() => {
+                document.getElementById('ideasContainer').scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
