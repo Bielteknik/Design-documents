@@ -292,6 +292,14 @@
                 <i class="fas fa-tasks mr-3"></i>
                 <span class="font-medium">Projeler</span>
             </div>
+            <div class="sidebar-item flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-white" data-section="analitik">
+                <i class="fas fa-chart-bar mr-3"></i>
+                <span class="font-medium">Analitik</span>
+            </div>
+            <div class="sidebar-item flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-white" data-section="raporlar">
+                <i class="fas fa-file-alt mr-3"></i>
+                <span class="font-medium">Raporlar</span>
+            </div>
             
             <!-- Ayraç -->
             <div class="px-4 my-4">
@@ -334,22 +342,7 @@
                 <div class="border-t border-gray-300 dark:border-gray-700"></div>
             </div>
             
-            <!-- Alt Menü - Analitik ve Raporlar yan yana -->
-            <div class="flex space-x-2 px-4">
-                <div class="sidebar-item flex items-center justify-center px-3 py-3 text-gray-600 dark:text-gray-300 hover:text-white flex-1" data-section="analitik">
-                    <i class="fas fa-chart-bar mr-2"></i>
-                    <span class="font-medium text-sm">Analitik</span>
-                </div>
-                <div class="sidebar-item flex items-center justify-center px-3 py-3 text-gray-600 dark:text-gray-300 hover:text-white flex-1" data-section="raporlar">
-                    <i class="fas fa-file-alt mr-2"></i>
-                    <span class="font-medium text-sm">Raporlar</span>
-                </div>
-            </div>
-            
-            <div class="px-4 my-2">
-                <div class="border-t border-gray-300 dark:border-gray-700"></div>
-            </div>
-            
+            <!-- Alt Menü -->
             <div class="sidebar-item flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:text-white">
                 <i class="fas fa-cog mr-3"></i>
                 <span class="font-medium">Ayarlar</span>
