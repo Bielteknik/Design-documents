@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ajanda - Ejder3200{% endblock %}
+
+{% block extra_css %}
+<!-- FullCalendar V6 CSS ve Bootstrap 5 Theme -->
+<link rel="stylesheet" href="{% static 'assets/vendor/fullcalendar/core/index.global.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/vendor/fullcalendar/daygrid/index.global.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/vendor/fullcalendar/bootstrap5/index.global.min.css' %}">
+
+<style>
+    /* Takvim için özel stil ayarları */
+    #calendar {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px 0;
+    }
+    .fc .fc-toolbar-chunk { /* FullCalendar V6 başlık çubuğu için genel stil */
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap; /* Küçük ekranlarda sığdırmak için */
+        margin-bottom: 10px; /* Butonlar arası boşluk */
+    }
+    .fc .fc-toolbar-chunk:last-child {
+        margin-bottom: 0;
+    }
+    .fc .fc-button-group {
+        margin-right: 10px;
+    }
+    .fc .fc-button { /* FullCalendar V6 butonları */
+        background-color: var(--theme-color) !important; /* Tema renginiz */
+        border-color: var(--theme-color) !important;
+        color: #fff !important;
+        text-transform: capitalize !important;
+        font-weight: 500 !important;
+        box-shadow: none !important;
+        transition: all 0.2s ease-in-out;
+    }
+    .fc .fc-button:hover {
+        opacity: 0.9;
+    }
+    .fc .fc-button:focus, .fc .fc-button:active {
+        box-shadow: none !important;
+    }
+    .fc .fc-button-primary:not(:disabled).fc-button-active {
+        background-color: var(--theme-color-dark) !important; /* Tema renginizin koyu tonu */
+        border-color: var(--theme-color-dark) !important;
+    }
+    .fc .fc-event { /* Takvimdeki etkinliklerin görünümü (V6'da .fc-daygrid-event gibi daha spesifik sınıflar da var) */
+        background-color: var(--theme-color-light) !important; /* Daha açık tema rengi */
+        border-color: var(--theme-color-light) !important;
+        color: #fff !important;
+        padding: 3px 5px;
+        border-radius: 4px;
+        font-size: 0.85em;
+        line-height: 1.3;
+    }
+    .fc .fc-event-title-wrap {
+        white-space: normal; /* Uzun başlıkları sığdırmak için */
+    }
+    .fc .fc-event-time {
+        font-weight: 600;
+    }
+    .fc .fc-daygrid-day-number { /* Gün sayıları */
+        color: #555;
+        font-weight: 600;
+    }
+    .fc .fc-daygrid-day.fc-day-today { /* Bugünü vurgula */
+        background-color: rgba(var(--theme-color-rgb), 0.1) !important;
+    }
+
+    /* Tema renklerini CSS değişkenleri olarak tanımlayalım */
+    body[data-theme="light"], .theme-cyan { /* base.html'deki body veya wrapper sınıfı */
+        --theme-color: #00bcd4; /* Cyan rengi */
+        --theme-color-dark: #0097a7; /* Cyan koyu */
+        --theme-color-light: #4dd0e1; /* Cyan açık */
+        --theme-color-rgb: 0, 188, 212; /* Cyan RGB */
+        /* Bootstrap 5 ile uyum için varsayılan renkleri de geçersiz kılabiliriz */
+        --bs-primary: var(--theme-color);
+        --bs-info: var(--theme-color-light);
+        --bs-primary-rgb: var(--theme-color-rgb);
+    }
+
+    /* Duyarlı tasarım iyileştirmeleri */
+    @media (max-width: 768px) {
+        .fc .fc-toolbar-chunk {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .fc .fc-toolbar-chunk:last-child {
+            margin-bottom: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h2>Ajanda</h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fa fa-cube"></i></a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Uygulamalar</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Ajanda</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-md-6 col-sm-12 text-right">
+                <button type="button" class="btn btn-primary btn-round" id="addEventButton" data-bs-toggle="modal" data-bs-target="#addEventModal">Yeni Etkinlik Ekle</button> {# data-bs-toggle/target BS5 için #}
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Kurumsal Ajanda <small>Etkinliklerinizi yönetin ve planlayın</small></h2>
+                    <ul class="header-dropdown dropdown">
+                        <li><a href="javascript:void(0);" class="full-screen"><i class="icon-size-fullscreen"></i></a></li>
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"></a> {# data-bs-toggle BS5 için #}
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:void(0);">Ayarlar</a></li>
+                                <li><a href="javascript:void(0);">Rapor Al</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="body">
+                    <div id='calendar'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Yeni Etkinlik Ekle Modalı (Bootstrap 5 uyumlu) -->
+<div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEventModalLabel">Yeni Etkinlik Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {# btn-close ve data-bs-dismiss BS5 için #}
+            </div>
+            <div class="modal-body">
+                <form id="addEventForm">
+                    <div class="mb-3"> {# form-group yerine mb-3 #}
+                        <label for="eventTitle" class="form-label">Etkinlik Başlığı</label> {# form-label BS5 için #}
+                        <input type="text" class="form-control" id="eventTitle" placeholder="Etkinlik adını girin" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventStartDate" class="form-label">Başlangıç Tarihi</label>
+                        <input type="date" class="form-control" id="eventStartDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventEndDate" class="form-label">Bitiş Tarihi</label>
+                        <input type="date" class="form-control" id="eventEndDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventColor" class="form-label">Renk</label>
+                        <input type="color" class="form-control form-control-color" id="eventColor" value="#00bcd4"> {# form-control-color BS5 renk inputu için #}
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="allDayEvent">
+                        <label class="form-check-label" for="allDayEvent">Tüm Gün</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button> {# data-bs-dismiss BS5 için #}
+                <button type="button" class="btn btn-primary" id="saveEventBtn">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- FullCalendar V6 JS -->
+<script src="{% static 'assets/vendor/fullcalendar/core/index.global.min.js' %}"></script>
+<script src="{% static 'assets/vendor/fullcalendar/daygrid/index.global.min.js' %}"></script>
+<script src="{% static 'assets/vendor/fullcalendar/bootstrap5/index.global.min.js' %}"></script>
+<script src="{% static 'assets/vendor/fullcalendar/locales-all.min.js' %}"></script> {# Tek dil dosyası veya tüm dilleri içeren #}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    // Bootstrap 5 ile modalı başlatma şekli
+    var addEventModal = new bootstrap.Modal(document.getElementById('addEventModal'));
+    var saveEventBtn = document.getElementById('saveEventBtn');
+    var form = document.getElementById('addEventForm');
+
+    // Takvim başlangıç ayarları (FullCalendar V5/V6 syntax)
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['dayGrid', 'timeGrid', 'list', 'bootstrap5'], // Bootstrap 5 eklentisi
+        themeSystem: 'bootstrap5', // Tema sistemi Bootstrap 5 olarak ayarlandı
+        headerToolbar: { // header yerine headerToolbar kullanılıyor
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        locale: 'tr', // Türkçe dil
+        height: 'auto',
+        editable: true,
+        droppable: true,
+        navLinks: true,
+        eventLimit: true,
+
+        // Örnek etkinlikler (Bunlar gerçek veritabanınızdan gelmeli)
+        events: [
+            {
+                title: 'Toplantı - Proje X',
+                start: '2025-08-28T10:00:00',
+                end: '2025-08-28T12:00:00',
+                color: '#f0ad4e' // Turuncu
+            },
+            {
+                title: 'Eğitim - Yeni Ürün',
+                start: '2025-09-01',
+                end: '2025-09-03',
+                allDay: true,
+                color: '#5cb85c' // Yeşil
+            },
+            {
+                title: 'Müşteri Ziyareti',
+                start: '2025-09-05T14:30:00',
+                color: '#0275d8' // Mavi
+            }
+        ],
+
+        // Etkinlik eklemek için tıklama
+        dateClick: function(info) {
+            document.getElementById('eventTitle').value = '';
+            document.getElementById('eventStartDate').value = info.dateStr;
+            document.getElementById('eventEndDate').value = info.dateStr;
+            document.getElementById('allDayEvent').checked = info.allDay;
+            addEventModal.show(); // BS5 modalı gösterme
+        },
+
+        // Etkinlikleri sürükleyip bırakma
+        eventDrop: function(info) {
+            console.log('Etkinlik güncellendi:', info.event.title, info.event.start, info.event.end);
+            if (!confirm("Bu etkinliği taşımak istediğinizden emin misiniz?")) {
+                info.revert();
+            }
+            // TODO: AJAX ile sunucuya gönderip veritabanını güncelle
+        },
+        // Etkinlikleri boyutlandırma
+        eventResize: function(info) {
+             console.log('Etkinlik boyutu değişti:', info.event.title, info.event.start, info.event.end);
+             if (!confirm("Bu etkinliğin boyutunu değiştirmek istediğinizden emin misiniz?")) {
+                info.revert();
+            }
+            // TODO: AJAX ile sunucuya gönderip veritabanını güncelle
+        },
+        eventClick: function(info) {
+            alert('Etkinlik: ' + info.event.title + '\nTarih: ' + info.event.start.toLocaleDateString());
+            // Detay modali açılabilir veya düzenleme formu gösterilebilir
+        }
+    });
+
+    calendar.render();
+
+    // Modaldan etkinlik kaydetme
+    saveEventBtn.addEventListener('click', function() {
+        var title = document.getElementById('eventTitle').value;
+        var start = document.getElementById('eventStartDate').value;
+        var end = document.getElementById('eventEndDate').value;
+        var allDay = document.getElementById('allDayEvent').checked;
+        var color = document.getElementById('eventColor').value;
+
+        if (title && start) {
+            var newEvent = {
+                title: title,
+                start: start,
+                end: end || start,
+                allDay: allDay,
+                color: color
+            };
+            calendar.addEvent(newEvent); // Takvime yeni etkinlik ekle
+
+            // TODO: Bu etkinliği sunucuya (Django view'ınıza) AJAX ile gönderip veritabanına kaydetmelisiniz.
+            console.log('Yeni etkinlik kaydedildi (sadece frontend):', newEvent);
+
+            addEventModal.hide(); // BS5 modalı gizleme
+            form.reset(); // Formu sıfırla
+        } else {
+            alert('Lütfen etkinlik başlığını ve başlangıç tarihini girin.');
+        }
+    });
+
+    // Modalı kapattığınızda formu sıfırla (BS5 event listener)
+    document.getElementById('addEventModal').addEventListener('hidden.bs.modal', function () {
+        form.reset();
+    });
+
+});
+</script>
+{% endblock %}
