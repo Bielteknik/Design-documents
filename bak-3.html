@@ -57,41 +57,6 @@
         .tag-blue {
             background: linear-gradient(90deg, #06b6d4, #0891b2);
         }
-        .progress-step {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            position: relative;
-        }
-        .progress-step::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            width: 2px;
-            height: 20px;
-            background: #e5e7eb;
-        }
-        .progress-step:last-child::after {
-            display: none;
-        }
-        .progress-step.active {
-            background: linear-gradient(135deg, #3b82f6, #6366f1);
-            color: white;
-        }
-        .progress-step.completed {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-        .progress-step.inactive {
-            background: #f3f4f6;
-            color: #9ca3af;
-        }
         .tooltip {
             position: relative;
             display: inline-block;
@@ -143,15 +108,19 @@
         .modal-content {
             position: relative;
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 0 auto;
             z-index: 60;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
         }
         .form-input, .form-textarea, .form-select {
             background: white;
             border: 1px solid #e5e7eb;
             border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
-            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8125rem;
+            line-height: 1.4;
             transition: all 0.2s ease;
         }
         .form-input:focus, .form-textarea:focus, .form-select:focus {
@@ -164,6 +133,7 @@
             color: #4b5563;
             margin-bottom: 0.5rem;
             display: block;
+            font-size: 0.8125rem;
         }
         .section-header {
             border-bottom: 1px solid #e5e7eb;
@@ -222,34 +192,51 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
-        .form-grid {
+
+        /* Yeni: Orantılı Grid Sistemleri */
+        .form-grid-1 {
             display: grid;
-            gap: 1.5rem;
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
-        @media (min-width: 768px) {
-            .form-grid {
-                grid-template-columns: repeat(2, 1fr);
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        /* Mobil uyum */
+        @media (max-width: 768px) {
+            .form-grid-2,
+            .form-grid-3 {
+                grid-template-columns: 1fr;
             }
         }
+
         .sub-section {
             background: #f9fafb;
             border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
             border: 1px solid #e5e7eb;
         }
         .sub-section-title {
             font-size: 1.125rem;
             font-weight: 600;
             color: #1f2937;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
         .file-upload-area {
             border: 2px dashed #e5e7eb;
             border-radius: 0.5rem;
-            padding: 2rem;
+            padding: 1.5rem;
             text-align: center;
             transition: all 0.2s ease;
             cursor: pointer;
@@ -267,9 +254,106 @@
             justify-content: space-between;
             align-items: center;
             background: #f3f4f6;
-            padding: 0.75rem;
+            padding: 0.5rem;
             border-radius: 0.375rem;
             margin-top: 0.5rem;
+        }
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .step-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .step {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+            position: relative;
+            z-index: 1;
+        }
+        .step-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-align: center;
+        }
+        .step-active {
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: white;
+        }
+        .step-completed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        .step-inactive {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+        .form-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+        .modal-footer {
+            border-top: 1px solid #e5e7eb;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .step-navigation {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .step-nav-button {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #4b5563;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .step-nav-button:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+        .step-nav-button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
         }
     </style>
 </head>
@@ -300,7 +384,6 @@
                 </div>
             </div>
         </header>
-
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- Hero Section -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
@@ -335,7 +418,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
                 <div class="flex items-center space-x-2 bg-white px-6 py-3 rounded-xl shadow-md">
@@ -347,7 +429,6 @@
                     <span>Yeni Fikir Ekle</span>
                 </button>
             </div>
-
             <!-- Ideas Grid -->
             <div id="ideasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <!-- Idea Card 1 -->
@@ -384,7 +465,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Idea Card 2 -->
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom">
                     <div class="h-2 bg-gradient-to-r from-purple-500 to-pink-600"></div>
@@ -419,7 +499,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Idea Card 3 -->
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom">
                     <div class="h-2 bg-gradient-to-r from-orange-500 to-red-600"></div>
@@ -455,7 +534,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Statistics Section -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div class="bg-white rounded-xl shadow-lg p-6 text-center">
@@ -476,7 +554,6 @@
                 </div>
             </div>
         </main>
-
         <!-- Footer -->
         <footer class="bg-slate-800 text-white py-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -493,11 +570,10 @@
                 </div>
             </div>
         </footer>
-
         <!-- Idea Submission Modal -->
         <div id="ideaModal" class="modal-backdrop hidden">
             <div class="modal-content">
-                <div id="ideaForm" class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <div id="ideaForm" class="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-full">
                     <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-8 py-6">
                         <div class="flex justify-between items-center">
                             <div>
@@ -509,39 +585,36 @@
                             </button>
                         </div>
                     </div>
-
                     <!-- Progress Steps -->
-                    <div class="px-8 py-6 bg-slate-50 border-b border-slate-200">
-                        <div class="flex justify-center">
-                            <div class="flex flex-col items-center">
-                                <div class="progress-step active">1</div>
-                                <span class="text-xs text-slate-600">Temel</span>
+                    <div class="px-8 py-4 bg-slate-50 border-b border-slate-200">
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                        <div class="step-container">
+                            <div class="step">
+                                <div class="step-number step-active">1</div>
+                                <div class="step-label">Temel</div>
                             </div>
-                            <div class="flex-1 h-0.5 bg-slate-200 my-auto mx-4"></div>
-                            <div class="flex flex-col items-center">
-                                <div class="progress-step inactive">2</div>
-                                <span class="text-xs text-slate-400">Finansal</span>
+                            <div class="step">
+                                <div class="step-number step-inactive">2</div>
+                                <div class="step-label">Finansal</div>
                             </div>
-                            <div class="flex-1 h-0.5 bg-slate-200 my-auto mx-4"></div>
-                            <div class="flex flex-col items-center">
-                                <div class="progress-step inactive">3</div>
-                                <span class="text-xs text-slate-400">Operasyonel</span>
+                            <div class="step">
+                                <div class="step-number step-inactive">3</div>
+                                <div class="step-label">Operasyonel</div>
                             </div>
-                            <div class="flex-1 h-0.5 bg-slate-200 my-auto mx-4"></div>
-                            <div class="flex flex-col items-center">
-                                <div class="progress-step inactive">4</div>
-                                <span class="text-xs text-slate-400">Stratejik</span>
+                            <div class="step">
+                                <div class="step-number step-inactive">4</div>
+                                <div class="step-label">Stratejik</div>
                             </div>
-                            <div class="flex-1 h-0.5 bg-slate-200 my-auto mx-4"></div>
-                            <div class="flex flex-col items-center">
-                                <div class="progress-step inactive">5</div>
-                                <span class="text-xs text-slate-400">Destek</span>
+                            <div class="step">
+                                <div class="step-number step-inactive">5</div>
+                                <div class="step-label">Destek</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="p-8">
-                        <form id="submitIdeaForm" class="space-y-8">
+                    <div class="form-container" id="formContainer">
+                        <form id="submitIdeaForm" class="px-8">
                             <!-- Section 1: Fikir Temeli ve Amaç -->
                             <div id="section1" class="form-section">
                                 <div class="section-header">
@@ -551,8 +624,7 @@
                                     </div>
                                     <p class="section-description">Fikrinizin temelini ve amacını detaylı bir şekilde tanımlayın</p>
                                 </div>
-                                
-                                <div class="form-grid">
+                                <div class="form-grid-2">
                                     <div class="form-group">
                                         <label class="form-label">Fikir Başlığı *</label>
                                         <input type="text" required class="form-input w-full" placeholder="Örn: Akıllı Depo Yönetim Sistemi">
@@ -572,36 +644,53 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Fikir Açıklaması *</label>
                                     <textarea rows="4" required class="form-textarea w-full" placeholder="Fikrinizi detaylı olarak açıklayın..."></textarea>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Problem Durumu *</label>
                                     <textarea rows="3" required class="form-textarea w-full" placeholder="Hangi problemi çözmeyi amaçlıyorsunuz?"></textarea>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Mevcut Durum ve Zorluklar</label>
                                     <textarea rows="3" class="form-textarea w-full" placeholder="Şu anki durum nedir ve neler zorluk çıkarıyor?"></textarea>
                                 </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Hedef Kitle *</label>
-                                    <select multiple class="form-select w-full h-32">
-                                        <option selected>İç Kullanıcılar (Çalışanlar)</option>
-                                        <option>Müşteriler</option>
-                                        <option>Tedarikçiler</option>
-                                        <option>Yönetim Kurulu</option>
-                                        <option>Ortaklar</option>
-                                        <option>Genel Müdür</option>
-                                        <option>Bölüm Başkanları</option>
-                                        <option>Proje Ekibi</option>
-                                    </select>
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Hedef Kitle *</label>
+                                        <div class="space-y-2">
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" required name="hedef-kitle" value="ic-kullanicilar" checked>
+                                                <span>İç Kullanıcılar (Çalışanlar)</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" name="hedef-kitle" value="musteriler">
+                                                <span>Müşteriler</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" name="hedef-kitle" value="tedarikçiler">
+                                                <span>Tedarikçiler</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" name="hedef-kitle" value="yonetim-kurulu">
+                                                <span>Yönetim Kurulu</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" name="hedef-kitle" value="ortaklar">
+                                                <span>Ortaklar</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" name="hedef-kitle" value="genel-mudur">
+                                                <span>Genel Müdür</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2 text-sm">
+                                                <input type="checkbox" name="hedef-kitle" value="bolum-baskanlari">
+                                                <span>Bölüm Başkanları</span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
-
                                 <div class="flex justify-end pt-6">
                                     <button type="button" id="nextToSection2" class="primary-button flex items-center">
                                         <span>İleri</span>
@@ -609,7 +698,6 @@
                                     </button>
                                 </div>
                             </div>
-
                             <!-- Section 2: Maliyet ve ROI -->
                             <div id="section2" class="form-section hidden">
                                 <div class="section-header">
@@ -619,8 +707,7 @@
                                     </div>
                                     <p class="section-description">Fikrinizin maliyet yapısını ve finansal getirisini detaylandırın</p>
                                 </div>
-                                
-                                <div class="form-grid">
+                                <div class="form-grid-2">
                                     <div class="form-group">
                                         <label class="form-label">Tahmini Bütçe *</label>
                                         <div class="relative">
@@ -636,8 +723,7 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="form-grid">
+                                <div class="form-grid-3">
                                     <div class="form-group">
                                         <label class="form-label">Geri Dönüş Süresi</label>
                                         <input type="text" class="form-input" placeholder="Örn: 18 ay">
@@ -651,61 +737,59 @@
                                         <input type="text" class="form-input" placeholder="Örn: 5 yıl">
                                     </div>
                                 </div>
-
                                 <div class="sub-section">
                                     <h4 class="sub-section-title">Maliyet Detayları</h4>
-                                    <div class="space-y-3">
-                                        <div class="flex items-center space-x-3">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div class="flex items-center space-x-2">
                                             <input type="checkbox" id="maliyet1" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
                                             <label for="maliyet1" class="text-sm text-slate-700">Yazılım Geliştirme</label>
-                                            <div class="relative ml-auto">
+                                            <div class="ml-auto relative">
                                                 <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
                                                 <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
                                             </div>
                                         </div>
-                                        <div class="flex items-center space-x-3">
+                                        <div class="flex items-center space-x-2">
                                             <input type="checkbox" id="maliyet2" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
                                             <label for="maliyet2" class="text-sm text-slate-700">Donanım</label>
-                                            <div class="relative ml-auto">
+                                            <div class="ml-auto relative">
                                                 <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
                                                 <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
                                             </div>
                                         </div>
-                                        <div class="flex items-center space-x-3">
+                                        <div class="flex items-center space-x-2">
                                             <input type="checkbox" id="maliyet3" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
                                             <label for="maliyet3" class="text-sm text-slate-700">Eğitim ve Danışmanlık</label>
-                                            <div class="relative ml-auto">
+                                            <div class="ml-auto relative">
                                                 <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
                                                 <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
                                             </div>
                                         </div>
-                                        <div class="flex items-center space-x-3">
+                                        <div class="flex items-center space-x-2">
                                             <input type="checkbox" id="maliyet4" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
                                             <label for="maliyet4" class="text-sm text-slate-700">İşgücü (İç)</label>
-                                            <div class="relative ml-auto">
+                                            <div class="ml-auto relative">
                                                 <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
                                                 <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
                                             </div>
                                         </div>
-                                        <div class="flex items-center space-x-3">
+                                        <div class="flex items-center space-x-2">
                                             <input type="checkbox" id="maliyet5" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
                                             <label for="maliyet5" class="text-sm text-slate-700">İşgücü (Dış)</label>
-                                            <div class="relative ml-auto">
+                                            <div class="ml-auto relative">
                                                 <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
                                                 <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
                                             </div>
                                         </div>
-                                        <div class="flex items-center space-x-3">
+                                        <div class="flex items-center space-x-2">
                                             <input type="checkbox" id="maliyet6" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
                                             <label for="maliyet6" class="text-sm text-slate-700">Bakım ve Destek</label>
-                                            <div class="relative ml-auto">
+                                            <div class="ml-auto relative">
                                                 <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
                                                 <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="sub-section">
                                     <h4 class="sub-section-title">Gelir Kaynakları</h4>
                                     <div class="space-y-3">
@@ -731,7 +815,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="flex justify-between pt-6">
                                     <button type="button" id="backToSection1" class="nav-button flex items-center">
                                         <i class="fas fa-arrow-left mr-2"></i>
@@ -743,7 +826,6 @@
                                     </button>
                                 </div>
                             </div>
-
                             <!-- Section 3: Operasyonel Planlama -->
                             <div id="section3" class="form-section hidden">
                                 <div class="section-header">
@@ -753,8 +835,7 @@
                                     </div>
                                     <p class="section-description">Projenin operasyonel planlamasını ve ekip yapısını tanımlayın</p>
                                 </div>
-                                
-                                <div class="form-grid">
+                                <div class="form-grid-2">
                                     <div class="form-group">
                                         <label class="form-label">Proje Lideri</label>
                                         <input type="text" class="form-input" value="Ahmet Yılmaz" readonly>
@@ -774,7 +855,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Proje Ekibi</label>
                                     <div class="space-y-3" id="teamMembers">
@@ -799,7 +879,6 @@
                                         <span>Ekibe Üye Ekle</span>
                                     </button>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Zaman Çizelgesi ve Aşamalar</label>
                                     <div id="timelineStages" class="space-y-4">
@@ -814,8 +893,7 @@
                                         <span>Aşama Ekle</span>
                                     </button>
                                 </div>
-
-                                <div class="form-grid">
+                                <div class="form-grid-3">
                                     <div class="form-group">
                                         <label class="form-label">İnsan Kaynakları</label>
                                         <textarea rows="3" class="form-textarea" placeholder="Gerekli personel, uzmanlık alanları"></textarea>
@@ -828,12 +906,11 @@
                                         <label class="form-label">Fiziksel Altyapı</label>
                                         <textarea rows="3" class="form-textarea" placeholder="Ofis alanı, üretim hattı, depo vb."></textarea>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Dış Kaynaklar</label>
-                                        <textarea rows="3" class="form-textarea" placeholder="Danışmanlar, tedarikçiler, ortaklar"></textarea>
-                                    </div>
                                 </div>
-
+                                <div class="form-group">
+                                    <label class="form-label">Dış Kaynaklar</label>
+                                    <textarea rows="3" class="form-textarea" placeholder="Danışmanlar, tedarikçiler, ortaklar"></textarea>
+                                </div>
                                 <div class="flex justify-between pt-6">
                                     <button type="button" id="backToSection2" class="nav-button flex items-center">
                                         <i class="fas fa-arrow-left mr-2"></i>
@@ -845,7 +922,6 @@
                                     </button>
                                 </div>
                             </div>
-
                             <!-- Section 4: Stratejik Analiz -->
                             <div id="section4" class="form-section hidden">
                                 <div class="section-header">
@@ -855,7 +931,6 @@
                                     </div>
                                     <p class="section-description">Fikrinizin stratejik analizini ve risk değerlendirmesini yapın</p>
                                 </div>
-                                
                                 <div class="sub-section">
                                     <h4 class="sub-section-title">SWOT Analizi</h4>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -877,7 +952,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="sub-section">
                                     <h4 class="sub-section-title">Kurumsal Uyum</h4>
                                     <div class="space-y-3">
@@ -899,7 +973,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="sub-section">
                                     <h4 class="sub-section-title">Risk Analizi</h4>
                                     <div class="space-y-4" id="riskAnalysis">
@@ -937,7 +1010,6 @@
                                         <span>Risk Ekle</span>
                                     </button>
                                 </div>
-
                                 <div class="sub-section">
                                     <h4 class="sub-section-title">Başarı Kriterleri</h4>
                                     <div id="successCriteria" class="space-y-3">
@@ -953,7 +1025,6 @@
                                         <span>Kriter Ekle</span>
                                     </button>
                                 </div>
-
                                 <div class="flex justify-between pt-6">
                                     <button type="button" id="backToSection3" class="nav-button flex items-center">
                                         <i class="fas fa-arrow-left mr-2"></i>
@@ -965,7 +1036,6 @@
                                     </button>
                                 </div>
                             </div>
-
                             <!-- Section 5: Destekleyici Belgeler -->
                             <div id="section5" class="form-section hidden">
                                 <div class="section-header">
@@ -975,28 +1045,23 @@
                                     </div>
                                     <p class="section-description">Fikrinizi destekleyici belgeleri ve ek bilgileri ekleyin</p>
                                 </div>
-                                
                                 <div class="form-group">
                                     <label class="form-label">İlgili Araştırmalar ve Çalışmalar</label>
                                     <textarea rows="4" class="form-textarea" placeholder="İlgili literatür, önceki çalışmalar, benzer projeler..."></textarea>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Müşteri/Çalışan Geri Bildirimleri</label>
                                     <textarea rows="4" class="form-textarea" placeholder="İlgili geri bildirimler, anket sonuçları..."></textarea>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Rekabet Analizi</label>
                                     <textarea rows="4" class="form-textarea" placeholder="Rekabet durumu, rakip analizi, pazar konumu..."></textarea>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Yasal ve Düzenleyici Uyum</label>
                                     <textarea rows="4" class="form-textarea" placeholder="İlgili yasal düzenlemeler, sertifikasyon gereksinimleri..."></textarea>
                                 </div>
-
-                                <div class="form-grid">
+                                <div class="form-grid-2">
                                     <div class="form-group">
                                         <label class="form-label">Çevresel Etki</label>
                                         <textarea rows="3" class="form-textarea" placeholder="Çevre üzerindeki olası etkiler"></textarea>
@@ -1006,12 +1071,10 @@
                                         <textarea rows="3" class="form-textarea" placeholder="Toplum üzerindeki olası etkiler"></textarea>
                                     </div>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Ek Notlar ve Açıklamalar</label>
                                     <textarea rows="4" class="form-textarea" placeholder="Diğer önemli bilgiler, ek açıklamalar..."></textarea>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">Destekleyici Belgeler</label>
                                     <div class="file-upload-area" id="fileUploadArea">
@@ -1022,7 +1085,6 @@
                                     </div>
                                     <div id="uploadedFiles" class="mt-4"></div>
                                 </div>
-
                                 <div class="flex justify-between pt-6">
                                     <button type="button" id="backToSection4" class="nav-button flex items-center">
                                         <i class="fas fa-arrow-left mr-2"></i>
@@ -1036,11 +1098,19 @@
                             </div>
                         </form>
                     </div>
+                    <div class="modal-footer">
+                        <div class="step-navigation">
+                            <button type="button" class="step-nav-button active" data-step="1">1. Temel</button>
+                            <button type="button" class="step-nav-button" data-step="2">2. Finansal</button>
+                            <button type="button" class="step-nav-button" data-step="3">3. Operasyonel</button>
+                            <button type="button" class="step-nav-button" data-step="4">4. Stratejik</button>
+                            <button type="button" class="step-nav-button" data-step="5">5. Destek</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const addIdeaBtn = document.getElementById('addIdeaBtn');
@@ -1052,7 +1122,8 @@
             const fileUploadArea = document.getElementById('fileUploadArea');
             const fileUpload = document.getElementById('fileUpload');
             const uploadedFiles = document.getElementById('uploadedFiles');
-
+            const progressBar = document.getElementById('progressBar');
+            const formContainer = document.getElementById('formContainer');
             // Navigation buttons
             const nextToSection2 = document.getElementById('nextToSection2');
             const backToSection1 = document.getElementById('backToSection1');
@@ -1062,17 +1133,16 @@
             const backToSection3 = document.getElementById('backToSection3');
             const nextToSection5 = document.getElementById('nextToSection5');
             const backToSection4 = document.getElementById('backToSection4');
-
             // Form sections
             const section1 = document.getElementById('section1');
             const section2 = document.getElementById('section2');
             const section3 = document.getElementById('section3');
             const section4 = document.getElementById('section4');
             const section5 = document.getElementById('section5');
-
-            // Progress steps
-            const progressSteps = document.querySelectorAll('.progress-step');
-
+            // Step elements
+            const steps = document.querySelectorAll('.step');
+            const stepNumbers = document.querySelectorAll('.step-number');
+            const stepNavButtons = document.querySelectorAll('.step-nav-button');
             // Show modal
             addIdeaBtn.addEventListener('click', function() {
                 ideaModal.classList.remove('hidden');
@@ -1081,14 +1151,12 @@
                 // Reset to first section
                 showSection(1);
             });
-
             // Hide modal
             closeFormBtn.addEventListener('click', function() {
                 ideaModal.classList.add('hidden');
                 ideaForm.classList.remove('fade-in');
                 document.body.style.overflow = 'auto';
             });
-
             // Close modal when clicking outside
             ideaModal.addEventListener('click', function(e) {
                 if (e.target === ideaModal) {
@@ -1097,7 +1165,6 @@
                     document.body.style.overflow = 'auto';
                 }
             });
-
             // Navigation between sections
             nextToSection2.addEventListener('click', () => showSection(2));
             backToSection1.addEventListener('click', () => showSection(1));
@@ -1107,7 +1174,13 @@
             backToSection3.addEventListener('click', () => showSection(3));
             nextToSection5.addEventListener('click', () => showSection(5));
             backToSection4.addEventListener('click', () => showSection(4));
-
+            // Step navigation buttons
+            stepNavButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const step = parseInt(this.getAttribute('data-step'));
+                    showSection(step);
+                });
+            });
             function showSection(step) {
                 // Hide all sections
                 section1.classList.add('hidden');
@@ -1115,32 +1188,48 @@
                 section3.classList.add('hidden');
                 section4.classList.add('hidden');
                 section5.classList.add('hidden');
-
-                // Update progress steps
-                progressSteps.forEach((stepEl, index) => {
-                    if (index < step - 1) {
-                        stepEl.classList.remove('active');
-                        stepEl.classList.remove('inactive');
-                        stepEl.classList.add('completed');
-                    } else if (index === step - 1) {
-                        stepEl.classList.remove('inactive');
-                        stepEl.classList.remove('completed');
-                        stepEl.classList.add('active');
-                    } else {
-                        stepEl.classList.remove('active');
-                        stepEl.classList.remove('completed');
-                        stepEl.classList.add('inactive');
-                    }
-                });
-
+                // Update progress bar and step indicators
+                updateProgress(step);
                 // Show current section
                 if (step === 1) section1.classList.remove('hidden');
                 if (step === 2) section2.classList.remove('hidden');
                 if (step === 3) section3.classList.remove('hidden');
                 if (step === 4) section4.classList.remove('hidden');
                 if (step === 5) section5.classList.remove('hidden');
+                // Scroll to top of form
+                formContainer.scrollTop = 0;
             }
-
+            function updateProgress(step) {
+                // Update progress bar width
+                const progressWidth = ((step - 1) / 4) * 100;
+                progressBar.style.width = `${progressWidth}%`;
+                // Update step indicators
+                steps.forEach((stepEl, index) => {
+                    if (index < step - 1) {
+                        stepNumbers[index].classList.remove('step-active', 'step-inactive');
+                        stepNumbers[index].classList.add('step-completed');
+                    } else if (index === step - 1) {
+                        stepNumbers[index].classList.remove('step-inactive', 'step-completed');
+                        stepNumbers[index].classList.add('step-active');
+                    } else {
+                        stepNumbers[index].classList.remove('step-active', 'step-completed');
+                        stepNumbers[index].classList.add('step-inactive');
+                    }
+                });
+                // Update step navigation buttons
+                stepNavButtons.forEach((button, index) => {
+                    if (index < step - 1) {
+                        button.classList.remove('active');
+                        button.classList.add('bg-green-600', 'text-white');
+                    } else if (index === step - 1) {
+                        button.classList.add('active');
+                        button.classList.remove('bg-green-600', 'text-white');
+                    } else {
+                        button.classList.remove('active');
+                        button.classList.remove('bg-green-600', 'text-white');
+                    }
+                });
+            }
             // Add team member
             document.getElementById('addTeamMember').addEventListener('click', function() {
                 const teamMembers = document.getElementById('teamMembers');
@@ -1163,7 +1252,6 @@
                 `;
                 teamMembers.appendChild(newMember);
             });
-
             // Remove team member (using event delegation)
             document.getElementById('teamMembers').addEventListener('click', function(e) {
                 if (e.target.closest('.remove-member')) {
@@ -1173,7 +1261,6 @@
                     }
                 }
             });
-
             // Add timeline stage
             document.getElementById('addTimelineStage').addEventListener('click', function() {
                 const timelineStages = document.getElementById('timelineStages');
@@ -1187,7 +1274,6 @@
                 `;
                 timelineStages.appendChild(newStage);
             });
-
             // Add risk
             document.getElementById('addRisk').addEventListener('click', function() {
                 const riskAnalysis = document.getElementById('riskAnalysis');
@@ -1223,7 +1309,6 @@
                 `;
                 riskAnalysis.appendChild(newRisk);
             });
-
             // Add success criterion
             document.getElementById('addSuccessCriterion').addEventListener('click', function() {
                 const successCriteria = document.getElementById('successCriteria');
@@ -1237,7 +1322,6 @@
                 `;
                 successCriteria.appendChild(newCriterion);
             });
-
             // Remove success criterion (using event delegation)
             document.getElementById('successCriteria').addEventListener('click', function(e) {
                 if (e.target.closest('.remove-criterion')) {
@@ -1247,12 +1331,10 @@
                     }
                 }
             });
-
             // File upload area click
             fileUploadArea.addEventListener('click', function() {
                 fileUpload.click();
             });
-
             // File upload change
             fileUpload.addEventListener('change', function(e) {
                 uploadedFiles.innerHTML = '';
@@ -1269,21 +1351,17 @@
                     uploadedFiles.appendChild(fileItem);
                 });
             });
-
             // Drag and drop functionality
             fileUploadArea.addEventListener('dragover', function(e) {
                 e.preventDefault();
                 fileUploadArea.classList.add('drag-over');
             });
-
             fileUploadArea.addEventListener('dragleave', function() {
                 fileUploadArea.classList.remove('drag-over');
             });
-
             fileUploadArea.addEventListener('drop', function(e) {
                 e.preventDefault();
                 fileUploadArea.classList.remove('drag-over');
-                
                 const files = e.dataTransfer.files;
                 if (files.length > 0) {
                     fileUpload.files = files;
@@ -1292,7 +1370,6 @@
                     fileUpload.dispatchEvent(event);
                 }
             });
-
             // Format file size
             function formatFileSize(bytes) {
                 if (bytes === 0) return '0 Bytes';
@@ -1301,11 +1378,9 @@
                 const i = Math.floor(Math.log(bytes) / Math.log(k));
                 return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
             }
-
             // Form submission
             submitIdeaForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
                 // Create new idea card
                 const formData = new FormData(submitIdeaForm);
                 const titleInput = submitIdeaForm.querySelector('input[required]');
@@ -1316,7 +1391,6 @@
                 const budget = budgetInput ? budgetInput.value : '0';
                 const roiInput = submitIdeaForm.querySelector('input[type="number"] + input[type="number"]');
                 const roi = roiInput ? roiInput.value : '0';
-                
                 const newIdeaCard = document.createElement('div');
                 newIdeaCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom slide-up';
                 newIdeaCard.innerHTML = `
@@ -1350,15 +1424,12 @@
                         </div>
                     </div>
                 `;
-                
                 ideasContainer.prepend(newIdeaCard);
-                
                 // Reset form and hide
                 submitIdeaForm.reset();
                 ideaModal.classList.add('hidden');
                 ideaForm.classList.remove('fade-in');
                 document.body.style.overflow = 'auto';
-                
                 // Show success message
                 alert('Fikriniz başarıyla gönderildi! İlgili kurul tarafından değerlendirilecektir.');
             });

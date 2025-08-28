@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fikir Havuzu - Kurumsal İnovasyon Merkezi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/8a6a55e40d.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .transition-all-custom {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-up {
+            animation: slideUp 0.4s ease-out;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-section {
+            animation: slideUp 0.3s ease-out;
+        }
+        .tag {
+            display: inline-block;
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 0.25rem;
+        }
+        .tag-purple {
+            background: linear-gradient(90deg, #8b5cf6, #a855f7);
+        }
+        .tag-green {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+        .tag-orange {
+            background: linear-gradient(90deg, #f97316, #ea580c);
+        }
+        .tag-blue {
+            background: linear-gradient(90deg, #06b6d4, #0891b2);
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #374151;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #374151 transparent transparent transparent;
+        }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            overflow: auto;
+            padding: 20px;
+        }
+        .modal-content {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 60;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-input, .form-textarea, .form-select {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem; /* Küçültüldü */
+            font-size: 0.8125rem; /* Küçültüldü (13px) */
+            line-height: 1.4;
+            transition: all 0.2s ease;
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .form-label {
+            font-weight: 500;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+            display: block;
+            font-size: 0.8125rem; /* Hafif küçültüldü */
+        }
+        .section-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .section-description {
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        .nav-button {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #4b5563;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .nav-button:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+        .primary-button {
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        .primary-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .secondary-button {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        .secondary-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .form-group {
+            margin-bottom: 1.25rem; /* Hafif azaltıldı */
+        }
+
+        /* Yeni: Orantılı Grid Sistemleri */
+        .form-grid-1 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        /* Mobil uyum */
+        @media (max-width: 768px) {
+            .form-grid-2,
+            .form-grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mevcut form-grid ile uyum */
+        .form-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .sub-section {
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1.25rem; /* Biraz küçültüldü */
+            margin-bottom: 1.25rem;
+            border: 1px solid #e5e7eb;
+        }
+        .sub-section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+        }
+        .file-upload-area {
+            border: 2px dashed #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .file-upload-area:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .file-upload-area.drag-over {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .uploaded-file {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f3f4f6;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            margin-top: 0.5rem;
+            font-size: 0.8125rem;
+        }
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .step-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .step {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+            position: relative;
+            z-index: 1;
+        }
+        .step-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-align: center;
+        }
+        .step-active {
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: white;
+        }
+        .step-completed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        .step-inactive {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+        .form-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+        .modal-footer {
+            border-top: 1px solid #e5e7eb;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .step-navigation {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .step-nav-button {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #4b5563;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .step-nav-button:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+        .step-nav-button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+    <div id="app" class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-lg border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-3 rounded-xl shadow-md">
+                            <i class="fas fa-lightbulb text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-slate-800">Fikir Havuzu</h1>
+                            <p class="text-sm text-slate-600">Kurumsal İnovasyon Merkezi</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-slate-700">Ahmet Yılmaz</p>
+                            <p class="text-xs text-slate-500">Üretim Müdürü</p>
+                        </div>
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold shadow-md">
+                            AY
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Hero Section -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
+                <div class="px-8 py-12">
+                    <div class="flex flex-col lg:flex-row items-center justify-between">
+                        <div class="lg:w-1/2 mb-8 lg:mb-0">
+                            <h2 class="text-4xl font-bold text-slate-800 mb-4">İnovasyonun Gücü, Fikirlerinizde</h2>
+                            <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                                Her çalışanın sesi değerlidir. Yeni fikirlerinizle şirketimizi birlikte şekillendirelim. 
+                                Fikirlerinizi paylaşın, projelerimize katkıda bulunun ve kurumsal gelişime ortak olun.
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="flex items-center text-sm text-slate-600">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span>Profesyonel değerlendirme</span>
+                                </div>
+                                <div class="flex items-center text-sm text-slate-600">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span>Hızlı geri bildirim</span>
+                                </div>
+                                <div class="flex items-center text-sm text-slate-600">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span>Kurul onayı süreci</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2 flex justify-center">
+                            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl shadow-lg">
+                                <i class="fas fa-rocket text-6xl text-blue-600 opacity-20"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                <div class="flex items-center space-x-2 bg-white px-6 py-3 rounded-xl shadow-md">
+                    <i class="fas fa-chart-line text-blue-600"></i>
+                    <span class="text-sm text-slate-600">Toplam <strong class="text-slate-800">24</strong> aktif fikir</span>
+                </div>
+                <button id="addIdeaBtn" class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all-custom flex items-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Yeni Fikir Ekle</span>
+                </button>
+            </div>
+            <!-- Ideas Grid -->
+            <div id="ideasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Idea Card 1 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom">
+                    <div class="h-2 bg-gradient-to-r from-green-500 to-emerald-600"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">Yeni Fikir</span>
+                            <div class="flex space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="far fa-star text-gray-300"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Akıllı Enerji Yönetim Sistemi</h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-3">
+                            Üretim hattında enerji tüketimini optimize eden akıllı sensör sistemi ile yıllık %15 enerji tasarrufu hedeflenmektedir.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-4">
+                            <span><i class="far fa-user"></i> Mehmet Kaya</span>
+                            <span><i class="far fa-clock"></i> 2 gün önce</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                            <div class="text-sm">
+                                <span class="font-semibold text-slate-700">ROI:</span>
+                                <span class="text-green-600"> %32</span>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center">
+                                <span>Detaylar</span>
+                                <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Idea Card 2 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom">
+                    <div class="h-2 bg-gradient-to-r from-purple-500 to-pink-600"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">Değerlendiriliyor</span>
+                            <div class="flex space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Çalışan İnovasyon Programı</h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-3">
+                            Aylık inovasyon yarışması ile çalışanların fikirlerini teşvik ederek kurumsal kültürümüzü güçlendirmek.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-4">
+                            <span><i class="far fa-user"></i> Ayşe Demir</span>
+                            <span><i class="far fa-clock"></i> 5 gün önce</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                            <div class="text-sm">
+                                <span class="font-semibold text-slate-700">Bütçe:</span>
+                                <span class="text-blue-600"> 250.000₺</span>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center">
+                                <span>Detaylar</span>
+                                <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Idea Card 3 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom">
+                    <div class="h-2 bg-gradient-to-r from-orange-500 to-red-600"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full">Onay Bekliyor</span>
+                            <div class="flex space-x-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="far fa-star text-gray-300"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">Dijital Eğitim Platformu</h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-3">
+                            İçerik yönetim sistemi ile çalışanlara özelleştirilmiş eğitim programları sunulması ve beceri gelişimi.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-4">
+                            <span><i class="far fa-user"></i> Can Aksoy</span>
+                            <span><i class="far fa-clock"></i> 1 hafta önce</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                            <div class="text-sm">
+                                <span class="font-semibold text-slate-700">ROI:</span>
+                                <span class="text-green-600"> %45</span>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center">
+                                <span>Detaylar</span>
+                                <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Statistics Section -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-blue-600 mb-2">24</div>
+                    <div class="text-slate-600 text-sm">Toplam Fikir</div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-green-600 mb-2">8</div>
+                    <div class="text-slate-600 text-sm">Onaylanan</div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-orange-600 mb-2">12</div>
+                    <div class="text-slate-600 text-sm">Değerlendiriliyor</div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="text-3xl font-bold text-purple-600 mb-2">4</div>
+                    <div class="text-slate-600 text-sm">Reddedilen</div>
+                </div>
+            </div>
+        </main>
+        <!-- Footer -->
+        <footer class="bg-slate-800 text-white py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-2 rounded-lg">
+                            <i class="fas fa-lightbulb text-white"></i>
+                        </div>
+                        <span class="font-semibold">Fikir Havuzu - Kurumsal İnovasyon Merkezi</span>
+                    </div>
+                    <div class="text-sm text-slate-400">
+                        © 2023 Tüm hakları saklıdır. Her fikir değerlidir.
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Idea Submission Modal -->
+        <div id="ideaModal" class="modal-backdrop hidden">
+            <div class="modal-content">
+                <div id="ideaForm" class="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-full">
+                    <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-8 py-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-800">Fikir Haritası</h2>
+                                <p class="text-slate-600 mt-1">Fikrinizi tüm boyutlarıyla detaylı bir şekilde tanımlayın</p>
+                            </div>
+                            <button id="closeFormBtn" class="text-slate-400 hover:text-slate-600 transition-all-custom">
+                                <i class="fas fa-times text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Progress Steps -->
+                    <div class="px-8 py-4 bg-slate-50 border-b border-slate-200">
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                        <div class="step-container">
+                            <div class="step">
+                                <div class="step-number step-active">1</div>
+                                <div class="step-label">Temel</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number step-inactive">2</div>
+                                <div class="step-label">Finansal</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number step-inactive">3</div>
+                                <div class="step-label">Operasyonel</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number step-inactive">4</div>
+                                <div class="step-label">Stratejik</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number step-inactive">5</div>
+                                <div class="step-label">Destek</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-container" id="formContainer">
+                        <form id="submitIdeaForm" class="px-8">
+                            <!-- Section 1: Fikir Temeli ve Amaç -->
+                            <div id="section1" class="form-section">
+                                <div class="section-header">
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">1</div>
+                                        <h3 class="section-title">Fikir Temeli ve Amaç</h3>
+                                    </div>
+                                    <p class="section-description">Fikrinizin temelini ve amacını detaylı bir şekilde tanımlayın</p>
+                                </div>
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Fikir Başlığı *</label>
+                                        <input type="text" required class="form-input w-full" placeholder="Örn: Akıllı Depo Yönetim Sistemi">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Kategori *</label>
+                                        <select required class="form-select w-full">
+                                            <option>Üretim</option>
+                                            <option>Pazarlama</option>
+                                            <option>İnsan Kaynakları</option>
+                                            <option>Bilgi Teknolojileri</option>
+                                            <option>Müşteri Hizmetleri</option>
+                                            <option>Lojistik</option>
+                                            <option>Araştırma ve Geliştirme</option>
+                                            <option>Finans</option>
+                                            <option>İdari İşler</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Fikir Açıklaması *</label>
+                                    <textarea rows="4" required class="form-textarea w-full" placeholder="Fikrinizi detaylı olarak açıklayın..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Problem Durumu *</label>
+                                    <textarea rows="3" required class="form-textarea w-full" placeholder="Hangi problemi çözmeyi amaçlıyorsunuz?"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Mevcut Durum ve Zorluklar</label>
+                                    <textarea rows="3" class="form-textarea w-full" placeholder="Şu anki durum nedir ve neler zorluk çıkarıyor?"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Hedef Kitle *</label>
+                                    <select multiple class="form-select w-full h-32">
+                                        <option selected>İç Kullanıcılar (Çalışanlar)</option>
+                                        <option>Müşteriler</option>
+                                        <option>Tedarikçiler</option>
+                                        <option>Yönetim Kurulu</option>
+                                        <option>Ortaklar</option>
+                                        <option>Genel Müdür</option>
+                                        <option>Bölüm Başkanları</option>
+                                        <option>Proje Ekibi</option>
+                                    </select>
+                                </div>
+                                <div class="flex justify-end pt-6">
+                                    <button type="button" id="nextToSection2" class="primary-button flex items-center">
+                                        <span>İleri</span>
+                                        <i class="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Section 2: Maliyet ve ROI -->
+                            <div id="section2" class="form-section hidden">
+                                <div class="section-header">
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-3">2</div>
+                                        <h3 class="section-title">Maliyet ve Finansal Analiz</h3>
+                                    </div>
+                                    <p class="section-description">Fikrinizin maliyet yapısını ve finansal getirisini detaylandırın</p>
+                                </div>
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Tahmini Bütçe *</label>
+                                        <div class="relative">
+                                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 text-sm">₺</span>
+                                            <input type="number" required class="form-input w-full pl-8" placeholder="0">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Beklenen ROI *</label>
+                                        <div class="relative">
+                                            <input type="number" required class="form-input w-full pr-8" placeholder="0">
+                                            <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 text-sm">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-grid-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Geri Dönüş Süresi</label>
+                                        <input type="text" class="form-input" placeholder="Örn: 18 ay">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Yatırım Dönemi</label>
+                                        <input type="text" class="form-input" placeholder="Örn: 6 ay">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Operasyonel Dönem</label>
+                                        <input type="text" class="form-input" placeholder="Örn: 5 yıl">
+                                    </div>
+                                </div>
+                                <div class="sub-section">
+                                    <h4 class="sub-section-title">Maliyet Detayları</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="maliyet1" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="maliyet1" class="text-sm text-slate-700">Yazılım Geliştirme</label>
+                                            <div class="relative ml-auto">
+                                                <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
+                                                <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="maliyet2" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="maliyet2" class="text-sm text-slate-700">Donanım</label>
+                                            <div class="relative ml-auto">
+                                                <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
+                                                <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="maliyet3" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="maliyet3" class="text-sm text-slate-700">Eğitim ve Danışmanlık</label>
+                                            <div class="relative ml-auto">
+                                                <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
+                                                <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="maliyet4" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="maliyet4" class="text-sm text-slate-700">İşgücü (İç)</label>
+                                            <div class="relative ml-auto">
+                                                <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
+                                                <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="maliyet5" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="maliyet5" class="text-sm text-slate-700">İşgücü (Dış)</label>
+                                            <div class="relative ml-auto">
+                                                <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
+                                                <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="maliyet6" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="maliyet6" class="text-sm text-slate-700">Bakım ve Destek</label>
+                                            <div class="relative ml-auto">
+                                                <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-500 text-xs">₺</span>
+                                                <input type="number" placeholder="0" class="form-input w-24 pl-5 text-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-section">
+                                    <h4 class="sub-section-title">Gelir Kaynakları</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="gelir1" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="gelir1" class="text-sm text-slate-700">Doğrudan Satış Geliri</label>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="gelir2" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="gelir2" class="text-sm text-slate-700">Hizmet Geliri</label>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="gelir3" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="gelir3" class="text-sm text-slate-700">Abonelik Geliri</label>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="gelir4" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="gelir4" class="text-sm text-slate-700">Lisans Geliri</label>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="gelir5" class="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+                                            <label for="gelir5" class="text-sm text-slate-700">Reklam Geliri</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between pt-6">
+                                    <button type="button" id="backToSection1" class="nav-button flex items-center">
+                                        <i class="fas fa-arrow-left mr-2"></i>
+                                        <span>Geri</span>
+                                    </button>
+                                    <button type="button" id="nextToSection3" class="secondary-button flex items-center">
+                                        <span>İleri</span>
+                                        <i class="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Section 3: Operasyonel Planlama -->
+                            <div id="section3" class="form-section hidden">
+                                <div class="section-header">
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold mr-3">3</div>
+                                        <h3 class="section-title">Operasyonel Planlama</h3>
+                                    </div>
+                                    <p class="section-description">Projenin operasyonel planlamasını ve ekip yapısını tanımlayın</p>
+                                </div>
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Proje Lideri</label>
+                                        <input type="text" class="form-input" value="Ahmet Yılmaz" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">İlgili Departmanlar *</label>
+                                        <select multiple required class="form-select h-32">
+                                            <option selected>Üretim</option>
+                                            <option>Bilgi Teknolojileri</option>
+                                            <option>Mühendislik</option>
+                                            <option>Finans</option>
+                                            <option>İnsan Kaynakları</option>
+                                            <option>Pazarlama</option>
+                                            <option>Müşteri Hizmetleri</option>
+                                            <option>Lojistik</option>
+                                            <option>Kalite Kontrol</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Proje Ekibi</label>
+                                    <div class="space-y-3" id="teamMembers">
+                                        <div class="flex items-center space-x-3">
+                                            <input type="text" placeholder="Üye adı" class="form-input flex-1">
+                                            <select class="form-select">
+                                                <option>Proje Yöneticisi</option>
+                                                <option>Teknik Uzman</option>
+                                                <option>İş Analisti</option>
+                                                <option>Tasarımcı</option>
+                                                <option>Geliştirici</option>
+                                                <option>Test Uzmanı</option>
+                                                <option>Eğitim Uzmanı</option>
+                                            </select>
+                                            <button type="button" class="text-red-500 hover:text-red-700">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="addTeamMember" class="mt-2 text-sm text-purple-600 hover:text-purple-800 flex items-center">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        <span>Ekibe Üye Ekle</span>
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Zaman Çizelgesi ve Aşamalar</label>
+                                    <div id="timelineStages" class="space-y-4">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                                            <input type="text" class="form-input flex-1" placeholder="Aşama adı (Örn: Araştırma)">
+                                            <input type="date" class="form-input w-40">
+                                        </div>
+                                    </div>
+                                    <button type="button" id="addTimelineStage" class="mt-2 text-sm text-purple-600 hover:text-purple-800 flex items-center">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        <span>Aşama Ekle</span>
+                                    </button>
+                                </div>
+                                <div class="form-grid-3">
+                                    <div class="form-group">
+                                        <label class="form-label">İnsan Kaynakları</label>
+                                        <textarea rows="3" class="form-textarea" placeholder="Gerekli personel, uzmanlık alanları"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Teknoloji ve Donanım</label>
+                                        <textarea rows="3" class="form-textarea" placeholder="Gerekli yazılımlar, donanımlar"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Fiziksel Altyapı</label>
+                                        <textarea rows="3" class="form-textarea" placeholder="Ofis alanı, üretim hattı, depo vb."></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Dış Kaynaklar</label>
+                                        <textarea rows="3" class="form-textarea" placeholder="Danışmanlar, tedarikçiler, ortaklar"></textarea>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between pt-6">
+                                    <button type="button" id="backToSection2" class="nav-button flex items-center">
+                                        <i class="fas fa-arrow-left mr-2"></i>
+                                        <span>Geri</span>
+                                    </button>
+                                    <button type="button" id="nextToSection4" class="secondary-button flex items-center">
+                                        <span>İleri</span>
+                                        <i class="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Section 4: Stratejik Analiz -->
+                            <div id="section4" class="form-section hidden">
+                                <div class="section-header">
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold mr-3">4</div>
+                                        <h3 class="section-title">Stratejik Analiz</h3>
+                                    </div>
+                                    <p class="section-description">Fikrinizin stratejik analizini ve risk değerlendirmesini yapın</p>
+                                </div>
+                                <div class="sub-section">
+                                    <h4 class="sub-section-title">SWOT Analizi</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="form-group">
+                                            <label class="form-label text-green-700">Güçlü Yönler</label>
+                                            <textarea rows="4" class="form-textarea" placeholder="Fikrin güçlü yönleri neler?"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label text-red-700">Zayıf Yönler</label>
+                                            <textarea rows="4" class="form-textarea" placeholder="Fikrin zayıf yönleri neler?"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label text-blue-700">Fırsatlar</label>
+                                            <textarea rows="4" class="form-textarea" placeholder="Fikirle elde edilebilecek fırsatlar neler?"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label text-yellow-700">Tehditler</label>
+                                            <textarea rows="4" class="form-textarea" placeholder="Fikri etkileyebilecek tehditler neler?"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-section">
+                                    <h4 class="sub-section-title">Kurumsal Uyum</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="uyum1" class="w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500">
+                                            <label for="uyum1" class="text-sm text-slate-700">Şirket Misyonu ile Uyum</label>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="uyum2" class="w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500">
+                                            <label for="uyum2" class="text-sm text-slate-700">Şirket Vizyonu ile Uyum</label>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="uyum3" class="w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500">
+                                            <label for="uyum3" class="text-sm text-slate-700">Şirket Değerleri ile Uyum</label>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="checkbox" id="uyum4" class="w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500">
+                                            <label for="uyum4" class="text-sm text-slate-700">Mevcut Stratejiler ile Uyum</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-section">
+                                    <h4 class="sub-section-title">Risk Analizi</h4>
+                                    <div class="space-y-4" id="riskAnalysis">
+                                        <div class="border border-slate-200 rounded-lg p-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                                                <div class="form-group">
+                                                    <label class="form-label text-xs">Risk Tanımı</label>
+                                                    <input type="text" class="form-input text-sm" placeholder="Riski tanımlayın">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label text-xs">Olasılık</label>
+                                                    <select class="form-select text-sm">
+                                                        <option>Düşük</option>
+                                                        <option>Orta</option>
+                                                        <option>Yüksek</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label text-xs">Etki</label>
+                                                    <select class="form-select text-sm">
+                                                        <option>Düşük</option>
+                                                        <option>Orta</option>
+                                                        <option>Yüksek</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label text-xs">Risk Azaltma Planı</label>
+                                                <textarea rows="2" class="form-textarea text-sm" placeholder="Riski nasıl azaltacaksınız?"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="addRisk" class="mt-2 text-sm text-orange-600 hover:text-orange-800 flex items-center">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        <span>Risk Ekle</span>
+                                    </button>
+                                </div>
+                                <div class="sub-section">
+                                    <h4 class="sub-section-title">Başarı Kriterleri</h4>
+                                    <div id="successCriteria" class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <input type="text" class="form-input flex-1" placeholder="Ölçülebilir başarı kriteri">
+                                            <button type="button" class="text-red-500 hover:text-red-700">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="addSuccessCriterion" class="mt-2 text-sm text-orange-600 hover:text-orange-800 flex items-center">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        <span>Kriter Ekle</span>
+                                    </button>
+                                </div>
+                                <div class="flex justify-between pt-6">
+                                    <button type="button" id="backToSection3" class="nav-button flex items-center">
+                                        <i class="fas fa-arrow-left mr-2"></i>
+                                        <span>Geri</span>
+                                    </button>
+                                    <button type="button" id="nextToSection5" class="secondary-button flex items-center">
+                                        <span>İleri</span>
+                                        <i class="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Section 5: Destekleyici Belgeler -->
+                            <div id="section5" class="form-section hidden">
+                                <div class="section-header">
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold mr-3">5</div>
+                                        <h3 class="section-title">Destekleyici Belgeler ve Ek Bilgiler</h3>
+                                    </div>
+                                    <p class="section-description">Fikrinizi destekleyici belgeleri ve ek bilgileri ekleyin</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">İlgili Araştırmalar ve Çalışmalar</label>
+                                    <textarea rows="4" class="form-textarea" placeholder="İlgili literatür, önceki çalışmalar, benzer projeler..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Müşteri/Çalışan Geri Bildirimleri</label>
+                                    <textarea rows="4" class="form-textarea" placeholder="İlgili geri bildirimler, anket sonuçları..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Rekabet Analizi</label>
+                                    <textarea rows="4" class="form-textarea" placeholder="Rekabet durumu, rakip analizi, pazar konumu..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Yasal ve Düzenleyici Uyum</label>
+                                    <textarea rows="4" class="form-textarea" placeholder="İlgili yasal düzenlemeler, sertifikasyon gereksinimleri..."></textarea>
+                                </div>
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Çevresel Etki</label>
+                                        <textarea rows="3" class="form-textarea" placeholder="Çevre üzerindeki olası etkiler"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Sosyal Etki</label>
+                                        <textarea rows="3" class="form-textarea" placeholder="Toplum üzerindeki olası etkiler"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Ek Notlar ve Açıklamalar</label>
+                                    <textarea rows="4" class="form-textarea" placeholder="Diğer önemli bilgiler, ek açıklamalar..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Destekleyici Belgeler</label>
+                                    <div class="file-upload-area" id="fileUploadArea">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-slate-400 mb-4"></i>
+                                        <p class="text-slate-600 mb-2">Belgeleri buraya sürükleyin veya yüklemek için tıklayın</p>
+                                        <p class="text-sm text-slate-500">PDF, DOC, XLS, PPT, JPG, PNG desteklenir (max. 20MB)</p>
+                                        <input type="file" class="hidden" id="fileUpload" multiple>
+                                    </div>
+                                    <div id="uploadedFiles" class="mt-4"></div>
+                                </div>
+                                <div class="flex justify-between pt-6">
+                                    <button type="button" id="backToSection4" class="nav-button flex items-center">
+                                        <i class="fas fa-arrow-left mr-2"></i>
+                                        <span>Geri</span>
+                                    </button>
+                                    <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all-custom flex items-center">
+                                        <i class="fas fa-paper-plane mr-2"></i>
+                                        <span>Fikri Gönder</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="step-navigation">
+                            <button type="button" class="step-nav-button active" data-step="1">1. Temel</button>
+                            <button type="button" class="step-nav-button" data-step="2">2. Finansal</button>
+                            <button type="button" class="step-nav-button" data-step="3">3. Operasyonel</button>
+                            <button type="button" class="step-nav-button" data-step="4">4. Stratejik</button>
+                            <button type="button" class="step-nav-button" data-step="5">5. Destek</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addIdeaBtn = document.getElementById('addIdeaBtn');
+            const closeFormBtn = document.getElementById('closeFormBtn');
+            const ideaModal = document.getElementById('ideaModal');
+            const ideaForm = document.getElementById('ideaForm');
+            const submitIdeaForm = document.getElementById('submitIdeaForm');
+            const ideasContainer = document.getElementById('ideasContainer');
+            const fileUploadArea = document.getElementById('fileUploadArea');
+            const fileUpload = document.getElementById('fileUpload');
+            const uploadedFiles = document.getElementById('uploadedFiles');
+            const progressBar = document.getElementById('progressBar');
+            const formContainer = document.getElementById('formContainer');
+            // Navigation buttons
+            const nextToSection2 = document.getElementById('nextToSection2');
+            const backToSection1 = document.getElementById('backToSection1');
+            const nextToSection3 = document.getElementById('nextToSection3');
+            const backToSection2 = document.getElementById('backToSection2');
+            const nextToSection4 = document.getElementById('nextToSection4');
+            const backToSection3 = document.getElementById('backToSection3');
+            const nextToSection5 = document.getElementById('nextToSection5');
+            const backToSection4 = document.getElementById('backToSection4');
+            // Form sections
+            const section1 = document.getElementById('section1');
+            const section2 = document.getElementById('section2');
+            const section3 = document.getElementById('section3');
+            const section4 = document.getElementById('section4');
+            const section5 = document.getElementById('section5');
+            // Step elements
+            const steps = document.querySelectorAll('.step');
+            const stepNumbers = document.querySelectorAll('.step-number');
+            const stepNavButtons = document.querySelectorAll('.step-nav-button');
+            // Show modal
+            addIdeaBtn.addEventListener('click', function() {
+                ideaModal.classList.remove('hidden');
+                ideaForm.classList.add('fade-in');
+                document.body.style.overflow = 'hidden';
+                // Reset to first section
+                showSection(1);
+            });
+            // Hide modal
+            closeFormBtn.addEventListener('click', function() {
+                ideaModal.classList.add('hidden');
+                ideaForm.classList.remove('fade-in');
+                document.body.style.overflow = 'auto';
+            });
+            // Close modal when clicking outside
+            ideaModal.addEventListener('click', function(e) {
+                if (e.target === ideaModal) {
+                    ideaModal.classList.add('hidden');
+                    ideaForm.classList.remove('fade-in');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            // Navigation between sections
+            nextToSection2.addEventListener('click', () => showSection(2));
+            backToSection1.addEventListener('click', () => showSection(1));
+            nextToSection3.addEventListener('click', () => showSection(3));
+            backToSection2.addEventListener('click', () => showSection(2));
+            nextToSection4.addEventListener('click', () => showSection(4));
+            backToSection3.addEventListener('click', () => showSection(3));
+            nextToSection5.addEventListener('click', () => showSection(5));
+            backToSection4.addEventListener('click', () => showSection(4));
+            // Step navigation buttons
+            stepNavButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const step = parseInt(this.getAttribute('data-step'));
+                    showSection(step);
+                });
+            });
+            function showSection(step) {
+                // Hide all sections
+                section1.classList.add('hidden');
+                section2.classList.add('hidden');
+                section3.classList.add('hidden');
+                section4.classList.add('hidden');
+                section5.classList.add('hidden');
+                // Update progress bar and step indicators
+                updateProgress(step);
+                // Show current section
+                if (step === 1) section1.classList.remove('hidden');
+                if (step === 2) section2.classList.remove('hidden');
+                if (step === 3) section3.classList.remove('hidden');
+                if (step === 4) section4.classList.remove('hidden');
+                if (step === 5) section5.classList.remove('hidden');
+                // Scroll to top of form
+                formContainer.scrollTop = 0;
+            }
+            function updateProgress(step) {
+                // Update progress bar width
+                const progressWidth = ((step - 1) / 4) * 100;
+                progressBar.style.width = `${progressWidth}%`;
+                // Update step indicators
+                steps.forEach((stepEl, index) => {
+                    if (index < step - 1) {
+                        stepNumbers[index].classList.remove('step-active', 'step-inactive');
+                        stepNumbers[index].classList.add('step-completed');
+                    } else if (index === step - 1) {
+                        stepNumbers[index].classList.remove('step-inactive', 'step-completed');
+                        stepNumbers[index].classList.add('step-active');
+                    } else {
+                        stepNumbers[index].classList.remove('step-active', 'step-completed');
+                        stepNumbers[index].classList.add('step-inactive');
+                    }
+                });
+                // Update step navigation buttons
+                stepNavButtons.forEach((button, index) => {
+                    if (index < step - 1) {
+                        button.classList.remove('active');
+                        button.classList.add('bg-green-600', 'text-white');
+                    } else if (index === step - 1) {
+                        button.classList.add('active');
+                        button.classList.remove('bg-green-600', 'text-white');
+                    } else {
+                        button.classList.remove('active');
+                        button.classList.remove('bg-green-600', 'text-white');
+                    }
+                });
+            }
+            // Add team member
+            document.getElementById('addTeamMember').addEventListener('click', function() {
+                const teamMembers = document.getElementById('teamMembers');
+                const newMember = document.createElement('div');
+                newMember.className = 'flex items-center space-x-3';
+                newMember.innerHTML = `
+                    <input type="text" placeholder="Üye adı" class="form-input flex-1">
+                    <select class="form-select">
+                        <option>Proje Yöneticisi</option>
+                        <option>Teknik Uzman</option>
+                        <option>İş Analisti</option>
+                        <option>Tasarımcı</option>
+                        <option>Geliştirici</option>
+                        <option>Test Uzmanı</option>
+                        <option>Eğitim Uzmanı</option>
+                    </select>
+                    <button type="button" class="text-red-500 hover:text-red-700 remove-member">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                teamMembers.appendChild(newMember);
+            });
+            // Remove team member (using event delegation)
+            document.getElementById('teamMembers').addEventListener('click', function(e) {
+                if (e.target.closest('.remove-member')) {
+                    const member = e.target.closest('.flex');
+                    if (document.getElementById('teamMembers').children.length > 1) {
+                        member.remove();
+                    }
+                }
+            });
+            // Add timeline stage
+            document.getElementById('addTimelineStage').addEventListener('click', function() {
+                const timelineStages = document.getElementById('timelineStages');
+                const stageCount = timelineStages.children.length + 1;
+                const newStage = document.createElement('div');
+                newStage.className = 'flex items-center space-x-4';
+                newStage.innerHTML = `
+                    <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">${stageCount}</div>
+                    <input type="text" class="form-input flex-1" placeholder="Aşama adı">
+                    <input type="date" class="form-input w-40">
+                `;
+                timelineStages.appendChild(newStage);
+            });
+            // Add risk
+            document.getElementById('addRisk').addEventListener('click', function() {
+                const riskAnalysis = document.getElementById('riskAnalysis');
+                const newRisk = document.createElement('div');
+                newRisk.className = 'border border-slate-200 rounded-lg p-4';
+                newRisk.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                        <div class="form-group">
+                            <label class="form-label text-xs">Risk Tanımı</label>
+                            <input type="text" class="form-input text-sm" placeholder="Riski tanımlayın">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label text-xs">Olasılık</label>
+                            <select class="form-select text-sm">
+                                <option>Düşük</option>
+                                <option>Orta</option>
+                                <option>Yüksek</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label text-xs">Etki</label>
+                            <select class="form-select text-sm">
+                                <option>Düşük</option>
+                                <option>Orta</option>
+                                <option>Yüksek</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label text-xs">Risk Azaltma Planı</label>
+                        <textarea rows="2" class="form-textarea text-sm" placeholder="Riski nasıl azaltacaksınız?"></textarea>
+                    </div>
+                `;
+                riskAnalysis.appendChild(newRisk);
+            });
+            // Add success criterion
+            document.getElementById('addSuccessCriterion').addEventListener('click', function() {
+                const successCriteria = document.getElementById('successCriteria');
+                const newCriterion = document.createElement('div');
+                newCriterion.className = 'flex items-center space-x-3';
+                newCriterion.innerHTML = `
+                    <input type="text" class="form-input flex-1" placeholder="Ölçülebilir başarı kriteri">
+                    <button type="button" class="text-red-500 hover:text-red-700 remove-criterion">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                successCriteria.appendChild(newCriterion);
+            });
+            // Remove success criterion (using event delegation)
+            document.getElementById('successCriteria').addEventListener('click', function(e) {
+                if (e.target.closest('.remove-criterion')) {
+                    const criterion = e.target.closest('.flex');
+                    if (document.getElementById('successCriteria').children.length > 1) {
+                        criterion.remove();
+                    }
+                }
+            });
+            // File upload area click
+            fileUploadArea.addEventListener('click', function() {
+                fileUpload.click();
+            });
+            // File upload change
+            fileUpload.addEventListener('change', function(e) {
+                uploadedFiles.innerHTML = '';
+                Array.from(e.target.files).forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'uploaded-file';
+                    fileItem.innerHTML = `
+                        <div class="flex items-center">
+                            <i class="fas fa-file text-slate-500 mr-2"></i>
+                            <span class="text-sm text-slate-700">${file.name}</span>
+                        </div>
+                        <span class="text-xs text-slate-500">${formatFileSize(file.size)}</span>
+                    `;
+                    uploadedFiles.appendChild(fileItem);
+                });
+            });
+            // Drag and drop functionality
+            fileUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                fileUploadArea.classList.add('drag-over');
+            });
+            fileUploadArea.addEventListener('dragleave', function() {
+                fileUploadArea.classList.remove('drag-over');
+            });
+            fileUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                fileUploadArea.classList.remove('drag-over');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileUpload.files = files;
+                    // Trigger change event
+                    const event = new Event('change');
+                    fileUpload.dispatchEvent(event);
+                }
+            });
+            // Format file size
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            // Form submission
+            submitIdeaForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Create new idea card
+                const formData = new FormData(submitIdeaForm);
+                const titleInput = submitIdeaForm.querySelector('input[required]');
+                const title = titleInput ? titleInput.value : 'Yeni Fikir';
+                const descriptionInput = submitIdeaForm.querySelector('textarea[required]');
+                const description = descriptionInput ? descriptionInput.value : 'Fikir açıklaması';
+                const budgetInput = submitIdeaForm.querySelector('input[type="number"]');
+                const budget = budgetInput ? budgetInput.value : '0';
+                const roiInput = submitIdeaForm.querySelector('input[type="number"] + input[type="number"]');
+                const roi = roiInput ? roiInput.value : '0';
+                const newIdeaCard = document.createElement('div');
+                newIdeaCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden card-hover transition-all-custom slide-up';
+                newIdeaCard.innerHTML = `
+                    <div class="h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">Yeni Gönderim</span>
+                            <div class="flex space-x-1">
+                                <i class="far fa-star text-gray-300"></i>
+                                <i class="far fa-star text-gray-300"></i>
+                                <i class="far fa-star text-gray-300"></i>
+                                <i class="far fa-star text-gray-300"></i>
+                                <i class="far fa-star text-gray-300"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">${title}</h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-3">${description}</p>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-4">
+                            <span><i class="far fa-user"></i> ${formData.get('proje-lideri') || 'Siz'}</span>
+                            <span><i class="far fa-clock"></i> Şimdi</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                            <div class="text-sm">
+                                <span class="font-semibold text-slate-700">Bütçe:</span>
+                                <span class="text-blue-600"> ${budget}₺</span>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center">
+                                <span>Detaylar</span>
+                                <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                ideasContainer.prepend(newIdeaCard);
+                // Reset form and hide
+                submitIdeaForm.reset();
+                ideaModal.classList.add('hidden');
+                ideaForm.classList.remove('fade-in');
+                document.body.style.overflow = 'auto';
+                // Show success message
+                alert('Fikriniz başarıyla gönderildi! İlgili kurul tarafından değerlendirilecektir.');
+            });
+        });
+    </script>
+</body>
+</html>
