@@ -1,0 +1,2556 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProAjanda - Profesyonel Ajanda & Proje Yönetimi Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .calendar-cell {
+            min-height: 100px;
+            transition: all 0.2s ease;
+        }
+        .calendar-cell:hover {
+            background-color: #f8fafc;
+            transform: translateY(-1px);
+        }
+        .event-item {
+            font-size: 11px;
+            padding: 2px 6px;
+            margin: 1px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .event-item:hover {
+            transform: scale(1.02);
+        }
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-content {
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .sidebar-item {
+            transition: all 0.2s ease;
+        }
+        .sidebar-item:hover {
+            background-color: #f1f5f9;
+            transform: translateX(4px);
+        }
+        .today {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            font-weight: bold;
+        }
+        .selected-date {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        .dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        .drop-zone {
+            background-color: #dbeafe;
+            border: 2px dashed #3b82f6;
+        }
+        
+        /* Gantt Chart Styles */
+        .gantt-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+        .gantt-header {
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .gantt-row {
+            border-bottom: 1px solid #e2e8f0;
+            min-height: 60px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .gantt-bar {
+            height: 30px;
+            border-radius: 6px;
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .gantt-bar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .milestone {
+            width: 20px;
+            height: 20px;
+            transform: rotate(45deg);
+            position: absolute;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .milestone-label {
+            position: absolute;
+            top: -30px;
+            left: -40px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #374151;
+            transform: rotate(-45deg);
+            white-space: nowrap;
+            background: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .project-progress {
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            margin-top: 2px;
+            overflow: hidden;
+        }
+        .project-progress-fill {
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        .resource-indicator {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .project-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .project-status-active {
+            border-left-color: #10b981;
+        }
+        .project-status-planning {
+            border-left-color: #f59e0b;
+        }
+        .project-status-completed {
+            border-left-color: #6b7280;
+        }
+        .project-status-onhold {
+            border-left-color: #ef4444;
+        }
+        .timeline-container {
+            position: relative;
+            padding: 20px 0;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 30px;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 21px;
+            top: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .kanban-column {
+            min-height: 500px;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .kanban-card {
+            background: white;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: grab;
+            transition: all 0.2s ease;
+        }
+        .kanban-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+        }
+        .kanban-card.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        .resource-allocation {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            padding: 20px;
+            color: white;
+        }
+        .workload-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .workload-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .critical-path {
+            border: 2px solid #ef4444 !important;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+        }
+        .dependency-line {
+            position: absolute;
+            height: 2px;
+            background: #6b7280;
+            z-index: 5;
+        }
+        .dependency-arrow {
+            position: absolute;
+            right: -6px;
+            top: -3px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid #6b7280;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+        }
+        .gantt-timeline {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-width: 1200px;
+        }
+        .gantt-time-scale {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1px;
+            background: #f1f5f9;
+            padding: 8px;
+        }
+        .gantt-project-row {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            border-bottom: 1px solid #e2e8f0;
+            align-items: center;
+        }
+        .gantt-project-info {
+            padding: 12px;
+            border-right: 1px solid #e2e8f0;
+            background: white;
+        }
+        .gantt-timeline-area {
+            position: relative;
+            height: 60px;
+            background: #fafafa;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-lg border-b-2 border-indigo-500">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-indigo-600 p-3 rounded-lg">
+                        <i class="fas fa-project-diagram text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">ProAjanda</h1>
+                        <p class="text-sm text-gray-600">Profesyonel Ajanda & Proje Yönetimi Sistemi</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    
+                    <!-- Quick Actions -->
+                    <div class="flex items-center space-x-3">
+                        <button onclick="openModal('appointment')" class="p-2 bg-blue-100 hover:bg-blue-200 rounded-lg transition-all duration-200 group shadow-sm hover:shadow-md" title="Randevu Ekle">
+                            <i class="fas fa-user-clock text-blue-600 text-sm group-hover:scale-110 transition-transform"></i>
+                        </button>
+                        <button onclick="openModal('task')" class="p-2 bg-green-100 hover:bg-green-200 rounded-lg transition-all duration-200 group shadow-sm hover:shadow-md" title="Görev Ekle">
+                            <i class="fas fa-tasks text-green-600 text-sm group-hover:scale-110 transition-transform"></i>
+                        </button>
+                        <button onclick="openModal('meeting')" class="p-2 bg-purple-100 hover:bg-purple-200 rounded-lg transition-all duration-200 group shadow-sm hover:shadow-md" title="Toplantı Ekle">
+                            <i class="fas fa-users text-purple-600 text-sm group-hover:scale-110 transition-transform"></i>
+                        </button>
+                        <button onclick="openProjectModal()" class="p-2 bg-indigo-100 hover:bg-indigo-200 rounded-lg transition-all duration-200 group shadow-sm hover:shadow-md" title="Proje Ekle">
+                            <i class="fas fa-project-diagram text-indigo-600 text-sm group-hover:scale-110 transition-transform"></i>
+                        </button>
+                        <button onclick="openResourceModal()" class="p-2 bg-orange-100 hover:bg-orange-200 rounded-lg transition-all duration-200 group shadow-sm hover:shadow-md" title="Kaynak Yönetimi">
+                            <i class="fas fa-users-cog text-orange-600 text-sm group-hover:scale-110 transition-transform"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <!-- View Toggle -->
+                        <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                            <button id="calendarViewBtn" class="px-3 py-2 hover:bg-white rounded-md transition-colors text-sm font-medium text-gray-600">
+                                <i class="fas fa-calendar mr-1"></i>Takvim
+                            </button>
+                            <button id="projectViewBtn" class="px-3 py-2 bg-indigo-600 text-white rounded-md transition-colors text-sm font-medium">
+                                <i class="fas fa-project-diagram mr-1"></i>Projeler
+                            </button>
+                            <button id="resourceViewBtn" class="px-3 py-2 hover:bg-white rounded-md transition-colors text-sm font-medium text-gray-600">
+                                <i class="fas fa-users-cog mr-1"></i>Kaynaklar
+                            </button>
+                            <button id="reportsViewBtn" class="px-3 py-2 hover:bg-white rounded-md transition-colors text-sm font-medium text-gray-600">
+                                <i class="fas fa-chart-bar mr-1"></i>Raporlar
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                            <button id="prevMonth" class="p-2 hover:bg-white rounded-md transition-colors">
+                                <i class="fas fa-chevron-left text-gray-600"></i>
+                            </button>
+                            <h2 id="currentMonth" class="px-4 py-2 font-semibold text-gray-800 min-w-[140px] text-center">
+                                Aralık 2024
+                            </h2>
+                            <button id="nextMonth" class="p-2 hover:bg-white rounded-md transition-colors">
+                                <i class="fas fa-chevron-right text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-6">
+        <!-- Calendar View -->
+        <div id="calendarView" class="bg-white rounded-xl shadow-lg overflow-hidden hidden">
+            <!-- Calendar Header -->
+            <div id="calendarHeader" class="grid grid-cols-7 bg-gray-50 border-b">
+                <div class="p-4 text-center font-semibold text-gray-700">Pazartesi</div>
+                <div class="p-4 text-center font-semibold text-gray-700">Salı</div>
+                <div class="p-4 text-center font-semibold text-gray-700">Çarşamba</div>
+                <div class="p-4 text-center font-semibold text-gray-700">Perşembe</div>
+                <div class="p-4 text-center font-semibold text-gray-700">Cuma</div>
+                <div class="p-4 text-center font-semibold text-gray-700">Cumartesi</div>
+                <div class="p-4 text-center font-semibold text-gray-700">Pazar</div>
+            </div>
+            
+            <!-- Calendar Grid -->
+            <div id="calendarGrid" class="grid grid-cols-7">
+                <!-- Calendar cells will be generated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Project Management View -->
+        <div id="projectView" class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Project Header -->
+            <div class="bg-gray-50 border-b p-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800">Proje Yönetimi Merkezi</h3>
+                    <div class="flex items-center space-x-2">
+                        <select id="projectFilter" class="px-3 py-1 border border-gray-300 rounded-lg text-sm">
+                            <option value="all">Tüm Projeler</option>
+                            <option value="active">Aktif Projeler</option>
+                            <option value="planning">Planlama Aşaması</option>
+                            <option value="completed">Tamamlanan</option>
+                            <option value="onhold">Beklemede</option>
+                        </select>
+                        <div class="flex items-center bg-white rounded-lg p-1 shadow-sm">
+                            <button id="projectListViewBtn" class="px-3 py-1 bg-indigo-600 text-white rounded text-sm font-medium">
+                                <i class="fas fa-th-large mr-1"></i>Kartlar
+                            </button>
+                            <button id="ganttViewBtn" class="px-3 py-1 hover:bg-gray-100 rounded text-sm font-medium text-gray-600">
+                                <i class="fas fa-chart-gantt mr-1"></i>Gantt
+                            </button>
+                            <button id="kanbanViewBtn" class="px-3 py-1 hover:bg-gray-100 rounded text-sm font-medium text-gray-600">
+                                <i class="fas fa-columns mr-1"></i>Kanban
+                            </button>
+                            <button id="timelineViewBtn" class="px-3 py-1 hover:bg-gray-100 rounded text-sm font-medium text-gray-600">
+                                <i class="fas fa-stream mr-1"></i>Zaman Çizelgesi
+                            </button>
+                        </div>
+                        <button onclick="openProjectModal()" class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                            <i class="fas fa-plus mr-1"></i>Yeni Proje
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Cards View -->
+            <div id="projectListView" class="p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" id="projectCards">
+                    <!-- Project cards will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Gantt Chart View -->
+            <div id="ganttChartView" class="hidden">
+                <div class="p-4 bg-gray-50 border-b">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-800">Gantt Chart - Proje Zaman Çizelgesi</h4>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="toggleCriticalPath()" class="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm">
+                                <i class="fas fa-route mr-1"></i>Kritik Yol
+                            </button>
+                            <button onclick="zoomGantt('week')" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">Hafta</button>
+                            <button onclick="zoomGantt('month')" class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">Ay</button>
+                            <button onclick="zoomGantt('quarter')" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">Çeyrek</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gantt-container">
+                    <div class="gantt-timeline">
+                        <!-- Header -->
+                        <div class="bg-gray-100 p-3 border-b font-semibold text-gray-700">Proje / Görev</div>
+                        <div class="bg-gray-100 border-b">
+                            <div id="ganttTimeHeader" class="gantt-time-scale">
+                                <!-- Time headers will be generated -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="ganttBody">
+                        <!-- Gantt rows will be generated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kanban Board View -->
+            <div id="kanbanBoardView" class="hidden p-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="kanban-column" ondrop="dropTask(event, 'planning')" ondragover="allowDrop(event)">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-semibold text-gray-800">Planlama</h4>
+                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold" id="planningCount">0</span>
+                        </div>
+                        <div id="planningColumn" class="space-y-3">
+                            <!-- Planning tasks will be generated -->
+                        </div>
+                    </div>
+                    
+                    <div class="kanban-column" ondrop="dropTask(event, 'active')" ondragover="allowDrop(event)">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-semibold text-gray-800">Devam Eden</h4>
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold" id="activeCount">0</span>
+                        </div>
+                        <div id="activeColumn" class="space-y-3">
+                            <!-- Active tasks will be generated -->
+                        </div>
+                    </div>
+                    
+                    <div class="kanban-column" ondrop="dropTask(event, 'review')" ondragover="allowDrop(event)">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-semibold text-gray-800">İnceleme</h4>
+                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-semibold" id="reviewCount">0</span>
+                        </div>
+                        <div id="reviewColumn" class="space-y-3">
+                            <!-- Review tasks will be generated -->
+                        </div>
+                    </div>
+                    
+                    <div class="kanban-column" ondrop="dropTask(event, 'completed')" ondragover="allowDrop(event)">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-semibold text-gray-800">Tamamlandı</h4>
+                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold" id="completedCount">0</span>
+                        </div>
+                        <div id="completedColumn" class="space-y-3">
+                            <!-- Completed tasks will be generated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline View -->
+            <div id="timelineView" class="hidden p-6">
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    <div id="timelineItems">
+                        <!-- Timeline items will be generated -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Management View -->
+        <div id="resourceView" class="bg-white rounded-xl shadow-lg overflow-hidden hidden">
+            <div class="bg-gray-50 border-b p-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800">Kaynak Yönetimi</h3>
+                    <div class="flex items-center space-x-2">
+                        <select id="resourceFilter" class="px-3 py-1 border border-gray-300 rounded-lg text-sm">
+                            <option value="all">Tüm Kaynaklar</option>
+                            <option value="overloaded">Aşırı Yüklenmiş</option>
+                            <option value="available">Müsait</option>
+                            <option value="busy">Meşgul</option>
+                        </select>
+                        <button onclick="openResourceModal()" class="px-3 py-1 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Kaynak Ekle
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Resource Allocation Overview -->
+                    <div class="resource-allocation">
+                        <h4 class="text-lg font-semibold mb-4">Kaynak Dağılımı</h4>
+                        <div id="resourceAllocationChart" class="space-y-4">
+                            <!-- Resource allocation will be generated -->
+                        </div>
+                    </div>
+                    
+                    <!-- Workload Analysis -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">İş Yükü Analizi</h4>
+                        <div id="workloadAnalysis" class="space-y-4">
+                            <!-- Workload analysis will be generated -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resource Calendar -->
+                <div class="mt-6 bg-white border border-gray-200 rounded-lg p-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Kaynak Takvimi</h4>
+                    <div id="resourceCalendar" class="overflow-x-auto">
+                        <!-- Resource calendar will be generated -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports View -->
+        <div id="reportsView" class="bg-white rounded-xl shadow-lg overflow-hidden hidden">
+            <div class="bg-gray-50 border-b p-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800">Proje Raporları & Analitik</h3>
+                    <div class="flex items-center space-x-2">
+                        <select id="reportPeriod" class="px-3 py-1 border border-gray-300 rounded-lg text-sm">
+                            <option value="week">Bu Hafta</option>
+                            <option value="month">Bu Ay</option>
+                            <option value="quarter">Bu Çeyrek</option>
+                            <option value="year">Bu Yıl</option>
+                        </select>
+                        <button onclick="exportReport()" class="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
+                            <i class="fas fa-download mr-1"></i>Rapor İndir
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-blue-100">Toplam Proje</p>
+                                <p class="text-2xl font-bold" id="totalProjects">0</p>
+                            </div>
+                            <i class="fas fa-project-diagram text-3xl text-blue-200"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-green-100">Tamamlanan</p>
+                                <p class="text-2xl font-bold" id="completedProjects">0</p>
+                            </div>
+                            <i class="fas fa-check-circle text-3xl text-green-200"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-orange-100">Geciken</p>
+                                <p class="text-2xl font-bold" id="delayedProjects">0</p>
+                            </div>
+                            <i class="fas fa-exclamation-triangle text-3xl text-orange-200"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-100">Ortalama İlerleme</p>
+                                <p class="text-2xl font-bold" id="averageProgress">0%</p>
+                            </div>
+                            <i class="fas fa-chart-line text-3xl text-purple-200"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white border border-gray-200 rounded-lg p-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Proje Durumu Dağılımı</h4>
+                        <div id="projectStatusChart" class="h-64">
+                            <!-- Chart will be generated -->
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-200 rounded-lg p-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Aylık İlerleme Trendi</h4>
+                        <div id="progressTrendChart" class="h-64">
+                            <!-- Chart will be generated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full modal-content max-h-[90vh] flex flex-col">
+                <!-- Fixed Header -->
+                <div class="bg-indigo-600 text-white p-4 rounded-t-2xl flex-shrink-0">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold">
+                            <i class="fas fa-project-diagram mr-2"></i>
+                            <span id="projectModalTitle">Yeni Proje Oluştur</span>
+                        </h3>
+                        <button onclick="closeProjectModal()" class="text-white hover:text-gray-200 text-xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Scrollable Content -->
+                <div class="flex-1 overflow-y-auto p-6">
+                    <form id="projectForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Left Column -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Adı *</label>
+                                    <input type="text" id="projectName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Proje adı" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Kodu</label>
+                                    <input type="text" id="projectCode" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="PRJ-2024-001">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Durumu</label>
+                                    <select id="projectStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                        <option value="planning">Planlama Aşaması</option>
+                                        <option value="active">Aktif</option>
+                                        <option value="onhold">Beklemede</option>
+                                        <option value="completed">Tamamlandı</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Öncelik</label>
+                                    <select id="projectPriority" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                        <option value="low">Düşük</option>
+                                        <option value="medium">Orta</option>
+                                        <option value="high">Yüksek</option>
+                                        <option value="critical">Kritik</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Yöneticisi</label>
+                                    <select id="projectManager" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                        <option value="">Seçiniz...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Column -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Başlangıç Tarihi *</label>
+                                    <input type="date" id="projectStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Bitiş Tarihi *</label>
+                                    <input type="date" id="projectEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Bütçe (₺)</label>
+                                    <input type="number" id="projectBudget" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="0" min="0">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">İlerleme (%)</label>
+                                    <input type="range" id="projectProgress" class="w-full" min="0" max="100" value="0" oninput="updateProgressDisplay(this.value)">
+                                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                        <span>0%</span>
+                                        <span id="progressDisplay" class="font-semibold">0%</span>
+                                        <span>100%</span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Kategorisi</label>
+                                    <select id="projectCategory" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                        <option value="web">Web Geliştirme</option>
+                                        <option value="mobile">Mobil Uygulama</option>
+                                        <option value="design">Tasarım</option>
+                                        <option value="marketing">Pazarlama</option>
+                                        <option value="research">Araştırma</option>
+                                        <option value="other">Diğer</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Full Width Fields -->
+                        <div class="mt-6 space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Açıklaması</label>
+                                <textarea id="projectDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Proje detayları..."></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Proje Ekibi</label>
+                                <div id="projectTeamContainer" class="border border-gray-300 rounded-lg p-3 max-h-32 overflow-y-auto">
+                                    <!-- Team member checkboxes will be added here -->
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Kilometre Taşları</label>
+                                <div id="milestonesContainer" class="space-y-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="text" placeholder="Kilometre taşı adı" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                        <input type="date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                        <button type="button" onclick="addMilestone()" class="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Fixed Footer -->
+                <div class="flex justify-end space-x-3 p-4 border-t bg-gray-50 rounded-b-2xl flex-shrink-0">
+                    <button type="button" onclick="closeProjectModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                        İptal
+                    </button>
+                    <button type="submit" form="projectForm" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all">
+                        <i class="fas fa-save mr-2"></i>Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resource Modal -->
+    <div id="resourceModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full modal-content max-h-[90vh] flex flex-col">
+                <div class="bg-orange-600 text-white p-4 rounded-t-2xl flex-shrink-0">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Kaynak Ekle
+                        </h3>
+                        <button onclick="closeResourceModal()" class="text-white hover:text-gray-200 text-xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-4">
+                    <form id="resourceForm">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Ad Soyad *</label>
+                                <input type="text" id="resourceName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="Kaynak adı" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Pozisyon *</label>
+                                <input type="text" id="resourcePosition" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="Görev unvanı" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Departman</label>
+                                <select id="resourceDepartment" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                                    <option value="development">Geliştirme</option>
+                                    <option value="design">Tasarım</option>
+                                    <option value="marketing">Pazarlama</option>
+                                    <option value="sales">Satış</option>
+                                    <option value="management">Yönetim</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Yetenekler</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" value="javascript" class="mr-2">
+                                        <span class="text-sm">JavaScript</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" value="python" class="mr-2">
+                                        <span class="text-sm">Python</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" value="design" class="mr-2">
+                                        <span class="text-sm">Tasarım</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" value="marketing" class="mr-2">
+                                        <span class="text-sm">Pazarlama</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Saatlik Ücret (₺)</label>
+                                <input type="number" id="resourceRate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="0" min="0">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Haftalık Çalışma Saati</label>
+                                <input type="number" id="resourceHours" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="40" min="1" max="60" value="40">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="flex justify-end space-x-3 p-4 border-t bg-gray-50 rounded-b-2xl flex-shrink-0">
+                    <button type="button" onclick="closeResourceModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                        İptal
+                    </button>
+                    <button type="submit" form="resourceForm" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-all">
+                        <i class="fas fa-save mr-2"></i>Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Menu -->
+    <div id="quickMenu" class="fixed bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 hidden">
+        <button onclick="openModal('appointment')" class="w-full px-4 py-2 text-left hover:bg-blue-50 flex items-center">
+            <i class="fas fa-user-clock text-blue-600 mr-3"></i>
+            <span>Randevu Ekle</span>
+        </button>
+        <button onclick="openModal('task')" class="w-full px-4 py-2 text-left hover:bg-green-50 flex items-center">
+            <i class="fas fa-tasks text-green-600 mr-3"></i>
+            <span>Görev Ekle</span>
+        </button>
+        <button onclick="openModal('meeting')" class="w-full px-4 py-2 text-left hover:bg-purple-50 flex items-center">
+            <i class="fas fa-users text-purple-600 mr-3"></i>
+            <span>Toplantı Ekle</span>
+        </button>
+        <hr class="my-1">
+        <button onclick="openProjectModal()" class="w-full px-4 py-2 text-left hover:bg-indigo-50 flex items-center">
+            <i class="fas fa-project-diagram text-indigo-600 mr-3"></i>
+            <span>Proje Ekle</span>
+        </button>
+    </div>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full modal-content max-h-[90vh] flex flex-col">
+                <div class="bg-blue-600 text-white p-4 rounded-t-2xl flex-shrink-0">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold">
+                            <i id="modalIcon" class="fas fa-calendar-plus mr-2"></i>
+                            <span id="modalTitle">Yeni Etkinlik</span>
+                        </h3>
+                        <button onclick="closeModal()" class="text-white hover:text-gray-200 text-xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-4">
+                    <form id="eventForm">
+                        <div id="eventFormFields" class="space-y-4">
+                            <!-- Form fields will be dynamically generated based on event type -->
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="flex justify-end space-x-3 p-4 border-t bg-gray-50 rounded-b-2xl flex-shrink-0">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                        İptal
+                    </button>
+                    <button type="submit" form="eventForm" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+                        <i class="fas fa-save mr-2"></i>Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentDate = new Date();
+        let selectedDate = null;
+        let currentView = 'project';
+        let projectViewType = 'list';
+        let ganttZoom = 'month';
+        let showCriticalPath = false;
+        
+        let resources = [
+            { 
+                id: 1, 
+                name: 'Ahmet Yılmaz', 
+                position: 'Senior Developer', 
+                department: 'development',
+                skills: ['javascript', 'python'],
+                rate: 150,
+                weeklyHours: 40,
+                currentLoad: 35
+            },
+            { 
+                id: 2, 
+                name: 'Ayşe Demir', 
+                position: 'UI/UX Designer', 
+                department: 'design',
+                skills: ['design'],
+                rate: 120,
+                weeklyHours: 40,
+                currentLoad: 28
+            },
+            { 
+                id: 3, 
+                name: 'Mehmet Kaya', 
+                position: 'Project Manager', 
+                department: 'management',
+                skills: ['management'],
+                rate: 180,
+                weeklyHours: 40,
+                currentLoad: 42
+            }
+        ];
+        
+        let projects = [
+            {
+                id: 1,
+                name: 'E-Ticaret Platformu',
+                code: 'PRJ-2024-001',
+                status: 'active',
+                priority: 'high',
+                startDate: '2024-11-01',
+                endDate: '2025-03-15',
+                progress: 35,
+                budget: 250000,
+                category: 'web',
+                description: 'Yeni e-ticaret platformunun geliştirilmesi',
+                manager: 1,
+                team: [1, 2],
+                milestones: [
+                    { name: 'Tasarım Tamamlandı', date: '2024-12-01', completed: true },
+                    { name: 'Backend Geliştirme', date: '2025-01-15', completed: false },
+                    { name: 'Test Aşaması', date: '2025-02-28', completed: false }
+                ],
+                tasks: [
+                    { id: 1, name: 'Database Tasarımı', status: 'completed', assignee: 1, startDate: '2024-11-01', endDate: '2024-11-15' },
+                    { id: 2, name: 'API Geliştirme', status: 'active', assignee: 1, startDate: '2024-11-16', endDate: '2024-12-30' },
+                    { id: 3, name: 'Frontend Tasarım', status: 'planning', assignee: 2, startDate: '2024-12-01', endDate: '2025-01-15' }
+                ],
+                dependencies: []
+            },
+            {
+                id: 2,
+                name: 'Mobil Uygulama',
+                code: 'PRJ-2024-002',
+                status: 'planning',
+                priority: 'medium',
+                startDate: '2025-01-01',
+                endDate: '2025-06-30',
+                progress: 5,
+                budget: 150000,
+                category: 'mobile',
+                description: 'iOS ve Android mobil uygulaması',
+                manager: 3,
+                team: [1, 2, 3],
+                milestones: [
+                    { name: 'Proje Planlaması', date: '2025-01-15', completed: false },
+                    { name: 'UI/UX Tasarım', date: '2025-02-28', completed: false }
+                ],
+                tasks: [
+                    { id: 4, name: 'Gereksinim Analizi', status: 'planning', assignee: 3, startDate: '2025-01-01', endDate: '2025-01-15' },
+                    { id: 5, name: 'Wireframe Tasarımı', status: 'planning', assignee: 2, startDate: '2025-01-16', endDate: '2025-02-15' }
+                ],
+                dependencies: [1]
+            },
+            {
+                id: 3,
+                name: 'CRM Sistemi',
+                code: 'PRJ-2024-003',
+                status: 'completed',
+                priority: 'low',
+                startDate: '2024-06-01',
+                endDate: '2024-11-30',
+                progress: 100,
+                budget: 180000,
+                category: 'web',
+                description: 'Müşteri ilişkileri yönetim sistemi',
+                manager: 1,
+                team: [1, 3],
+                milestones: [
+                    { name: 'Analiz Tamamlandı', date: '2024-07-15', completed: true },
+                    { name: 'Geliştirme Bitti', date: '2024-10-30', completed: true },
+                    { name: 'Canlıya Alındı', date: '2024-11-30', completed: true }
+                ],
+                tasks: [
+                    { id: 6, name: 'Sistem Analizi', status: 'completed', assignee: 3, startDate: '2024-06-01', endDate: '2024-07-15' },
+                    { id: 7, name: 'Geliştirme', status: 'completed', assignee: 1, startDate: '2024-07-16', endDate: '2024-10-30' },
+                    { id: 8, name: 'Test ve Deployment', status: 'completed', assignee: 1, startDate: '2024-11-01', endDate: '2024-11-30' }
+                ],
+                dependencies: []
+            }
+        ];
+
+        let events = [];
+
+        const monthNames = [
+            'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+            'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+        ];
+
+        const statusNames = {
+            'planning': 'Planlama',
+            'active': 'Aktif',
+            'onhold': 'Beklemede',
+            'completed': 'Tamamlandı'
+        };
+
+        const priorityNames = {
+            'low': 'Düşük',
+            'medium': 'Orta',
+            'high': 'Yüksek',
+            'critical': 'Kritik'
+        };
+
+        // View switching functions
+        function switchToCalendarView() {
+            currentView = 'calendar';
+            document.getElementById('calendarView').classList.remove('hidden');
+            document.getElementById('projectView').classList.add('hidden');
+            document.getElementById('resourceView').classList.add('hidden');
+            document.getElementById('reportsView').classList.add('hidden');
+            
+            updateViewButtons('calendarViewBtn');
+            generateCalendar();
+        }
+
+        function switchToProjectView() {
+            currentView = 'project';
+            document.getElementById('calendarView').classList.add('hidden');
+            document.getElementById('projectView').classList.remove('hidden');
+            document.getElementById('resourceView').classList.add('hidden');
+            document.getElementById('reportsView').classList.add('hidden');
+            
+            updateViewButtons('projectViewBtn');
+            generateProjectView();
+        }
+
+        function switchToResourceView() {
+            currentView = 'resource';
+            document.getElementById('calendarView').classList.add('hidden');
+            document.getElementById('projectView').classList.add('hidden');
+            document.getElementById('resourceView').classList.remove('hidden');
+            document.getElementById('reportsView').classList.add('hidden');
+            
+            updateViewButtons('resourceViewBtn');
+            generateResourceView();
+        }
+
+        function switchToReportsView() {
+            currentView = 'reports';
+            document.getElementById('calendarView').classList.add('hidden');
+            document.getElementById('projectView').classList.add('hidden');
+            document.getElementById('resourceView').classList.add('hidden');
+            document.getElementById('reportsView').classList.remove('hidden');
+            
+            updateViewButtons('reportsViewBtn');
+            generateReportsView();
+        }
+
+        function updateViewButtons(activeBtn) {
+            const buttons = ['calendarViewBtn', 'projectViewBtn', 'resourceViewBtn', 'reportsViewBtn'];
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btnId === activeBtn) {
+                    btn.classList.add('bg-indigo-600', 'text-white');
+                    btn.classList.remove('text-gray-600');
+                } else {
+                    btn.classList.remove('bg-indigo-600', 'text-white');
+                    btn.classList.add('text-gray-600');
+                }
+            });
+        }
+
+        // Project view functions
+        function generateProjectView() {
+            if (projectViewType === 'list') {
+                generateProjectList();
+            } else if (projectViewType === 'gantt') {
+                generateGanttChart();
+            } else if (projectViewType === 'kanban') {
+                generateKanbanBoard();
+            } else if (projectViewType === 'timeline') {
+                generateTimeline();
+            }
+        }
+
+        function setProjectViewType(viewType) {
+            projectViewType = viewType;
+            
+            // Update button styles
+            const buttons = ['projectListViewBtn', 'ganttViewBtn', 'kanbanViewBtn', 'timelineViewBtn'];
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    if (btnId === viewType + 'ViewBtn' || (viewType === 'list' && btnId === 'projectListViewBtn')) {
+                        btn.classList.add('bg-indigo-600', 'text-white');
+                        btn.classList.remove('text-gray-600');
+                    } else {
+                        btn.classList.remove('bg-indigo-600', 'text-white');
+                        btn.classList.add('text-gray-600');
+                    }
+                }
+            });
+            
+            // Show/hide views
+            document.getElementById('projectListView').classList.toggle('hidden', viewType !== 'list');
+            document.getElementById('ganttChartView').classList.toggle('hidden', viewType !== 'gantt');
+            document.getElementById('kanbanBoardView').classList.toggle('hidden', viewType !== 'kanban');
+            document.getElementById('timelineView').classList.toggle('hidden', viewType !== 'timeline');
+            
+            generateProjectView();
+        }
+
+        function generateProjectList() {
+            const projectCards = document.getElementById('projectCards');
+            const filterValue = document.getElementById('projectFilter').value;
+            
+            let filteredProjects = projects;
+            if (filterValue !== 'all') {
+                filteredProjects = projects.filter(project => project.status === filterValue);
+            }
+            
+            projectCards.innerHTML = '';
+            
+            if (filteredProjects.length === 0) {
+                projectCards.innerHTML = `
+                    <div class="col-span-full text-center py-8 text-gray-500">
+                        <i class="fas fa-project-diagram text-4xl mb-4"></i>
+                        <p class="text-lg">Henüz proje bulunmuyor</p>
+                        <p class="text-sm">Yeni proje eklemek için "Yeni Proje" butonunu kullanın</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredProjects.forEach(project => {
+                const manager = resources.find(r => r.id === project.manager);
+                const teamMembers = project.team.map(id => resources.find(r => r.id === id)).filter(r => r);
+                
+                const startDate = new Date(project.startDate);
+                const endDate = new Date(project.endDate);
+                
+                const priorityColors = {
+                    'low': 'bg-green-100 text-green-800',
+                    'medium': 'bg-yellow-100 text-yellow-800',
+                    'high': 'bg-orange-100 text-orange-800',
+                    'critical': 'bg-red-100 text-red-800'
+                };
+                
+                const statusColors = {
+                    'planning': 'bg-yellow-100 text-yellow-800',
+                    'active': 'bg-green-100 text-green-800',
+                    'onhold': 'bg-red-100 text-red-800',
+                    'completed': 'bg-gray-100 text-gray-800'
+                };
+                
+                const projectCard = document.createElement('div');
+                projectCard.className = `project-card bg-white rounded-lg shadow-sm border border-gray-200 p-6 project-status-${project.status}`;
+                
+                projectCard.innerHTML = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-2">
+                                <div class="w-3 h-3 bg-indigo-500 rounded-full mr-2"></div>
+                                <h3 class="text-lg font-semibold text-gray-800">${project.name}</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">${project.code}</p>
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="px-2 py-1 text-xs rounded-full ${statusColors[project.status]}">
+                                    ${statusNames[project.status]}
+                                </span>
+                                <span class="px-2 py-1 text-xs rounded-full ${priorityColors[project.priority]}">
+                                    ${priorityNames[project.priority]}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="editProject(${project.id})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Düzenle">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteProject(${project.id})" class="text-red-600 hover:text-red-800 p-1" title="Sil">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+                            <span>İlerleme</span>
+                            <span class="font-semibold">${project.progress}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-indigo-500 h-2 rounded-full transition-all duration-300" style="width: ${project.progress}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
+                        <div>
+                            <span class="font-semibold">Başlangıç:</span><br>
+                            ${startDate.toLocaleDateString('tr-TR')}
+                        </div>
+                        <div>
+                            <span class="font-semibold">Bitiş:</span><br>
+                            ${endDate.toLocaleDateString('tr-TR')}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+                            <span class="font-semibold">Proje Yöneticisi:</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">
+                                ${manager ? manager.name.split(' ').map(n => n.charAt(0)).join('') : '?'}
+                            </div>
+                            <span class="text-sm text-gray-700">${manager ? manager.name : 'Atanmamış'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+                            <span class="font-semibold">Ekip Üyeleri:</span>
+                            <span>${teamMembers.length} kişi</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            ${teamMembers.slice(0, 4).map(member => `
+                                <div class="w-6 h-6 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold" title="${member.name}">
+                                    ${member.name.split(' ').map(n => n.charAt(0)).join('')}
+                                </div>
+                            `).join('')}
+                            ${teamMembers.length > 4 ? `<div class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs font-bold">+${teamMembers.length - 4}</div>` : ''}
+                        </div>
+                    </div>
+                    
+                    ${project.budget ? `
+                        <div class="text-sm text-gray-600 mb-4">
+                            <span class="font-semibold">Bütçe:</span> ₺${project.budget.toLocaleString('tr-TR')}
+                        </div>
+                    ` : ''}
+                    
+                    <div class="text-sm text-gray-600">
+                        <span class="font-semibold">Kilometre Taşları:</span>
+                        <div class="mt-2 space-y-1">
+                            ${project.milestones.slice(0, 2).map(milestone => `
+                                <div class="flex items-center text-xs">
+                                    <i class="fas fa-${milestone.completed ? 'check-circle text-green-600' : 'circle text-gray-400'} mr-2"></i>
+                                    <span class="${milestone.completed ? 'line-through text-gray-500' : ''}">${milestone.name}</span>
+                                </div>
+                            `).join('')}
+                            ${project.milestones.length > 2 ? `<div class="text-xs text-gray-500">+${project.milestones.length - 2} daha...</div>` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                projectCards.appendChild(projectCard);
+            });
+        }
+
+        function generateGanttChart() {
+            const ganttTimeHeader = document.getElementById('ganttTimeHeader');
+            const ganttBody = document.getElementById('ganttBody');
+            
+            // Clear existing content
+            ganttTimeHeader.innerHTML = '';
+            ganttBody.innerHTML = '';
+            
+            // Generate time headers (12 months)
+            const today = new Date();
+            const startMonth = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+            
+            for (let i = 0; i < 12; i++) {
+                const month = new Date(startMonth);
+                month.setMonth(startMonth.getMonth() + i);
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'text-center text-xs font-semibold text-gray-600 p-2 border-r border-gray-200';
+                headerDiv.textContent = monthNames[month.getMonth()] + ' ' + month.getFullYear().toString().substr(-2);
+                ganttTimeHeader.appendChild(headerDiv);
+            }
+            
+            // Generate project rows
+            projects.forEach(project => {
+                const projectStart = new Date(project.startDate);
+                const projectEnd = new Date(project.endDate);
+                
+                // Create project row
+                const projectRow = document.createElement('div');
+                projectRow.className = 'gantt-project-row';
+                
+                // Project info column
+                const projectInfo = document.createElement('div');
+                projectInfo.className = 'gantt-project-info';
+                projectInfo.innerHTML = `
+                    <div class="font-semibold text-sm text-gray-800">${project.name}</div>
+                    <div class="text-xs text-gray-600">${project.code}</div>
+                    <div class="text-xs text-gray-500">${project.progress}% tamamlandı</div>
+                `;
+                
+                // Timeline area
+                const timelineArea = document.createElement('div');
+                timelineArea.className = 'gantt-timeline-area';
+                
+                // Calculate bar position and width
+                const totalMonths = 12;
+                const startOffset = Math.max(0, (projectStart.getFullYear() - startMonth.getFullYear()) * 12 + (projectStart.getMonth() - startMonth.getMonth()));
+                const endOffset = Math.min(totalMonths, (projectEnd.getFullYear() - startMonth.getFullYear()) * 12 + (projectEnd.getMonth() - startMonth.getMonth()) + 1);
+                const duration = endOffset - startOffset;
+                
+                if (duration > 0 && startOffset < totalMonths) {
+                    const barLeft = (startOffset / totalMonths) * 100;
+                    const barWidth = (duration / totalMonths) * 100;
+                    
+                    const ganttBar = document.createElement('div');
+                    ganttBar.className = `gantt-bar bg-indigo-500 hover:bg-indigo-600 ${showCriticalPath && project.priority === 'critical' ? 'critical-path' : ''}`;
+                    ganttBar.style.left = barLeft + '%';
+                    ganttBar.style.width = Math.max(barWidth, 2) + '%';
+                    ganttBar.style.top = '15px';
+                    ganttBar.innerHTML = `
+                        <span class="truncate text-xs">${project.name}</span>
+                        <div class="project-progress">
+                            <div class="project-progress-fill" style="width: ${project.progress}%"></div>
+                        </div>
+                        <div class="resource-indicator">${project.team.length}</div>
+                    `;
+                    
+                    timelineArea.appendChild(ganttBar);
+                    
+                    // Add milestones
+                    project.milestones.forEach(milestone => {
+                        const milestoneDate = new Date(milestone.date);
+                        const milestoneOffset = (milestoneDate.getFullYear() - startMonth.getFullYear()) * 12 + (milestoneDate.getMonth() - startMonth.getMonth());
+                        
+                        if (milestoneOffset >= 0 && milestoneOffset < totalMonths) {
+                            const milestoneLeft = (milestoneOffset / totalMonths) * 100;
+                            
+                            const milestoneDiv = document.createElement('div');
+                            milestoneDiv.className = `milestone bg-${milestone.completed ? 'green' : 'yellow'}-500`;
+                            milestoneDiv.style.left = milestoneLeft + '%';
+                            milestoneDiv.style.top = '20px';
+                            milestoneDiv.title = milestone.name;
+                            
+                            timelineArea.appendChild(milestoneDiv);
+                        }
+                    });
+                }
+                
+                projectRow.appendChild(projectInfo);
+                projectRow.appendChild(timelineArea);
+                ganttBody.appendChild(projectRow);
+            });
+        }
+
+        function generateKanbanBoard() {
+            const columns = {
+                planning: document.getElementById('planningColumn'),
+                active: document.getElementById('activeColumn'),
+                review: document.getElementById('reviewColumn'),
+                completed: document.getElementById('completedColumn')
+            };
+            
+            const counts = {
+                planning: document.getElementById('planningCount'),
+                active: document.getElementById('activeCount'),
+                review: document.getElementById('reviewCount'),
+                completed: document.getElementById('completedCount')
+            };
+            
+            // Clear columns
+            Object.values(columns).forEach(column => column.innerHTML = '');
+            
+            // Get all tasks from all projects
+            const allTasks = [];
+            projects.forEach(project => {
+                if (project.tasks) {
+                    project.tasks.forEach(task => {
+                        allTasks.push({
+                            ...task,
+                            projectName: project.name,
+                            projectId: project.id
+                        });
+                    });
+                }
+            });
+            
+            // Group tasks by status
+            const tasksByStatus = {
+                planning: allTasks.filter(task => task.status === 'planning'),
+                active: allTasks.filter(task => task.status === 'active'),
+                review: allTasks.filter(task => task.status === 'review'),
+                completed: allTasks.filter(task => task.status === 'completed')
+            };
+            
+            // Update counts
+            Object.keys(tasksByStatus).forEach(status => {
+                counts[status].textContent = tasksByStatus[status].length;
+            });
+            
+            // Generate task cards
+            Object.keys(tasksByStatus).forEach(status => {
+                tasksByStatus[status].forEach(task => {
+                    const assignee = resources.find(r => r.id === task.assignee);
+                    
+                    const taskCard = document.createElement('div');
+                    taskCard.className = 'kanban-card';
+                    taskCard.draggable = true;
+                    taskCard.dataset.taskId = task.id;
+                    taskCard.dataset.currentStatus = status;
+                    
+                    taskCard.innerHTML = `
+                        <div class="flex items-start justify-between mb-2">
+                            <h5 class="font-semibold text-sm text-gray-800">${task.name}</h5>
+                            <div class="flex items-center space-x-1">
+                                <button onclick="editTask(${task.id})" class="text-blue-600 hover:text-blue-800 text-xs">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteTask(${task.id})" class="text-red-600 hover:text-red-800 text-xs">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">${task.projectName}</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                ${assignee ? `
+                                    <div class="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2" title="${assignee.name}">
+                                        ${assignee.name.split(' ').map(n => n.charAt(0)).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="text-xs text-gray-500">
+                                ${new Date(task.startDate).toLocaleDateString('tr-TR')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add drag events
+                    taskCard.addEventListener('dragstart', (e) => {
+                        taskCard.classList.add('dragging');
+                        e.dataTransfer.setData('text/plain', task.id);
+                    });
+                    
+                    taskCard.addEventListener('dragend', () => {
+                        taskCard.classList.remove('dragging');
+                    });
+                    
+                    columns[status].appendChild(taskCard);
+                });
+            });
+        }
+
+        function generateTimeline() {
+            const timelineItems = document.getElementById('timelineItems');
+            timelineItems.innerHTML = '';
+            
+            // Combine projects and milestones into timeline events
+            const timelineEvents = [];
+            
+            projects.forEach(project => {
+                timelineEvents.push({
+                    type: 'project-start',
+                    date: project.startDate,
+                    title: `${project.name} Başladı`,
+                    description: project.description,
+                    project: project
+                });
+                
+                timelineEvents.push({
+                    type: 'project-end',
+                    date: project.endDate,
+                    title: `${project.name} ${project.status === 'completed' ? 'Tamamlandı' : 'Bitiş Tarihi'}`,
+                    description: `Proje durumu: ${statusNames[project.status]}`,
+                    project: project
+                });
+                
+                project.milestones.forEach(milestone => {
+                    timelineEvents.push({
+                        type: 'milestone',
+                        date: milestone.date,
+                        title: milestone.name,
+                        description: `${project.name} - Kilometre Taşı`,
+                        project: project,
+                        milestone: milestone
+                    });
+                });
+            });
+            
+            // Sort by date
+            timelineEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            timelineEvents.forEach(event => {
+                const eventDate = new Date(event.date);
+                const isCompleted = event.type === 'project-end' && event.project.status === 'completed' ||
+                                  event.type === 'milestone' && event.milestone && event.milestone.completed;
+                
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item';
+                
+                timelineItem.innerHTML = `
+                    <div class="timeline-dot bg-indigo-500 ${isCompleted ? 'opacity-60' : ''}"></div>
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h4 class="font-semibold text-gray-800 ${isCompleted ? 'line-through' : ''}">${event.title}</h4>
+                                <p class="text-sm text-gray-600">${event.description}</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-gray-800">
+                                    ${eventDate.toLocaleDateString('tr-TR')}
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    ${eventDate.toLocaleDateString('tr-TR', { weekday: 'long' })}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${event.type === 'project-start' || event.type === 'project-end' ? `
+                            <div class="flex items-center justify-between text-sm text-gray-600">
+                                <span>İlerleme: ${event.project.progress}%</span>
+                                <span>Ekip: ${event.project.team.length} kişi</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                <div class="bg-indigo-500 h-1 rounded-full" style="width: ${event.project.progress}%"></div>
+                            </div>
+                        ` : ''}
+                        
+                        ${isCompleted ? '<div class="text-xs text-green-600 mt-2"><i class="fas fa-check mr-1"></i>Tamamlandı</div>' : ''}
+                    </div>
+                `;
+                
+                timelineItems.appendChild(timelineItem);
+            });
+        }
+
+        // Drag and Drop Functions
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function dropTask(ev, newStatus) {
+            ev.preventDefault();
+            const taskId = parseInt(ev.dataTransfer.getData("text"));
+            updateTaskStatus(taskId, newStatus);
+        }
+
+        function updateTaskStatus(taskId, newStatus) {
+            // Find and update task status
+            projects.forEach(project => {
+                if (project.tasks) {
+                    const task = project.tasks.find(t => t.id === taskId);
+                    if (task) {
+                        task.status = newStatus;
+                    }
+                }
+            });
+            
+            generateKanbanBoard();
+            showSuccessMessage('Görev durumu güncellendi!');
+        }
+
+        // Resource Management Functions
+        function generateResourceView() {
+            generateResourceAllocation();
+            generateWorkloadAnalysis();
+            generateResourceCalendar();
+        }
+
+        function generateResourceAllocation() {
+            const container = document.getElementById('resourceAllocationChart');
+            container.innerHTML = '';
+            
+            resources.forEach(resource => {
+                const utilizationPercent = (resource.currentLoad / resource.weeklyHours) * 100;
+                const utilizationColor = utilizationPercent > 90 ? 'bg-red-400' : utilizationPercent > 70 ? 'bg-yellow-400' : 'bg-green-400';
+                
+                const resourceDiv = document.createElement('div');
+                resourceDiv.className = 'flex items-center justify-between text-white mb-3';
+                resourceDiv.innerHTML = `
+                    <div class="flex-1">
+                        <div class="font-semibold">${resource.name}</div>
+                        <div class="text-sm opacity-80">${resource.position}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-semibold">${resource.currentLoad}/${resource.weeklyHours}h</div>
+                        <div class="text-sm opacity-80">${Math.round(utilizationPercent)}%</div>
+                    </div>
+                `;
+                
+                const progressBar = document.createElement('div');
+                progressBar.className = 'workload-bar mt-2';
+                progressBar.innerHTML = `<div class="workload-fill ${utilizationColor}" style="width: ${utilizationPercent}%"></div>`;
+                
+                resourceDiv.appendChild(progressBar);
+                container.appendChild(resourceDiv);
+            });
+        }
+
+        function generateWorkloadAnalysis() {
+            const container = document.getElementById('workloadAnalysis');
+            container.innerHTML = '';
+            
+            const overloaded = resources.filter(r => (r.currentLoad / r.weeklyHours) > 0.9);
+            const available = resources.filter(r => (r.currentLoad / r.weeklyHours) < 0.7);
+            const busy = resources.filter(r => {
+                const util = r.currentLoad / r.weeklyHours;
+                return util >= 0.7 && util <= 0.9;
+            });
+            
+            const analysisData = [
+                { label: 'Aşırı Yüklenmiş', count: overloaded.length, color: 'text-red-600', bgColor: 'bg-red-100' },
+                { label: 'Meşgul', count: busy.length, color: 'text-yellow-600', bgColor: 'bg-yellow-100' },
+                { label: 'Müsait', count: available.length, color: 'text-green-600', bgColor: 'bg-green-100' }
+            ];
+            
+            analysisData.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `flex items-center justify-between p-3 ${item.bgColor} rounded-lg`;
+                itemDiv.innerHTML = `
+                    <span class="font-semibold ${item.color}">${item.label}</span>
+                    <span class="text-2xl font-bold ${item.color}">${item.count}</span>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        function generateResourceCalendar() {
+            const container = document.getElementById('resourceCalendar');
+            const today = new Date();
+            const dates = [];
+            
+            // Get next 14 days
+            for (let i = 0; i < 14; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                dates.push(date);
+            }
+            
+            let calendarHTML = `
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="border border-gray-200 p-2 text-left font-semibold">Kaynak</th>
+            `;
+            
+            dates.forEach(date => {
+                const dayName = date.toLocaleDateString('tr-TR', { weekday: 'short' });
+                const dayNumber = date.getDate();
+                calendarHTML += `<th class="border border-gray-200 p-2 text-center text-xs">${dayName}<br>${dayNumber}</th>`;
+            });
+            
+            calendarHTML += `
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            resources.forEach(resource => {
+                calendarHTML += `
+                    <tr>
+                        <td class="border border-gray-200 p-2 font-semibold">${resource.name}</td>
+                `;
+                
+                dates.forEach(date => {
+                    const utilization = Math.random() * 100; // Simulated data
+                    const utilizationClass = utilization > 90 ? 'bg-red-200' : utilization > 70 ? 'bg-yellow-200' : 'bg-green-200';
+                    
+                    calendarHTML += `<td class="border border-gray-200 p-1 text-center ${utilizationClass}">${Math.round(utilization)}%</td>`;
+                });
+                
+                calendarHTML += '</tr>';
+            });
+            
+            calendarHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = calendarHTML;
+        }
+
+        // Reports Functions
+        function generateReportsView() {
+            updateKPICards();
+            generateProjectStatusChart();
+            generateProgressTrendChart();
+        }
+
+        function updateKPICards() {
+            document.getElementById('totalProjects').textContent = projects.length;
+            document.getElementById('completedProjects').textContent = projects.filter(p => p.status === 'completed').length;
+            
+            const today = new Date();
+            const delayedProjects = projects.filter(p => {
+                const endDate = new Date(p.endDate);
+                return p.status !== 'completed' && endDate < today;
+            });
+            document.getElementById('delayedProjects').textContent = delayedProjects.length;
+            
+            const avgProgress = Math.round(projects.reduce((sum, p) => sum + p.progress, 0) / projects.length);
+            document.getElementById('averageProgress').textContent = avgProgress + '%';
+        }
+
+        function generateProjectStatusChart() {
+            const container = document.getElementById('projectStatusChart');
+            const statusCounts = {
+                planning: projects.filter(p => p.status === 'planning').length,
+                active: projects.filter(p => p.status === 'active').length,
+                onhold: projects.filter(p => p.status === 'onhold').length,
+                completed: projects.filter(p => p.status === 'completed').length
+            };
+            
+            const total = Object.values(statusCounts).reduce((sum, count) => sum + count, 0);
+            
+            let chartHTML = '<div class="space-y-3">';
+            
+            Object.entries(statusCounts).forEach(([status, count]) => {
+                const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+                const colors = {
+                    planning: 'bg-yellow-500',
+                    active: 'bg-green-500',
+                    onhold: 'bg-red-500',
+                    completed: 'bg-gray-500'
+                };
+                
+                chartHTML += `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 ${colors[status]} rounded mr-2"></div>
+                            <span class="text-sm font-medium">${statusNames[status]}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="${colors[status]} h-2 rounded-full" style="width: ${percentage}%"></div>
+                            </div>
+                            <span class="text-sm font-semibold w-8">${count}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            chartHTML += '</div>';
+            container.innerHTML = chartHTML;
+        }
+
+        function generateProgressTrendChart() {
+            const container = document.getElementById('progressTrendChart');
+            
+            // Simulated monthly progress data
+            const months = ['Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+            const progressData = [65, 72, 78, 85, 88];
+            
+            let chartHTML = '<div class="space-y-4">';
+            
+            months.forEach((month, index) => {
+                const progress = progressData[index];
+                chartHTML += `
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium w-12">${month}</span>
+                        <div class="flex-1 mx-4">
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                        <span class="text-sm font-semibold w-12 text-right">${progress}%</span>
+                    </div>
+                `;
+            });
+            
+            chartHTML += '</div>';
+            container.innerHTML = chartHTML;
+        }
+
+        // Modal Functions
+        function openProjectModal() {
+            document.getElementById('projectModal').classList.remove('hidden');
+            
+            // Populate project manager dropdown
+            const managerSelect = document.getElementById('projectManager');
+            managerSelect.innerHTML = '<option value="">Seçiniz...</option>';
+            resources.forEach(resource => {
+                const option = document.createElement('option');
+                option.value = resource.id;
+                option.textContent = `${resource.name} - ${resource.position}`;
+                managerSelect.appendChild(option);
+            });
+            
+            // Populate team checkboxes
+            updateProjectTeamContainer();
+            
+            // Reset form
+            document.getElementById('projectForm').reset();
+            document.getElementById('projectProgress').value = 0;
+            updateProgressDisplay(0);
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.add('hidden');
+        }
+
+        function openResourceModal() {
+            document.getElementById('resourceModal').classList.remove('hidden');
+            document.getElementById('resourceForm').reset();
+        }
+
+        function closeResourceModal() {
+            document.getElementById('resourceModal').classList.add('hidden');
+        }
+
+        function showQuickMenu(x, y) {
+            const quickMenu = document.getElementById('quickMenu');
+            quickMenu.style.left = x + 'px';
+            quickMenu.style.top = y + 'px';
+            quickMenu.classList.remove('hidden');
+            
+            // Hide menu when clicking outside
+            setTimeout(() => {
+                document.addEventListener('click', hideQuickMenu, { once: true });
+            }, 100);
+        }
+        
+        function hideQuickMenu() {
+            document.getElementById('quickMenu').classList.add('hidden');
+        }
+
+        function openModal(type) {
+            hideQuickMenu(); // Hide quick menu if open
+            
+            const modal = document.getElementById('eventModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalHeader = modal.querySelector('.bg-blue-600');
+            const submitButton = modal.querySelector('button[type="submit"]');
+            const formFields = document.getElementById('eventFormFields');
+            
+            // Set modal title, icon and colors based on type
+            const modalConfig = {
+                'appointment': { 
+                    title: 'Yeni Randevu', 
+                    icon: 'fas fa-user-clock',
+                    headerColor: 'bg-blue-600',
+                    buttonColor: 'bg-blue-600 hover:bg-blue-700',
+                    focusColor: 'focus:ring-blue-500'
+                },
+                'task': { 
+                    title: 'Yeni Görev', 
+                    icon: 'fas fa-tasks',
+                    headerColor: 'bg-green-600',
+                    buttonColor: 'bg-green-600 hover:bg-green-700',
+                    focusColor: 'focus:ring-green-500'
+                },
+                'meeting': { 
+                    title: 'Yeni Toplantı', 
+                    icon: 'fas fa-users',
+                    headerColor: 'bg-purple-600',
+                    buttonColor: 'bg-purple-600 hover:bg-purple-700',
+                    focusColor: 'focus:ring-purple-500'
+                }
+            };
+            
+            const config = modalConfig[type] || { 
+                title: 'Yeni Etkinlik', 
+                icon: 'fas fa-calendar-plus',
+                headerColor: 'bg-blue-600',
+                buttonColor: 'bg-blue-600 hover:bg-blue-700',
+                focusColor: 'focus:ring-blue-500'
+            };
+            
+            modalTitle.textContent = config.title;
+            modalIcon.className = config.icon + ' mr-2';
+            
+            // Update header color
+            modalHeader.className = modalHeader.className.replace(/bg-\w+-\d+/, config.headerColor) + ' text-white p-4 rounded-t-2xl flex-shrink-0';
+            
+            // Update submit button color
+            submitButton.className = submitButton.className.replace(/bg-\w+-\d+\s+hover:bg-\w+-\d+/, config.buttonColor) + ' px-4 py-2 text-white rounded-lg transition-all';
+            
+            // Generate form fields based on type
+            generateEventFormFields(type, config.focusColor);
+            
+            // Store the event type for form submission
+            modal.dataset.eventType = type;
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function generateEventFormFields(type, focusColor = 'focus:ring-blue-500') {
+            const formFields = document.getElementById('eventFormFields');
+            let fieldsHTML = '';
+            
+            // Common fields for all types
+            fieldsHTML += `
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Başlık *</label>
+                    <input type="text" id="eventTitle" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent" placeholder="${getPlaceholderText(type, 'title')}" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Tarih *</label>
+                    <input type="date" id="eventDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent" required>
+                </div>
+            `;
+            
+            // Type-specific fields
+            if (type === 'appointment') {
+                fieldsHTML += `
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Başlangıç Saati</label>
+                            <input type="time" id="appointmentStartTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Bitiş Saati</label>
+                            <input type="time" id="appointmentEndTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Kişi/Kurum</label>
+                        <input type="text" id="appointmentPerson" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent" placeholder="Randevu kişisi veya kurumu">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Konum</label>
+                        <input type="text" id="appointmentLocation" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent" placeholder="Randevu yeri">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Telefon</label>
+                        <input type="tel" id="appointmentPhone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent" placeholder="İletişim telefonu">
+                    </div>
+                `;
+            } else if (type === 'task') {
+                fieldsHTML += `
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Bitiş Tarihi</label>
+                        <input type="date" id="taskDueDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Öncelik</label>
+                        <select id="taskPriority" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent">
+                            <option value="low">Düşük</option>
+                            <option value="medium" selected>Orta</option>
+                            <option value="high">Yüksek</option>
+                            <option value="critical">Kritik</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Atanan Kişi</label>
+                        <select id="taskAssignee" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent">
+                            <option value="">Seçiniz...</option>
+                            ${resources.map(resource => `<option value="${resource.id}">${resource.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
+                        <select id="taskCategory" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent">
+                            <option value="development">Geliştirme</option>
+                            <option value="design">Tasarım</option>
+                            <option value="marketing">Pazarlama</option>
+                            <option value="management">Yönetim</option>
+                            <option value="other">Diğer</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tahmini Süre (saat)</label>
+                        <input type="number" id="taskEstimatedHours" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent" placeholder="0" min="0" step="0.5">
+                    </div>
+                `;
+            } else if (type === 'meeting') {
+                fieldsHTML += `
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Başlangıç Saati</label>
+                            <input type="time" id="meetingStartTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Bitiş Saati</label>
+                            <input type="time" id="meetingEndTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Toplantı Yeri</label>
+                        <input type="text" id="meetingLocation" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent" placeholder="Toplantı salonu, online link vb.">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Katılımcılar</label>
+                        <div id="meetingParticipants" class="border border-gray-300 rounded-lg p-3 max-h-32 overflow-y-auto">
+                            ${resources.map(resource => `
+                                <label class="flex items-center mb-2">
+                                    <input type="checkbox" value="${resource.id}" class="mr-2 text-purple-600 rounded">
+                                    <span class="text-sm text-gray-700">${resource.name} - ${resource.position}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Toplantı Türü</label>
+                        <select id="meetingType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent">
+                            <option value="internal">İç Toplantı</option>
+                            <option value="client">Müşteri Toplantısı</option>
+                            <option value="project">Proje Toplantısı</option>
+                            <option value="review">İnceleme Toplantısı</option>
+                            <option value="planning">Planlama Toplantısı</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Gündem</label>
+                        <textarea id="meetingAgenda" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent" placeholder="Toplantı gündemi ve konuları..."></textarea>
+                    </div>
+                `;
+            }
+            
+            // Common description field
+            fieldsHTML += `
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Açıklama</label>
+                    <textarea id="eventDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${focusColor} focus:border-transparent" placeholder="${getPlaceholderText(type, 'description')}"></textarea>
+                </div>
+            `;
+            
+            formFields.innerHTML = fieldsHTML;
+            
+            // Set the date if selected
+            const eventDateInput = document.getElementById('eventDate');
+            if (eventDateInput) {
+                eventDateInput.value = selectedDate || new Date().toISOString().split('T')[0];
+            }
+        }
+        
+        function getPlaceholderText(type, field) {
+            const placeholders = {
+                'appointment': {
+                    'title': 'Randevu başlığı (örn: Doktor randevusu)',
+                    'description': 'Randevu detayları ve notlar...'
+                },
+                'task': {
+                    'title': 'Görev başlığı (örn: Rapor hazırla)',
+                    'description': 'Görev detayları ve talimatlar...'
+                },
+                'meeting': {
+                    'title': 'Toplantı başlığı (örn: Haftalık değerlendirme)',
+                    'description': 'Toplantı notları ve ek bilgiler...'
+                }
+            };
+            
+            return placeholders[type] && placeholders[type][field] || 'Açıklama...';
+        }
+
+        function viewEventDetails(event) {
+            alert(`Etkinlik: ${event.title}\nTarih: ${new Date(event.date).toLocaleDateString('tr-TR')}\nKategori: ${event.category}${event.project ? '\nProje: ' + event.project : ''}`);
+        }
+
+        function showDayEvents(date, events) {
+            const eventsList = events.map(event => 
+                `• ${event.title} ${event.project ? '(' + event.project + ')' : ''}`
+            ).join('\n');
+            
+            alert(`${date.toLocaleDateString('tr-TR')} tarihindeki etkinlikler:\n\n${eventsList}`);
+        }
+
+        function closeModal() {
+            document.getElementById('eventModal').classList.add('hidden');
+        }
+
+        function updateProjectTeamContainer() {
+            const container = document.getElementById('projectTeamContainer');
+            container.innerHTML = '';
+            
+            resources.forEach(resource => {
+                const checkboxDiv = document.createElement('div');
+                checkboxDiv.className = 'flex items-center mb-2';
+                checkboxDiv.innerHTML = `
+                    <input type="checkbox" id="team_${resource.id}" value="${resource.id}" class="mr-2 text-indigo-600 rounded">
+                    <label for="team_${resource.id}" class="text-sm text-gray-700 cursor-pointer">
+                        ${resource.name} - ${resource.position}
+                    </label>
+                `;
+                container.appendChild(checkboxDiv);
+            });
+        }
+
+        function updateProgressDisplay(value) {
+            document.getElementById('progressDisplay').textContent = value + '%';
+        }
+
+        function addMilestone() {
+            const container = document.getElementById('milestonesContainer');
+            const milestoneDiv = document.createElement('div');
+            milestoneDiv.className = 'flex items-center space-x-2 mt-2';
+            milestoneDiv.innerHTML = `
+                <input type="text" placeholder="Kilometre taşı adı" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                <input type="date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                <button type="button" onclick="removeMilestone(this)" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm">
+                    <i class="fas fa-minus"></i>
+                </button>
+            `;
+            container.appendChild(milestoneDiv);
+        }
+
+        function removeMilestone(button) {
+            button.parentElement.remove();
+        }
+
+        function zoomGantt(zoomLevel) {
+            ganttZoom = zoomLevel;
+            generateGanttChart();
+        }
+
+        function toggleCriticalPath() {
+            showCriticalPath = !showCriticalPath;
+            generateGanttChart();
+        }
+
+        function editProject(projectId) {
+            showSuccessMessage('Proje düzenleme özelliği yakında eklenecek!');
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('Bu projeyi silmek istediğinizden emin misiniz?')) {
+                const index = projects.findIndex(project => project.id === projectId);
+                if (index > -1) {
+                    projects.splice(index, 1);
+                    generateProjectView();
+                    showSuccessMessage('Proje silindi!');
+                }
+            }
+        }
+
+        function editTask(taskId) {
+            showSuccessMessage('Görev düzenleme özelliği yakında eklenecek!');
+        }
+
+        function deleteTask(taskId) {
+            if (confirm('Bu görevi silmek istediğinizden emin misiniz?')) {
+                projects.forEach(project => {
+                    if (project.tasks) {
+                        project.tasks = project.tasks.filter(task => task.id !== taskId);
+                    }
+                });
+                generateKanbanBoard();
+                showSuccessMessage('Görev silindi!');
+            }
+        }
+
+        function exportReport() {
+            showSuccessMessage('Rapor indirme özelliği yakında eklenecek!');
+        }
+
+        function showSuccessMessage(message) {
+            const successMsg = document.createElement('div');
+            successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            successMsg.innerHTML = `<i class="fas fa-check mr-2"></i>${message}`;
+            document.body.appendChild(successMsg);
+            
+            setTimeout(() => {
+                successMsg.remove();
+            }, 3000);
+        }
+
+        function generateCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDate = new Date(firstDay);
+            
+            // Adjust to start from Monday
+            const dayOfWeek = firstDay.getDay();
+            const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+            startDate.setDate(firstDay.getDate() - daysToSubtract);
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            for (let i = 0; i < 42; i++) {
+                const cellDate = new Date(startDate);
+                cellDate.setDate(startDate.getDate() + i);
+                
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-cell p-3 border-r border-b border-gray-200 cursor-pointer relative';
+                
+                const isCurrentMonth = cellDate.getMonth() === month;
+                const isToday = cellDate.toDateString() === new Date().toDateString();
+                const dateString = cellDate.toISOString().split('T')[0];
+                
+                if (!isCurrentMonth) {
+                    dayElement.classList.add('text-gray-400', 'bg-gray-50');
+                }
+                
+                if (isToday) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Day number
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'text-sm font-semibold mb-2';
+                dayNumber.textContent = cellDate.getDate();
+                dayElement.appendChild(dayNumber);
+                
+                // Add events for this date
+                const dayEvents = events.filter(event => event.date === dateString);
+                
+                // Add project milestones for this date
+                projects.forEach(project => {
+                    project.milestones.forEach(milestone => {
+                        if (milestone.date === dateString) {
+                            dayEvents.push({
+                                id: `milestone-${project.id}-${milestone.name}`,
+                                title: milestone.name,
+                                date: milestone.date,
+                                category: 'milestone',
+                                project: project.name,
+                                completed: milestone.completed
+                            });
+                        }
+                    });
+                });
+                
+                // Add project start/end dates
+                projects.forEach(project => {
+                    if (project.startDate === dateString) {
+                        dayEvents.push({
+                            id: `project-start-${project.id}`,
+                            title: `${project.name} Başlangıç`,
+                            date: project.startDate,
+                            category: 'project-start',
+                            project: project.name
+                        });
+                    }
+                    if (project.endDate === dateString) {
+                        dayEvents.push({
+                            id: `project-end-${project.id}`,
+                            title: `${project.name} Bitiş`,
+                            date: project.endDate,
+                            category: 'project-end',
+                            project: project.name
+                        });
+                    }
+                });
+                
+                // Display events
+                dayEvents.forEach((event, index) => {
+                    if (index < 3) { // Show max 3 events per day
+                        const eventElement = document.createElement('div');
+                        eventElement.className = 'event-item text-white text-xs truncate';
+                        
+                        // Set colors based on event category
+                        const categoryColors = {
+                            'appointment': 'bg-blue-500 hover:bg-blue-600',
+                            'task': 'bg-green-500 hover:bg-green-600',
+                            'meeting': 'bg-purple-500 hover:bg-purple-600',
+                            'milestone': event.completed ? 'bg-gray-500 hover:bg-gray-600' : 'bg-yellow-500 hover:bg-yellow-600',
+                            'project-start': 'bg-indigo-500 hover:bg-indigo-600',
+                            'project-end': 'bg-red-500 hover:bg-red-600'
+                        };
+                        
+                        eventElement.className += ' ' + (categoryColors[event.category] || 'bg-gray-500 hover:bg-gray-600');
+                        
+                        // Add icon based on category
+                        const categoryIcons = {
+                            'appointment': 'fas fa-user-clock',
+                            'task': 'fas fa-tasks',
+                            'meeting': 'fas fa-users',
+                            'milestone': 'fas fa-flag',
+                            'project-start': 'fas fa-play',
+                            'project-end': 'fas fa-stop'
+                        };
+                        
+                        const icon = categoryIcons[event.category] || 'fas fa-calendar';
+                        eventElement.innerHTML = `<i class="${icon} mr-1"></i>${event.title}`;
+                        eventElement.title = `${event.title}${event.project ? ' - ' + event.project : ''}`;
+                        
+                        // Add click handler to view/edit event
+                        eventElement.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            viewEventDetails(event);
+                        });
+                        
+                        dayElement.appendChild(eventElement);
+                    }
+                });
+                
+                // Show "more" indicator if there are more than 3 events
+                if (dayEvents.length > 3) {
+                    const moreElement = document.createElement('div');
+                    moreElement.className = 'event-item bg-gray-400 hover:bg-gray-500 text-white text-xs';
+                    moreElement.innerHTML = `<i class="fas fa-ellipsis-h mr-1"></i>+${dayEvents.length - 3} daha`;
+                    moreElement.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showDayEvents(cellDate, dayEvents);
+                    });
+                    dayElement.appendChild(moreElement);
+                }
+                
+                // Add click handler to select date
+                dayElement.addEventListener('click', () => {
+                    selectedDate = dateString;
+                    dayElement.classList.add('selected-date');
+                    // Remove selected class from other days
+                    document.querySelectorAll('.calendar-cell').forEach(cell => {
+                        if (cell !== dayElement) {
+                            cell.classList.remove('selected-date');
+                        }
+                    });
+                });
+                
+                // Add double click handler to open quick menu
+                dayElement.addEventListener('dblclick', (e) => {
+                    e.preventDefault();
+                    selectedDate = dateString;
+                    showQuickMenu(e.pageX, e.pageY);
+                });
+                
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // View button event listeners
+            document.getElementById('calendarViewBtn').addEventListener('click', switchToCalendarView);
+            document.getElementById('projectViewBtn').addEventListener('click', switchToProjectView);
+            document.getElementById('resourceViewBtn').addEventListener('click', switchToResourceView);
+            document.getElementById('reportsViewBtn').addEventListener('click', switchToReportsView);
+            
+            // Project view type buttons
+            document.getElementById('projectListViewBtn').addEventListener('click', () => setProjectViewType('list'));
+            document.getElementById('ganttViewBtn').addEventListener('click', () => setProjectViewType('gantt'));
+            document.getElementById('kanbanViewBtn').addEventListener('click', () => setProjectViewType('kanban'));
+            document.getElementById('timelineViewBtn').addEventListener('click', () => setProjectViewType('timeline'));
+            
+            // Month navigation
+            document.getElementById('prevMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                if (currentView === 'calendar') {
+                    generateCalendar();
+                } else {
+                    document.getElementById('currentMonth').textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+                }
+            });
+            
+            document.getElementById('nextMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                if (currentView === 'calendar') {
+                    generateCalendar();
+                } else {
+                    document.getElementById('currentMonth').textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+                }
+            });
+            
+            // Filter change listeners
+            document.getElementById('projectFilter').addEventListener('change', generateProjectView);
+            document.getElementById('resourceFilter').addEventListener('change', generateResourceView);
+            document.getElementById('reportPeriod').addEventListener('change', generateReportsView);
+            
+            // Form submissions
+            document.getElementById('projectForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const selectedTeam = Array.from(document.querySelectorAll('#projectTeamContainer input:checked')).map(cb => parseInt(cb.value));
+                
+                const newProject = {
+                    id: Date.now(),
+                    name: document.getElementById('projectName').value,
+                    code: document.getElementById('projectCode').value || `PRJ-${new Date().getFullYear()}-${String(projects.length + 1).padStart(3, '0')}`,
+                    status: document.getElementById('projectStatus').value,
+                    priority: document.getElementById('projectPriority').value,
+                    startDate: document.getElementById('projectStartDate').value,
+                    endDate: document.getElementById('projectEndDate').value,
+                    progress: parseInt(document.getElementById('projectProgress').value),
+                    budget: parseInt(document.getElementById('projectBudget').value) || 0,
+                    category: document.getElementById('projectCategory').value,
+                    description: document.getElementById('projectDescription').value,
+                    manager: parseInt(document.getElementById('projectManager').value) || null,
+                    team: selectedTeam,
+                    milestones: [],
+                    tasks: [],
+                    dependencies: []
+                };
+                
+                // Collect milestones
+                const milestoneInputs = document.querySelectorAll('#milestonesContainer > div');
+                milestoneInputs.forEach(div => {
+                    const nameInput = div.querySelector('input[type="text"]');
+                    const dateInput = div.querySelector('input[type="date"]');
+                    if (nameInput && dateInput && nameInput.value && dateInput.value) {
+                        newProject.milestones.push({
+                            name: nameInput.value,
+                            date: dateInput.value,
+                            completed: false
+                        });
+                    }
+                });
+                
+                projects.push(newProject);
+                closeProjectModal();
+                generateProjectView();
+                showSuccessMessage('Proje başarıyla oluşturuldu!');
+            });
+            
+            document.getElementById('resourceForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const selectedSkills = Array.from(document.querySelectorAll('#resourceModal input[type="checkbox"]:checked')).map(cb => cb.value);
+                
+                const newResource = {
+                    id: Date.now(),
+                    name: document.getElementById('resourceName').value,
+                    position: document.getElementById('resourcePosition').value,
+                    department: document.getElementById('resourceDepartment').value,
+                    skills: selectedSkills,
+                    rate: parseInt(document.getElementById('resourceRate').value) || 0,
+                    weeklyHours: parseInt(document.getElementById('resourceHours').value) || 40,
+                    currentLoad: 0
+                };
+                
+                resources.push(newResource);
+                closeResourceModal();
+                generateResourceView();
+                showSuccessMessage('Kaynak başarıyla eklendi!');
+            });
+            
+            document.getElementById('eventForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const modal = document.getElementById('eventModal');
+                const eventType = modal.dataset.eventType || 'appointment';
+                
+                const newEvent = {
+                    id: Date.now(),
+                    title: document.getElementById('eventTitle').value,
+                    date: document.getElementById('eventDate').value,
+                    description: document.getElementById('eventDescription').value,
+                    category: eventType
+                };
+                
+                // Add type-specific data
+                if (eventType === 'appointment') {
+                    newEvent.startTime = document.getElementById('appointmentStartTime')?.value || '';
+                    newEvent.endTime = document.getElementById('appointmentEndTime')?.value || '';
+                    newEvent.person = document.getElementById('appointmentPerson')?.value || '';
+                    newEvent.location = document.getElementById('appointmentLocation')?.value || '';
+                    newEvent.phone = document.getElementById('appointmentPhone')?.value || '';
+                } else if (eventType === 'task') {
+                    newEvent.dueDate = document.getElementById('taskDueDate')?.value || '';
+                    newEvent.priority = document.getElementById('taskPriority')?.value || 'medium';
+                    newEvent.assignee = parseInt(document.getElementById('taskAssignee')?.value) || null;
+                    newEvent.taskCategory = document.getElementById('taskCategory')?.value || '';
+                    newEvent.estimatedHours = parseFloat(document.getElementById('taskEstimatedHours')?.value) || 0;
+                    newEvent.status = 'planning';
+                } else if (eventType === 'meeting') {
+                    newEvent.startTime = document.getElementById('meetingStartTime')?.value || '';
+                    newEvent.endTime = document.getElementById('meetingEndTime')?.value || '';
+                    newEvent.location = document.getElementById('meetingLocation')?.value || '';
+                    newEvent.meetingType = document.getElementById('meetingType')?.value || '';
+                    newEvent.agenda = document.getElementById('meetingAgenda')?.value || '';
+                    
+                    // Get selected participants
+                    const participantCheckboxes = document.querySelectorAll('#meetingParticipants input[type="checkbox"]:checked');
+                    newEvent.participants = Array.from(participantCheckboxes).map(cb => parseInt(cb.value));
+                }
+                
+                events.push(newEvent);
+                closeModal();
+                
+                // Refresh calendar if in calendar view
+                if (currentView === 'calendar') {
+                    generateCalendar();
+                }
+                
+                const eventTypeNames = {
+                    'appointment': 'Randevu',
+                    'task': 'Görev', 
+                    'meeting': 'Toplantı'
+                };
+                
+                showSuccessMessage(`${eventTypeNames[eventType] || 'Etkinlik'} başarıyla eklendi!`);
+            });
+            
+            // Initialize the project view
+            switchToProjectView();
+        });
+    </script>
+</body>
+</html>
