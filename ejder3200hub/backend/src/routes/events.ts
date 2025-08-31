@@ -14,7 +14,15 @@ router.get('/', async (req, res, next) => {
         idea: true,
       },
     });
-    res.json(events);
+    
+    // Convert JSON strings back to arrays for response
+    const responseEvents = events.map((event: any) => ({
+      ...event,
+      files: event.files ? JSON.parse(event.files) : [],
+      tags: event.tags ? JSON.parse(event.tags) : [],
+    }));
+    
+    res.json(responseEvents);
   } catch (error) {
     next(error);
   }
@@ -22,12 +30,15 @@ router.get('/', async (req, res, next) => {
 
 // POST a new event
 router.post('/', async (req, res, next) => {
-    const { participantIds, projectId, ideaId, ...rest } = req.body;
+    const { participantIds, projectId, ideaId, link, ...rest } = req.body;
     try {
         // Convert date string to ISO DateTime format if needed
         const eventData = {
             ...rest,
             date: rest.date ? new Date(rest.date).toISOString() : new Date().toISOString(),
+            // Convert arrays to JSON strings for SQLite storage
+            files: Array.isArray(rest.files) ? JSON.stringify(rest.files) : rest.files || null,
+            tags: Array.isArray(rest.tags) ? JSON.stringify(rest.tags) : rest.tags || null,
         };
         
         const event = await prisma.event.create({
@@ -39,7 +50,15 @@ router.post('/', async (req, res, next) => {
             },
             include: { participants: true, project: true, idea: true },
         });
-        res.status(201).json(event);
+        
+        // Convert JSON strings back to arrays for response
+        const responseEvent = {
+            ...event,
+            files: event.files ? JSON.parse(event.files) : [],
+            tags: event.tags ? JSON.parse(event.tags) : [],
+        };
+        
+        res.status(201).json(responseEvent);
     } catch(error) {
         next(error);
     }
@@ -48,12 +67,15 @@ router.post('/', async (req, res, next) => {
 // PUT update an event
 router.put('/:id', async (req, res, next) => {
     const { id } = req.params;
-    const { participantIds, ...rest } = req.body;
+    const { participantIds, link, ...rest } = req.body;
     try {
         // Convert date string to ISO DateTime format if needed
         const eventData = {
             ...rest,
             ...(rest.date && { date: new Date(rest.date).toISOString() }),
+            // Convert arrays to JSON strings for SQLite storage
+            ...(rest.files && { files: Array.isArray(rest.files) ? JSON.stringify(rest.files) : rest.files }),
+            ...(rest.tags && { tags: Array.isArray(rest.tags) ? JSON.stringify(rest.tags) : rest.tags }),
         };
         
         const event = await prisma.event.update({
@@ -64,7 +86,15 @@ router.put('/:id', async (req, res, next) => {
             },
              include: { participants: true, project: true, idea: true },
         });
-        res.json(event);
+        
+        // Convert JSON strings back to arrays for response
+        const responseEvent = {
+            ...event,
+            files: event.files ? JSON.parse(event.files) : [],
+            tags: event.tags ? JSON.parse(event.tags) : [],
+        };
+        
+        res.json(responseEvent);
     } catch (error) {
         next(error);
     }
