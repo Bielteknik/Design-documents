@@ -1,0 +1,3 @@
+Ejder3200Hub Bilgileri 
+CREATE USER ejderAdmin WITH SUPERUSER CREATEDB CREATEROLE REPLICATION LOGIN PASSWORD 'Ejder.25';
+-----------------------------

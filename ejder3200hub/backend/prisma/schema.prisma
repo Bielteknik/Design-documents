@@ -1,0 +1,360 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Enums are defined as String for SQLite compatibility
+// In production with PostgreSQL, these can be converted to proper enums
+
+model Department {
+  id        String @id @default(cuid())
+  name      String
+  parentId  String?
+  managerId String? @unique
+  
+  parent    Department? @relation("DepartmentHierarchy", fields: [parentId], references: [id])
+  children  Department[] @relation("DepartmentHierarchy")
+  manager   Resource? @relation("DepartmentManager", fields: [managerId], references: [id])
+  resources Resource[] @relation("DepartmentMembers")
+}
+
+model Resource {
+  id           String         @id @default(cuid())
+  name         String
+  initials     String
+  position     String
+  departmentId String?
+  email        String         @unique
+  phone        String?
+  skills       String // JSON array as string
+  weeklyHours  Int            @default(40)
+  currentLoad  Int            @default(0)
+  managerId    String?
+  bio          String?
+  earnedBadges String? // JSON array as string
+  employmentType String       @default("FullTime")
+  startDate    DateTime       @default(now())
+  
+  department         Department? @relation("DepartmentMembers", fields: [departmentId], references: [id])
+  managedDepartment  Department? @relation("DepartmentManager")
+  manager            Resource?   @relation("ResourceHierarchy", fields: [managerId], references: [id])
+  subordinates       Resource[]  @relation("ResourceHierarchy")
+  
+  managedProjects    Project[]   @relation("ProjectManager")
+  projectMemberships ProjectTeam[]
+  assignedTasks      Task[]
+  reportedTasks      Task[]      @relation("TaskReporter")
+  authoredIdeas      Idea[]
+  leadingIdeas       Idea[]      @relation("IdeaProjectLeader")
+  ideaMemberships    IdeaTeam[]
+  eventParticipations EventParticipant[]
+  authoredComments   Comment[]
+  authoredEvaluations Evaluation[]
+  performanceEvaluations PerformanceEvaluation[]
+  authoredAnnouncements Announcement[]
+  authoredFeedback   Feedback[]
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  code        String        @unique
+  status      String        @default("Planning")
+  priority    String        @default("Medium")
+  startDate   DateTime
+  endDate     DateTime
+  progress    Int           @default(0)
+  managerId   String
+  budget      Float         @default(0)
+  color       String        @default("#3B82F6")
+  files       String? // JSON array as string
+  
+  manager     Resource      @relation("ProjectManager", fields: [managerId], references: [id])
+  team        ProjectTeam[]
+  tasks       Task[]
+  events      Event[]
+  comments    Comment[]
+  evaluations Evaluation[]
+  
+  @@map("projects")
+}
+
+model ProjectTeam {
+  id         String   @id @default(cuid())
+  projectId  String
+  resourceId String
+  
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, resourceId])
+}
+
+model Task {
+  id             String     @id @default(cuid())
+  title          String
+  description    String?
+  status         String     @default("ToDo")
+  priority       String     @default("Medium")
+  assigneeId     String
+  reporterId     String?
+  projectId      String?
+  startDate      DateTime?
+  endDate        DateTime?
+  completionDate DateTime?
+  progress       Int        @default(0)
+  
+  assignee       Resource   @relation(fields: [assigneeId], references: [id])
+  reporter       Resource?  @relation("TaskReporter", fields: [reporterId], references: [id])
+  project        Project?   @relation(fields: [projectId], references: [id])
+  events         Event[]
+  
+  @@map("tasks")
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  type        String
+  date        DateTime
+  startTime   String?
+  endTime     String?
+  location    String?
+  projectId   String?
+  taskId      String?
+  ideaId      String?
+  
+  project     Project?  @relation(fields: [projectId], references: [id])
+  task        Task?     @relation(fields: [taskId], references: [id])
+  idea        Idea?     @relation(fields: [ideaId], references: [id])
+  participants EventParticipant[]
+  
+  @@map("events")
+}
+
+model EventParticipant {
+  id         String     @id @default(cuid())
+  eventId    String
+  resourceId String
+  rsvpStatus String     @default("Pending")
+  
+  event      Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  resource   Resource   @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  
+  @@unique([eventId, resourceId])
+}
+
+model Idea {
+  id                      String      @id @default(cuid())
+  name                    String
+  status                  String      @default("New")
+  authorId                String
+  category                String?
+  description             String?
+  summary                 String?
+  problem                 String?
+  problemType             String?
+  problemFrequency        String?
+  solution                String?
+  benefits                String?
+  targetAudience          String?
+  relatedDepartments      String? // JSON array as string
+  projectLeaderId         String?
+  estimatedDuration       String?
+  timelinePhases          String? // JSON array as string
+  criticalMilestones      String?
+  totalBudget             Float?
+  budgetItems             String? // JSON array as string
+  expectedRevenueIncrease Float?
+  expectedCostSavings     Float?
+  expectedROI             Float?
+  fundingSources          String?
+  revenueSources          String?
+  swotStrengths           String?
+  swotWeaknesses          String?
+  swotOpportunities       String?
+  swotThreats             String?
+  risks                   String?
+  riskLevel               String?
+  mitigations             String?
+  successCriteria         String?
+  files                   String? // JSON array as string
+  tags                    String? // JSON array as string
+  priority                String     @default("Medium")
+  creationDate            DateTime    @default(now())
+  
+  author                  Resource    @relation(fields: [authorId], references: [id])
+  projectLeader           Resource?   @relation("IdeaProjectLeader", fields: [projectLeaderId], references: [id])
+  potentialTeam           IdeaTeam[]
+  events                  Event[]
+  comments                Comment[]
+  evaluations             Evaluation[]
+  
+  @@map("ideas")
+}
+
+model IdeaTeam {
+  id         String   @id @default(cuid())
+  ideaId     String
+  resourceId String
+  
+  idea       Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  
+  @@unique([ideaId, resourceId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  projectId String?
+  ideaId    String?
+  timestamp DateTime @default(now())
+  
+  author    Resource @relation(fields: [authorId], references: [id])
+  project   Project? @relation(fields: [projectId], references: [id])
+  idea      Idea?    @relation(fields: [ideaId], references: [id])
+  
+  @@map("comments")
+}
+
+model Evaluation {
+  id         String     @id @default(cuid())
+  authorId   String
+  projectId  String?
+  ideaId     String?
+  voteStatus String
+  comment    String?
+  timestamp  DateTime   @default(now())
+  
+  author     Resource   @relation(fields: [authorId], references: [id])
+  project    Project?   @relation(fields: [projectId], references: [id])
+  idea       Idea?      @relation(fields: [ideaId], references: [id])
+  
+  @@map("evaluations")
+}
+
+model PurchaseRequest {
+  id          String                 @id @default(cuid())
+  title       String
+  description String?
+  amount      Float
+  requesterId String
+  requestDate DateTime               @default(now())
+  status      String                 @default("Pending")
+  urgency     String                 @default("Medium")
+  category    String?
+  vendor      String?
+  
+  @@map("purchase_requests")
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  invoiceNumber String        @unique
+  clientName    String
+  amount        Float
+  dueDate       DateTime
+  issueDate     DateTime      @default(now())
+  status        String        @default("Unpaid")
+  description   String?
+  
+  @@map("invoices")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  title     String
+  message   String
+  type      String           @default("Info")
+  userId    String
+  read      Boolean          @default(false)
+  timestamp DateTime         @default(now())
+  
+  @@map("notifications")
+}
+
+model PerformanceEvaluation {
+  id           String   @id @default(cuid())
+  employeeId   String
+  evaluatorId  String?
+  period       String
+  overallScore Int
+  goals        String? // JSON array as string
+  achievements String? // JSON array as string
+  feedback     String?
+  createdAt    DateTime @default(now())
+  
+  employee     Resource @relation(fields: [employeeId], references: [id])
+  
+  @@map("performance_evaluations")
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  authorId  String
+  priority  String   @default("Medium")
+  timestamp DateTime @default(now())
+  
+  author    Resource @relation(fields: [authorId], references: [id])
+  
+  @@map("announcements")
+}
+
+model Feedback {
+  id          String           @id @default(cuid())
+  title       String
+  description String
+  category    String
+  status      String           @default("Submitted")
+  authorName  String
+  authorEmail String
+  timestamp   DateTime         @default(now())
+  
+  author      Resource         @relation(fields: [authorEmail], references: [email])
+  
+  @@map("feedback")
+}
+
+model ApiLog {
+  id        String   @id @default(cuid())
+  method    String
+  endpoint  String
+  status    Int
+  response  String?
+  timestamp DateTime @default(now())
+  
+  @@map("api_logs")
+}
+
+model SystemMetric {
+  id        String       @id @default(cuid())
+  name      String
+  value     Float
+  unit      String?
+  status    String       @default("Online")
+  timestamp DateTime     @default(now())
+  
+  @@map("system_metrics")
+}
+
+model DatabaseStats {
+  id           String   @id @default(cuid())
+  tableName    String
+  recordCount  Int
+  sizeInBytes  Int?
+  lastUpdated  DateTime @default(now())
+  
+  @@map("database_stats")
+}
