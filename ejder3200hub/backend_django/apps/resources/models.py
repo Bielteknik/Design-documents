@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import EmailValidator
 import uuid
 
@@ -10,6 +11,14 @@ class Role(models.TextChoices):
     MANAGER = 'Manager', 'Yönetici'
     TEAMLEAD = 'TeamLead', 'Ekip Lideri'
     MEMBER = 'Member', 'Ekip Üyesi'
+
+
+class EmploymentType(models.TextChoices):
+    """Employment type choices"""
+    FULL_TIME = 'FullTime', 'Tam Zamanlı'
+    PART_TIME = 'PartTime', 'Yarı Zamanlı'
+    CONTRACTOR = 'Contractor', 'Sözleşmeli'
+    INTERN = 'Intern', 'Stajyer'
 
 
 class Department(models.Model):
@@ -48,25 +57,23 @@ class Department(models.Model):
 
 
 class Resource(models.Model):
-    """Resource (User/Employee) model"""
+    """Resource (User/Employee) model - aligned with frontend Resource interface"""
     id = models.CharField(max_length=36, primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, verbose_name='İsim')
+    initials = models.CharField(max_length=10, default='', verbose_name='Baş Harfler')
+    position = models.CharField(max_length=255, default='', verbose_name='Pozisyon')
+    department_id = models.CharField(
+        max_length=36, 
+        default='',
+        verbose_name='Departman ID',
+        db_column='departmentId'
+    )
     email = models.EmailField(
         unique=True, 
         validators=[EmailValidator()],
-        verbose_name='E-posta'
-    )
-    role = models.CharField(
-        max_length=20,
-        choices=Role.choices,
-        default=Role.MEMBER,
-        verbose_name='Rol'
-    )
-    department = models.CharField(
-        max_length=255, 
-        null=True, 
+        null=True,
         blank=True,
-        verbose_name='Departman'
+        verbose_name='E-posta'
     )
     phone = models.CharField(
         max_length=20, 
@@ -80,6 +87,49 @@ class Resource(models.Model):
         blank=True,
         verbose_name='İşe Başlama Tarihi',
         db_column='startDate'
+    )
+    employment_type = models.CharField(
+        max_length=20,
+        choices=EmploymentType.choices,
+        null=True,
+        blank=True,
+        verbose_name='İstihdam Tipi',
+        db_column='employmentType'
+    )
+    skills = ArrayField(
+        models.CharField(max_length=100),
+        default=list,
+        blank=True,
+        verbose_name='Yetenekler'
+    )
+    weekly_hours = models.IntegerField(default=40, verbose_name='Haftalık Çalışma Saati', db_column='weeklyHours')
+    current_load = models.IntegerField(default=0, verbose_name='Mevcut Yük (%)', db_column='currentLoad')
+    manager_id = models.CharField(
+        max_length=36,
+        null=True,
+        blank=True,
+        verbose_name='Yönetici ID',
+        db_column='managerId'
+    )
+    bio = models.TextField(null=True, blank=True, verbose_name='Biyografi')
+    earned_badges = ArrayField(
+        models.CharField(max_length=100),
+        default=list,
+        blank=True,
+        verbose_name='Kazanılan Rozetler',
+        db_column='earnedBadges'
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=Role.choices,
+        default=Role.MEMBER,
+        verbose_name='Rol'
+    )
+    department = models.CharField(
+        max_length=255, 
+        null=True, 
+        blank=True,
+        verbose_name='Departman'
     )
     avatar = models.CharField(
         max_length=500, 
