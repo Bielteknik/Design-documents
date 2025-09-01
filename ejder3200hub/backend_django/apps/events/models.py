@@ -14,8 +14,8 @@ class Event(models.Model):
     id = models.CharField(max_length=36, primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255, verbose_name='Etkinlik Başlığı')
     description = models.TextField(null=True, blank=True, verbose_name='Açıklama')
-    start_time = models.CharField(max_length=50, verbose_name='Başlangıç Saati')
-    end_time = models.CharField(max_length=50, verbose_name='Bitiş Saati')
+    start_time = models.CharField(max_length=50, verbose_name='Başlangıç Saati', db_column='startTime')
+    end_time = models.CharField(max_length=50, verbose_name='Bitiş Saati', db_column='endTime')
     location = models.CharField(max_length=255, null=True, blank=True, verbose_name='Konum')
     project = models.ForeignKey(
         'projects.Project',
@@ -23,10 +23,11 @@ class Event(models.Model):
         null=True,
         blank=True,
         related_name='events',
-        verbose_name='İlgili Proje'
+        verbose_name='İlgili Proje',
+        db_column='projectId'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'events'
@@ -45,13 +46,15 @@ class EventRsvp(models.Model):
         Event,
         on_delete=models.CASCADE,
         related_name='rsvps',
-        verbose_name='Etkinlik'
+        verbose_name='Etkinlik',
+        db_column='eventId'
     )
     resource = models.ForeignKey(
         'resources.Resource',
         on_delete=models.CASCADE,
         related_name='attended_events',
-        verbose_name='Katılımcı'
+        verbose_name='Katılımcı',
+        db_column='resourceId'
     )
     status = models.CharField(
         max_length=20,
@@ -59,8 +62,8 @@ class EventRsvp(models.Model):
         default=RsvpStatus.PENDING,
         verbose_name='Katılım Durumu'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'event_rsvps'

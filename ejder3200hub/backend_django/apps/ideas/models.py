@@ -33,7 +33,8 @@ class Idea(models.Model):
         'resources.Resource',
         on_delete=models.CASCADE,
         related_name='authored_ideas',
-        verbose_name='Yazar'
+        verbose_name='Yazar',
+        db_column='authorId'
     )
     
     # Basic Information
@@ -43,18 +44,19 @@ class Idea(models.Model):
     
     # Problem Analysis
     problem = models.TextField(null=True, blank=True, verbose_name='Problem')
-    problem_type = models.CharField(max_length=50, null=True, blank=True, verbose_name='Problem Tipi')
-    problem_frequency = models.CharField(max_length=50, null=True, blank=True, verbose_name='Problem Sıklığı')
+    problem_type = models.CharField(max_length=50, null=True, blank=True, verbose_name='Problem Tipi', db_column='problemType')
+    problem_frequency = models.CharField(max_length=50, null=True, blank=True, verbose_name='Problem Sıklığı', db_column='problemFrequency')
     solution = models.TextField(null=True, blank=True, verbose_name='Çözüm')
     
     # Strategic Framework
     benefits = models.TextField(null=True, blank=True, verbose_name='Faydalar')
-    target_audience = models.TextField(null=True, blank=True, verbose_name='Hedef Kitle')
+    target_audience = models.TextField(null=True, blank=True, verbose_name='Hedef Kitle', db_column='targetAudience')
     related_departments = ArrayField(
         models.CharField(max_length=100),
         default=list,
         blank=True,
-        verbose_name='İlgili Departmanlar'
+        verbose_name='İlgili Departmanlar',
+        db_column='relatedDepartments'
     )
     
     # Assignments and Responsibility
@@ -64,44 +66,46 @@ class Idea(models.Model):
         null=True,
         blank=True,
         related_name='led_ideas',
-        verbose_name='Proje Lideri'
+        verbose_name='Proje Lideri',
+        db_column='projectLeaderId'
     )
     potential_team = ArrayField(
         models.CharField(max_length=36),
         default=list,
         blank=True,
-        verbose_name='Potansiyel Takım'
+        verbose_name='Potansiyel Takım',
+        db_column='potentialTeam'
     )
     
     # Timeline
-    estimated_duration = models.CharField(max_length=100, null=True, blank=True, verbose_name='Tahmini Süre')
-    timeline_phases = models.JSONField(null=True, blank=True, verbose_name='Zaman Çizelgesi Aşamaları')
-    critical_milestones = models.TextField(null=True, blank=True, verbose_name='Kritik Kilometre Taşları')
+    estimated_duration = models.CharField(max_length=100, null=True, blank=True, verbose_name='Tahmini Süre', db_column='estimatedDuration')
+    timeline_phases = models.JSONField(null=True, blank=True, verbose_name='Zaman Çizelgesi Aşamaları', db_column='timelinePhases')
+    critical_milestones = models.TextField(null=True, blank=True, verbose_name='Kritik Kilometre Taşları', db_column='criticalMilestones')
     
     # Budget Plan
-    total_budget = models.FloatField(null=True, blank=True, verbose_name='Toplam Bütçe')
-    budget_items = models.JSONField(null=True, blank=True, verbose_name='Bütçe Kalemleri')
+    total_budget = models.FloatField(null=True, blank=True, verbose_name='Toplam Bütçe', db_column='totalBudget')
+    budget_items = models.JSONField(null=True, blank=True, verbose_name='Bütçe Kalemleri', db_column='budgetItems')
     
     # ROI Analysis
-    expected_revenue_increase = models.FloatField(null=True, blank=True, verbose_name='Beklenen Gelir Artışı')
-    expected_cost_savings = models.FloatField(null=True, blank=True, verbose_name='Beklenen Maliyet Tasarrufu')
-    expected_roi = models.FloatField(null=True, blank=True, verbose_name='Beklenen ROI')
-    funding_sources = models.TextField(null=True, blank=True, verbose_name='Finansman Kaynakları')
-    revenue_sources = models.TextField(null=True, blank=True, verbose_name='Gelir Kaynakları')
+    expected_revenue_increase = models.FloatField(null=True, blank=True, verbose_name='Beklenen Gelir Artışı', db_column='expectedRevenueIncrease')
+    expected_cost_savings = models.FloatField(null=True, blank=True, verbose_name='Beklenen Maliyet Tasarrufu', db_column='expectedCostSavings')
+    expected_roi = models.FloatField(null=True, blank=True, verbose_name='Beklenen ROI', db_column='expectedROI')
+    funding_sources = models.TextField(null=True, blank=True, verbose_name='Finansman Kaynakları', db_column='fundingSources')
+    revenue_sources = models.TextField(null=True, blank=True, verbose_name='Gelir Kaynakları', db_column='revenueSources')
     
     # SWOT Analysis
-    swot_strengths = models.TextField(null=True, blank=True, verbose_name='Güçlü Yönler')
-    swot_weaknesses = models.TextField(null=True, blank=True, verbose_name='Zayıf Yönler')
-    swot_opportunities = models.TextField(null=True, blank=True, verbose_name='Fırsatlar')
-    swot_threats = models.TextField(null=True, blank=True, verbose_name='Tehditler')
+    swot_strengths = models.TextField(null=True, blank=True, verbose_name='Güçlü Yönler', db_column='swotStrengths')
+    swot_weaknesses = models.TextField(null=True, blank=True, verbose_name='Zayıf Yönler', db_column='swotWeaknesses')
+    swot_opportunities = models.TextField(null=True, blank=True, verbose_name='Fırsatlar', db_column='swotOpportunities')
+    swot_threats = models.TextField(null=True, blank=True, verbose_name='Tehditler', db_column='swotThreats')
     
     # Risk Analysis
     risks = models.TextField(null=True, blank=True, verbose_name='Riskler')
-    risk_level = models.CharField(max_length=20, null=True, blank=True, verbose_name='Risk Seviyesi')
+    risk_level = models.CharField(max_length=20, null=True, blank=True, verbose_name='Risk Seviyesi', db_column='riskLevel')
     mitigations = models.TextField(null=True, blank=True, verbose_name='Risk Azaltma')
     
     # Success Criteria
-    success_criteria = models.TextField(null=True, blank=True, verbose_name='Başarı Kriterleri')
+    success_criteria = models.TextField(null=True, blank=True, verbose_name='Başarı Kriterleri', db_column='successCriteria')
     
     # Support
     files = ArrayField(
@@ -123,9 +127,9 @@ class Idea(models.Model):
         blank=True,
         verbose_name='Öncelik'
     )
-    creation_date = models.CharField(max_length=50, null=True, blank=True, verbose_name='Oluşturma Tarihi')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    creation_date = models.CharField(max_length=50, null=True, blank=True, verbose_name='Oluşturma Tarihi', db_column='creationDate')
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'ideas'
@@ -144,21 +148,23 @@ class Vote(models.Model):
         Idea,
         on_delete=models.CASCADE,
         related_name='votes',
-        verbose_name='Fikir'
+        verbose_name='Fikir',
+        db_column='ideaId'
     )
     resource = models.ForeignKey(
         'resources.Resource',
         on_delete=models.CASCADE,
         related_name='votes',
-        verbose_name='Oy Veren'
+        verbose_name='Oy Veren',
+        db_column='resourceId'
     )
     status = models.CharField(
         max_length=20,
         choices=VoteStatus.choices,
         verbose_name='Oy Durumu'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'votes'

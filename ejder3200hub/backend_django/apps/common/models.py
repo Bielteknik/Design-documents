@@ -38,7 +38,8 @@ class Comment(models.Model):
         'resources.Resource',
         on_delete=models.CASCADE,
         related_name='comments',
-        verbose_name='Yorum Yapan'
+        verbose_name='Yorum Yapan',
+        db_column='resourceId'
     )
     
     # Generic foreign keys to different models
@@ -48,7 +49,8 @@ class Comment(models.Model):
         null=True,
         blank=True,
         related_name='comments',
-        verbose_name='İlgili Proje'
+        verbose_name='İlgili Proje',
+        db_column='projectId'
     )
     task = models.ForeignKey(
         'projects.Task',
@@ -56,7 +58,8 @@ class Comment(models.Model):
         null=True,
         blank=True,
         related_name='comments',
-        verbose_name='İlgili Görev'
+        verbose_name='İlgili Görev',
+        db_column='taskId'
     )
     idea = models.ForeignKey(
         'ideas.Idea',
@@ -64,7 +67,8 @@ class Comment(models.Model):
         null=True,
         blank=True,
         related_name='comments',
-        verbose_name='İlgili Fikir'
+        verbose_name='İlgili Fikir',
+        db_column='ideaId'
     )
     event = models.ForeignKey(
         'events.Event',
@@ -72,11 +76,12 @@ class Comment(models.Model):
         null=True,
         blank=True,
         related_name='comments',
-        verbose_name='İlgili Etkinlik'
+        verbose_name='İlgili Etkinlik',
+        db_column='eventId'
     )
     
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'comments'
@@ -108,10 +113,11 @@ class Feedback(models.Model):
         'resources.Resource',
         on_delete=models.CASCADE,
         related_name='feedbacks',
-        verbose_name='Geri Bildirim Veren'
+        verbose_name='Geri Bildirim Veren',
+        db_column='resourceId'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'feedbacks'
@@ -135,9 +141,9 @@ class PurchaseRequest(models.Model):
         default=PurchaseRequestStatus.PENDING,
         verbose_name='Durum'
     )
-    requester_id = models.CharField(max_length=36, verbose_name='Talep Eden ID')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    requester_id = models.CharField(max_length=36, verbose_name='Talep Eden ID', db_column='requesterId')
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'purchase_requests'
@@ -152,7 +158,7 @@ class PurchaseRequest(models.Model):
 class Invoice(models.Model):
     """Invoice model"""
     id = models.CharField(max_length=36, primary_key=True, default=uuid.uuid4, editable=False)
-    invoice_number = models.CharField(max_length=100, unique=True, verbose_name='Fatura Numarası')
+    invoice_number = models.CharField(max_length=100, unique=True, verbose_name='Fatura Numarası', db_column='invoiceNumber')
     amount = models.FloatField(verbose_name='Tutar')
     status = models.CharField(
         max_length=20,
@@ -160,10 +166,10 @@ class Invoice(models.Model):
         default=InvoiceStatus.UNPAID,
         verbose_name='Durum'
     )
-    due_date = models.CharField(max_length=50, verbose_name='Vade Tarihi')
+    due_date = models.CharField(max_length=50, verbose_name='Vade Tarihi', db_column='dueDate')
     description = models.TextField(null=True, blank=True, verbose_name='Açıklama')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'invoices'

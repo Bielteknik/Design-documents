@@ -41,14 +41,15 @@ class Project(models.Model):
         default=Priority.MEDIUM,
         verbose_name='Öncelik'
     )
-    start_date = models.CharField(max_length=50, verbose_name='Başlangıç Tarihi')
-    end_date = models.CharField(max_length=50, verbose_name='Bitiş Tarihi')
+    start_date = models.CharField(max_length=50, verbose_name='Başlangıç Tarihi', db_column='startDate')
+    end_date = models.CharField(max_length=50, verbose_name='Bitiş Tarihi', db_column='endDate')
     progress = models.IntegerField(default=0, verbose_name='İlerleme (%)')
     manager = models.ForeignKey(
         'resources.Resource',
         on_delete=models.CASCADE,
         related_name='managed_projects',
-        verbose_name='Proje Müdürü'
+        verbose_name='Proje Müdürü',
+        db_column='managerId'
     )
     team = ArrayField(
         models.CharField(max_length=36),
@@ -64,8 +65,8 @@ class Project(models.Model):
         blank=True,
         verbose_name='Dosyalar'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'projects'
@@ -98,7 +99,8 @@ class Task(models.Model):
         'resources.Resource',
         on_delete=models.CASCADE,
         related_name='assigned_tasks',
-        verbose_name='Atanan Kişi'
+        verbose_name='Atanan Kişi',
+        db_column='assigneeId'
     )
     reporter = models.ForeignKey(
         'resources.Resource',
@@ -106,18 +108,20 @@ class Task(models.Model):
         null=True,
         blank=True,
         related_name='reported_tasks',
-        verbose_name='Rapor Eden'
+        verbose_name='Rapor Eden',
+        db_column='reporterId'
     )
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
         related_name='tasks',
-        verbose_name='Proje'
+        verbose_name='Proje',
+        db_column='projectId'
     )
-    start_date = models.CharField(max_length=50, null=True, blank=True, verbose_name='Başlangıç Tarihi')
-    end_date = models.CharField(max_length=50, null=True, blank=True, verbose_name='Bitiş Tarihi')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    start_date = models.CharField(max_length=50, null=True, blank=True, verbose_name='Başlangıç Tarihi', db_column='startDate')
+    end_date = models.CharField(max_length=50, null=True, blank=True, verbose_name='Bitiş Tarihi', db_column='endDate')
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'tasks'

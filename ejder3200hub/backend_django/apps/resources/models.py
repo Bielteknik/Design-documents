@@ -22,7 +22,8 @@ class Department(models.Model):
         null=True, 
         blank=True,
         related_name='children',
-        verbose_name='Üst Departman'
+        verbose_name='Üst Departman',
+        db_column='parentId'
     )
     manager = models.ForeignKey(
         'Resource',
@@ -30,10 +31,11 @@ class Department(models.Model):
         null=True,
         blank=True,
         related_name='managed_departments',
-        verbose_name='Departman Müdürü'
+        verbose_name='Departman Müdürü',
+        db_column='managerId'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'departments'
@@ -76,7 +78,8 @@ class Resource(models.Model):
         max_length=50, 
         null=True, 
         blank=True,
-        verbose_name='İşe Başlama Tarihi'
+        verbose_name='İşe Başlama Tarihi',
+        db_column='startDate'
     )
     avatar = models.CharField(
         max_length=500, 
@@ -84,8 +87,8 @@ class Resource(models.Model):
         blank=True,
         verbose_name='Profil Fotoğrafı'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_column='createdAt')
+    updated_at = models.DateTimeField(auto_now=True, db_column='updatedAt')
 
     class Meta:
         db_table = 'resources'
