@@ -122,7 +122,7 @@ export const NewResourceView: React.FC<NewResourceViewProps> = ({ onSubmit, onCa
 
     const departmentOptions = useMemo(() => {
         const rootDepartments = departments.filter(d => !d.parentId);
-        const options: React.ReactElement[] = [];
+        const options: JSX.Element[] = [];
         
         const buildOptions = (department: Department, level: number) => {
             options.push(

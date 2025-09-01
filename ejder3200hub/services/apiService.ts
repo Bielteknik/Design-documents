@@ -1,4 +1,5 @@
 
+
 import { 
     Project, Task, Resource, Event, Notification, Idea, PurchaseRequest, Invoice, Evaluation, 
     Comment, Department, PerformanceEvaluation, Announcement, Feedback, ApiLog, SystemMetric, DatabaseStats 
@@ -47,8 +48,9 @@ const del = (endpoint: string): Promise<{success: boolean}> => fetch(`${API_BASE
 const prepareProjectPayload = (data: Partial<Project>) => {
     const { manager, team, ...rest } = data;
     const payload: any = { ...rest };
-    if (manager) payload.managerId = typeof manager === 'string' ? manager : (manager as any).id;
-    if (team) payload.teamIds = Array.isArray(team) ? team.map(member => typeof member === 'string' ? member : (member as any).id) : [];
+    if (manager) payload.managerId = manager.id;
+    // FIX: `team` is already an array of string IDs, so no mapping is needed.
+    if (team) payload.teamIds = team;
     return payload;
 };
 
@@ -64,20 +66,22 @@ const prepareTaskPayload = (data: Partial<Task | Event>) => {
 const prepareIdeaPayload = (data: Partial<Idea>) => {
     const { author, projectLeader, potentialTeam, ...rest } = data;
     const payload: any = { ...rest };
-    if (author) payload.authorId = typeof author === 'string' ? author : (author as any).id;
-    if (projectLeader) payload.projectLeaderId = typeof projectLeader === 'string' ? projectLeader : (projectLeader as any).id;
-    if (potentialTeam) payload.potentialTeamIds = Array.isArray(potentialTeam) ? potentialTeam.map(member => typeof member === 'string' ? member : (member as any).id) : [];
+    if (author) payload.authorId = author.id;
+    if (projectLeader) payload.projectLeaderId = projectLeader.id;
+    // FIX: `potentialTeam` is already an array of string IDs, so no mapping is needed.
+    if (potentialTeam) payload.potentialTeamIds = potentialTeam;
     return payload;
 };
 
 const prepareEventPayload = (data: Partial<Event>) => {
     const { participants, assignee, reporter, project, idea, ...rest } = data;
     const payload: any = { ...rest };
-    if (participants) payload.participantIds = Array.isArray(participants) ? participants.map(p => typeof p === 'string' ? p : (p as any).id) : [];
-    if (assignee) payload.assigneeId = typeof assignee === 'string' ? assignee : (assignee as any).id;
-    if (reporter) payload.reporterId = typeof reporter === 'string' ? reporter : (reporter as any).id;
-    if (project) payload.projectId = typeof project === 'string' ? project : (project as any).id;
-    if (idea) payload.ideaId = typeof idea === 'string' ? idea : (idea as any).id;
+    // FIX: `participants` is already an array of string IDs, so no mapping is needed.
+    if (participants) payload.participantIds = participants;
+    if (assignee) payload.assigneeId = assignee.id;
+    if (reporter) payload.reporterId = reporter.id;
+    if (project) payload.projectId = project.id;
+    if (idea) payload.ideaId = idea.id;
     return payload;
 };
 
@@ -147,6 +151,7 @@ export const apiService = {
     deleteProjectFile: (projectId: string, fileName: string): Promise<Project | null> => Promise.resolve(null),
     convertIdeaToProject: (ideaId: string): Promise<{ project: Project, tasks: Task[], idea: Idea } | null> => Promise.resolve(null),
     addEvaluation: (data: Partial<Evaluation>): Promise<Evaluation | null> => Promise.resolve(null),
-    addAnnouncement: (data: Omit<Announcement, 'id' | 'authorId' | 'timestamp'>, currentUserId: string): Promise<Announcement | null> => Promise.resolve(null),
+    // FIX: Updated signature to be consistent with other POST methods, accepting a single payload object.
+    addAnnouncement: (data: Partial<Announcement>): Promise<Announcement | null> => Promise.resolve(null),
     addFeedback: (data: Omit<Feedback, 'id' | 'timestamp' | 'status'>): Promise<Feedback | null> => Promise.resolve(null),
 };

@@ -9,20 +9,20 @@ router.get('/', async (req, res, next) => {
   try {
     const events = await prisma.event.findMany({
       include: {
-        participants: true,
         project: true,
-        idea: true,
+        rsvps: {
+          include: {
+            resource: true
+          }
+        },
+        comments: {
+          include: {
+            resource: true
+          }
+        },
       },
     });
-    
-    // Convert JSON strings back to arrays for response
-    const responseEvents = events.map((event: any) => ({
-      ...event,
-      files: event.files ? JSON.parse(event.files) : [],
-      tags: event.tags ? JSON.parse(event.tags) : [],
-    }));
-    
-    res.json(responseEvents);
+    res.json(events);
   } catch (error) {
     next(error);
   }
@@ -30,35 +30,16 @@ router.get('/', async (req, res, next) => {
 
 // POST a new event
 router.post('/', async (req, res, next) => {
-    const { participantIds, projectId, ideaId, link, ...rest } = req.body;
+    const { projectId, ...rest } = req.body;
     try {
-        // Convert date string to ISO DateTime format if needed
-        const eventData = {
-            ...rest,
-            date: rest.date ? new Date(rest.date).toISOString() : new Date().toISOString(),
-            // Convert arrays to JSON strings for SQLite storage
-            files: Array.isArray(rest.files) ? JSON.stringify(rest.files) : rest.files || null,
-            tags: Array.isArray(rest.tags) ? JSON.stringify(rest.tags) : rest.tags || null,
-        };
-        
         const event = await prisma.event.create({
             data: {
-                ...eventData,
-                ...(participantIds && { participants: { connect: participantIds.map((id: string) => ({ id })) } }),
-                ...(projectId && { project: { connect: { id: projectId } } }),
-                ...(ideaId && { idea: { connect: { id: ideaId } } }),
+                ...rest,
+                ...(projectId && { projectId }),
             },
-            include: { participants: true, project: true, idea: true },
+            include: { project: true },
         });
-        
-        // Convert JSON strings back to arrays for response
-        const responseEvent = {
-            ...event,
-            files: event.files ? JSON.parse(event.files) : [],
-            tags: event.tags ? JSON.parse(event.tags) : [],
-        };
-        
-        res.status(201).json(responseEvent);
+        res.status(201).json(event);
     } catch(error) {
         next(error);
     }
@@ -67,34 +48,17 @@ router.post('/', async (req, res, next) => {
 // PUT update an event
 router.put('/:id', async (req, res, next) => {
     const { id } = req.params;
-    const { participantIds, link, ...rest } = req.body;
+    const { projectId, ...rest } = req.body;
     try {
-        // Convert date string to ISO DateTime format if needed
-        const eventData = {
-            ...rest,
-            ...(rest.date && { date: new Date(rest.date).toISOString() }),
-            // Convert arrays to JSON strings for SQLite storage
-            ...(rest.files && { files: Array.isArray(rest.files) ? JSON.stringify(rest.files) : rest.files }),
-            ...(rest.tags && { tags: Array.isArray(rest.tags) ? JSON.stringify(rest.tags) : rest.tags }),
-        };
-        
         const event = await prisma.event.update({
             where: { id },
             data: {
-                ...eventData,
-                ...(participantIds && { participants: { set: participantIds.map((id: string) => ({ id })) } }),
+                ...rest,
+                ...(projectId && { projectId }),
             },
-             include: { participants: true, project: true, idea: true },
+            include: { project: true },
         });
-        
-        // Convert JSON strings back to arrays for response
-        const responseEvent = {
-            ...event,
-            files: event.files ? JSON.parse(event.files) : [],
-            tags: event.tags ? JSON.parse(event.tags) : [],
-        };
-        
-        res.json(responseEvent);
+        res.json(event);
     } catch (error) {
         next(error);
     }

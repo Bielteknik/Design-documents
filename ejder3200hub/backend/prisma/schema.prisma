@@ -6,161 +6,176 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-// Enums are defined as String for SQLite compatibility
-// In production with PostgreSQL, these can be converted to proper enums
+// Enums for PostgreSQL
+enum Role {
+  Superadmin
+  Admin
+  Manager
+  TeamLead
+  Member
+}
 
-model Department {
-  id        String @id @default(cuid())
-  name      String
-  parentId  String?
-  managerId String? @unique
-  
-  parent    Department? @relation("DepartmentHierarchy", fields: [parentId], references: [id])
-  children  Department[] @relation("DepartmentHierarchy")
-  manager   Resource? @relation("DepartmentManager", fields: [managerId], references: [id])
-  resources Resource[] @relation("DepartmentMembers")
+enum ProjectStatus {
+  Active
+  Planning
+  Completed
+}
+
+enum Priority {
+  High
+  Medium
+  Low
+}
+
+enum TaskStatus {
+  ToDo
+  InProgress
+  Done
+}
+
+enum RsvpStatus {
+  Accepted
+  Declined
+  Pending
+}
+
+enum IdeaStatus {
+  New
+  Evaluating
+  Approved
+  Archived
+}
+
+enum PurchaseRequestStatus {
+  Pending
+  Approved
+  Rejected
+}
+
+enum InvoiceStatus {
+  Unpaid
+  Paid
+}
+
+enum VoteStatus {
+  Supports
+  Neutral
+  Opposed
+}
+
+enum FeedbackCategory {
+  BugReport
+  FeatureRequest
+  General
+}
+
+enum FeedbackStatus {
+  Submitted
+  InProgress
+  Resolved
+  Closed
 }
 
 model Resource {
-  id           String         @id @default(cuid())
-  name         String
-  initials     String
-  position     String
-  departmentId String?
-  email        String         @unique
-  phone        String?
-  skills       String // JSON array as string
-  weeklyHours  Int            @default(40)
-  currentLoad  Int            @default(0)
-  managerId    String?
-  bio          String?
-  earnedBadges String? // JSON array as string
-  employmentType String       @default("FullTime")
-  startDate    DateTime       @default(now())
-  
-  department         Department? @relation("DepartmentMembers", fields: [departmentId], references: [id])
-  managedDepartment  Department? @relation("DepartmentManager")
-  manager            Resource?   @relation("ResourceHierarchy", fields: [managerId], references: [id])
-  subordinates       Resource[]  @relation("ResourceHierarchy")
-  
-  managedProjects    Project[]   @relation("ProjectManager")
-  projectMemberships ProjectTeam[]
-  assignedTasks      Task[]
-  reportedTasks      Task[]      @relation("TaskReporter")
-  authoredIdeas      Idea[]
-  leadingIdeas       Idea[]      @relation("IdeaProjectLeader")
-  ideaMemberships    IdeaTeam[]
-  eventParticipations EventParticipant[]
-  authoredComments   Comment[]
-  authoredEvaluations Evaluation[]
-  performanceEvaluations PerformanceEvaluation[]
-  authoredAnnouncements Announcement[]
-  authoredFeedback   Feedback[]
+  id          String  @id @default(cuid())
+  name        String
+  email       String  @unique
+  role        Role    // Using proper enum for PostgreSQL
+  department  String?
+  phone       String?
+  startDate   String?
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  managedDepartments Department[] @relation("DepartmentManager")
+  assignedTasks      Task[]       @relation("TaskAssignee")
+  reportedTasks      Task[]       @relation("TaskReporter")
+  managedProjects    Project[]    @relation("ProjectManager")
+  authoredIdeas      Idea[]       @relation("IdeaAuthor")
+  ledIdeas           Idea[]       @relation("IdeaProjectLeader")
+  attendedEvents     EventRsvp[]
+  votes              Vote[]
+  comments           Comment[]
+  feedbacks          Feedback[]
+
+  @@map("resources")
+}
+
+model Department {
+  id          String  @id @default(cuid())
+  name        String
+  parentId    String?
+  managerId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  parent      Department? @relation("DepartmentHierarchy", fields: [parentId], references: [id])
+  children    Department[] @relation("DepartmentHierarchy")
+  manager     Resource?   @relation("DepartmentManager", fields: [managerId], references: [id])
+
+  @@map("departments")
 }
 
 model Project {
   id          String        @id @default(cuid())
   name        String
   code        String        @unique
-  status      String        @default("Planning")
-  priority    String        @default("Medium")
-  startDate   DateTime
-  endDate     DateTime
+  status      ProjectStatus // Using proper enum
+  priority    Priority      // Using proper enum
+  startDate   String
+  endDate     String
   progress    Int           @default(0)
   managerId   String
-  budget      Float         @default(0)
-  color       String        @default("#3B82F6")
-  files       String? // JSON array as string
-  
-  manager     Resource      @relation("ProjectManager", fields: [managerId], references: [id])
-  team        ProjectTeam[]
+  team        String[]      // PostgreSQL supports arrays
+  budget      Float
+  color       String
+  files       String[]      // PostgreSQL supports arrays (default empty)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  manager     Resource @relation("ProjectManager", fields: [managerId], references: [id])
   tasks       Task[]
   events      Event[]
   comments    Comment[]
-  evaluations Evaluation[]
-  
+
   @@map("projects")
 }
 
-model ProjectTeam {
-  id         String   @id @default(cuid())
-  projectId  String
-  resourceId String
-  
-  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-  
-  @@unique([projectId, resourceId])
-}
-
 model Task {
-  id             String     @id @default(cuid())
-  title          String
-  description    String?
-  status         String     @default("ToDo")
-  priority       String     @default("Medium")
-  assigneeId     String
-  reporterId     String?
-  projectId      String?
-  startDate      DateTime?
-  endDate        DateTime?
-  completionDate DateTime?
-  progress       Int        @default(0)
-  
-  assignee       Resource   @relation(fields: [assigneeId], references: [id])
-  reporter       Resource?  @relation("TaskReporter", fields: [reporterId], references: [id])
-  project        Project?   @relation(fields: [projectId], references: [id])
-  events         Event[]
-  
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus // Using proper enum
+  priority    Priority   // Using proper enum
+  assigneeId  String
+  reporterId  String?
+  projectId   String
+  startDate   String?
+  endDate     String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  assignee    Resource @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  reporter    Resource? @relation("TaskReporter", fields: [reporterId], references: [id])
+  project     Project  @relation(fields: [projectId], references: [id])
+  comments    Comment[]
+
   @@map("tasks")
 }
 
-model Event {
-  id          String    @id @default(cuid())
-  title       String
-  description String?
-  content     String?   // For note-type events
-  type        String
-  date        DateTime
-  startTime   String?
-  endTime     String?
-  location    String?
-  projectId   String?
-  taskId      String?
-  ideaId      String?
-  files       String? // JSON array as string
-  reminder    String?
-  priority    String?
-  tags        String? // JSON array as string
-  
-  project     Project?  @relation(fields: [projectId], references: [id])
-  task        Task?     @relation(fields: [taskId], references: [id])
-  idea        Idea?     @relation(fields: [ideaId], references: [id])
-  participants EventParticipant[]
-  
-  @@map("events")
-}
-
-model EventParticipant {
-  id         String     @id @default(cuid())
-  eventId    String
-  resourceId String
-  rsvpStatus String     @default("Pending")
-  
-  event      Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  resource   Resource   @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-  
-  @@unique([eventId, resourceId])
-}
-
 model Idea {
-  id                      String      @id @default(cuid())
+  id                      String     @id @default(cuid())
   name                    String
-  status                  String      @default("New")
+  status                  IdeaStatus // Using proper enum
   authorId                String
   category                String?
   description             String?
@@ -171,13 +186,14 @@ model Idea {
   solution                String?
   benefits                String?
   targetAudience          String?
-  relatedDepartments      String? // JSON array as string
+  relatedDepartments      String[]      // PostgreSQL supports arrays (default empty)
   projectLeaderId         String?
+  potentialTeam           String[]      // PostgreSQL supports arrays (default empty)
   estimatedDuration       String?
-  timelinePhases          String? // JSON array as string
+  timelinePhases          Json?      // Using JSON for complex objects
   criticalMilestones      String?
   totalBudget             Float?
-  budgetItems             String? // JSON array as string
+  budgetItems             Json?      // Using JSON for complex objects
   expectedRevenueIncrease Float?
   expectedCostSavings     Float?
   expectedROI             Float?
@@ -191,61 +207,108 @@ model Idea {
   riskLevel               String?
   mitigations             String?
   successCriteria         String?
-  files                   String? // JSON array as string
-  tags                    String? // JSON array as string
-  priority                String     @default("Medium")
-  creationDate            DateTime    @default(now())
-  
-  author                  Resource    @relation(fields: [authorId], references: [id])
-  projectLeader           Resource?   @relation("IdeaProjectLeader", fields: [projectLeaderId], references: [id])
-  potentialTeam           IdeaTeam[]
-  events                  Event[]
+  files                   String[]      // PostgreSQL supports arrays (default empty)
+  tags                    String[]      // PostgreSQL supports arrays (default empty)
+  priority                Priority?     // Using proper enum
+  creationDate            String?
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
+
+  // Relations
+  author                  Resource @relation("IdeaAuthor", fields: [authorId], references: [id])
+  projectLeader           Resource? @relation("IdeaProjectLeader", fields: [projectLeaderId], references: [id])
+  votes                   Vote[]
   comments                Comment[]
-  evaluations             Evaluation[]
-  
+
   @@map("ideas")
 }
 
-model IdeaTeam {
-  id         String   @id @default(cuid())
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  startTime   String
+  endTime     String
+  location    String?
+  projectId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  project     Project? @relation(fields: [projectId], references: [id])
+  rsvps       EventRsvp[]
+  comments    Comment[]
+
+  @@map("events")
+}
+
+model EventRsvp {
+  id         String     @id @default(cuid())
+  eventId    String
+  resourceId String
+  status     RsvpStatus // Using proper enum
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  // Relations
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  resource   Resource @relation(fields: [resourceId], references: [id])
+
+  @@unique([eventId, resourceId])
+  @@map("event_rsvps")
+}
+
+model Vote {
+  id         String     @id @default(cuid())
   ideaId     String
   resourceId String
-  
+  status     VoteStatus // Using proper enum
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  // Relations
   idea       Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
-  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-  
+  resource   Resource @relation(fields: [resourceId], references: [id])
+
   @@unique([ideaId, resourceId])
+  @@map("votes")
 }
 
 model Comment {
-  id        String   @id @default(cuid())
-  content   String
-  authorId  String
-  projectId String?
-  ideaId    String?
-  timestamp DateTime @default(now())
-  
-  author    Resource @relation(fields: [authorId], references: [id])
-  project   Project? @relation(fields: [projectId], references: [id])
-  idea      Idea?    @relation(fields: [ideaId], references: [id])
-  
+  id         String   @id @default(cuid())
+  content    String
+  resourceId String
+  projectId  String?
+  taskId     String?
+  ideaId     String?
+  eventId    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  resource   Resource @relation(fields: [resourceId], references: [id])
+  project    Project? @relation(fields: [projectId], references: [id])
+  task       Task?    @relation(fields: [taskId], references: [id])
+  idea       Idea?    @relation(fields: [ideaId], references: [id])
+  event      Event?   @relation(fields: [eventId], references: [id])
+
   @@map("comments")
 }
 
-model Evaluation {
-  id         String     @id @default(cuid())
-  authorId   String
-  projectId  String?
-  ideaId     String?
-  voteStatus String
-  comment    String?
-  timestamp  DateTime   @default(now())
-  
-  author     Resource   @relation(fields: [authorId], references: [id])
-  project    Project?   @relation(fields: [projectId], references: [id])
-  idea       Idea?      @relation(fields: [ideaId], references: [id])
-  
-  @@map("evaluations")
+model Feedback {
+  id          String           @id @default(cuid())
+  category    FeedbackCategory // Using proper enum
+  status      FeedbackStatus   // Using proper enum
+  title       String
+  description String
+  resourceId  String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relations
+  resource    Resource @relation(fields: [resourceId], references: [id])
+
+  @@map("feedbacks")
 }
 
 model PurchaseRequest {
@@ -253,113 +316,23 @@ model PurchaseRequest {
   title       String
   description String?
   amount      Float
+  status      PurchaseRequestStatus  // Using proper enum
   requesterId String
-  requestDate DateTime               @default(now())
-  status      String                 @default("Pending")
-  urgency     String                 @default("Medium")
-  category    String?
-  vendor      String?
-  
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
   @@map("purchase_requests")
 }
 
 model Invoice {
   id            String        @id @default(cuid())
   invoiceNumber String        @unique
-  clientName    String
   amount        Float
-  dueDate       DateTime
-  issueDate     DateTime      @default(now())
-  status        String        @default("Unpaid")
+  status        InvoiceStatus // Using proper enum
+  dueDate       String
   description   String?
-  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
   @@map("invoices")
-}
-
-model Notification {
-  id        String           @id @default(cuid())
-  title     String
-  message   String
-  type      String           @default("Info")
-  userId    String
-  read      Boolean          @default(false)
-  timestamp DateTime         @default(now())
-  
-  @@map("notifications")
-}
-
-model PerformanceEvaluation {
-  id           String   @id @default(cuid())
-  employeeId   String
-  evaluatorId  String?
-  period       String
-  overallScore Int
-  goals        String? // JSON array as string
-  achievements String? // JSON array as string
-  feedback     String?
-  createdAt    DateTime @default(now())
-  
-  employee     Resource @relation(fields: [employeeId], references: [id])
-  
-  @@map("performance_evaluations")
-}
-
-model Announcement {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  authorId  String
-  priority  String   @default("Medium")
-  timestamp DateTime @default(now())
-  
-  author    Resource @relation(fields: [authorId], references: [id])
-  
-  @@map("announcements")
-}
-
-model Feedback {
-  id          String           @id @default(cuid())
-  title       String
-  description String
-  category    String
-  status      String           @default("Submitted")
-  authorName  String
-  authorEmail String
-  timestamp   DateTime         @default(now())
-  
-  author      Resource         @relation(fields: [authorEmail], references: [email])
-  
-  @@map("feedback")
-}
-
-model ApiLog {
-  id        String   @id @default(cuid())
-  method    String
-  endpoint  String
-  status    Int
-  response  String?
-  timestamp DateTime @default(now())
-  
-  @@map("api_logs")
-}
-
-model SystemMetric {
-  id        String       @id @default(cuid())
-  name      String
-  value     Float
-  unit      String?
-  status    String       @default("Online")
-  timestamp DateTime     @default(now())
-  
-  @@map("system_metrics")
-}
-
-model DatabaseStats {
-  id           String   @id @default(cuid())
-  tableName    String
-  recordCount  Int
-  sizeInBytes  Int?
-  lastUpdated  DateTime @default(now())
-  
-  @@map("database_stats")
 }

@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { Modal } from './Modal';
 import { Feedback, FeedbackCategory, User, Department, Project, Resource } from '../types';
@@ -152,7 +151,8 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, o
         if (!assigneeDepartmentId) return projects;
         const projectIdsInDept = resources
             .filter(r => r.departmentId === assigneeDepartmentId)
-            .flatMap(r => projects.filter(p => p.team.includes(r.id) || p.manager === r.id))
+            // FIX: Corrected comparison from object property access to direct ID comparison for safety.
+            .flatMap(r => projects.filter(p => p.team.includes(r.id) || p.managerId === r.id))
             .map(p => p.id);
         return projects.filter(p => projectIdsInDept.includes(p.id));
     }, [projects, resources, assigneeDepartmentId]);
@@ -162,7 +162,8 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, o
         if (assigneeProjectId) {
             const project = projects.find(p => p.id === assigneeProjectId);
             if (project) {
-                availableResources = resources.filter(r => project.team.includes(r.id) || project.manager === r.id);
+                 // FIX: Corrected comparison from object property access to direct ID comparison for safety.
+                availableResources = resources.filter(r => project.team.includes(r.id) || project.managerId === r.id);
             }
         } else if (assigneeDepartmentId) {
             availableResources = resources.filter(r => r.departmentId === assigneeDepartmentId);

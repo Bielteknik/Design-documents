@@ -220,14 +220,14 @@ export const DashboardView: React.FC<DashboardViewProps> = React.memo(({ current
                 <div className="lg:col-span-1 bg-card-bg p-6 rounded-lg shadow-md-custom">
                     <h3 className="text-lg font-semibold text-text-primary mb-4">Öncelikli Görevlerim</h3>
                     <div className="space-y-4">
-                        {Object.entries(myTasksByPriority).map(([priority, taskList]) => Array.isArray(taskList) && taskList.length > 0 && (
+                        {Object.entries(myTasksByPriority).map(([priority, tasks]) => tasks.length > 0 && (
                             <div key={priority}>
                                 <h4 className={`text-sm font-bold mb-2 flex items-center gap-2 ${priorityColors[priority as Priority]}`}>
                                     <div className={`w-2 h-2 rounded-full ${priorityColors[priority as Priority].replace('text-','bg-')}`}></div>
                                     {priority} Öncelik
                                 </h4>
                                 <ul className="space-y-2">
-                                    {Array.isArray(taskList) && taskList.map(task => (
+                                    {tasks.map(task => (
                                         <li key={task.id} className="flex items-center gap-2 text-sm bg-main-bg p-2 rounded-md">
                                             <CheckSquare size={16} className="text-text-secondary" />
                                             <span className="flex-1 truncate">{task.title}</span>

@@ -1,5 +1,3 @@
-
-
 import React, { useState, useRef, useEffect } from 'react';
 import { EventType, Notification, View, User } from '../types';
 import { Plus, Bell, Menu, Calendar, CheckSquare, Users, CheckCheck, CalendarPlus, StickyNote, Lightbulb, Search, Layers, BarChart2, X, LayoutDashboard, HelpCircle, Sun, Moon, Palette, LogOut, User as UserIcon, Settings, Server } from 'lucide-react';
@@ -23,7 +21,6 @@ const iconMap: { [key in View]: React.ElementType } = {
     [View.Projects]: Lightbulb,
     [View.Resources]: Users,
     [View.Reports]: BarChart2,
-    [View.Notes]: StickyNote,
     [View.Backend]: Server,
     [View.HelpCenter]: HelpCircle,
 };
@@ -120,7 +117,7 @@ export const Header: React.FC<HeaderProps> = ({
                                     key={item.name}
                                     href="#"
                                     onClick={(e) => { e.preventDefault(); setActiveView(item.name); }}
-                                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
                                         activeView === item.name
                                         ? 'bg-status-purple-bg text-project'
                                         : 'text-text-secondary hover:bg-main-bg hover:text-text-primary'
@@ -132,44 +129,25 @@ export const Header: React.FC<HeaderProps> = ({
                         </nav>
                     </div>
 
-                    {/* Search Bar */}
-                    <div className="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end">
-                        <div className="max-w-lg w-full lg:max-w-xs">
-                            <label htmlFor="search" className="sr-only">Search</label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Search className="h-5 w-5 text-text-secondary" aria-hidden="true" />
-                                </div>
-                                <input
-                                    id="search"
-                                    name="search"
-                                    className="block w-full pl-10 pr-3 py-2 border border-border-color rounded-md leading-5 bg-main-bg placeholder-text-secondary focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-project focus:border-project sm:text-sm"
-                                    placeholder="Proje veya görev ara..."
-                                    type="search"
-                                />
-                            </div>
-                        </div>
-                    </div>
-
                      {/* Right side buttons */}
                     <div className="hidden lg:flex items-center gap-4 ml-4">
                         <>
                             {activeView === View.Projects ? (
-                                <button 
+                                <button
                                     onClick={onAddIdeaClick}
-                                    className="flex items-center gap-2 px-4 py-2 bg-project text-white rounded-md hover:bg-project-focus transition-all duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-project"
+                                    className="flex items-center justify-center w-10 h-10 bg-project text-white rounded-full hover:bg-project-focus transition-all duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-project"
+                                    aria-label="Yeni Fikir Oluştur"
                                 >
                                     <Lightbulb size={20} />
-                                    <span>Yeni Fikir Oluştur</span>
                                 </button>
                             ) : (
                                 <div className="relative" ref={createMenuRef}>
-                                    <button 
+                                    <button
                                         onClick={() => setCreateMenuOpen(!isCreateMenuOpen)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-project text-white rounded-md hover:bg-project-focus transition-all duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-project"
+                                        className="flex items-center justify-center w-10 h-10 bg-project text-white rounded-full hover:bg-project-focus transition-all duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-project"
+                                        aria-label="Yeni Oluştur"
                                     >
                                         <Plus size={20} />
-                                        <span>Yeni Oluştur</span>
                                     </button>
                                     {isCreateMenuOpen && (
                                         <div className="absolute right-0 mt-2 w-48 bg-card-bg rounded-md shadow-lg-custom ring-1 ring-black ring-opacity-5 z-20 animate-fadeIn">

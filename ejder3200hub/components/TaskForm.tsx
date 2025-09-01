@@ -7,13 +7,7 @@ import { Type, Briefcase, User, Flag, Clock, Calendar, Link as LinkIcon, Tag, Sl
 interface TaskFormProps {
     onSubmit: (data: Omit<Event, 'id'>) => void;
     onCancel: () => void;
-    initialData?: Partial<Event> & { 
-        startDate?: string;
-        endDate?: string;
-        completionDate?: string;
-        projectId?: string;
-        id?: string;
-    };
+    initialData?: Partial<Event>;
     resources: Resource[];
     projects: Project[];
     tasks: Task[];
@@ -75,9 +69,9 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel, initialD
         status: TaskStatus.ToDo,
         progress: 0,
         ...initialData,
-        startDate: (initialData as any)?.startDate || (initialData as any)?.date || today,
-        endDate: (initialData as any)?.endDate || today,
-        completionDate: (initialData as any)?.completionDate || today,
+        startDate: initialData?.startDate || initialData?.date || today,
+        endDate: initialData?.endDate || today,
+        completionDate: initialData?.completionDate || today,
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -125,7 +119,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel, initialD
                 <FormSection title="Atama ve Proje" icon={Briefcase} bgColor="bg-blue-50">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <FormField label="Proje" required>
-                            <select name="projectId" value={formData.projectId || ''} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-md bg-white disabled:bg-gray-100 disabled:text-gray-500" required disabled={!!(initialData as any).projectId}>
+                            <select name="projectId" value={formData.projectId || ''} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-md bg-white disabled:bg-gray-100 disabled:text-gray-500" required disabled={!!initialData.projectId}>
                                  <option value="">Proje Seçin</option>
                                  {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                             </select>
@@ -203,7 +197,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel, initialD
             <div className="flex-shrink-0 flex justify-end gap-3 p-4 border-t bg-gray-50">
                 <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">İptal</button>
                 <button type="submit" className="px-4 py-2 bg-project text-white rounded-md hover:bg-indigo-700 transition">
-                    {(initialData as any).id ? 'Görevi Güncelle' : 'Görevi Oluştur'}
+                    {initialData.id ? 'Görevi Güncelle' : 'Görevi Oluştur'}
                 </button>
             </div>
         </form>

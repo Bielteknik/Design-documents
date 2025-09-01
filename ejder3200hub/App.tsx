@@ -1,6 +1,7 @@
 
 
 
+
 import React, { useState, useCallback } from 'react';
 import { Header } from './components/Header';
 import { CalendarView } from './components/views/CalendarView';
@@ -92,7 +93,7 @@ const App: React.FC = () => {
     const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const newFiles = Array.from(e.target.files).filter(
-                (newFile: File) => !selectedFiles.some(existingFile => existingFile.name === newFile.name)
+                newFile => !selectedFiles.some(existingFile => existingFile.name === newFile.name)
             );
             setSelectedFiles(prev => [...prev, ...newFiles]);
             if(e.target) e.target.value = '';
@@ -234,8 +235,6 @@ const App: React.FC = () => {
                 return <ResourcesView resources={store.resources} departments={store.departments} onAddResource={handleAddNewResourceClick} onEditResource={handleEditResourceClick} onDeleteResource={store.deleteResource} currentUser={currentUser!} store={store} />;
             case View.Reports:
                 return <ReportsView projects={store.projects} tasks={store.tasks} resources={store.resources} />;
-            case View.Notes:
-                 return <NotesView notes={store.events.filter(e => e.type === EventType.Note)} projects={store.projects} ideas={store.ideas} />;
             case View.Backend:
                 return <BackendView systemMetrics={store.systemMetrics} apiLogs={store.apiLogs} databaseStats={store.databaseStats} />;
             case View.HelpCenter:

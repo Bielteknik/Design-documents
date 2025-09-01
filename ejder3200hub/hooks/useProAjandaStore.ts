@@ -1,3 +1,9 @@
+
+
+
+
+
+
 import { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
 import { Project, Task, Resource, Event, TaskStatus, Notification, Idea, EventType, Priority, RsvpStatus, NotificationType, IdeaStatus, PurchaseRequest, Invoice, PurchaseRequestStatus, InvoiceStatus, ProjectStatus, Evaluation, VoteStatus, Comment, Department, PerformanceEvaluation, Announcement, Feedback, ApiLog, SystemMetric, DatabaseStats } from '../types';
@@ -256,18 +262,15 @@ export const useProAjandaStore = () => {
         }
     };
 
-    const updateResource = async (updatedResourceData: Partial<Resource> & { skills: string | string[], id: string }) => {
+    // FIX: Corrected the type of `updatedResourceData` to allow `skills` to be a string or string array, resolving a type inference issue that led to an error when calling `.split`.
+    const updateResource = async (updatedResourceData: Omit<Partial<Resource>, 'skills'> & { id: string; skills: string | string[] }) => {
         const payload = { 
             ...updatedResourceData, 
-            // FIX: Safely handle both string and string[] types for skills to prevent runtime errors.
             skills: Array.isArray(updatedResourceData.skills) 
-                ? updatedResourceData.skills.join(',') 
-                : (updatedResourceData.skills as string || '').split(',').map(s => s.trim()).join(',') 
+                ? updatedResourceData.skills 
+                : (updatedResourceData.skills || '').split(',').map(s => s.trim()) 
         };
-        const updatedResource = await apiService.updateResource(updatedResourceData.id, { 
-            ...payload, 
-            skills: (payload.skills || '').split(',').map(s => s.trim()).filter(s => s.length > 0)
-        });
+        const updatedResource = await apiService.updateResource(updatedResourceData.id, payload);
         if(updatedResource){
             setResources(prev => prev.map(r => r.id === updatedResource.id ? updatedResource : r));
         }
@@ -377,13 +380,12 @@ export const useProAjandaStore = () => {
 
     const addAnnouncement = async (announcement: Omit<Announcement, 'id' | 'author' | 'authorId' | 'timestamp'>) => {
         const payload = { ...announcement, authorId: currentUserId };
-        const newAnnouncement = await apiService.addAnnouncement(payload, currentUserId);
+        const newAnnouncement = await apiService.addAnnouncement(payload);
         if (newAnnouncement) {
             setAnnouncements(prev => [newAnnouncement, ...prev]);
         }
     };
 
-    // FIX: Corrected function signature to not omit `authorId` which is required in the function body.
     const addFeedback = async (feedbackData: Omit<Feedback, 'id' | 'timestamp' | 'status' | 'author'>) => {
         const newFeedback = await apiService.addFeedback(feedbackData);
         if(newFeedback) {

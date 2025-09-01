@@ -1,4 +1,5 @@
 
+
 import React, { useState, useMemo, useCallback } from 'react';
 import { Event, EventType, TaskStatus, Project, Resource, Task, Priority } from '../../types';
 import { 
@@ -116,7 +117,8 @@ const ActionCard: React.FC<ActionCardProps> = ({ event, onView, resources, proje
 
     const Icon = eventTypeIcons[event.type];
     const project = projects.find(p => p.id === event.projectId);
-    const assignee = resources.find(r => r.id === event.assignee);
+    // FIX: Changed `event.assignee` to `event.assigneeId` for correct ID-based lookup.
+    const assignee = resources.find(r => r.id === event.assigneeId);
     const reporter = resources.find(r => r.id === event.reporterId);
     const participants = event.participants ? resources.filter(r => event.participants!.includes(r.id)) : [];
     const author = event.type === EventType.Task ? reporter : null;

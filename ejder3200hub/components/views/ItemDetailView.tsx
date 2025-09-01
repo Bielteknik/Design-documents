@@ -129,10 +129,10 @@ export const ItemDetailView: React.FC<ItemDetailViewProps> = React.memo(({ item,
         }
         if (isProject) { // isProject
             const project = item as Project;
-            return project.team.some(memberId => memberId === currentUser.id);
+            return project.team.includes(currentUser.id) || project.managerId === currentUser.id;
         }
-        if ('author' in item) { // isIdea
-            return item.author.id === currentUser.id;
+        if ('authorId' in item) { // isIdea
+            return item.authorId === currentUser.id;
         }
         return false;
     }, [item, currentUser, isProject]);
@@ -240,8 +240,8 @@ export const ItemDetailView: React.FC<ItemDetailViewProps> = React.memo(({ item,
     const { statusClass, priorityClass } = getStatusAndPriorityStyles(item.status, isProject ? (item as Project).priority : (item as Idea).priority);
 
     const renderProjectDetails = (project: Project) => {
-        const { manager, team: teamMemberIds } = project;
-        const teamMembers = teamMemberIds.map(id => resources.find(r => r.id === id)).filter(Boolean) as Resource[];
+        const { manager } = project;
+        const teamMembers = resources.filter(r => project.team.includes(r.id));
         const projectTasks = tasks.filter(t => t.projectId === project.id);
         const projectPurchaseRequests = purchaseRequests.filter(pr => pr.projectId === project.id).map(pr => ({ ...pr, requester: resources.find(r => r.id === pr.requesterId)! }));
         const projectInvoices = invoices.filter(inv => inv.projectId === project.id);
@@ -432,9 +432,11 @@ export const ItemDetailView: React.FC<ItemDetailViewProps> = React.memo(({ item,
         )
     };
     const renderIdeaDetails = (idea: Idea) => {
-        const { author, projectLeader, potentialTeam: potentialTeamIds } = idea;
-        const potentialTeam = potentialTeamIds?.map(id => resources.find(r => r.id === id)).filter(Boolean) as Resource[];
-        const riskLevelStyles = {
+        const author = resources.find(r => r.id === idea.authorId);
+        const projectLeader = resources.find(r => r.id === idea.projectLeaderId);
+        const potentialTeamMembers = resources.filter(r => idea.potentialTeam?.includes(r.id));
+
+        const riskLevelStyles: { [key: string]: string } = {
             'Yüksek': 'bg-red-100 text-red-700',
             'Orta': 'bg-yellow-100 text-yellow-700',
             'Düşük': 'bg-green-100 text-green-700',
@@ -479,9 +481,9 @@ export const ItemDetailView: React.FC<ItemDetailViewProps> = React.memo(({ item,
                      {projectLeader && <IdeaDetailRow icon={UserIcon} label="Fikir Lideri">
                          <div className="flex items-center gap-2 pt-1"><Avatar resource={projectLeader} size="sm" />{projectLeader.name}</div>
                      </IdeaDetailRow>}
-                     {potentialTeam && potentialTeam.length > 0 && <IdeaDetailRow icon={Users} label="Potansiyel Ekip">
+                     {potentialTeamMembers && potentialTeamMembers.length > 0 && <IdeaDetailRow icon={Users} label="Potansiyel Ekip">
                          <div className="flex flex-wrap items-center gap-4 pt-1">
-                             {potentialTeam.map(member => (
+                             {potentialTeamMembers.map(member => (
                                  <div key={member.id} className="flex items-center gap-2">
                                      <Avatar resource={member} size="sm"/>
                                      <span>{member.name}</span>
@@ -647,11 +649,7 @@ export const ItemDetailView: React.FC<ItemDetailViewProps> = React.memo(({ item,
                                 [VoteStatus.Neutral]: 0,
                                 [VoteStatus.Opposed]: 0,
                             };
-                            Object.values(votes).forEach(vote => { 
-                                if (vote && typeof vote === 'string' && vote in voteCounts) {
-                                    voteCounts[vote as VoteStatus]++; 
-                                }
-                            });
+                            Object.values(votes).forEach(vote => { voteCounts[vote]++; });
                             const currentUserVote = votes[currentUser.id];
                              
                             const formattedText = comment.text.replace(/@\[([^\]]+)\]\((\w+)\)/g, '<span class="bg-blue-200 text-blue-800 font-semibold rounded px-1 py-0.5">@$1</span>');

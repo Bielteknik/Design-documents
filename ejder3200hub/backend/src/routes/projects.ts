@@ -10,7 +10,6 @@ router.get('/', async (req, res, next) => {
     const projects = await prisma.project.findMany({
       include: {
         manager: true,
-        team: true,
       },
     });
     res.json(projects);
@@ -27,10 +26,8 @@ router.get('/:id', async (req, res, next) => {
       where: { id },
       include: {
         manager: true,
-        team: true,
         tasks: true,
-        comments: { include: { author: true } },
-        evaluations: { include: { author: true } },
+        comments: { include: { resource: true } },
       },
     });
     if (project) {
@@ -45,22 +42,15 @@ router.get('/:id', async (req, res, next) => {
 
 // POST a new project
 router.post('/', async (req, res, next) => {
-    const { managerId, teamIds, ...rest } = req.body;
+    const { managerId, team, ...rest } = req.body;
     try {
-        // Convert date strings to ISO DateTime format if needed
-        const projectData = {
-            ...rest,
-            startDate: new Date(rest.startDate).toISOString(),
-            endDate: new Date(rest.endDate).toISOString(),
-        };
-        
         const project = await prisma.project.create({
             data: {
-                ...projectData,
-                manager: { connect: { id: managerId } },
-                team: { connect: teamIds?.map((id: string) => ({ id })) || [] },
+                ...rest,
+                managerId,
+                team: team || [],
             },
-            include: { manager: true, team: true },
+            include: { manager: true },
         });
         res.status(201).json(project);
     } catch(error) {
@@ -71,23 +61,16 @@ router.post('/', async (req, res, next) => {
 // PUT update a project
 router.put('/:id', async (req, res, next) => {
     const { id } = req.params;
-    const { managerId, teamIds, ...rest } = req.body;
+    const { managerId, team, ...rest } = req.body;
     try {
-        // Convert date strings to ISO DateTime format if needed
-        const projectData = {
-            ...rest,
-            ...(rest.startDate && { startDate: new Date(rest.startDate).toISOString() }),
-            ...(rest.endDate && { endDate: new Date(rest.endDate).toISOString() }),
-        };
-        
         const project = await prisma.project.update({
             where: { id },
             data: {
-                ...projectData,
-                ...(managerId && { manager: { connect: { id: managerId } } }),
-                ...(teamIds && { team: { set: teamIds.map((id: string) => ({ id })) } }),
+                ...rest,
+                ...(managerId && { managerId }),
+                ...(team && { team }),
             },
-            include: { manager: true, team: true },
+            include: { manager: true },
         });
         res.json(project);
     } catch (error) {

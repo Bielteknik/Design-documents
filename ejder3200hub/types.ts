@@ -1,5 +1,4 @@
 
-import React from 'react';
 
 // FIX: Removed self-import which caused a conflict.
 
@@ -9,7 +8,6 @@ export enum View {
     Projects = 'İnovasyon Merkezi',
     Resources = 'Kaynak Yönetimi',
     Reports = 'Raporlar',
-    Notes = 'Notlar',
     Backend = 'Backend',
     HelpCenter = 'Yardım Merkezi'
 }
@@ -399,7 +397,7 @@ export interface Badge {
     id: string;
     name: string;
     description: string;
-    icon: React.ComponentType;
+    icon: React.ElementType;
 }
 
 export interface Feedback {

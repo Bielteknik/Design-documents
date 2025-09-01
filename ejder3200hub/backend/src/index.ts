@@ -1,5 +1,5 @@
-/// <reference types="node" />
-import express, { Express, Request, Response, NextFunction } from 'express';
+// FIX: Consolidated Express imports into a single statement to resolve type errors with Request, Response, and middleware handling.
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { prisma } from './prisma';
 
@@ -12,7 +12,7 @@ import departmentRoutes from './routes/departments';
 import commentRoutes from './routes/comments';
 
 
-const app: Express = express();
+const app = express();
 const port = process.env.PORT || 3001;
 
 // Middlewares
@@ -35,7 +35,6 @@ app.get('/api', (req: Request, res: Response) => {
 });
 
 // Global error handler
-// FIX: Added NextFunction to the signature to match Express's error handler type.
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something went wrong!', message: err.message });
@@ -52,6 +51,7 @@ async function main() {
     });
   } catch (error) {
     console.error('❌ Failed to connect to database', error);
+    // FIX: Correctly call `process.exit` to terminate the application, as `exit` is a method on the global `process` object.
     process.exit(1);
   }
 }

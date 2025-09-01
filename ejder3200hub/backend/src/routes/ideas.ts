@@ -1,4 +1,5 @@
 
+
 import { Router } from 'express';
 import { prisma } from '../prisma';
 
@@ -13,18 +14,7 @@ router.get('/', async (req, res, next) => {
         projectLeader: true,
       },
     });
-    
-    // Convert JSON strings back to arrays for response
-    const responseIdeas = ideas.map((idea: any) => ({
-      ...idea,
-      relatedDepartments: idea.relatedDepartments ? JSON.parse(idea.relatedDepartments) : [],
-      timelinePhases: idea.timelinePhases ? JSON.parse(idea.timelinePhases) : [],
-      budgetItems: idea.budgetItems ? JSON.parse(idea.budgetItems) : [],
-      files: idea.files ? JSON.parse(idea.files) : [],
-      tags: idea.tags ? JSON.parse(idea.tags) : [],
-    }));
-    
-    res.json(responseIdeas);
+    res.json(ideas);
   } catch (error) {
     next(error);
   }
@@ -32,41 +22,20 @@ router.get('/', async (req, res, next) => {
 
 // POST a new idea
 router.post('/', async (req, res, next) => {
-    const { authorId, projectLeaderId, potentialTeamIds, ...rest } = req.body;
+    const { authorId, projectLeaderId, potentialTeam, ...rest } = req.body;
     try {
-        // Convert arrays to JSON strings for SQLite storage
-        const ideaData = {
-            ...rest,
-            status: "New",
-            creationDate: new Date().toISOString(),
-            relatedDepartments: Array.isArray(rest.relatedDepartments) ? JSON.stringify(rest.relatedDepartments) : rest.relatedDepartments || null,
-            timelinePhases: Array.isArray(rest.timelinePhases) ? JSON.stringify(rest.timelinePhases) : rest.timelinePhases || null,
-            budgetItems: Array.isArray(rest.budgetItems) ? JSON.stringify(rest.budgetItems) : rest.budgetItems || null,
-            files: Array.isArray(rest.files) ? JSON.stringify(rest.files) : rest.files || null,
-            tags: Array.isArray(rest.tags) ? JSON.stringify(rest.tags) : rest.tags || null,
-        };
-        
         const idea = await prisma.idea.create({
             data: {
-                ...ideaData,
-                author: { connect: { id: authorId } },
-                ...(projectLeaderId && { projectLeader: { connect: { id: projectLeaderId } } }),
-                ...(potentialTeamIds && { potentialTeam: { connect: potentialTeamIds.map((id: string) => ({ id })) } }),
+                ...rest,
+                status: 'New',
+                creationDate: new Date().toISOString(),
+                authorId,
+                ...(projectLeaderId && { projectLeaderId }),
+                ...(potentialTeam && { potentialTeam }),
             },
             include: { author: true, projectLeader: true },
         });
-        
-        // Convert JSON strings back to arrays for response
-        const responseIdea = {
-            ...idea,
-            relatedDepartments: idea.relatedDepartments ? JSON.parse(idea.relatedDepartments) : [],
-            timelinePhases: idea.timelinePhases ? JSON.parse(idea.timelinePhases) : [],
-            budgetItems: idea.budgetItems ? JSON.parse(idea.budgetItems) : [],
-            files: idea.files ? JSON.parse(idea.files) : [],
-            tags: idea.tags ? JSON.parse(idea.tags) : [],
-        };
-        
-        res.status(201).json(responseIdea);
+        res.status(201).json(idea);
     } catch(error) {
         next(error);
     }
@@ -75,40 +44,19 @@ router.post('/', async (req, res, next) => {
 // PUT update an idea
 router.put('/:id', async (req, res, next) => {
     const { id } = req.params;
-    const { authorId, projectLeaderId, potentialTeamIds, ...rest } = req.body;
+    const { authorId, projectLeaderId, potentialTeam, ...rest } = req.body;
     try {
-        // Convert arrays to JSON strings for SQLite storage
-        const ideaData = {
-            ...rest,
-            ...(rest.relatedDepartments && { relatedDepartments: Array.isArray(rest.relatedDepartments) ? JSON.stringify(rest.relatedDepartments) : rest.relatedDepartments }),
-            ...(rest.timelinePhases && { timelinePhases: Array.isArray(rest.timelinePhases) ? JSON.stringify(rest.timelinePhases) : rest.timelinePhases }),
-            ...(rest.budgetItems && { budgetItems: Array.isArray(rest.budgetItems) ? JSON.stringify(rest.budgetItems) : rest.budgetItems }),
-            ...(rest.files && { files: Array.isArray(rest.files) ? JSON.stringify(rest.files) : rest.files }),
-            ...(rest.tags && { tags: Array.isArray(rest.tags) ? JSON.stringify(rest.tags) : rest.tags }),
-        };
-        
         const idea = await prisma.idea.update({
             where: { id },
             data: {
-                ...ideaData,
-                 ...(authorId && { author: { connect: { id: authorId } } }),
-                ...(projectLeaderId && { projectLeader: { connect: { id: projectLeaderId } } }),
-                ...(potentialTeamIds && { potentialTeam: { set: potentialTeamIds.map((id: string) => ({ id })) } }),
+                ...rest,
+                ...(authorId && { authorId }),
+                ...(projectLeaderId && { projectLeaderId }),
+                ...(potentialTeam && { potentialTeam }),
             },
             include: { author: true, projectLeader: true },
         });
-        
-        // Convert JSON strings back to arrays for response
-        const responseIdea = {
-            ...idea,
-            relatedDepartments: idea.relatedDepartments ? JSON.parse(idea.relatedDepartments) : [],
-            timelinePhases: idea.timelinePhases ? JSON.parse(idea.timelinePhases) : [],
-            budgetItems: idea.budgetItems ? JSON.parse(idea.budgetItems) : [],
-            files: idea.files ? JSON.parse(idea.files) : [],
-            tags: idea.tags ? JSON.parse(idea.tags) : [],
-        };
-        
-        res.json(responseIdea);
+        res.json(idea);
     } catch (error) {
         next(error);
     }

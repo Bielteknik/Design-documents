@@ -9,10 +9,14 @@ router.get('/', async (req, res, next) => {
   try {
     const comments = await prisma.comment.findMany({
       include: {
-        author: true,
+        resource: true,
+        project: true,
+        task: true,
+        idea: true,
+        event: true,
       },
       orderBy: {
-        timestamp: 'desc',
+        createdAt: 'desc',
       }
     });
     res.json(comments);
@@ -23,16 +27,18 @@ router.get('/', async (req, res, next) => {
 
 // POST a new comment
 router.post('/', async (req, res, next) => {
-    const { authorId, projectId, ideaId, ...rest } = req.body;
+    const { resourceId, projectId, taskId, ideaId, eventId, ...rest } = req.body;
     try {
         const comment = await prisma.comment.create({
             data: {
                 ...rest,
-                author: { connect: { id: authorId } },
-                ...(projectId && { project: { connect: { id: projectId } } }),
-                ...(ideaId && { idea: { connect: { id: ideaId } } }),
+                resourceId,
+                ...(projectId && { projectId }),
+                ...(taskId && { taskId }),
+                ...(ideaId && { ideaId }),
+                ...(eventId && { eventId }),
             },
-            include: { author: true },
+            include: { resource: true },
         });
         res.status(201).json(comment);
     } catch(error) {
@@ -47,7 +53,7 @@ router.put('/:id', async (req, res, next) => {
         const comment = await prisma.comment.update({
             where: { id },
             data: req.body,
-            include: { author: true },
+            include: { resource: true },
         });
         res.json(comment);
     } catch (error) {

@@ -47,17 +47,9 @@ router.get('/:id', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
     const { assigneeId, reporterId, projectId, ...rest } = req.body;
     try {
-        // Convert date strings to ISO DateTime format if needed
-        const taskData = {
-            ...rest,
-            ...(rest.startDate && { startDate: new Date(rest.startDate).toISOString() }),
-            ...(rest.endDate && { endDate: new Date(rest.endDate).toISOString() }),
-            ...(rest.completionDate && { completionDate: new Date(rest.completionDate).toISOString() }),
-        };
-        
         const task = await prisma.task.create({
             data: {
-                ...taskData,
+                ...rest,
                 assignee: { connect: { id: assigneeId } },
                 ...(reporterId && { reporter: { connect: { id: reporterId } } }),
                 project: { connect: { id: projectId } },
@@ -75,18 +67,10 @@ router.put('/:id', async (req, res, next) => {
     const { id } = req.params;
     const { assigneeId, reporterId, projectId, ...rest } = req.body;
     try {
-        // Convert date strings to ISO DateTime format if needed
-        const taskData = {
-            ...rest,
-            ...(rest.startDate && { startDate: new Date(rest.startDate).toISOString() }),
-            ...(rest.endDate && { endDate: new Date(rest.endDate).toISOString() }),
-            ...(rest.completionDate && { completionDate: new Date(rest.completionDate).toISOString() }),
-        };
-        
         const task = await prisma.task.update({
             where: { id },
             data: {
-                ...taskData,
+                ...rest,
                 ...(assigneeId && { assignee: { connect: { id: assigneeId } } }),
                 ...(reporterId && { reporter: { connect: { id: reporterId } } }),
                 ...(projectId && { project: { connect: { id: projectId } } }),

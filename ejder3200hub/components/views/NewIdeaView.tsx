@@ -59,7 +59,7 @@ const FileUploader: React.FC<{ files: File[]; onFilesChange: (files: File[]) => 
         if (e.target.files) {
             const newFiles = Array.from(e.target.files);
             const uniqueNewFiles = newFiles.filter(
-                (newFile: File) => !files.some((existingFile: File) => 
+                newFile => !files.some(existingFile => 
                     existingFile.name === newFile.name && existingFile.size === newFile.size
                 )
             );

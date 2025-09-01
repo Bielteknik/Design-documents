@@ -1,0 +1,268 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Resource {
+  id          String  @id @default(cuid())
+  name        String
+  email       String  @unique
+  role        String  // Role enum as string for SQLite
+  department  String?
+  phone       String?
+  startDate   String?
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  managedDepartments Department[] @relation("DepartmentManager")
+  assignedTasks      Task[]       @relation("TaskAssignee")
+  reportedTasks      Task[]       @relation("TaskReporter")
+  managedProjects    Project[]    @relation("ProjectManager")
+  authoredIdeas      Idea[]       @relation("IdeaAuthor")
+  ledIdeas           Idea[]       @relation("IdeaProjectLeader")
+  attendedEvents     EventRsvp[]
+  votes              Vote[]
+  comments           Comment[]
+  feedbacks          Feedback[]
+
+  @@map("resources")
+}
+
+model Department {
+  id          String  @id @default(cuid())
+  name        String
+  parentId    String?
+  managerId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  parent      Department? @relation("DepartmentHierarchy", fields: [parentId], references: [id])
+  children    Department[] @relation("DepartmentHierarchy")
+  manager     Resource?   @relation("DepartmentManager", fields: [managerId], references: [id])
+
+  @@map("departments")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  code        String   @unique
+  status      String   // ProjectStatus enum as string
+  priority    String   // Priority enum as string
+  startDate   String
+  endDate     String
+  progress    Int      @default(0)
+  managerId   String
+  team        String   // JSON string array for SQLite
+  budget      Float
+  color       String
+  files       String?  // JSON string array for SQLite
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  manager     Resource @relation("ProjectManager", fields: [managerId], references: [id])
+  tasks       Task[]
+  events      Event[]
+  comments    Comment[]
+
+  @@map("projects")
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String   // TaskStatus enum as string
+  priority    String   // Priority enum as string
+  assigneeId  String
+  reporterId  String?
+  projectId   String
+  startDate   String?
+  endDate     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  assignee    Resource @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  reporter    Resource? @relation("TaskReporter", fields: [reporterId], references: [id])
+  project     Project  @relation(fields: [projectId], references: [id])
+  comments    Comment[]
+
+  @@map("tasks")
+}
+
+model Idea {
+  id                      String   @id @default(cuid())
+  name                    String
+  status                  String   // IdeaStatus enum as string
+  authorId                String
+  category                String?
+  description             String?
+  summary                 String?
+  problem                 String?
+  problemType             String?
+  problemFrequency        String?
+  solution                String?
+  benefits                String?
+  targetAudience          String?
+  relatedDepartments      String?  // JSON string array for SQLite
+  projectLeaderId         String?
+  potentialTeam           String?  // JSON string array for SQLite
+  estimatedDuration       String?
+  timelinePhases          String?  // JSON string for SQLite
+  criticalMilestones      String?
+  totalBudget             Float?
+  budgetItems             String?  // JSON string for SQLite
+  expectedRevenueIncrease Float?
+  expectedCostSavings     Float?
+  expectedROI             Float?
+  fundingSources          String?
+  revenueSources          String?
+  swotStrengths           String?
+  swotWeaknesses          String?
+  swotOpportunities       String?
+  swotThreats             String?
+  risks                   String?
+  riskLevel               String?
+  mitigations             String?
+  successCriteria         String?
+  files                   String?  // JSON string array for SQLite
+  tags                    String?  // JSON string array for SQLite
+  priority                String?  // Priority enum as string
+  creationDate            String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  author                  Resource @relation("IdeaAuthor", fields: [authorId], references: [id])
+  projectLeader           Resource? @relation("IdeaProjectLeader", fields: [projectLeaderId], references: [id])
+  votes                   Vote[]
+  comments                Comment[]
+
+  @@map("ideas")
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  startTime   String
+  endTime     String
+  location    String?
+  projectId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  project     Project? @relation(fields: [projectId], references: [id])
+  rsvps       EventRsvp[]
+  comments    Comment[]
+
+  @@map("events")
+}
+
+model EventRsvp {
+  id         String   @id @default(cuid())
+  eventId    String
+  resourceId String
+  status     String   // RsvpStatus enum as string
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  resource   Resource @relation(fields: [resourceId], references: [id])
+
+  @@unique([eventId, resourceId])
+  @@map("event_rsvps")
+}
+
+model Vote {
+  id         String   @id @default(cuid())
+  ideaId     String
+  resourceId String
+  status     String   // VoteStatus enum as string
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  idea       Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  resource   Resource @relation(fields: [resourceId], references: [id])
+
+  @@unique([ideaId, resourceId])
+  @@map("votes")
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  content    String
+  resourceId String
+  projectId  String?
+  taskId     String?
+  ideaId     String?
+  eventId    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  resource   Resource @relation(fields: [resourceId], references: [id])
+  project    Project? @relation(fields: [projectId], references: [id])
+  task       Task?    @relation(fields: [taskId], references: [id])
+  idea       Idea?    @relation(fields: [ideaId], references: [id])
+  event      Event?   @relation(fields: [eventId], references: [id])
+
+  @@map("comments")
+}
+
+model Feedback {
+  id          String   @id @default(cuid())
+  category    String   // FeedbackCategory enum as string
+  status      String   // FeedbackStatus enum as string
+  title       String
+  description String
+  resourceId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  resource    Resource @relation(fields: [resourceId], references: [id])
+
+  @@map("feedbacks")
+}
+
+model PurchaseRequest {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  amount      Float
+  status      String   // PurchaseRequestStatus enum as string
+  requesterId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("purchase_requests")
+}
+
+model Invoice {
+  id          String   @id @default(cuid())
+  invoiceNumber String @unique
+  amount      Float
+  status      String   // InvoiceStatus enum as string
+  dueDate     String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("invoices")
+}

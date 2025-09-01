@@ -1,8 +1,9 @@
-
+// FIX: Switched from `require` to `import` for proper TypeScript type support for PrismaClient.
 import { PrismaClient } from '@prisma/client';
 
 // Add prisma to the NodeJS global type
 declare global {
+  // FIX: Using the imported `PrismaClient` type instead of `any` for type safety.
   var prisma: PrismaClient | undefined;
 }
 

@@ -27,7 +27,7 @@ export const PurchaseRequestForm: React.FC<PurchaseRequestFormProps> = ({ projec
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const newFiles = Array.from(e.target.files).filter(
-                (newFile: File) => !selectedFiles.some(existingFile => existingFile.name === newFile.name)
+                newFile => !selectedFiles.some(existingFile => existingFile.name === newFile.name)
             );
             setSelectedFiles(prev => [...prev, ...newFiles]);
             if(e.target) e.target.value = '';

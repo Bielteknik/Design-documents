@@ -54,7 +54,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = React.memo(({ projects,
 
     const filteredProjects = useMemo(() => {
         return projects.filter(p => {
-            const managerMatch = projectFilters.manager === 'all' || p.manager.id === projectFilters.manager;
+            const managerMatch = projectFilters.manager === 'all' || p.managerId === projectFilters.manager;
             const statusMatch = projectFilters.status === 'all' || p.status === projectFilters.status;
             const priorityMatch = projectFilters.priority === 'all' || p.priority === projectFilters.priority;
             return managerMatch && statusMatch && priorityMatch;
@@ -71,7 +71,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = React.memo(({ projects,
     const isProjectFilterActive = projectFilters.manager !== 'all' || projectFilters.status !== 'all' || projectFilters.priority !== 'all';
 
     const uniqueManagers = useMemo(() => {
-        const managerIds = new Set(projects.map(p => p.manager.id));
+        const managerIds = new Set(projects.map(p => p.managerId));
         return resources.filter(r => managerIds.has(r.id));
     }, [projects, resources]);
 

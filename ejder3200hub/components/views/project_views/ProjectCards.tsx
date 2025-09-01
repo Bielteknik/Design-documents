@@ -77,7 +77,8 @@ export const ProjectCards: React.FC<ProjectCardsProps> = ({ projects, tasks, res
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {projects.map(project => {
-                const { manager, team: teamMembers } = project;
+                const { manager } = project;
+                const teamMembers = resources.filter(r => project.team.includes(r.id));
                 const projectTasks = tasks.filter(t => t.projectId === project.id);
                 const { statusClass, priorityClass } = getStatusAndPriorityStyles(project.status, project.priority);
                 
