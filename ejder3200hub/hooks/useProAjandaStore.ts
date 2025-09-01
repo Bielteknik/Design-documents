@@ -5,7 +5,7 @@
 
 
 import { useState, useEffect } from 'react';
-import { apiService } from '../services/apiService';
+import { currentApiService as apiService } from '../services';
 import { Project, Task, Resource, Event, TaskStatus, Notification, Idea, EventType, Priority, RsvpStatus, NotificationType, IdeaStatus, PurchaseRequest, Invoice, PurchaseRequestStatus, InvoiceStatus, ProjectStatus, Evaluation, VoteStatus, Comment, Department, PerformanceEvaluation, Announcement, Feedback, ApiLog, SystemMetric, DatabaseStats } from '../types';
 
 // For demo purposes, let's assume the current user is 'r2' (Ahmet Kaya)
