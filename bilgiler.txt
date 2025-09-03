@@ -1,7 +1,7 @@
 Ejder3200Hub Bilgileri 
-CREATE USER ejderAdmin WITH SUPERUSER CREATEDB CREATEROLE REPLICATION LOGIN PASSWORD 'Ejder.25';
+CREATE USER ejderadmin WITH SUPERUSER CREATEDB CREATEROLE REPLICATION LOGIN PASSWORD 'Ejder.25';
 -----------------------------
 Postgresql bilgileri
 user:ejderadmin
 şifre : Ejder.25
-server ip : 192.168.0.14
+server ip : 10.65.2.163
